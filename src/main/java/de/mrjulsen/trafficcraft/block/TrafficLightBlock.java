@@ -2,8 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.colors.IColoredBlock;
+import de.mrjulsen.trafficcraft.block.client.TrafficLightClient;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
@@ -14,9 +13,6 @@ import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
-import de.mrjulsen.trafficcraft.screen.TrafficLightConfigScreen;
-import de.mrjulsen.trafficcraft.util.PaintColor;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -177,7 +173,7 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
         if (item == null || !isValidLinker) {    
             if(pLevel.isClientSide && item instanceof WrenchItem) {
                 if(!pPlayer.isShiftKeyDown())
-                    displayConfigurationGui(pPos, pLevel);
+                    TrafficLightClient.showGui(pPos, pLevel);
                     
                 return InteractionResult.SUCCESS;
             }
@@ -218,11 +214,6 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
         }
         return InteractionResult.FAIL;
         
-    }
-    
-    private static void displayConfigurationGui(BlockPos pos, Level level)
-    {
-        Minecraft.getInstance().setScreen(new TrafficLightConfigScreen(pos, level));
     }
 
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {

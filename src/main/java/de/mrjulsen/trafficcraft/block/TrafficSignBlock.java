@@ -1,11 +1,10 @@
 package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignClient;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import de.mrjulsen.trafficcraft.screen.TrafficSignEditScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -120,7 +119,7 @@ public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
         {
             if (item instanceof WrenchItem) {
                 if(!pPlayer.isShiftKeyDown()) {                
-                    Minecraft.getInstance().setScreen(new TrafficSignEditScreen(pState.getValue(TYPE), 0, pState.getValue(SHAPE), pPos, pLevel, pPlayer));
+                    TrafficSignClient.showGui(pState.getValue(TYPE), 0, pState.getValue(SHAPE), pPos, pLevel, pPlayer);
                 }
                 return InteractionResult.SUCCESS;
             }

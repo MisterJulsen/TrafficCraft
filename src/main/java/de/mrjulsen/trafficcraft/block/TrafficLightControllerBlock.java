@@ -1,18 +1,14 @@
 package de.mrjulsen.trafficcraft.block;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.block.client.TrafficLightControllerClient;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
-import de.mrjulsen.trafficcraft.screen.TrafficLightControllerScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +19,6 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
@@ -81,18 +76,13 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
             if(pLevel.isClientSide)
             {
                 if(!pPlayer.isShiftKeyDown())
-                    displayConfigurationGui(pPos, pLevel);
+                    TrafficLightControllerClient.showGui(pPos, pLevel);
             }
 
             return InteractionResult.SUCCESS;
         }
 
         return super.use(pState, pLevel, pPos, pPlayer, pHand, pHit);
-    }
-    
-    private static void displayConfigurationGui(BlockPos pos, Level level)
-    {
-        Minecraft.getInstance().setScreen(new TrafficLightControllerScreen(pos, level));
     }
 
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {

@@ -9,9 +9,8 @@ import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
 import de.mrjulsen.trafficcraft.block.colors.IColoredBlock;
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
-import de.mrjulsen.trafficcraft.screen.PaintBrushScreen;
+import de.mrjulsen.trafficcraft.item.client.BrushClient;
 import de.mrjulsen.trafficcraft.util.PaintColor;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BrushItem extends Item
@@ -61,7 +59,7 @@ public class BrushItem extends Item
 
         if (level.isClientSide) {
             if (player.isShiftKeyDown()) {
-                Minecraft.getInstance().setScreen(new PaintBrushScreen(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll")));
+                BrushClient.showGui(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll"));
             }
         }
 
