@@ -1,13 +1,7 @@
 {
-  "homepage": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft",
   "promos": {
-    "1.18.2-latest": "0.0.2-1.18.2",
-    "1.18.2-recommended": "0.0.2-1.18.2"
+    "1.18.2-latest": "0.0.2",
+    "1.18.2-recommended": "0.0.2"
   },
-  "1.18.2": {
-    "0.0.2-1.18.2": {
-      "changelog": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft/files",
-      "download": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft/files"
-    }
-  }
+  "homepage": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft"
 }
