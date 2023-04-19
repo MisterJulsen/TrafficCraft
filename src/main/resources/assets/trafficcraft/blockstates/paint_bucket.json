@@ -1,0 +1,139 @@
+{
+    "variants": {
+        "facing=north,paint=0": {
+            "model": "trafficcraft:block/paint_bucket/0"
+        },
+        "facing=east,paint=0": {
+            "model": "trafficcraft:block/paint_bucket/0",
+            "y": 90
+        },
+        "facing=south,paint=0": {
+            "model": "trafficcraft:block/paint_bucket/0",
+            "y": 180
+        },
+        "facing=west,paint=0": {
+            "model": "trafficcraft:block/paint_bucket/0",
+            "y": 270
+        },
+        "facing=north,paint=1": {
+            "model": "trafficcraft:block/paint_bucket/1"
+        },
+        "facing=east,paint=1": {
+            "model": "trafficcraft:block/paint_bucket/1",
+            "y": 90
+        },
+        "facing=south,paint=1": {
+            "model": "trafficcraft:block/paint_bucket/1",
+            "y": 180
+        },
+        "facing=west,paint=1": {
+            "model": "trafficcraft:block/paint_bucket/1",
+            "y": 270
+        },
+        "facing=north,paint=2": {
+            "model": "trafficcraft:block/paint_bucket/2"
+        },
+        "facing=east,paint=2": {
+            "model": "trafficcraft:block/paint_bucket/2",
+            "y": 90
+        },
+        "facing=south,paint=2": {
+            "model": "trafficcraft:block/paint_bucket/2",
+            "y": 180
+        },
+        "facing=west,paint=2": {
+            "model": "trafficcraft:block/paint_bucket/2",
+            "y": 270
+        },
+        "facing=north,paint=3": {
+            "model": "trafficcraft:block/paint_bucket/3"
+        },
+        "facing=east,paint=3": {
+            "model": "trafficcraft:block/paint_bucket/3",
+            "y": 90
+        },
+        "facing=south,paint=3": {
+            "model": "trafficcraft:block/paint_bucket/3",
+            "y": 180
+        },
+        "facing=west,paint=3": {
+            "model": "trafficcraft:block/paint_bucket/3",
+            "y": 270
+        },
+        "facing=north,paint=4": {
+            "model": "trafficcraft:block/paint_bucket/4"
+        },
+        "facing=east,paint=4": {
+            "model": "trafficcraft:block/paint_bucket/4",
+            "y": 90
+        },
+        "facing=south,paint=4": {
+            "model": "trafficcraft:block/paint_bucket/4",
+            "y": 180
+        },
+        "facing=west,paint=4": {
+            "model": "trafficcraft:block/paint_bucket/4",
+            "y": 270
+        },
+        "facing=north,paint=5": {
+            "model": "trafficcraft:block/paint_bucket/5"
+        },
+        "facing=east,paint=5": {
+            "model": "trafficcraft:block/paint_bucket/5",
+            "y": 90
+        },
+        "facing=south,paint=5": {
+            "model": "trafficcraft:block/paint_bucket/5",
+            "y": 180
+        },
+        "facing=west,paint=5": {
+            "model": "trafficcraft:block/paint_bucket/5",
+            "y": 270
+        },
+        "facing=north,paint=6": {
+            "model": "trafficcraft:block/paint_bucket/6"
+        },
+        "facing=east,paint=6": {
+            "model": "trafficcraft:block/paint_bucket/6",
+            "y": 90
+        },
+        "facing=south,paint=6": {
+            "model": "trafficcraft:block/paint_bucket/6",
+            "y": 180
+        },
+        "facing=west,paint=6": {
+            "model": "trafficcraft:block/paint_bucket/6",
+            "y": 270
+        },
+        "facing=north,paint=7": {
+            "model": "trafficcraft:block/paint_bucket/7"
+        },
+        "facing=east,paint=7": {
+            "model": "trafficcraft:block/paint_bucket/7",
+            "y": 90
+        },
+        "facing=south,paint=7": {
+            "model": "trafficcraft:block/paint_bucket/7",
+            "y": 180
+        },
+        "facing=west,paint=7": {
+            "model": "trafficcraft:block/paint_bucket/7",
+            "y": 270
+        },
+        "facing=north,paint=8": {
+            "model": "trafficcraft:block/paint_bucket/8"
+        },
+        "facing=east,paint=8": {
+            "model": "trafficcraft:block/paint_bucket/8",
+            "y": 90
+        },
+        "facing=south,paint=8": {
+            "model": "trafficcraft:block/paint_bucket/8",
+            "y": 180
+        },
+        "facing=west,paint=8": {
+            "model": "trafficcraft:block/paint_bucket/8",
+            "y": 270
+        }
+    }
+}

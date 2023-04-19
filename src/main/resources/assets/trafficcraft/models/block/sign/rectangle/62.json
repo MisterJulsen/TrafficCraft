@@ -1,0 +1,6 @@
+{
+	"parent": "trafficcraft:block/sign/rectangle",
+	"textures": {
+		"sign": "trafficcraft:block/sign/rectangle/rectangle62"
+	}
+}

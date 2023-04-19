@@ -1,0 +1,12 @@
+{
+    "parent": "trafficcraft:block/road_base",
+    "textures": {
+      "base": "trafficcraft:block/concrete",
+      "overlay": "trafficcraft:block/patterns/35",
+      "north": "trafficcraft:block/patterns/0",
+      "east": "trafficcraft:block/patterns/1",
+      "south": "trafficcraft:block/patterns/54",
+      "west": "trafficcraft:block/patterns/1",
+      "particle": "trafficcraft:block/concrete"
+    }
+  }

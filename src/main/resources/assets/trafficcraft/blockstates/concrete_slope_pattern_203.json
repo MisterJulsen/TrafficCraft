@@ -1,0 +1,132 @@
+{
+  "variants": {
+    "facing=north,layers=1": {
+      "model": "trafficcraft:block/concrete/slope/203_2",
+      "y": 0
+    },
+    "facing=east,layers=1": {
+      "model": "trafficcraft:block/concrete/slope/203_2",
+      "y": 90
+    },
+    "facing=south,layers=1": {
+      "model": "trafficcraft:block/concrete/slope/203_2",
+      "y": 180
+    },
+    "facing=west,layers=1": {
+      "model": "trafficcraft:block/concrete/slope/203_2",
+      "y": 270
+    },
+    "facing=north,layers=2": {
+      "model": "trafficcraft:block/concrete/slope/203_4",
+      "y": 0
+    },
+    "facing=east,layers=2": {
+      "model": "trafficcraft:block/concrete/slope/203_4",
+      "y": 90
+    },
+    "facing=south,layers=2": {
+      "model": "trafficcraft:block/concrete/slope/203_4",
+      "y": 180
+    },
+    "facing=west,layers=2": {
+      "model": "trafficcraft:block/concrete/slope/203_4",
+      "y": 270
+    },
+    "facing=north,layers=3": {
+      "model": "trafficcraft:block/concrete/slope/203_6",
+      "y": 0
+    },
+    "facing=east,layers=3": {
+      "model": "trafficcraft:block/concrete/slope/203_6",
+      "y": 90
+    },
+    "facing=south,layers=3": {
+      "model": "trafficcraft:block/concrete/slope/203_6",
+      "y": 180
+    },
+    "facing=west,layers=3": {
+      "model": "trafficcraft:block/concrete/slope/203_6",
+      "y": 270
+    },
+    "facing=north,layers=4": {
+      "model": "trafficcraft:block/concrete/slope/203_8",
+      "y": 0
+    },
+    "facing=east,layers=4": {
+      "model": "trafficcraft:block/concrete/slope/203_8",
+      "y": 90
+    },
+    "facing=south,layers=4": {
+      "model": "trafficcraft:block/concrete/slope/203_8",
+      "y": 180
+    },
+    "facing=west,layers=4": {
+      "model": "trafficcraft:block/concrete/slope/203_8",
+      "y": 270
+    },
+    "facing=north,layers=5": {
+      "model": "trafficcraft:block/concrete/slope/203_10",
+      "y": 0
+    },
+    "facing=east,layers=5": {
+      "model": "trafficcraft:block/concrete/slope/203_10",
+      "y": 90
+    },
+    "facing=south,layers=5": {
+      "model": "trafficcraft:block/concrete/slope/203_10",
+      "y": 180
+    },
+    "facing=west,layers=5": {
+      "model": "trafficcraft:block/concrete/slope/203_10",
+      "y": 270
+    },
+    "facing=north,layers=6": {
+      "model": "trafficcraft:block/concrete/slope/203_12",
+      "y": 0
+    },
+    "facing=east,layers=6": {
+      "model": "trafficcraft:block/concrete/slope/203_12",
+      "y": 90
+    },
+    "facing=south,layers=6": {
+      "model": "trafficcraft:block/concrete/slope/203_12",
+      "y": 180
+    },
+    "facing=west,layers=6": {
+      "model": "trafficcraft:block/concrete/slope/203_12",
+      "y": 270
+    },
+    "facing=north,layers=7": {
+      "model": "trafficcraft:block/concrete/slope/203_14",
+      "y": 0
+    },
+    "facing=east,layers=7": {
+      "model": "trafficcraft:block/concrete/slope/203_14",
+      "y": 90
+    },
+    "facing=south,layers=7": {
+      "model": "trafficcraft:block/concrete/slope/203_14",
+      "y": 180
+    },
+    "facing=west,layers=7": {
+      "model": "trafficcraft:block/concrete/slope/203_14",
+      "y": 270
+    },
+    "facing=north,layers=8": {
+      "model": "trafficcraft:block/concrete/203",
+      "y": 0
+    },
+    "facing=east,layers=8": {
+      "model": "trafficcraft:block/concrete/203",
+      "y": 90
+    },
+    "facing=south,layers=8": {
+      "model": "trafficcraft:block/concrete/203",
+      "y": 180
+    },
+    "facing=west,layers=8": {
+      "model": "trafficcraft:block/concrete/203",
+      "y": 270
+    }
+  }
+}

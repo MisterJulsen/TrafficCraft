@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "trafficcraft:item/paint_brush_base",
+        "layer1": "trafficcraft:item/paint_brush_overlay"
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/traffic_light_controller"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/traffic_light_controller",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/traffic_light_controller",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/traffic_light_controller",
+            "y": 270
+        }
+    }
+}

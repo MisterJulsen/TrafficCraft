@@ -1,0 +1,44 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "R  ",
+        "GVC",
+        "INI"
+    ],
+    "key": {
+        "R": [
+            {
+                "item": "minecraft:redstone_torch"
+            }
+        ],
+        "G": [
+            {
+                "item": "minecraft:glass_pane"
+            }
+        ],
+        "V": [
+            {
+                "item": "minecraft:repeater"
+            }
+        ],
+        "C": [
+            {
+                "item": "minecraft:copper_ingot"
+            }
+        ],
+        "I": [
+            {
+                "item": "minecraft:iron_ingot"
+            }
+        ],
+        "N": [
+            {
+                "item": "minecraft:gold_nugget"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:traffic_light_linker",
+        "count": 1
+    }
+}

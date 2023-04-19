@@ -1,0 +1,7 @@
+{
+    "parent": "trafficcraft:block/slope_base_8",
+    "textures": {
+      "base": "trafficcraft:block/concrete",
+      "particle": "trafficcraft:block/concrete"
+    }
+  }

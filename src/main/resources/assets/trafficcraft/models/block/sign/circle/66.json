@@ -1,0 +1,6 @@
+{
+	"parent": "trafficcraft:block/sign/circle",
+	"textures": {
+		"sign": "trafficcraft:block/sign/circle/circle66"
+	}
+}

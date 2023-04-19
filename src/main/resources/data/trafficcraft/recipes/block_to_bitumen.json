@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "trafficcraft:bitumen_block"
+      }
+    ],
+    "result": {
+      "item": "trafficcraft:raw_bitumen",
+      "count": 9
+    }
+  }

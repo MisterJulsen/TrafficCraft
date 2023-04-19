@@ -1,0 +1,7 @@
+{
+    "parent": "trafficcraft:block/traffic_light/small",
+	"textures": {
+		"red": "trafficcraft:block/traffic_light/right_red",
+		"yellow": "trafficcraft:block/traffic_light/right_yellow"
+	}
+}

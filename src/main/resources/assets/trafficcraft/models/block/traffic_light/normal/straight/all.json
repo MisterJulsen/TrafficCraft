@@ -1,0 +1,8 @@
+{
+    "parent": "trafficcraft:block/traffic_light/normal",
+	"textures": {
+		"red": "trafficcraft:block/traffic_light/straight_red",
+		"yellow": "trafficcraft:block/traffic_light/straight_yellow",
+		"green": "trafficcraft:block/traffic_light/straight_green"
+	}
+}

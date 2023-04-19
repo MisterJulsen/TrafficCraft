@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "X",
+        "S",
+        "S"
+    ],
+    "key": {
+        "X": [
+            {
+                "item": "trafficcraft:reflector"
+            }
+        ],
+        "S": [
+            {
+                "item": "minecraft:stick"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:white_delineator",
+        "count": 2
+    }
+}

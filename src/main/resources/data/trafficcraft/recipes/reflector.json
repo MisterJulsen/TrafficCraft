@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OXO"
+    ],
+    "key": {
+        "O": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "X": [
+            {
+                "item": "minecraft:glow_ink_sac"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:reflector",
+        "count": 2
+    }
+}

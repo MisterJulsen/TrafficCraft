@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/reflector"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/reflector",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/reflector",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/reflector",
+            "y": 270
+        }
+    }
+}

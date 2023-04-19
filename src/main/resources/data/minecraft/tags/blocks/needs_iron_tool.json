@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "trafficcraft:traffic_light",
+    "trafficcraft:traffic_light_request_button",
+    "trafficcraft:traffic_light_controller"
+  ]
+}

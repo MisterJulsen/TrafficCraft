@@ -1,0 +1,6 @@
+{
+	"parent": "trafficcraft:block/sign/triangle",
+	"textures": {
+		"sign": "trafficcraft:block/sign/triangle/triangle49"
+	}
+}

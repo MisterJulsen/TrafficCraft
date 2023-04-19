@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/yellow_delineator"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/yellow_delineator",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/yellow_delineator",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/yellow_delineator",
+            "y": 270
+        }
+    }
+}

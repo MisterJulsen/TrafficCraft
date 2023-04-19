@@ -1,0 +1,9 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "trafficcraft:item/paint_brush"
+    },
+    "overrides": [
+        {"predicate": {"paint": 1 }, "model": "trafficcraft:item/paint_brush_color" }
+    ]
+}

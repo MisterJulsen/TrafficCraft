@@ -1,0 +1,65 @@
+{
+    "variants": {
+        "facing=north,powered=false,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button"
+        },
+        "facing=east,powered=false,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button",
+            "y": 90
+        },
+        "facing=south,powered=false,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button",
+            "y": 180
+        },
+        "facing=west,powered=false,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button",
+            "y": 270
+        },
+        "facing=north,powered=true,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered"
+        },
+        "facing=east,powered=true,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 90
+        },
+        "facing=south,powered=true,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 180
+        },
+        "facing=west,powered=true,activated=false": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 270
+        },
+
+        "facing=north,powered=false,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_active"
+        },
+        "facing=east,powered=false,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_active",
+            "y": 90
+        },
+        "facing=south,powered=false,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_active",
+            "y": 180
+        },
+        "facing=west,powered=false,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_active",
+            "y": 270
+        },
+        "facing=north,powered=true,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered"
+        },
+        "facing=east,powered=true,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 90
+        },
+        "facing=south,powered=true,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 180
+        },
+        "facing=west,powered=true,activated=true": {
+            "model": "trafficcraft:block/traffic_light_request_button_powered",
+            "y": 270
+        }
+    }
+}

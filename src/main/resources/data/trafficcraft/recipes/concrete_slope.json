@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OO"
+    ],
+    "key": {
+        "O": [
+            {
+                "item": "trafficcraft:concrete"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:concrete_slope",
+        "count": 8
+    }
+}

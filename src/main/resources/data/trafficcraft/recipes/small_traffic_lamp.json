@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GI ",
+        " I ",
+        " I "
+    ],
+    "key": {
+        "I": [
+            {
+                "item": "minecraft:iron_ingot"
+            }
+        ],
+        "G": [
+            {
+                "item": "minecraft:redstone_lamp"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:small_traffic_lamp",
+        "count": 3
+    }
+}

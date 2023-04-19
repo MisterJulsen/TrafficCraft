@@ -1,0 +1,8 @@
+{
+    "type": "minecraft:stonecutting",
+    "ingredient": {
+        "item": "trafficcraft:concrete"
+    },
+    "result": "trafficcraft:concrete_slope",
+    "count": 8
+}

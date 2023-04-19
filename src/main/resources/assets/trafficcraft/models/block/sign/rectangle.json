@@ -1,0 +1,108 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"base": "trafficcraft:block/sign",
+		"particle": "trafficcraft:block/sign"
+	},
+	"elements": [
+		{
+			"name": "Pole",
+			"from": [7, 0, 7],
+			"to": [9, 16, 9],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
+				"east": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
+				"west": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
+				"up": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#base", "tintindex": 0},
+				"down": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#base", "tintindex": 0}
+			}
+		},
+		{
+			"from": [6, 2, 7],
+			"to": [10, 3, 8],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
+				"up": {"uv": [0, 0, 1, 4], "rotation": 90, "texture": "#base", "tintindex": 0},
+				"down": {"uv": [0, 0, 1, 4], "rotation": 270, "texture": "#base", "tintindex": 0}
+			}
+		},
+		{
+			"from": [6, 13, 7],
+			"to": [10, 14, 8],
+			"faces": {
+				"north": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
+				"up": {"uv": [0, 0, 1, 4], "rotation": 90, "texture": "#base", "tintindex": 0},
+				"down": {"uv": [0, 0, 1, 4], "rotation": 270, "texture": "#base", "tintindex": 0}
+			}
+		},
+		{
+			"name": "sign_tex",
+			"from": [0, 0, 6.5],
+			"to": [16, 16, 6.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 8, 6]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#sign"}
+			}
+		},
+		{
+			"from": [2, 0, 6.5],
+			"to": [14, 16, 7],
+			"faces": {
+				"east": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#base", "tintindex": 0},
+				"west": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
+				"up": {"uv": [0, 0, 0.5, 16], "rotation": 90, "texture": "#base", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.5, 16], "rotation": 270, "texture": "#base", "tintindex": 0}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	},
+	"groups": [
+		0,
+		1,
+		2,
+		{
+			"name": "Sign",
+			"origin": [0, 0, 0],
+			"color": 0,
+			"children": [3, 4]
+		}
+	]
+}

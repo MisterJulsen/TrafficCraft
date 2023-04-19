@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "#",
+        "#",
+        "#"
+    ],
+    "key": {
+        "#": [
+            {
+                "item": "minecraft:iron_ingot"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:traffic_sign_post",
+        "count": 8
+    }
+}

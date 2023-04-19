@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/small_white_delineator"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/small_white_delineator",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/small_white_delineator",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/small_white_delineator",
+            "y": 270
+        }
+    }
+}

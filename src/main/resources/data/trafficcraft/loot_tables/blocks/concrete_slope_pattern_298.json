@@ -1,0 +1,161 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 1
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "1"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 2
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "2"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 3
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "3"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 4
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "4"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 5
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "5"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 6
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "6"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 7
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "7"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "trafficcraft:concrete_slope",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": 8
+            }
+          ],
+          "conditions": [
+            {
+              "condition": "minecraft:block_state_property",
+              "block": "trafficcraft:concrete_slope_pattern_298",
+              "properties": {
+                "layers": "8"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

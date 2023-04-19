@@ -1,0 +1,6 @@
+{
+	"parent": "trafficcraft:block/sign/square",
+	"textures": {
+		"sign": "trafficcraft:block/sign/square/square62"
+	}
+}
