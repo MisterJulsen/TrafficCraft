@@ -1,6 +1,6 @@
 # TrafficCraft
 
-![Logo](https://github.com/MisterJulsen/TrafficCraft/blob/master/trafficcraft_logo.png)
+![Logo](https://github.com/MisterJulsen/TrafficCraft/blob/1.18.2/trafficcraft_logo.png)
  
 #### **TrafficCraft is a Minecraft mod that brings roads, traffic signs, traffic lights and much more to your worlds. Build your own cities and roads according to your wishes.**
 
