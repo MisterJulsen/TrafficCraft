@@ -18,7 +18,7 @@
     "item.trafficcraft.paint_brush.tooltip.color_empty": "Leer",
     "item.trafficcraft.paint_brush.tooltip.paint": "§7Farbmenge: ",
 
-    "block.trafficcraft.traffic_sign": "Verkehrszeichen",
+    "block.trafficcraft.circle_traffic_sign": "Verkehrszeichen",
     "block.trafficcraft.traffic_sign_post": "Verkehrszeichenmast",
     "block.trafficcraft.traffic_light": "Ampel",
     "block.trafficcraft.traffic_light_controller": "Ampel-Steuerungseinheit",

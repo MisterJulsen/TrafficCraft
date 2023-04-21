@@ -1,0 +1,1700 @@
+{
+  "variants": {
+    "type=0,facing=north": {
+      "model": "trafficcraft:block/sign/square/0",
+      "y": 0
+    },
+    "type=0,facing=east": {
+      "model": "trafficcraft:block/sign/square/0",
+      "y": 90
+    },
+    "type=0,facing=south": {
+      "model": "trafficcraft:block/sign/square/0",
+      "y": 180
+    },
+    "type=0,facing=west": {
+      "model": "trafficcraft:block/sign/square/0",
+      "y": 270
+    },
+    "type=1,facing=north": {
+      "model": "trafficcraft:block/sign/square/1",
+      "y": 0
+    },
+    "type=1,facing=east": {
+      "model": "trafficcraft:block/sign/square/1",
+      "y": 90
+    },
+    "type=1,facing=south": {
+      "model": "trafficcraft:block/sign/square/1",
+      "y": 180
+    },
+    "type=1,facing=west": {
+      "model": "trafficcraft:block/sign/square/1",
+      "y": 270
+    },
+    "type=10,facing=north": {
+      "model": "trafficcraft:block/sign/square/10",
+      "y": 0
+    },
+    "type=10,facing=east": {
+      "model": "trafficcraft:block/sign/square/10",
+      "y": 90
+    },
+    "type=10,facing=south": {
+      "model": "trafficcraft:block/sign/square/10",
+      "y": 180
+    },
+    "type=10,facing=west": {
+      "model": "trafficcraft:block/sign/square/10",
+      "y": 270
+    },
+    "type=100,facing=north": {
+      "model": "trafficcraft:block/sign/square/100",
+      "y": 0
+    },
+    "type=100,facing=east": {
+      "model": "trafficcraft:block/sign/square/100",
+      "y": 90
+    },
+    "type=100,facing=south": {
+      "model": "trafficcraft:block/sign/square/100",
+      "y": 180
+    },
+    "type=100,facing=west": {
+      "model": "trafficcraft:block/sign/square/100",
+      "y": 270
+    },
+    "type=101,facing=north": {
+      "model": "trafficcraft:block/sign/square/101",
+      "y": 0
+    },
+    "type=101,facing=east": {
+      "model": "trafficcraft:block/sign/square/101",
+      "y": 90
+    },
+    "type=101,facing=south": {
+      "model": "trafficcraft:block/sign/square/101",
+      "y": 180
+    },
+    "type=101,facing=west": {
+      "model": "trafficcraft:block/sign/square/101",
+      "y": 270
+    },
+    "type=102,facing=north": {
+      "model": "trafficcraft:block/sign/square/102",
+      "y": 0
+    },
+    "type=102,facing=east": {
+      "model": "trafficcraft:block/sign/square/102",
+      "y": 90
+    },
+    "type=102,facing=south": {
+      "model": "trafficcraft:block/sign/square/102",
+      "y": 180
+    },
+    "type=102,facing=west": {
+      "model": "trafficcraft:block/sign/square/102",
+      "y": 270
+    },
+    "type=103,facing=north": {
+      "model": "trafficcraft:block/sign/square/103",
+      "y": 0
+    },
+    "type=103,facing=east": {
+      "model": "trafficcraft:block/sign/square/103",
+      "y": 90
+    },
+    "type=103,facing=south": {
+      "model": "trafficcraft:block/sign/square/103",
+      "y": 180
+    },
+    "type=103,facing=west": {
+      "model": "trafficcraft:block/sign/square/103",
+      "y": 270
+    },
+    "type=104,facing=north": {
+      "model": "trafficcraft:block/sign/square/104",
+      "y": 0
+    },
+    "type=104,facing=east": {
+      "model": "trafficcraft:block/sign/square/104",
+      "y": 90
+    },
+    "type=104,facing=south": {
+      "model": "trafficcraft:block/sign/square/104",
+      "y": 180
+    },
+    "type=104,facing=west": {
+      "model": "trafficcraft:block/sign/square/104",
+      "y": 270
+    },
+    "type=105,facing=north": {
+      "model": "trafficcraft:block/sign/square/105",
+      "y": 0
+    },
+    "type=105,facing=east": {
+      "model": "trafficcraft:block/sign/square/105",
+      "y": 90
+    },
+    "type=105,facing=south": {
+      "model": "trafficcraft:block/sign/square/105",
+      "y": 180
+    },
+    "type=105,facing=west": {
+      "model": "trafficcraft:block/sign/square/105",
+      "y": 270
+    },
+    "type=11,facing=north": {
+      "model": "trafficcraft:block/sign/square/11",
+      "y": 0
+    },
+    "type=11,facing=east": {
+      "model": "trafficcraft:block/sign/square/11",
+      "y": 90
+    },
+    "type=11,facing=south": {
+      "model": "trafficcraft:block/sign/square/11",
+      "y": 180
+    },
+    "type=11,facing=west": {
+      "model": "trafficcraft:block/sign/square/11",
+      "y": 270
+    },
+    "type=12,facing=north": {
+      "model": "trafficcraft:block/sign/square/12",
+      "y": 0
+    },
+    "type=12,facing=east": {
+      "model": "trafficcraft:block/sign/square/12",
+      "y": 90
+    },
+    "type=12,facing=south": {
+      "model": "trafficcraft:block/sign/square/12",
+      "y": 180
+    },
+    "type=12,facing=west": {
+      "model": "trafficcraft:block/sign/square/12",
+      "y": 270
+    },
+    "type=13,facing=north": {
+      "model": "trafficcraft:block/sign/square/13",
+      "y": 0
+    },
+    "type=13,facing=east": {
+      "model": "trafficcraft:block/sign/square/13",
+      "y": 90
+    },
+    "type=13,facing=south": {
+      "model": "trafficcraft:block/sign/square/13",
+      "y": 180
+    },
+    "type=13,facing=west": {
+      "model": "trafficcraft:block/sign/square/13",
+      "y": 270
+    },
+    "type=14,facing=north": {
+      "model": "trafficcraft:block/sign/square/14",
+      "y": 0
+    },
+    "type=14,facing=east": {
+      "model": "trafficcraft:block/sign/square/14",
+      "y": 90
+    },
+    "type=14,facing=south": {
+      "model": "trafficcraft:block/sign/square/14",
+      "y": 180
+    },
+    "type=14,facing=west": {
+      "model": "trafficcraft:block/sign/square/14",
+      "y": 270
+    },
+    "type=15,facing=north": {
+      "model": "trafficcraft:block/sign/square/15",
+      "y": 0
+    },
+    "type=15,facing=east": {
+      "model": "trafficcraft:block/sign/square/15",
+      "y": 90
+    },
+    "type=15,facing=south": {
+      "model": "trafficcraft:block/sign/square/15",
+      "y": 180
+    },
+    "type=15,facing=west": {
+      "model": "trafficcraft:block/sign/square/15",
+      "y": 270
+    },
+    "type=16,facing=north": {
+      "model": "trafficcraft:block/sign/square/16",
+      "y": 0
+    },
+    "type=16,facing=east": {
+      "model": "trafficcraft:block/sign/square/16",
+      "y": 90
+    },
+    "type=16,facing=south": {
+      "model": "trafficcraft:block/sign/square/16",
+      "y": 180
+    },
+    "type=16,facing=west": {
+      "model": "trafficcraft:block/sign/square/16",
+      "y": 270
+    },
+    "type=17,facing=north": {
+      "model": "trafficcraft:block/sign/square/17",
+      "y": 0
+    },
+    "type=17,facing=east": {
+      "model": "trafficcraft:block/sign/square/17",
+      "y": 90
+    },
+    "type=17,facing=south": {
+      "model": "trafficcraft:block/sign/square/17",
+      "y": 180
+    },
+    "type=17,facing=west": {
+      "model": "trafficcraft:block/sign/square/17",
+      "y": 270
+    },
+    "type=18,facing=north": {
+      "model": "trafficcraft:block/sign/square/18",
+      "y": 0
+    },
+    "type=18,facing=east": {
+      "model": "trafficcraft:block/sign/square/18",
+      "y": 90
+    },
+    "type=18,facing=south": {
+      "model": "trafficcraft:block/sign/square/18",
+      "y": 180
+    },
+    "type=18,facing=west": {
+      "model": "trafficcraft:block/sign/square/18",
+      "y": 270
+    },
+    "type=19,facing=north": {
+      "model": "trafficcraft:block/sign/square/19",
+      "y": 0
+    },
+    "type=19,facing=east": {
+      "model": "trafficcraft:block/sign/square/19",
+      "y": 90
+    },
+    "type=19,facing=south": {
+      "model": "trafficcraft:block/sign/square/19",
+      "y": 180
+    },
+    "type=19,facing=west": {
+      "model": "trafficcraft:block/sign/square/19",
+      "y": 270
+    },
+    "type=2,facing=north": {
+      "model": "trafficcraft:block/sign/square/2",
+      "y": 0
+    },
+    "type=2,facing=east": {
+      "model": "trafficcraft:block/sign/square/2",
+      "y": 90
+    },
+    "type=2,facing=south": {
+      "model": "trafficcraft:block/sign/square/2",
+      "y": 180
+    },
+    "type=2,facing=west": {
+      "model": "trafficcraft:block/sign/square/2",
+      "y": 270
+    },
+    "type=20,facing=north": {
+      "model": "trafficcraft:block/sign/square/20",
+      "y": 0
+    },
+    "type=20,facing=east": {
+      "model": "trafficcraft:block/sign/square/20",
+      "y": 90
+    },
+    "type=20,facing=south": {
+      "model": "trafficcraft:block/sign/square/20",
+      "y": 180
+    },
+    "type=20,facing=west": {
+      "model": "trafficcraft:block/sign/square/20",
+      "y": 270
+    },
+    "type=21,facing=north": {
+      "model": "trafficcraft:block/sign/square/21",
+      "y": 0
+    },
+    "type=21,facing=east": {
+      "model": "trafficcraft:block/sign/square/21",
+      "y": 90
+    },
+    "type=21,facing=south": {
+      "model": "trafficcraft:block/sign/square/21",
+      "y": 180
+    },
+    "type=21,facing=west": {
+      "model": "trafficcraft:block/sign/square/21",
+      "y": 270
+    },
+    "type=22,facing=north": {
+      "model": "trafficcraft:block/sign/square/22",
+      "y": 0
+    },
+    "type=22,facing=east": {
+      "model": "trafficcraft:block/sign/square/22",
+      "y": 90
+    },
+    "type=22,facing=south": {
+      "model": "trafficcraft:block/sign/square/22",
+      "y": 180
+    },
+    "type=22,facing=west": {
+      "model": "trafficcraft:block/sign/square/22",
+      "y": 270
+    },
+    "type=23,facing=north": {
+      "model": "trafficcraft:block/sign/square/23",
+      "y": 0
+    },
+    "type=23,facing=east": {
+      "model": "trafficcraft:block/sign/square/23",
+      "y": 90
+    },
+    "type=23,facing=south": {
+      "model": "trafficcraft:block/sign/square/23",
+      "y": 180
+    },
+    "type=23,facing=west": {
+      "model": "trafficcraft:block/sign/square/23",
+      "y": 270
+    },
+    "type=24,facing=north": {
+      "model": "trafficcraft:block/sign/square/24",
+      "y": 0
+    },
+    "type=24,facing=east": {
+      "model": "trafficcraft:block/sign/square/24",
+      "y": 90
+    },
+    "type=24,facing=south": {
+      "model": "trafficcraft:block/sign/square/24",
+      "y": 180
+    },
+    "type=24,facing=west": {
+      "model": "trafficcraft:block/sign/square/24",
+      "y": 270
+    },
+    "type=25,facing=north": {
+      "model": "trafficcraft:block/sign/square/25",
+      "y": 0
+    },
+    "type=25,facing=east": {
+      "model": "trafficcraft:block/sign/square/25",
+      "y": 90
+    },
+    "type=25,facing=south": {
+      "model": "trafficcraft:block/sign/square/25",
+      "y": 180
+    },
+    "type=25,facing=west": {
+      "model": "trafficcraft:block/sign/square/25",
+      "y": 270
+    },
+    "type=26,facing=north": {
+      "model": "trafficcraft:block/sign/square/26",
+      "y": 0
+    },
+    "type=26,facing=east": {
+      "model": "trafficcraft:block/sign/square/26",
+      "y": 90
+    },
+    "type=26,facing=south": {
+      "model": "trafficcraft:block/sign/square/26",
+      "y": 180
+    },
+    "type=26,facing=west": {
+      "model": "trafficcraft:block/sign/square/26",
+      "y": 270
+    },
+    "type=27,facing=north": {
+      "model": "trafficcraft:block/sign/square/27",
+      "y": 0
+    },
+    "type=27,facing=east": {
+      "model": "trafficcraft:block/sign/square/27",
+      "y": 90
+    },
+    "type=27,facing=south": {
+      "model": "trafficcraft:block/sign/square/27",
+      "y": 180
+    },
+    "type=27,facing=west": {
+      "model": "trafficcraft:block/sign/square/27",
+      "y": 270
+    },
+    "type=28,facing=north": {
+      "model": "trafficcraft:block/sign/square/28",
+      "y": 0
+    },
+    "type=28,facing=east": {
+      "model": "trafficcraft:block/sign/square/28",
+      "y": 90
+    },
+    "type=28,facing=south": {
+      "model": "trafficcraft:block/sign/square/28",
+      "y": 180
+    },
+    "type=28,facing=west": {
+      "model": "trafficcraft:block/sign/square/28",
+      "y": 270
+    },
+    "type=29,facing=north": {
+      "model": "trafficcraft:block/sign/square/29",
+      "y": 0
+    },
+    "type=29,facing=east": {
+      "model": "trafficcraft:block/sign/square/29",
+      "y": 90
+    },
+    "type=29,facing=south": {
+      "model": "trafficcraft:block/sign/square/29",
+      "y": 180
+    },
+    "type=29,facing=west": {
+      "model": "trafficcraft:block/sign/square/29",
+      "y": 270
+    },
+    "type=3,facing=north": {
+      "model": "trafficcraft:block/sign/square/3",
+      "y": 0
+    },
+    "type=3,facing=east": {
+      "model": "trafficcraft:block/sign/square/3",
+      "y": 90
+    },
+    "type=3,facing=south": {
+      "model": "trafficcraft:block/sign/square/3",
+      "y": 180
+    },
+    "type=3,facing=west": {
+      "model": "trafficcraft:block/sign/square/3",
+      "y": 270
+    },
+    "type=30,facing=north": {
+      "model": "trafficcraft:block/sign/square/30",
+      "y": 0
+    },
+    "type=30,facing=east": {
+      "model": "trafficcraft:block/sign/square/30",
+      "y": 90
+    },
+    "type=30,facing=south": {
+      "model": "trafficcraft:block/sign/square/30",
+      "y": 180
+    },
+    "type=30,facing=west": {
+      "model": "trafficcraft:block/sign/square/30",
+      "y": 270
+    },
+    "type=31,facing=north": {
+      "model": "trafficcraft:block/sign/square/31",
+      "y": 0
+    },
+    "type=31,facing=east": {
+      "model": "trafficcraft:block/sign/square/31",
+      "y": 90
+    },
+    "type=31,facing=south": {
+      "model": "trafficcraft:block/sign/square/31",
+      "y": 180
+    },
+    "type=31,facing=west": {
+      "model": "trafficcraft:block/sign/square/31",
+      "y": 270
+    },
+    "type=32,facing=north": {
+      "model": "trafficcraft:block/sign/square/32",
+      "y": 0
+    },
+    "type=32,facing=east": {
+      "model": "trafficcraft:block/sign/square/32",
+      "y": 90
+    },
+    "type=32,facing=south": {
+      "model": "trafficcraft:block/sign/square/32",
+      "y": 180
+    },
+    "type=32,facing=west": {
+      "model": "trafficcraft:block/sign/square/32",
+      "y": 270
+    },
+    "type=33,facing=north": {
+      "model": "trafficcraft:block/sign/square/33",
+      "y": 0
+    },
+    "type=33,facing=east": {
+      "model": "trafficcraft:block/sign/square/33",
+      "y": 90
+    },
+    "type=33,facing=south": {
+      "model": "trafficcraft:block/sign/square/33",
+      "y": 180
+    },
+    "type=33,facing=west": {
+      "model": "trafficcraft:block/sign/square/33",
+      "y": 270
+    },
+    "type=34,facing=north": {
+      "model": "trafficcraft:block/sign/square/34",
+      "y": 0
+    },
+    "type=34,facing=east": {
+      "model": "trafficcraft:block/sign/square/34",
+      "y": 90
+    },
+    "type=34,facing=south": {
+      "model": "trafficcraft:block/sign/square/34",
+      "y": 180
+    },
+    "type=34,facing=west": {
+      "model": "trafficcraft:block/sign/square/34",
+      "y": 270
+    },
+    "type=35,facing=north": {
+      "model": "trafficcraft:block/sign/square/35",
+      "y": 0
+    },
+    "type=35,facing=east": {
+      "model": "trafficcraft:block/sign/square/35",
+      "y": 90
+    },
+    "type=35,facing=south": {
+      "model": "trafficcraft:block/sign/square/35",
+      "y": 180
+    },
+    "type=35,facing=west": {
+      "model": "trafficcraft:block/sign/square/35",
+      "y": 270
+    },
+    "type=36,facing=north": {
+      "model": "trafficcraft:block/sign/square/36",
+      "y": 0
+    },
+    "type=36,facing=east": {
+      "model": "trafficcraft:block/sign/square/36",
+      "y": 90
+    },
+    "type=36,facing=south": {
+      "model": "trafficcraft:block/sign/square/36",
+      "y": 180
+    },
+    "type=36,facing=west": {
+      "model": "trafficcraft:block/sign/square/36",
+      "y": 270
+    },
+    "type=37,facing=north": {
+      "model": "trafficcraft:block/sign/square/37",
+      "y": 0
+    },
+    "type=37,facing=east": {
+      "model": "trafficcraft:block/sign/square/37",
+      "y": 90
+    },
+    "type=37,facing=south": {
+      "model": "trafficcraft:block/sign/square/37",
+      "y": 180
+    },
+    "type=37,facing=west": {
+      "model": "trafficcraft:block/sign/square/37",
+      "y": 270
+    },
+    "type=38,facing=north": {
+      "model": "trafficcraft:block/sign/square/38",
+      "y": 0
+    },
+    "type=38,facing=east": {
+      "model": "trafficcraft:block/sign/square/38",
+      "y": 90
+    },
+    "type=38,facing=south": {
+      "model": "trafficcraft:block/sign/square/38",
+      "y": 180
+    },
+    "type=38,facing=west": {
+      "model": "trafficcraft:block/sign/square/38",
+      "y": 270
+    },
+    "type=39,facing=north": {
+      "model": "trafficcraft:block/sign/square/39",
+      "y": 0
+    },
+    "type=39,facing=east": {
+      "model": "trafficcraft:block/sign/square/39",
+      "y": 90
+    },
+    "type=39,facing=south": {
+      "model": "trafficcraft:block/sign/square/39",
+      "y": 180
+    },
+    "type=39,facing=west": {
+      "model": "trafficcraft:block/sign/square/39",
+      "y": 270
+    },
+    "type=4,facing=north": {
+      "model": "trafficcraft:block/sign/square/4",
+      "y": 0
+    },
+    "type=4,facing=east": {
+      "model": "trafficcraft:block/sign/square/4",
+      "y": 90
+    },
+    "type=4,facing=south": {
+      "model": "trafficcraft:block/sign/square/4",
+      "y": 180
+    },
+    "type=4,facing=west": {
+      "model": "trafficcraft:block/sign/square/4",
+      "y": 270
+    },
+    "type=40,facing=north": {
+      "model": "trafficcraft:block/sign/square/40",
+      "y": 0
+    },
+    "type=40,facing=east": {
+      "model": "trafficcraft:block/sign/square/40",
+      "y": 90
+    },
+    "type=40,facing=south": {
+      "model": "trafficcraft:block/sign/square/40",
+      "y": 180
+    },
+    "type=40,facing=west": {
+      "model": "trafficcraft:block/sign/square/40",
+      "y": 270
+    },
+    "type=41,facing=north": {
+      "model": "trafficcraft:block/sign/square/41",
+      "y": 0
+    },
+    "type=41,facing=east": {
+      "model": "trafficcraft:block/sign/square/41",
+      "y": 90
+    },
+    "type=41,facing=south": {
+      "model": "trafficcraft:block/sign/square/41",
+      "y": 180
+    },
+    "type=41,facing=west": {
+      "model": "trafficcraft:block/sign/square/41",
+      "y": 270
+    },
+    "type=42,facing=north": {
+      "model": "trafficcraft:block/sign/square/42",
+      "y": 0
+    },
+    "type=42,facing=east": {
+      "model": "trafficcraft:block/sign/square/42",
+      "y": 90
+    },
+    "type=42,facing=south": {
+      "model": "trafficcraft:block/sign/square/42",
+      "y": 180
+    },
+    "type=42,facing=west": {
+      "model": "trafficcraft:block/sign/square/42",
+      "y": 270
+    },
+    "type=43,facing=north": {
+      "model": "trafficcraft:block/sign/square/43",
+      "y": 0
+    },
+    "type=43,facing=east": {
+      "model": "trafficcraft:block/sign/square/43",
+      "y": 90
+    },
+    "type=43,facing=south": {
+      "model": "trafficcraft:block/sign/square/43",
+      "y": 180
+    },
+    "type=43,facing=west": {
+      "model": "trafficcraft:block/sign/square/43",
+      "y": 270
+    },
+    "type=44,facing=north": {
+      "model": "trafficcraft:block/sign/square/44",
+      "y": 0
+    },
+    "type=44,facing=east": {
+      "model": "trafficcraft:block/sign/square/44",
+      "y": 90
+    },
+    "type=44,facing=south": {
+      "model": "trafficcraft:block/sign/square/44",
+      "y": 180
+    },
+    "type=44,facing=west": {
+      "model": "trafficcraft:block/sign/square/44",
+      "y": 270
+    },
+    "type=45,facing=north": {
+      "model": "trafficcraft:block/sign/square/45",
+      "y": 0
+    },
+    "type=45,facing=east": {
+      "model": "trafficcraft:block/sign/square/45",
+      "y": 90
+    },
+    "type=45,facing=south": {
+      "model": "trafficcraft:block/sign/square/45",
+      "y": 180
+    },
+    "type=45,facing=west": {
+      "model": "trafficcraft:block/sign/square/45",
+      "y": 270
+    },
+    "type=46,facing=north": {
+      "model": "trafficcraft:block/sign/square/46",
+      "y": 0
+    },
+    "type=46,facing=east": {
+      "model": "trafficcraft:block/sign/square/46",
+      "y": 90
+    },
+    "type=46,facing=south": {
+      "model": "trafficcraft:block/sign/square/46",
+      "y": 180
+    },
+    "type=46,facing=west": {
+      "model": "trafficcraft:block/sign/square/46",
+      "y": 270
+    },
+    "type=47,facing=north": {
+      "model": "trafficcraft:block/sign/square/47",
+      "y": 0
+    },
+    "type=47,facing=east": {
+      "model": "trafficcraft:block/sign/square/47",
+      "y": 90
+    },
+    "type=47,facing=south": {
+      "model": "trafficcraft:block/sign/square/47",
+      "y": 180
+    },
+    "type=47,facing=west": {
+      "model": "trafficcraft:block/sign/square/47",
+      "y": 270
+    },
+    "type=48,facing=north": {
+      "model": "trafficcraft:block/sign/square/48",
+      "y": 0
+    },
+    "type=48,facing=east": {
+      "model": "trafficcraft:block/sign/square/48",
+      "y": 90
+    },
+    "type=48,facing=south": {
+      "model": "trafficcraft:block/sign/square/48",
+      "y": 180
+    },
+    "type=48,facing=west": {
+      "model": "trafficcraft:block/sign/square/48",
+      "y": 270
+    },
+    "type=49,facing=north": {
+      "model": "trafficcraft:block/sign/square/49",
+      "y": 0
+    },
+    "type=49,facing=east": {
+      "model": "trafficcraft:block/sign/square/49",
+      "y": 90
+    },
+    "type=49,facing=south": {
+      "model": "trafficcraft:block/sign/square/49",
+      "y": 180
+    },
+    "type=49,facing=west": {
+      "model": "trafficcraft:block/sign/square/49",
+      "y": 270
+    },
+    "type=5,facing=north": {
+      "model": "trafficcraft:block/sign/square/5",
+      "y": 0
+    },
+    "type=5,facing=east": {
+      "model": "trafficcraft:block/sign/square/5",
+      "y": 90
+    },
+    "type=5,facing=south": {
+      "model": "trafficcraft:block/sign/square/5",
+      "y": 180
+    },
+    "type=5,facing=west": {
+      "model": "trafficcraft:block/sign/square/5",
+      "y": 270
+    },
+    "type=50,facing=north": {
+      "model": "trafficcraft:block/sign/square/50",
+      "y": 0
+    },
+    "type=50,facing=east": {
+      "model": "trafficcraft:block/sign/square/50",
+      "y": 90
+    },
+    "type=50,facing=south": {
+      "model": "trafficcraft:block/sign/square/50",
+      "y": 180
+    },
+    "type=50,facing=west": {
+      "model": "trafficcraft:block/sign/square/50",
+      "y": 270
+    },
+    "type=51,facing=north": {
+      "model": "trafficcraft:block/sign/square/51",
+      "y": 0
+    },
+    "type=51,facing=east": {
+      "model": "trafficcraft:block/sign/square/51",
+      "y": 90
+    },
+    "type=51,facing=south": {
+      "model": "trafficcraft:block/sign/square/51",
+      "y": 180
+    },
+    "type=51,facing=west": {
+      "model": "trafficcraft:block/sign/square/51",
+      "y": 270
+    },
+    "type=52,facing=north": {
+      "model": "trafficcraft:block/sign/square/52",
+      "y": 0
+    },
+    "type=52,facing=east": {
+      "model": "trafficcraft:block/sign/square/52",
+      "y": 90
+    },
+    "type=52,facing=south": {
+      "model": "trafficcraft:block/sign/square/52",
+      "y": 180
+    },
+    "type=52,facing=west": {
+      "model": "trafficcraft:block/sign/square/52",
+      "y": 270
+    },
+    "type=53,facing=north": {
+      "model": "trafficcraft:block/sign/square/53",
+      "y": 0
+    },
+    "type=53,facing=east": {
+      "model": "trafficcraft:block/sign/square/53",
+      "y": 90
+    },
+    "type=53,facing=south": {
+      "model": "trafficcraft:block/sign/square/53",
+      "y": 180
+    },
+    "type=53,facing=west": {
+      "model": "trafficcraft:block/sign/square/53",
+      "y": 270
+    },
+    "type=54,facing=north": {
+      "model": "trafficcraft:block/sign/square/54",
+      "y": 0
+    },
+    "type=54,facing=east": {
+      "model": "trafficcraft:block/sign/square/54",
+      "y": 90
+    },
+    "type=54,facing=south": {
+      "model": "trafficcraft:block/sign/square/54",
+      "y": 180
+    },
+    "type=54,facing=west": {
+      "model": "trafficcraft:block/sign/square/54",
+      "y": 270
+    },
+    "type=55,facing=north": {
+      "model": "trafficcraft:block/sign/square/55",
+      "y": 0
+    },
+    "type=55,facing=east": {
+      "model": "trafficcraft:block/sign/square/55",
+      "y": 90
+    },
+    "type=55,facing=south": {
+      "model": "trafficcraft:block/sign/square/55",
+      "y": 180
+    },
+    "type=55,facing=west": {
+      "model": "trafficcraft:block/sign/square/55",
+      "y": 270
+    },
+    "type=56,facing=north": {
+      "model": "trafficcraft:block/sign/square/56",
+      "y": 0
+    },
+    "type=56,facing=east": {
+      "model": "trafficcraft:block/sign/square/56",
+      "y": 90
+    },
+    "type=56,facing=south": {
+      "model": "trafficcraft:block/sign/square/56",
+      "y": 180
+    },
+    "type=56,facing=west": {
+      "model": "trafficcraft:block/sign/square/56",
+      "y": 270
+    },
+    "type=57,facing=north": {
+      "model": "trafficcraft:block/sign/square/57",
+      "y": 0
+    },
+    "type=57,facing=east": {
+      "model": "trafficcraft:block/sign/square/57",
+      "y": 90
+    },
+    "type=57,facing=south": {
+      "model": "trafficcraft:block/sign/square/57",
+      "y": 180
+    },
+    "type=57,facing=west": {
+      "model": "trafficcraft:block/sign/square/57",
+      "y": 270
+    },
+    "type=58,facing=north": {
+      "model": "trafficcraft:block/sign/square/58",
+      "y": 0
+    },
+    "type=58,facing=east": {
+      "model": "trafficcraft:block/sign/square/58",
+      "y": 90
+    },
+    "type=58,facing=south": {
+      "model": "trafficcraft:block/sign/square/58",
+      "y": 180
+    },
+    "type=58,facing=west": {
+      "model": "trafficcraft:block/sign/square/58",
+      "y": 270
+    },
+    "type=59,facing=north": {
+      "model": "trafficcraft:block/sign/square/59",
+      "y": 0
+    },
+    "type=59,facing=east": {
+      "model": "trafficcraft:block/sign/square/59",
+      "y": 90
+    },
+    "type=59,facing=south": {
+      "model": "trafficcraft:block/sign/square/59",
+      "y": 180
+    },
+    "type=59,facing=west": {
+      "model": "trafficcraft:block/sign/square/59",
+      "y": 270
+    },
+    "type=6,facing=north": {
+      "model": "trafficcraft:block/sign/square/6",
+      "y": 0
+    },
+    "type=6,facing=east": {
+      "model": "trafficcraft:block/sign/square/6",
+      "y": 90
+    },
+    "type=6,facing=south": {
+      "model": "trafficcraft:block/sign/square/6",
+      "y": 180
+    },
+    "type=6,facing=west": {
+      "model": "trafficcraft:block/sign/square/6",
+      "y": 270
+    },
+    "type=60,facing=north": {
+      "model": "trafficcraft:block/sign/square/60",
+      "y": 0
+    },
+    "type=60,facing=east": {
+      "model": "trafficcraft:block/sign/square/60",
+      "y": 90
+    },
+    "type=60,facing=south": {
+      "model": "trafficcraft:block/sign/square/60",
+      "y": 180
+    },
+    "type=60,facing=west": {
+      "model": "trafficcraft:block/sign/square/60",
+      "y": 270
+    },
+    "type=61,facing=north": {
+      "model": "trafficcraft:block/sign/square/61",
+      "y": 0
+    },
+    "type=61,facing=east": {
+      "model": "trafficcraft:block/sign/square/61",
+      "y": 90
+    },
+    "type=61,facing=south": {
+      "model": "trafficcraft:block/sign/square/61",
+      "y": 180
+    },
+    "type=61,facing=west": {
+      "model": "trafficcraft:block/sign/square/61",
+      "y": 270
+    },
+    "type=62,facing=north": {
+      "model": "trafficcraft:block/sign/square/62",
+      "y": 0
+    },
+    "type=62,facing=east": {
+      "model": "trafficcraft:block/sign/square/62",
+      "y": 90
+    },
+    "type=62,facing=south": {
+      "model": "trafficcraft:block/sign/square/62",
+      "y": 180
+    },
+    "type=62,facing=west": {
+      "model": "trafficcraft:block/sign/square/62",
+      "y": 270
+    },
+    "type=63,facing=north": {
+      "model": "trafficcraft:block/sign/square/63",
+      "y": 0
+    },
+    "type=63,facing=east": {
+      "model": "trafficcraft:block/sign/square/63",
+      "y": 90
+    },
+    "type=63,facing=south": {
+      "model": "trafficcraft:block/sign/square/63",
+      "y": 180
+    },
+    "type=63,facing=west": {
+      "model": "trafficcraft:block/sign/square/63",
+      "y": 270
+    },
+    "type=64,facing=north": {
+      "model": "trafficcraft:block/sign/square/64",
+      "y": 0
+    },
+    "type=64,facing=east": {
+      "model": "trafficcraft:block/sign/square/64",
+      "y": 90
+    },
+    "type=64,facing=south": {
+      "model": "trafficcraft:block/sign/square/64",
+      "y": 180
+    },
+    "type=64,facing=west": {
+      "model": "trafficcraft:block/sign/square/64",
+      "y": 270
+    },
+    "type=65,facing=north": {
+      "model": "trafficcraft:block/sign/square/65",
+      "y": 0
+    },
+    "type=65,facing=east": {
+      "model": "trafficcraft:block/sign/square/65",
+      "y": 90
+    },
+    "type=65,facing=south": {
+      "model": "trafficcraft:block/sign/square/65",
+      "y": 180
+    },
+    "type=65,facing=west": {
+      "model": "trafficcraft:block/sign/square/65",
+      "y": 270
+    },
+    "type=66,facing=north": {
+      "model": "trafficcraft:block/sign/square/66",
+      "y": 0
+    },
+    "type=66,facing=east": {
+      "model": "trafficcraft:block/sign/square/66",
+      "y": 90
+    },
+    "type=66,facing=south": {
+      "model": "trafficcraft:block/sign/square/66",
+      "y": 180
+    },
+    "type=66,facing=west": {
+      "model": "trafficcraft:block/sign/square/66",
+      "y": 270
+    },
+    "type=67,facing=north": {
+      "model": "trafficcraft:block/sign/square/67",
+      "y": 0
+    },
+    "type=67,facing=east": {
+      "model": "trafficcraft:block/sign/square/67",
+      "y": 90
+    },
+    "type=67,facing=south": {
+      "model": "trafficcraft:block/sign/square/67",
+      "y": 180
+    },
+    "type=67,facing=west": {
+      "model": "trafficcraft:block/sign/square/67",
+      "y": 270
+    },
+    "type=68,facing=north": {
+      "model": "trafficcraft:block/sign/square/68",
+      "y": 0
+    },
+    "type=68,facing=east": {
+      "model": "trafficcraft:block/sign/square/68",
+      "y": 90
+    },
+    "type=68,facing=south": {
+      "model": "trafficcraft:block/sign/square/68",
+      "y": 180
+    },
+    "type=68,facing=west": {
+      "model": "trafficcraft:block/sign/square/68",
+      "y": 270
+    },
+    "type=69,facing=north": {
+      "model": "trafficcraft:block/sign/square/69",
+      "y": 0
+    },
+    "type=69,facing=east": {
+      "model": "trafficcraft:block/sign/square/69",
+      "y": 90
+    },
+    "type=69,facing=south": {
+      "model": "trafficcraft:block/sign/square/69",
+      "y": 180
+    },
+    "type=69,facing=west": {
+      "model": "trafficcraft:block/sign/square/69",
+      "y": 270
+    },
+    "type=7,facing=north": {
+      "model": "trafficcraft:block/sign/square/7",
+      "y": 0
+    },
+    "type=7,facing=east": {
+      "model": "trafficcraft:block/sign/square/7",
+      "y": 90
+    },
+    "type=7,facing=south": {
+      "model": "trafficcraft:block/sign/square/7",
+      "y": 180
+    },
+    "type=7,facing=west": {
+      "model": "trafficcraft:block/sign/square/7",
+      "y": 270
+    },
+    "type=70,facing=north": {
+      "model": "trafficcraft:block/sign/square/70",
+      "y": 0
+    },
+    "type=70,facing=east": {
+      "model": "trafficcraft:block/sign/square/70",
+      "y": 90
+    },
+    "type=70,facing=south": {
+      "model": "trafficcraft:block/sign/square/70",
+      "y": 180
+    },
+    "type=70,facing=west": {
+      "model": "trafficcraft:block/sign/square/70",
+      "y": 270
+    },
+    "type=71,facing=north": {
+      "model": "trafficcraft:block/sign/square/71",
+      "y": 0
+    },
+    "type=71,facing=east": {
+      "model": "trafficcraft:block/sign/square/71",
+      "y": 90
+    },
+    "type=71,facing=south": {
+      "model": "trafficcraft:block/sign/square/71",
+      "y": 180
+    },
+    "type=71,facing=west": {
+      "model": "trafficcraft:block/sign/square/71",
+      "y": 270
+    },
+    "type=72,facing=north": {
+      "model": "trafficcraft:block/sign/square/72",
+      "y": 0
+    },
+    "type=72,facing=east": {
+      "model": "trafficcraft:block/sign/square/72",
+      "y": 90
+    },
+    "type=72,facing=south": {
+      "model": "trafficcraft:block/sign/square/72",
+      "y": 180
+    },
+    "type=72,facing=west": {
+      "model": "trafficcraft:block/sign/square/72",
+      "y": 270
+    },
+    "type=73,facing=north": {
+      "model": "trafficcraft:block/sign/square/73",
+      "y": 0
+    },
+    "type=73,facing=east": {
+      "model": "trafficcraft:block/sign/square/73",
+      "y": 90
+    },
+    "type=73,facing=south": {
+      "model": "trafficcraft:block/sign/square/73",
+      "y": 180
+    },
+    "type=73,facing=west": {
+      "model": "trafficcraft:block/sign/square/73",
+      "y": 270
+    },
+    "type=74,facing=north": {
+      "model": "trafficcraft:block/sign/square/74",
+      "y": 0
+    },
+    "type=74,facing=east": {
+      "model": "trafficcraft:block/sign/square/74",
+      "y": 90
+    },
+    "type=74,facing=south": {
+      "model": "trafficcraft:block/sign/square/74",
+      "y": 180
+    },
+    "type=74,facing=west": {
+      "model": "trafficcraft:block/sign/square/74",
+      "y": 270
+    },
+    "type=75,facing=north": {
+      "model": "trafficcraft:block/sign/square/75",
+      "y": 0
+    },
+    "type=75,facing=east": {
+      "model": "trafficcraft:block/sign/square/75",
+      "y": 90
+    },
+    "type=75,facing=south": {
+      "model": "trafficcraft:block/sign/square/75",
+      "y": 180
+    },
+    "type=75,facing=west": {
+      "model": "trafficcraft:block/sign/square/75",
+      "y": 270
+    },
+    "type=76,facing=north": {
+      "model": "trafficcraft:block/sign/square/76",
+      "y": 0
+    },
+    "type=76,facing=east": {
+      "model": "trafficcraft:block/sign/square/76",
+      "y": 90
+    },
+    "type=76,facing=south": {
+      "model": "trafficcraft:block/sign/square/76",
+      "y": 180
+    },
+    "type=76,facing=west": {
+      "model": "trafficcraft:block/sign/square/76",
+      "y": 270
+    },
+    "type=77,facing=north": {
+      "model": "trafficcraft:block/sign/square/77",
+      "y": 0
+    },
+    "type=77,facing=east": {
+      "model": "trafficcraft:block/sign/square/77",
+      "y": 90
+    },
+    "type=77,facing=south": {
+      "model": "trafficcraft:block/sign/square/77",
+      "y": 180
+    },
+    "type=77,facing=west": {
+      "model": "trafficcraft:block/sign/square/77",
+      "y": 270
+    },
+    "type=78,facing=north": {
+      "model": "trafficcraft:block/sign/square/78",
+      "y": 0
+    },
+    "type=78,facing=east": {
+      "model": "trafficcraft:block/sign/square/78",
+      "y": 90
+    },
+    "type=78,facing=south": {
+      "model": "trafficcraft:block/sign/square/78",
+      "y": 180
+    },
+    "type=78,facing=west": {
+      "model": "trafficcraft:block/sign/square/78",
+      "y": 270
+    },
+    "type=79,facing=north": {
+      "model": "trafficcraft:block/sign/square/79",
+      "y": 0
+    },
+    "type=79,facing=east": {
+      "model": "trafficcraft:block/sign/square/79",
+      "y": 90
+    },
+    "type=79,facing=south": {
+      "model": "trafficcraft:block/sign/square/79",
+      "y": 180
+    },
+    "type=79,facing=west": {
+      "model": "trafficcraft:block/sign/square/79",
+      "y": 270
+    },
+    "type=8,facing=north": {
+      "model": "trafficcraft:block/sign/square/8",
+      "y": 0
+    },
+    "type=8,facing=east": {
+      "model": "trafficcraft:block/sign/square/8",
+      "y": 90
+    },
+    "type=8,facing=south": {
+      "model": "trafficcraft:block/sign/square/8",
+      "y": 180
+    },
+    "type=8,facing=west": {
+      "model": "trafficcraft:block/sign/square/8",
+      "y": 270
+    },
+    "type=80,facing=north": {
+      "model": "trafficcraft:block/sign/square/80",
+      "y": 0
+    },
+    "type=80,facing=east": {
+      "model": "trafficcraft:block/sign/square/80",
+      "y": 90
+    },
+    "type=80,facing=south": {
+      "model": "trafficcraft:block/sign/square/80",
+      "y": 180
+    },
+    "type=80,facing=west": {
+      "model": "trafficcraft:block/sign/square/80",
+      "y": 270
+    },
+    "type=81,facing=north": {
+      "model": "trafficcraft:block/sign/square/81",
+      "y": 0
+    },
+    "type=81,facing=east": {
+      "model": "trafficcraft:block/sign/square/81",
+      "y": 90
+    },
+    "type=81,facing=south": {
+      "model": "trafficcraft:block/sign/square/81",
+      "y": 180
+    },
+    "type=81,facing=west": {
+      "model": "trafficcraft:block/sign/square/81",
+      "y": 270
+    },
+    "type=82,facing=north": {
+      "model": "trafficcraft:block/sign/square/82",
+      "y": 0
+    },
+    "type=82,facing=east": {
+      "model": "trafficcraft:block/sign/square/82",
+      "y": 90
+    },
+    "type=82,facing=south": {
+      "model": "trafficcraft:block/sign/square/82",
+      "y": 180
+    },
+    "type=82,facing=west": {
+      "model": "trafficcraft:block/sign/square/82",
+      "y": 270
+    },
+    "type=83,facing=north": {
+      "model": "trafficcraft:block/sign/square/83",
+      "y": 0
+    },
+    "type=83,facing=east": {
+      "model": "trafficcraft:block/sign/square/83",
+      "y": 90
+    },
+    "type=83,facing=south": {
+      "model": "trafficcraft:block/sign/square/83",
+      "y": 180
+    },
+    "type=83,facing=west": {
+      "model": "trafficcraft:block/sign/square/83",
+      "y": 270
+    },
+    "type=84,facing=north": {
+      "model": "trafficcraft:block/sign/square/84",
+      "y": 0
+    },
+    "type=84,facing=east": {
+      "model": "trafficcraft:block/sign/square/84",
+      "y": 90
+    },
+    "type=84,facing=south": {
+      "model": "trafficcraft:block/sign/square/84",
+      "y": 180
+    },
+    "type=84,facing=west": {
+      "model": "trafficcraft:block/sign/square/84",
+      "y": 270
+    },
+    "type=85,facing=north": {
+      "model": "trafficcraft:block/sign/square/85",
+      "y": 0
+    },
+    "type=85,facing=east": {
+      "model": "trafficcraft:block/sign/square/85",
+      "y": 90
+    },
+    "type=85,facing=south": {
+      "model": "trafficcraft:block/sign/square/85",
+      "y": 180
+    },
+    "type=85,facing=west": {
+      "model": "trafficcraft:block/sign/square/85",
+      "y": 270
+    },
+    "type=86,facing=north": {
+      "model": "trafficcraft:block/sign/square/86",
+      "y": 0
+    },
+    "type=86,facing=east": {
+      "model": "trafficcraft:block/sign/square/86",
+      "y": 90
+    },
+    "type=86,facing=south": {
+      "model": "trafficcraft:block/sign/square/86",
+      "y": 180
+    },
+    "type=86,facing=west": {
+      "model": "trafficcraft:block/sign/square/86",
+      "y": 270
+    },
+    "type=87,facing=north": {
+      "model": "trafficcraft:block/sign/square/87",
+      "y": 0
+    },
+    "type=87,facing=east": {
+      "model": "trafficcraft:block/sign/square/87",
+      "y": 90
+    },
+    "type=87,facing=south": {
+      "model": "trafficcraft:block/sign/square/87",
+      "y": 180
+    },
+    "type=87,facing=west": {
+      "model": "trafficcraft:block/sign/square/87",
+      "y": 270
+    },
+    "type=88,facing=north": {
+      "model": "trafficcraft:block/sign/square/88",
+      "y": 0
+    },
+    "type=88,facing=east": {
+      "model": "trafficcraft:block/sign/square/88",
+      "y": 90
+    },
+    "type=88,facing=south": {
+      "model": "trafficcraft:block/sign/square/88",
+      "y": 180
+    },
+    "type=88,facing=west": {
+      "model": "trafficcraft:block/sign/square/88",
+      "y": 270
+    },
+    "type=89,facing=north": {
+      "model": "trafficcraft:block/sign/square/89",
+      "y": 0
+    },
+    "type=89,facing=east": {
+      "model": "trafficcraft:block/sign/square/89",
+      "y": 90
+    },
+    "type=89,facing=south": {
+      "model": "trafficcraft:block/sign/square/89",
+      "y": 180
+    },
+    "type=89,facing=west": {
+      "model": "trafficcraft:block/sign/square/89",
+      "y": 270
+    },
+    "type=9,facing=north": {
+      "model": "trafficcraft:block/sign/square/9",
+      "y": 0
+    },
+    "type=9,facing=east": {
+      "model": "trafficcraft:block/sign/square/9",
+      "y": 90
+    },
+    "type=9,facing=south": {
+      "model": "trafficcraft:block/sign/square/9",
+      "y": 180
+    },
+    "type=9,facing=west": {
+      "model": "trafficcraft:block/sign/square/9",
+      "y": 270
+    },
+    "type=90,facing=north": {
+      "model": "trafficcraft:block/sign/square/90",
+      "y": 0
+    },
+    "type=90,facing=east": {
+      "model": "trafficcraft:block/sign/square/90",
+      "y": 90
+    },
+    "type=90,facing=south": {
+      "model": "trafficcraft:block/sign/square/90",
+      "y": 180
+    },
+    "type=90,facing=west": {
+      "model": "trafficcraft:block/sign/square/90",
+      "y": 270
+    },
+    "type=91,facing=north": {
+      "model": "trafficcraft:block/sign/square/91",
+      "y": 0
+    },
+    "type=91,facing=east": {
+      "model": "trafficcraft:block/sign/square/91",
+      "y": 90
+    },
+    "type=91,facing=south": {
+      "model": "trafficcraft:block/sign/square/91",
+      "y": 180
+    },
+    "type=91,facing=west": {
+      "model": "trafficcraft:block/sign/square/91",
+      "y": 270
+    },
+    "type=92,facing=north": {
+      "model": "trafficcraft:block/sign/square/92",
+      "y": 0
+    },
+    "type=92,facing=east": {
+      "model": "trafficcraft:block/sign/square/92",
+      "y": 90
+    },
+    "type=92,facing=south": {
+      "model": "trafficcraft:block/sign/square/92",
+      "y": 180
+    },
+    "type=92,facing=west": {
+      "model": "trafficcraft:block/sign/square/92",
+      "y": 270
+    },
+    "type=93,facing=north": {
+      "model": "trafficcraft:block/sign/square/93",
+      "y": 0
+    },
+    "type=93,facing=east": {
+      "model": "trafficcraft:block/sign/square/93",
+      "y": 90
+    },
+    "type=93,facing=south": {
+      "model": "trafficcraft:block/sign/square/93",
+      "y": 180
+    },
+    "type=93,facing=west": {
+      "model": "trafficcraft:block/sign/square/93",
+      "y": 270
+    },
+    "type=94,facing=north": {
+      "model": "trafficcraft:block/sign/square/94",
+      "y": 0
+    },
+    "type=94,facing=east": {
+      "model": "trafficcraft:block/sign/square/94",
+      "y": 90
+    },
+    "type=94,facing=south": {
+      "model": "trafficcraft:block/sign/square/94",
+      "y": 180
+    },
+    "type=94,facing=west": {
+      "model": "trafficcraft:block/sign/square/94",
+      "y": 270
+    },
+    "type=95,facing=north": {
+      "model": "trafficcraft:block/sign/square/95",
+      "y": 0
+    },
+    "type=95,facing=east": {
+      "model": "trafficcraft:block/sign/square/95",
+      "y": 90
+    },
+    "type=95,facing=south": {
+      "model": "trafficcraft:block/sign/square/95",
+      "y": 180
+    },
+    "type=95,facing=west": {
+      "model": "trafficcraft:block/sign/square/95",
+      "y": 270
+    },
+    "type=96,facing=north": {
+      "model": "trafficcraft:block/sign/square/96",
+      "y": 0
+    },
+    "type=96,facing=east": {
+      "model": "trafficcraft:block/sign/square/96",
+      "y": 90
+    },
+    "type=96,facing=south": {
+      "model": "trafficcraft:block/sign/square/96",
+      "y": 180
+    },
+    "type=96,facing=west": {
+      "model": "trafficcraft:block/sign/square/96",
+      "y": 270
+    },
+    "type=97,facing=north": {
+      "model": "trafficcraft:block/sign/square/97",
+      "y": 0
+    },
+    "type=97,facing=east": {
+      "model": "trafficcraft:block/sign/square/97",
+      "y": 90
+    },
+    "type=97,facing=south": {
+      "model": "trafficcraft:block/sign/square/97",
+      "y": 180
+    },
+    "type=97,facing=west": {
+      "model": "trafficcraft:block/sign/square/97",
+      "y": 270
+    },
+    "type=98,facing=north": {
+      "model": "trafficcraft:block/sign/square/98",
+      "y": 0
+    },
+    "type=98,facing=east": {
+      "model": "trafficcraft:block/sign/square/98",
+      "y": 90
+    },
+    "type=98,facing=south": {
+      "model": "trafficcraft:block/sign/square/98",
+      "y": 180
+    },
+    "type=98,facing=west": {
+      "model": "trafficcraft:block/sign/square/98",
+      "y": 270
+    },
+    "type=99,facing=north": {
+      "model": "trafficcraft:block/sign/square/99",
+      "y": 0
+    },
+    "type=99,facing=east": {
+      "model": "trafficcraft:block/sign/square/99",
+      "y": 90
+    },
+    "type=99,facing=south": {
+      "model": "trafficcraft:block/sign/square/99",
+      "y": 180
+    },
+    "type=99,facing=west": {
+      "model": "trafficcraft:block/sign/square/99",
+      "y": 270
+    }
+  }
+}

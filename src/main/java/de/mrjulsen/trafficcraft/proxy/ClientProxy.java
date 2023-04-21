@@ -20,7 +20,12 @@ public class ClientProxy implements IProxy {
     @Override
     public void setup(FMLCommonSetupEvent event) {
         /* RENDER LAYERS */
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CIRCLE_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRIANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SQUARE_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.DIAMOND_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.RECTANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MISC_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {

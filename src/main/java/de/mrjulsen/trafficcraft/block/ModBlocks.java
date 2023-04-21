@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.stringtemplate.v4.misc.Misc;
+
 import com.google.common.base.Supplier;
 
 import de.mrjulsen.trafficcraft.Constants;
@@ -33,7 +35,12 @@ public class ModBlocks {
     public static HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();
 
     public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_SIGN = registerBlock("traffic_sign", () -> new TrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> CIRCLE_TRAFFIC_SIGN = registerBlockWithCustomItemId("circle_traffic_sign", "traffic_sign", () -> new CircleTrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRIANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("triangle_traffic_sign", () -> new TriangleTrafficSignBlock());
+    public static final RegistryObject<Block> SQUARE_TRAFFIC_SIGN = registerBlockWithoutItem("square_traffic_sign", () -> new SquareTrafficSignBlock());
+    public static final RegistryObject<Block> DIAMOND_TRAFFIC_SIGN = registerBlockWithoutItem("diamond_traffic_sign", () -> new DiamondTrafficSignBlock());
+    public static final RegistryObject<Block> RECTANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("rectangle_traffic_sign", () -> new RectangleTrafficSignBlock());
+    public static final RegistryObject<Block> MISC_TRAFFIC_SIGN = registerBlockWithoutItem("misc_traffic_sign", () -> new MiscTrafficSignBlock());
     public static final RegistryObject<Block> TRAFFIC_LIGHT = registerBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LAMP = registerBlock("traffic_lamp", () -> new TrafficLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
@@ -118,6 +125,12 @@ public class ModBlocks {
     private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab, wearable);
+        return toReturn;
+    }
+
+    private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(itemId, toReturn, tab, wearable);
         return toReturn;
     }
 

@@ -18,7 +18,7 @@
     "item.trafficcraft.paint_brush.tooltip.color_empty": "None",
     "item.trafficcraft.paint_brush.tooltip.paint": "§7Paint: ",
 
-    "block.trafficcraft.traffic_sign": "Traffic Sign",
+    "block.trafficcraft.circle_traffic_sign": "Traffic Sign",
     "block.trafficcraft.traffic_sign_post": "Traffic Sign Post",
     "block.trafficcraft.traffic_light": "Traffic Light",
     "block.trafficcraft.traffic_light_controller": "Traffic Light Controller",

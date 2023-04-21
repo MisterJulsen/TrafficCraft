@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -37,11 +36,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
+public abstract class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
 
-    public static final IntegerProperty TYPE = IntegerProperty.create("type", 0, Constants.MAX_TRAFFIC_SIGN_STATES);
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final EnumProperty<TrafficSignShape> SHAPE = EnumProperty.create("shape", TrafficSignShape.class);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 
@@ -55,10 +52,9 @@ public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
             .noOcclusion()            
             .sound(SoundType.LANTERN)
         );
+
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)
-            .setValue(TYPE, 0)
-            .setValue(SHAPE, TrafficSignShape.CIRCLE)
             .setValue(WATERLOGGED, false)
         );
     }
@@ -89,7 +85,7 @@ public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, TYPE, SHAPE, WATERLOGGED);
+        pBuilder.add(FACING, WATERLOGGED);
     }
 
     @Override
@@ -106,6 +102,10 @@ public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
+    protected abstract int getType(BlockState state);
+    protected abstract TrafficSignShape getSignShape();
+
+
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {        
@@ -119,7 +119,7 @@ public class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
         {
             if (item instanceof WrenchItem) {
                 if(!pPlayer.isShiftKeyDown()) {                
-                    TrafficSignClient.showGui(pState.getValue(TYPE), 0, pState.getValue(SHAPE), pPos, pLevel, pPlayer);
+                    TrafficSignClient.showGui(getType(pState), 0, getSignShape(), pPos, pLevel, pPlayer);
                 }
                 return InteractionResult.SUCCESS;
             }
