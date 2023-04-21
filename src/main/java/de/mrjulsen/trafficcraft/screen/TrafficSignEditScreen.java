@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.screen;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,6 @@ public class TrafficSignEditScreen extends Screen
 {
     public static final Component title = new TextComponent("signpicker");
 
-    
     private static final int WIDTH = 196;
     private static final int HEIGHT = 205;
       

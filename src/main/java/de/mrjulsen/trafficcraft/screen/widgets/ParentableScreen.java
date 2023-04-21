@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public abstract class ParentableScreen extends Screen {
     
     protected ParentableScreen(Component pTitle) {
