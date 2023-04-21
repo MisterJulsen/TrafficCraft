@@ -108,7 +108,7 @@ public class PaintBrushScreen extends Screen
             if(i + (scroll * 9) < MAX_PATTERNS)
             {
                 int index = (i + (9 * scroll));
-                RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, "textures/block/patterns/" + (index == 0 ? "eraser" : index) + ".png"));
+                RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, "textures/block/patterns/" + index + ".png"));
                 blit(stack, guiLeft + 16 * j + 9 + j * 2, guiTop + 18 + row, 0, 0, 16, 16, 16, 16);
 
                 j++;
@@ -122,7 +122,7 @@ public class PaintBrushScreen extends Screen
 
 
         // Draws current selected pattern
-        RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, "textures/block/patterns/" + (pattern == 0 ? "eraser" : pattern) + ".png"));
+        RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, "textures/block/patterns/" + pattern + ".png"));
         blit(stack, guiLeft + 193, guiTop + 18, 0, 0, 32, 32, 32, 32);
 
         // Paint amount
