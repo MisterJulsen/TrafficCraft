@@ -6,12 +6,12 @@ import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 
 public class Constants {
     public static final HashMap<TrafficSignShape, Integer> SIGN_PATTERNS = new HashMap<>() {{
-        put(TrafficSignShape.CIRCLE, 113);
-        put(TrafficSignShape.SQUARE, 106);
-        put(TrafficSignShape.TRIANGLE, 97);
-        put(TrafficSignShape.DIAMOND, 116);
-        put(TrafficSignShape.RECTANGLE, 85);
-        put(TrafficSignShape.MISC, 76);
+        put(TrafficSignShape.CIRCLE, 112);
+        put(TrafficSignShape.SQUARE, 105);
+        put(TrafficSignShape.TRIANGLE, 96);
+        put(TrafficSignShape.DIAMOND, 115);
+        put(TrafficSignShape.RECTANGLE, 84);
+        put(TrafficSignShape.MISC, 75);
     }};
 
     public static final int MAX_TRAFFIC_SIGN_STATES = 116;
