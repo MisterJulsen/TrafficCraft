@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.colors.IColoredBlock;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
 import de.mrjulsen.trafficcraft.item.BrushItem;

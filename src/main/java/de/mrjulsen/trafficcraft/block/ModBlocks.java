@@ -65,7 +65,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new GuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new PaintedGuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
 
     public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModCreativeModeTab.MOD_TAB, true);
     public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModCreativeModeTab.MOD_TAB, false);
@@ -74,10 +74,10 @@ public class ModBlocks {
     public static final RegistryObject<Block> TRAFFIC_BOLLARD = registerColoredBlock("traffic_bollard", () -> new TrafficBollardBlock(), ModCreativeModeTab.MOD_TAB, true);
     public static final RegistryObject<Block> REFLECTOR = registerColoredBlock("reflector", () -> new ReflectorBlock(), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistryObject<Block> ASPHALT = registerColoredBlock("asphalt", () -> new AsphaltBlock(RoadType.ASPHALT, null), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE = registerColoredBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE, null), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ASPHALT_SLOPE = registerColoredBlock("asphalt_slope", () -> new AsphaltSlope(RoadType.ASPHALT, null), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE_SLOPE = registerColoredBlock("concrete_slope", () -> new AsphaltSlope(RoadType.CONCRETE, null), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> ASPHALT = registerBlock("asphalt", () -> new AsphaltBlock(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> CONCRETE = registerBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> ASPHALT_SLOPE = registerBlock("asphalt_slope", () -> new AsphaltSlope(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> CONCRETE_SLOPE = registerBlock("concrete_slope", () -> new AsphaltSlope(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
 
     static
     {
@@ -87,11 +87,11 @@ public class ModBlocks {
 
             for (int i = 1; i < Constants.MAX_ASPHALT_PATTERNS; i++) {
                 String id = s.getRoadType() + "_pattern_" + i;
-                RegistryObject<Block> block = registerColoredBlockWithoutItem(id, () -> new AsphaltBlock(s, s == RoadType.ASPHALT ? ModBlocks.ASPHALT.get() : ModBlocks.CONCRETE.get()));
+                RegistryObject<Block> block = registerColoredBlockWithoutItem(id, () -> new PaintedAsphaltBlock(s, s == RoadType.ASPHALT ? ModBlocks.ASPHALT.get() : ModBlocks.CONCRETE.get()));
                 ROAD_BLOCKS.put(id, block);
 
                 String id2 = s.getRoadType() + "_slope_pattern_" + i;
-                RegistryObject<Block> block2 = registerColoredBlockWithoutItem(id2, () -> new AsphaltSlope(s, s == RoadType.ASPHALT ? ModBlocks.ASPHALT_SLOPE.get() : ModBlocks.CONCRETE_SLOPE.get()));
+                RegistryObject<Block> block2 = registerColoredBlockWithoutItem(id2, () -> new PaintedAsphaltSlope(s, s == RoadType.ASPHALT ? ModBlocks.ASPHALT_SLOPE.get() : ModBlocks.CONCRETE_SLOPE.get()));
                 ROAD_BLOCKS.put(id2, block2);
             }
         }

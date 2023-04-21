@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.block.colors;
 
-import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
+import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.client.color.block.BlockColor;
@@ -17,9 +18,11 @@ public class TintedTextures{
         @Override
         public int getColor(BlockState pState, BlockAndTintGetter pLevel, BlockPos pPos, int pTintIndex) {
             
-            if (pState.getBlock() instanceof IColoredBlock block) {
-                PaintColor c = pState.getValue(PaintBucketBlock.COLOR);
-                return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
+            if (pState.getBlock() instanceof ColorableBlock block) {
+                if (pLevel.getBlockEntity(pPos) instanceof ColoredBlockEntity blockEntity) {
+                    PaintColor c = blockEntity.getColor();
+                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
+                }
             }
             
             return 0;
@@ -32,7 +35,7 @@ public class TintedTextures{
         public int getColor(ItemStack pStack, int pTintIndex) {
 
             if (pStack.getItem() instanceof BlockItem blockItem) {
-                if (blockItem.getBlock() instanceof IColoredBlock coloredBlock) {
+                if (blockItem.getBlock() instanceof ColorableBlock coloredBlock) {
                     return coloredBlock.getDefaultColor();
                 }
             } else if (pStack.getItem() instanceof BrushItem) {                

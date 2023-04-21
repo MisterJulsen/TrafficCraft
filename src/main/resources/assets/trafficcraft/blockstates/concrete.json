@@ -1,20 +1,7 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "trafficcraft:block/concrete",
-      "y": 0
-    },
-    "facing=east": {
-      "model": "trafficcraft:block/concrete",
-      "y": 90
-    },
-    "facing=south": {
-      "model": "trafficcraft:block/concrete",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "trafficcraft:block/concrete",
-      "y": 270
+    "": {
+      "model": "trafficcraft:block/concrete"
     }
   }
 }

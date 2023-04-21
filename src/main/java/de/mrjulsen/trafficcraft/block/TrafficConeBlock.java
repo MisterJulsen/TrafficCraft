@@ -70,7 +70,6 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
 
         return this.defaultBlockState()
             .setValue(WATERLOGGED, Boolean.valueOf(flag))
-            .setValue(COLOR, PaintColor.NONE)
         ;
     }
 

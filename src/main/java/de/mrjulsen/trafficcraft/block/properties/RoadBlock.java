@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.block.properties;
 
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -44,7 +43,6 @@ public abstract class RoadBlock extends ColorableBlock {
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {        
         return this.defaultBlockState()
             .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
-            .setValue(COLOR, PaintColor.NONE)
         ;
     }
 

@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
@@ -95,7 +96,6 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
 
         return this.defaultBlockState()
             .setValue(PAINT, 0)
-            .setValue(COLOR, PaintColor.NONE)
             .setValue(DIRECTION, pContext.getHorizontalDirection())
             .setValue(WATERLOGGED, Boolean.valueOf(Boolean.valueOf(fluidState.getType() == Fluids.WATER))
         );
@@ -108,6 +108,12 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.underwater"), true);
             return InteractionResult.FAIL;
         }
+
+        if (!(level.getBlockEntity(pos) instanceof ColoredBlockEntity)) {
+            return InteractionResult.FAIL;
+        }
+
+        ColoredBlockEntity blockEntity = (ColoredBlockEntity)level.getBlockEntity(pos);
 
         ItemStack stack = player.getItemInHand(hand);
 
@@ -126,7 +132,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
                 stack.setTag(BrushItem.checkNbt(stack));
 
             // Set brush color
-            if ((stack.getTag().getInt("paint") < item.getMaxPaint() && paint > 0) || (stack.getTag().getInt("paint") == item.getMaxPaint() && stack.getTag().getInt("color") != state.getValue(COLOR).getId())) {
+            if ((stack.getTag().getInt("paint") < item.getMaxPaint() && paint > 0) || (stack.getTag().getInt("paint") == item.getMaxPaint() && stack.getTag().getInt("color") != blockEntity.getColor().getId())) {
                 
                 if(!level.isClientSide) {
                     
@@ -134,7 +140,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
                         level.setBlockAndUpdate(pos, state.setValue(PAINT, state.getValue(PAINT) - 1));
 
                     stack.getTag().putInt("paint", item.getMaxPaint());
-                    stack.getTag().putInt("color", state.getValue(COLOR).getId());
+                    stack.getTag().putInt("color", blockEntity.getColor().getId());
                     level.playSound(player, pos, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.8F, 1.0F);
                 }
                 return InteractionResult.SUCCESS;
@@ -142,7 +148,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
         } else if (stack.getItem() instanceof DyeItem dye && !level.isClientSide) { 
 
             if (state.getValue(PAINT) > 0) {
-                if (!state.getValue(COLOR).equals(dye.getDyeColor())) {
+                if (!blockEntity.getColor().equals(dye.getDyeColor())) {
                     player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.wrong_color"), true);
                     return InteractionResult.FAIL;
                 }
@@ -154,7 +160,8 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             }
 
             if (state.getValue(PAINT) < MAX_PAINT) {
-                level.setBlockAndUpdate(pos, state.setValue(PAINT, state.getValue(PAINT) + 1).setValue(COLOR, PaintColor.getFromDye(dye.getDyeColor())));
+                level.setBlockAndUpdate(pos, state.setValue(PAINT, state.getValue(PAINT) + 1));
+                blockEntity.setColor(PaintColor.getFromDye(dye.getDyeColor()));
                 
                 if(!player.isCreative())
                     player.getItemInHand(hand).shrink(1);

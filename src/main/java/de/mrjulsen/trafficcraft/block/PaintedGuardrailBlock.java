@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.colors.IColoredBlock;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
@@ -37,7 +36,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedBlock {
+public class PaintedGuardrailBlock extends ColorableBlock implements SimpleWaterloggedBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -49,7 +48,7 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
     private static final VoxelShape COLLISION_SN = Block.box(0, 0, 6, 16, 24, 10);
     private static final VoxelShape COLLISION_EW = Block.box(6, 0, 0, 10, 24, 16);
     
-    public GuardrailBlock() {
+    public PaintedGuardrailBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(2f)
             .noOcclusion()            
@@ -89,7 +88,6 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
         return this.defaultBlockState()
             .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
             .setValue(WATERLOGGED, Boolean.valueOf(flag))
-            .setValue(COLOR, PaintColor.NONE)
         ;
     }
 

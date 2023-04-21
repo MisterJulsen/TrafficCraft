@@ -16,7 +16,19 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<TrafficLightBlockEntity>> TRAFFIC_LIGHT_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_block_entity", () -> BlockEntityType.Builder.of(TrafficLightBlockEntity::new, ModBlocks.TRAFFIC_LIGHT.get()).build(null));
     public static final RegistryObject<BlockEntityType<TrafficLightControllerBlockEntity>> TRAFFIC_LIGHT_CONTROLLER_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_controller_block_entity", () -> BlockEntityType.Builder.of(TrafficLightControllerBlockEntity::new, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get()).build(null));
     public static final RegistryObject<BlockEntityType<TrafficLightRequestButtonBlockEntity>> TRAFFIC_LIGHT_REQUEST_BUTTON_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_request_button_block_entity", () -> BlockEntityType.Builder.of(TrafficLightRequestButtonBlockEntity::new, ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get()).build(null));
-    
+    public static RegistryObject<BlockEntityType<ColoredBlockEntity>> COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new, ModBlocks.GUARDRAIL.get()).build(null));    
+
+    /*
+    static
+    {
+        Block[] blocks = new Block[ModBlocks.COLORED_BLOCKS.size()];
+        for (int i = 0; i < ModBlocks.COLORED_BLOCKS.size(); i++) {
+            blocks[i] = ModBlocks.COLORED_BLOCKS.get(i).get();
+        }
+
+        COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new, blocks).build(null));    
+    }
+    */
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
