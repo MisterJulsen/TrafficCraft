@@ -34,4 +34,4 @@ _Below is the content currently included in the mod. This list is not final yet,
 A **fabric** version of this mod is currently **not planned** and the mod is mainly ported to **newer versions**. Please don't ask when the update for version X will come out as I don't know myself. The update will come when I have time for it and it's ready.
 
 #### **Screenshots**
-Go to the [screenshot tab](https://legacy.curseforge.com/minecraft/mc-mods/trafficcraft/screenshots) to see some of the features.
+Go to the [screenshot tab](https://www.curseforge.com/minecraft/mc-mods/trafficcraft/screenshots) to see some of the features.
