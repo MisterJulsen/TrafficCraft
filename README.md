@@ -1,5 +1,10 @@
 # TrafficCraft
 
+[![CurseForge downloads](https://cf.way2muchnoise.eu/title/852322.svg)](https://www.curseforge.com/minecraft/mc-mods/trafficcraft)
+[![CurseForge downloads](http://cf.way2muchnoise.eu/full_852322_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/trafficcraft)
+[![CurseForge downloads](http://cf.way2muchnoise.eu/versions/852322.svg)](https://www.curseforge.com/minecraft/mc-mods/trafficcraft)
+
+
 ![Logo](https://github.com/MisterJulsen/TrafficCraft/blob/1.18.2/trafficcraft_logo.png)
  
 #### **TrafficCraft is a Minecraft mod that brings roads, traffic signs, traffic lights and much more to your worlds. Build your own cities and roads according to your wishes.**
