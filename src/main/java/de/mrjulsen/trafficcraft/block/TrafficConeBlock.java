@@ -2,11 +2,9 @@ package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.PlayerHeadItem;
 import net.minecraft.world.item.Wearable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;

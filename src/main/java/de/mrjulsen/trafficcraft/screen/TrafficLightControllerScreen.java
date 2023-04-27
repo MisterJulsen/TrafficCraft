@@ -7,13 +7,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.screen.widgets.IListEntryData;
 import de.mrjulsen.trafficcraft.screen.widgets.ParentableScreen;
 import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightAnimationData;
-import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightSchedule;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList.Entry;
@@ -41,11 +39,8 @@ public class TrafficLightControllerScreen extends ParentableScreen
     
     // Settings
     private boolean status;
-    private TrafficLightSchedule schedule;
 
-    // Controls    
-    protected CycleButton<TrafficLightControlType> controlTypeButton;
-
+    // Controls
     protected CycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
@@ -63,7 +58,6 @@ public class TrafficLightControllerScreen extends ParentableScreen
         this.blockPos = pos;
 
         if (this.level.getBlockEntity(blockPos) instanceof TrafficLightControllerBlockEntity blockEntity) {
-            this.schedule = blockEntity.getFirstOrMainSchedule();
             this.status = blockEntity.isRunning();
         }
 

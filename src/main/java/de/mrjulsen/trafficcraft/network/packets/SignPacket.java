@@ -11,11 +11,9 @@ import de.mrjulsen.trafficcraft.block.SquareTrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.TriangleTrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
-import io.netty.handler.codec.mqtt.MqttProperties.IntegerProperty;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 

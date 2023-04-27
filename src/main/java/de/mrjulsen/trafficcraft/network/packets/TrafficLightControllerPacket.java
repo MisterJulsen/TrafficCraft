@@ -2,17 +2,11 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficLightControllerPacket
