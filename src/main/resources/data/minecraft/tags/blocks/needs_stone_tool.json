@@ -3,16 +3,9 @@
   "values": [
     "trafficcraft:asphalt",
     "trafficcraft:concrete",
-    "trafficcraft:guardrail",
-    "trafficcraft:traffic_sign_post",
-    "trafficcraft:traffic_sign",
-    "trafficcraft:traffic_lamp",
-    "trafficcraft:double_traffic_lamp",
-    "trafficcraft:small_traffic_lamp",
-    "trafficcraft:small_double_traffic_lamp",
-    "trafficcraft:paint_bucket",
     "trafficcraft:bitumen_ore",
     "trafficcraft:deepslate_bitumen_ore",
-    "trafficcraft:bitumen_block"
+    "trafficcraft:bitumen_block",
+    "trafficcraft:concrete_barrier"
   ]
 }
