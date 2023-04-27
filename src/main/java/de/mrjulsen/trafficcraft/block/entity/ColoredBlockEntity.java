@@ -57,14 +57,15 @@ public class ColoredBlockEntity extends BlockEntity {
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
     {
         this.load(pkt.getTag());
-        this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 11, 0);
+        this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 3, 512);
     }
 
     /* GETTERS AND SETTERS */
     public void setColor(PaintColor color) {
         this.color = color;
         BlockEntityUtil.sendUpdatePacket(this);
-        this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 11, 0);
+        this.setChanged();
+        //this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 11, 0);
     }
 
     public PaintColor getColor() {

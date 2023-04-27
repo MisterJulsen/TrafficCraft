@@ -46,8 +46,10 @@ public abstract class ColorableBlock extends BaseEntityBlock implements IPaintab
 
     public void onSetColor(Level pLevel, BlockPos pPos, PaintColor color) {
         if (pLevel.getBlockEntity(pPos) instanceof ColoredBlockEntity blockEntity) {
-            blockEntity.setColor(color);
-            pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+            if (!pLevel.isClientSide) {
+                blockEntity.setColor(color);
+                pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+            }
         } 
     }
 
