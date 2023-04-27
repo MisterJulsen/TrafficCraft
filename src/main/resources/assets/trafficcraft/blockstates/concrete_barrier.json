@@ -1,0 +1,91 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "trafficcraft:block/concrete_barrier_post"
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "facing": "north",
+            "north": "false",
+            "south": "false"
+          },
+          {
+            "facing": "south",
+            "north": "false",
+            "south": "false"
+          }
+        ]
+      },
+      "apply": [
+        {
+          "model": "trafficcraft:block/concrete_barrier_double_side",
+          "y": 90
+        }
+      ]
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "facing": "east",
+            "east": "false",
+            "west": "false"
+          },
+          {
+            "facing": "west",
+            "west": "false",
+            "east": "false"
+          }
+        ]
+      },
+      "apply": [
+        {
+          "model": "trafficcraft:block/concrete_barrier_double_side"
+        }
+      ]
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "trafficcraft:block/concrete_barrier_side",
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "trafficcraft:block/concrete_barrier_side",
+        "y": 90,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "trafficcraft:block/concrete_barrier_side",
+        "y": 180,
+        "uvlock": true
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "trafficcraft:block/concrete_barrier_side",
+        "y": 270,
+        "uvlock": true
+      }
+    }
+  ]
+}

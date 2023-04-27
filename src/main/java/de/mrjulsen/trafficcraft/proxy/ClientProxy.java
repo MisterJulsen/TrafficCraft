@@ -50,7 +50,8 @@ public class ClientProxy implements IProxy {
             ModBlocks.GUARDRAIL.get(),
             ModItems.PAINT_BRUSH.get(),
             ModBlocks.TRAFFIC_CONE.get(),
-            ModBlocks.TRAFFIC_BOLLARD.get()
+            ModBlocks.TRAFFIC_BOLLARD.get(),
+            ModBlocks.CONCRETE_BARRIER.get()
         );
 
         /* REGISTER CUSTOM ITEM PROPERTIES */

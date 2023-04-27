@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.stringtemplate.v4.misc.Misc;
-
 import com.google.common.base.Supplier;
 
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.TrafficLampBaseBlock.LampType;
+import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock.LampType;
 import de.mrjulsen.trafficcraft.block.properties.RoadType;
 import de.mrjulsen.trafficcraft.item.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.item.ModItems;
@@ -43,10 +41,10 @@ public class ModBlocks {
     public static final RegistryObject<Block> MISC_TRAFFIC_SIGN = registerBlockWithoutItem("misc_traffic_sign", () -> new MiscTrafficSignBlock());
     public static final RegistryObject<Block> TRAFFIC_LIGHT = registerBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LAMP = registerBlock("traffic_lamp", () -> new TrafficLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> DOUBLE_TRAFFIC_LAMP = registerBlock("double_traffic_lamp", () -> new TrafficLampBaseBlock(LampType.DOUBLE), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_TRAFFIC_LAMP = registerBlock("small_traffic_lamp", () -> new TrafficLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_DOUBLE_TRAFFIC_LAMP = registerBlock("small_double_traffic_lamp", () -> new TrafficLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> TRAFFIC_LAMP = registerBlock("traffic_lamp", () -> new StreetLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> DOUBLE_TRAFFIC_LAMP = registerBlock("double_traffic_lamp", () -> new StreetLampBaseBlock(LampType.DOUBLE), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> SMALL_TRAFFIC_LAMP = registerBlock("small_traffic_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> SMALL_DOUBLE_TRAFFIC_LAMP = registerBlock("small_double_traffic_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
 
     public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(3f)
@@ -85,6 +83,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> CONCRETE = registerBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> ASPHALT_SLOPE = registerBlock("asphalt_slope", () -> new AsphaltSlope(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> CONCRETE_SLOPE = registerBlock("concrete_slope", () -> new AsphaltSlope(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> CONCRETE_BARRIER = registerColoredBlock("concrete_barrier", () -> new ConcreteBarrierBlock(), ModCreativeModeTab.MOD_TAB, false);
 
     static
     {

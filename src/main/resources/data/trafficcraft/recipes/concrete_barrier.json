@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " S ",
+        " S ",
+        "SBS"
+    ],
+    "key": {
+        "S": [
+            {
+                "item": "minecraft:smooth_stone_slab"
+            }
+        ],
+        "B": [
+            {
+                "item": "minecraft:smooth_stone"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:concrete_barrier",
+        "count": 6
+    }
+}
