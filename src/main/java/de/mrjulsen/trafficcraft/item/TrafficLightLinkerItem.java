@@ -92,6 +92,11 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
         }
     }
 
+    @Override
+    public boolean isFoil(ItemStack pStack) {
+        return doesContainValidLinkData(pStack) != null || super.isFoil(pStack);
+    }
+
     public CompoundTag doesContainValidLinkData(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains("x") && tag.contains("y") && tag.contains("z") && tag.contains("dim") ? tag : null;
