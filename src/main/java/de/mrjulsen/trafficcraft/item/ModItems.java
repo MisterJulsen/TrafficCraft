@@ -28,6 +28,8 @@ public class ModItems {
         0
     ));
 
+    public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = ITEMS.register("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+
     /*
     public static final RegistryObject<Item> TRAFFIC_LIGHT_LINKER = ITEMS.register("salt", () -> new Item(new Item.Properties()
         .tab(ModCreativeModeTab.MOD_TAB)

@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "trafficcraft:item/street_lamp_config_card"
+    }
+}

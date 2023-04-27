@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.network;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.SignPacket;
+import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
@@ -22,6 +23,7 @@ public class NetworkManager {
         MOD_CHANNEL.messageBuilder(TrafficLightSchedulePacket.class, 2).encoder(TrafficLightSchedulePacket::encode).decoder(TrafficLightSchedulePacket::decode).consumer(TrafficLightSchedulePacket::handle).add();
         MOD_CHANNEL.messageBuilder(TrafficLightControllerPacket.class, 3).encoder(TrafficLightControllerPacket::encode).decoder(TrafficLightControllerPacket::decode).consumer(TrafficLightControllerPacket::handle).add();
         MOD_CHANNEL.messageBuilder(PaintBrushPacket.class, 4).encoder(PaintBrushPacket::encode).decoder(PaintBrushPacket::decode).consumer(PaintBrushPacket::handle).add();
+        MOD_CHANNEL.messageBuilder(StreetLampConfigPacket.class, 5).encoder(StreetLampConfigPacket::encode).decoder(StreetLampConfigPacket::decode).consumer(StreetLampConfigPacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()
