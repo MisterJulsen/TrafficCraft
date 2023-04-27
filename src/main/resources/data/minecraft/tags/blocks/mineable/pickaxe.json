@@ -1293,7 +1293,12 @@
     "trafficcraft:concrete_slope_pattern_321",
     "trafficcraft:concrete_pattern_322",
     "trafficcraft:concrete_slope_pattern_322",
-    "trafficcraft:traffic_sign",
+    "trafficcraft:circle_traffic_sign",
+    "trafficcraft:triangle_traffic_sign",
+    "trafficcraft:square_traffic_sign",
+    "trafficcraft:diamond_traffic_sign",
+    "trafficcraft:rectangle_traffic_sign",
+    "trafficcraft:misc_traffic_sign",
     "trafficcraft:traffic_sign_post",
     "trafficcraft:traffic_light",
     "trafficcraft:traffic_light_controller",
@@ -1307,6 +1312,7 @@
     "trafficcraft:guardrail",
     "trafficcraft:traffic_light_request_button",
     "trafficcraft:paint_bucket",
-    "trafficcraft:reflector"
+    "trafficcraft:reflector",
+    "trafficcraft:concrete_barrier"
   ]
 }
