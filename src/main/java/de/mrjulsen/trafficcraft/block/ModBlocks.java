@@ -65,7 +65,7 @@ public class ModBlocks {
             if (s == RoadType.NONE)
                 continue;
 
-            for (int i = 1; i < Constants.MAX_ASPHALT_PATTERNS; i++) {
+            for (int i = 0; i < Constants.MAX_ASPHALT_PATTERNS; i++) {
                 String id = s.getRoadType() + "_pattern_" + i;
                 RegistryObject<Block> block = registerColoredBlockWithoutItem(id, () -> new PaintedAsphaltBlock(s, s == RoadType.ASPHALT ? ModBlocks.ASPHALT.get() : ModBlocks.CONCRETE.get()));
                 ROAD_BLOCKS.put(id, block);

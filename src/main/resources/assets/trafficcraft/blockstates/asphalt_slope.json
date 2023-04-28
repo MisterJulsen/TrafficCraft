@@ -1,25 +1,25 @@
 {
   "variants": {
     "layers=1": {
-      "model": "trafficcraft:block/asphalt/slope/0_2"
+      "model": "trafficcraft:block/asphalt_slope_2"
     },
     "layers=2": {
-      "model": "trafficcraft:block/asphalt/slope/0_4"
+      "model": "trafficcraft:block/asphalt_slope_4"
     },
     "layers=3": {
-      "model": "trafficcraft:block/asphalt/slope/0_6"
+      "model": "trafficcraft:block/asphalt_slope_6"
     },
     "layers=4": {
-      "model": "trafficcraft:block/asphalt/slope/0_8"
+      "model": "trafficcraft:block/asphalt_slope_8"
     },
     "layers=5": {
-      "model": "trafficcraft:block/asphalt/slope/0_10"
+      "model": "trafficcraft:block/asphalt_slope_10"
     },
     "layers=6": {
-      "model": "trafficcraft:block/asphalt/slope/0_12"
+      "model": "trafficcraft:block/asphalt_slope_12"
     },
     "layers=7": {
-      "model": "trafficcraft:block/asphalt/slope/0_14"
+      "model": "trafficcraft:block/asphalt_slope_14"
     },
     "layers=8": {
       "model": "trafficcraft:block/asphalt"
