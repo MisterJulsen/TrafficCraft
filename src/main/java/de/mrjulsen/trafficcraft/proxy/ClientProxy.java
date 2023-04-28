@@ -26,7 +26,8 @@ public class ClientProxy implements IProxy {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.DIAMOND_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.RECTANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MISC_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());    
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());   
+
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {
             if (block.getId().toString().contains("pattern")) {
@@ -51,6 +52,7 @@ public class ClientProxy implements IProxy {
             ModItems.PAINT_BRUSH.get(),
             ModBlocks.TRAFFIC_CONE.get(),
             ModBlocks.TRAFFIC_BOLLARD.get(),
+            ModBlocks.ROAD_BARRIER_FENCE.get(),
             ModBlocks.CONCRETE_BARRIER.get()
         );
 
