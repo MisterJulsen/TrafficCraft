@@ -2,6 +2,6 @@
     "parent": "block/cube_all",
 	"textures": {
 		"all": "trafficcraft:block/dragon",
-		"particle": "trafficcraft:block/dragon"
+		"particle": "block/soul_sand"
 	}
 }
