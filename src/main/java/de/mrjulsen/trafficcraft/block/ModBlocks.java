@@ -31,6 +31,10 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
     public static List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
     public static HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();
+    
+    public static final RegistryObject<Block> DRAGON = registerBlock("dragon", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+        .strength(1.5f)
+    ), null, true);
 
     public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> CIRCLE_TRAFFIC_SIGN = registerBlockWithCustomItemId("circle_traffic_sign", "traffic_sign", () -> new CircleTrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);

@@ -58,6 +58,7 @@
     "block.trafficcraft.traffic_bollard": "Traffic Bollard",
     "block.trafficcraft.reflector": "Reflector",
     "block.trafficcraft.concrete_barrier": "Concrete Barrier",
+    "block.trafficcraft.dragon": "Dragon",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
