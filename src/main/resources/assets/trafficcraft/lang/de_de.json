@@ -1,6 +1,9 @@
 {
     "itemGroup.trafficcrafttab": "TrafficCraft",
 
+    "core.trafficcraft.credits.line1": "§cEine Minecraft Mod von §4§lMrJulsen.",
+    "core.trafficcraft.credits.line2": "§6§lHERE BE DRAGONS!",
+
     "item.trafficcraft.raw_bitumen": "Rohes Bitumen",
     "item.trafficcraft.wrench": "Schraubenschlüssel",
     "item.trafficcraft.traffic_light_linker": "Ampel-Linker",
@@ -22,10 +25,10 @@
     "block.trafficcraft.traffic_sign_post": "Verkehrszeichenmast",
     "block.trafficcraft.traffic_light": "Ampel",
     "block.trafficcraft.traffic_light_controller": "Ampel-Steuerungseinheit",
-    "block.trafficcraft.traffic_lamp": "Straßenlaterne",
-    "block.trafficcraft.small_traffic_lamp": "Kleine Straßenlaterne",
-    "block.trafficcraft.double_traffic_lamp": "Doppelseitige Straßenlaterne",
-    "block.trafficcraft.small_double_traffic_lamp": "Kleine Doppelseitige Straßenlaterne",
+    "block.trafficcraft.street_lamp": "Straßenlaterne",
+    "block.trafficcraft.small_street_lamp": "Kleine Straßenlaterne",
+    "block.trafficcraft.double_street_lamp": "Doppelseitige Straßenlaterne",
+    "block.trafficcraft.small_double_street_lamp": "Kleine Doppelseitige Straßenlaterne",
     "block.trafficcraft.asphalt": "Asphalt",
     "block.trafficcraft.concrete": "Beton",
     "block.trafficcraft.bitumen_ore": "Bitumen-Erz",

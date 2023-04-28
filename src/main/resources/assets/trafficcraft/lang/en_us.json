@@ -1,6 +1,9 @@
 {
     "itemGroup.trafficcrafttab": "TrafficCraft",
 
+    "core.trafficcraft.credits.line1": "§cA mod created by §4§lMrJulsen.",
+    "core.trafficcraft.credits.line2": "§6§lHERE BE DRAGONS!",
+    
     "item.trafficcraft.raw_bitumen": "Raw Bitumen",
     "item.trafficcraft.wrench": "Wrench",
     "item.trafficcraft.traffic_light_linker": "Traffic Light Linker",
@@ -30,10 +33,10 @@
     "block.trafficcraft.traffic_sign_post": "Traffic Sign Post",
     "block.trafficcraft.traffic_light": "Traffic Light",
     "block.trafficcraft.traffic_light_controller": "Traffic Light Controller",
-    "block.trafficcraft.traffic_lamp": "Street Lamp",
-    "block.trafficcraft.small_traffic_lamp": "Small Street Lamp",
-    "block.trafficcraft.double_traffic_lamp": "Double Street Lamp",
-    "block.trafficcraft.small_double_traffic_lamp": "Small Double Street Lamp",
+    "block.trafficcraft.street_lamp": "Street Lamp",
+    "block.trafficcraft.small_street_lamp": "Small Street Lamp",
+    "block.trafficcraft.double_street_lamp": "Double Street Lamp",
+    "block.trafficcraft.small_double_street_lamp": "Small Double Street Lamp",
     "block.trafficcraft.street_lamp.use.error_scheduled": "§cYou cannot turn on or off this street lamp because it has a time schedule. Use an empty Street Lamp Configuration Card on this block to remove the schedule.",
     "block.trafficcraft.asphalt": "Asphalt",
     "block.trafficcraft.concrete": "Concrete",
@@ -59,6 +62,7 @@
     "block.trafficcraft.reflector": "Reflector",
     "block.trafficcraft.concrete_barrier": "Concrete Barrier",
     "block.trafficcraft.dragon": "Dragon",
+    "block.trafficcraft.road_barrier_fence": "Road Barrier Fence",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
