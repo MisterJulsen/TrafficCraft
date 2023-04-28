@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/road_barrier_fence"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/road_barrier_fence",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/road_barrier_fence",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/road_barrier_fence",
+            "y": 270
+        }
+    }
+}
