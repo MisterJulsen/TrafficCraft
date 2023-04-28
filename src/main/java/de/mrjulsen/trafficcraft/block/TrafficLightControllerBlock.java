@@ -40,7 +40,6 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(1.5f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()            
             .sound(SoundType.METAL)
         );
 

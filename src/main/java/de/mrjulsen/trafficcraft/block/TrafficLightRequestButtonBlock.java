@@ -72,7 +72,6 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(2f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()            
             .sound(SoundType.METAL)            
         );
         this.registerDefaultState(this.stateDefinition.any()

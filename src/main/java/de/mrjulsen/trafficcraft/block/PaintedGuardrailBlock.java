@@ -42,7 +42,6 @@ public class PaintedGuardrailBlock extends ColorableBlock implements SimpleWater
     public PaintedGuardrailBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(2f)
-            .noOcclusion()            
             .sound(SoundType.LANTERN)  
         );
         this.registerDefaultState(this.stateDefinition.any()

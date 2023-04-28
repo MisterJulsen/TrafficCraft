@@ -82,8 +82,7 @@ public class ConcreteBarrierBlock extends ColorableBlock implements SimpleWaterl
     
     public ConcreteBarrierBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE)
-            .strength(3f)
-            .noOcclusion()            
+            .strength(3f) 
             .sound(SoundType.STONE)  
         );
         this.registerDefaultState(this.stateDefinition.any()

@@ -83,7 +83,6 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(5f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()            
             .sound(SoundType.ANVIL)
         );
         this.registerDefaultState(this.stateDefinition.any()

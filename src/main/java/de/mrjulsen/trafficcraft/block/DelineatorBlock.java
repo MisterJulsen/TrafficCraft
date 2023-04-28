@@ -31,7 +31,6 @@ public class DelineatorBlock extends WaterloggableBlock {
     
     public DelineatorBlock() {
         super(BlockBehaviour.Properties.of(Material.BAMBOO)
-            .noOcclusion()            
             .sound(SoundType.BAMBOO)   
             .instabreak()         
         );

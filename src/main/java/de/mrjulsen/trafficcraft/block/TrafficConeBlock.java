@@ -43,7 +43,6 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
     public TrafficConeBlock() {
         super(BlockBehaviour.Properties.of(Material.BAMBOO)
             .strength(0.2f)
-            .noOcclusion()
             .sound(SoundType.BAMBOO)
         );
         this.registerDefaultState(this.stateDefinition.any()

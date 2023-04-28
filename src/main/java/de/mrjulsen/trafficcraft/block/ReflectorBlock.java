@@ -37,7 +37,6 @@ public class ReflectorBlock extends ColorableBlock implements SimpleWaterloggedB
     public ReflectorBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(2f)
-            .noOcclusion()            
             .sound(SoundType.METAL)  
         );
         this.registerDefaultState(this.stateDefinition.any()

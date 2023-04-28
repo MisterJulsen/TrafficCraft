@@ -53,7 +53,6 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
     {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(2f)
-            .noOcclusion()            
             .sound(SoundType.LANTERN)  
         );
         this.registerDefaultState(this.defaultBlockState()
