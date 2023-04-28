@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,26 +31,12 @@ public class ModBlocks {
     
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
     public static List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
-    public static HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();
+    public static HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();    
     
-    public static final RegistryObject<Block> DRAGON = registerBlock("dragon", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> DRAGON = registerBlock("dragon", () -> new DragonBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(1.5f)
-    ), null, true);
-
-    public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CIRCLE_TRAFFIC_SIGN = registerBlockWithCustomItemId("circle_traffic_sign", "traffic_sign", () -> new CircleTrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRIANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("triangle_traffic_sign", () -> new TriangleTrafficSignBlock());
-    public static final RegistryObject<Block> SQUARE_TRAFFIC_SIGN = registerBlockWithoutItem("square_traffic_sign", () -> new SquareTrafficSignBlock());
-    public static final RegistryObject<Block> DIAMOND_TRAFFIC_SIGN = registerBlockWithoutItem("diamond_traffic_sign", () -> new DiamondTrafficSignBlock());
-    public static final RegistryObject<Block> RECTANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("rectangle_traffic_sign", () -> new RectangleTrafficSignBlock());
-    public static final RegistryObject<Block> MISC_TRAFFIC_SIGN = registerBlockWithoutItem("misc_traffic_sign", () -> new MiscTrafficSignBlock());
-    public static final RegistryObject<Block> TRAFFIC_LIGHT = registerBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LAMP = registerBlock("traffic_lamp", () -> new StreetLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> DOUBLE_TRAFFIC_LAMP = registerBlock("double_traffic_lamp", () -> new StreetLampBaseBlock(LampType.DOUBLE), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_TRAFFIC_LAMP = registerBlock("small_traffic_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_DOUBLE_TRAFFIC_LAMP = registerBlock("small_double_traffic_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
-
+    ), null, DragonBlock.DragonItem.class);
+    
     public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(3f)
         .requiresCorrectToolForDrops()
@@ -65,23 +52,6 @@ public class ModBlocks {
         .strength(1.5f)
         .requiresCorrectToolForDrops()
     ), ModCreativeModeTab.MOD_TAB, false);
-
-    
-    public static final RegistryObject<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> RED_DELINEATOR = registerBlock("red_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
-    
-    public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
-
-    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new PaintedGuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
-
-    public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModCreativeModeTab.MOD_TAB, false);
-
-    public static final RegistryObject<Block> TRAFFIC_CONE = registerColoredBlock("traffic_cone", () -> new TrafficConeBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> TRAFFIC_BOLLARD = registerColoredBlock("traffic_bollard", () -> new TrafficBollardBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> REFLECTOR = registerColoredBlock("reflector", () -> new ReflectorBlock(), ModCreativeModeTab.MOD_TAB, false);
 
     public static final RegistryObject<Block> ASPHALT = registerBlock("asphalt", () -> new AsphaltBlock(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> CONCRETE = registerBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
@@ -107,6 +77,38 @@ public class ModBlocks {
         }
     }
 
+    public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> CIRCLE_TRAFFIC_SIGN = registerBlockWithCustomItemId("circle_traffic_sign", "traffic_sign", () -> new CircleTrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRIANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("triangle_traffic_sign", () -> new TriangleTrafficSignBlock());
+    public static final RegistryObject<Block> SQUARE_TRAFFIC_SIGN = registerBlockWithoutItem("square_traffic_sign", () -> new SquareTrafficSignBlock());
+    public static final RegistryObject<Block> DIAMOND_TRAFFIC_SIGN = registerBlockWithoutItem("diamond_traffic_sign", () -> new DiamondTrafficSignBlock());
+    public static final RegistryObject<Block> RECTANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("rectangle_traffic_sign", () -> new RectangleTrafficSignBlock());
+    public static final RegistryObject<Block> MISC_TRAFFIC_SIGN = registerBlockWithoutItem("misc_traffic_sign", () -> new MiscTrafficSignBlock());
+    public static final RegistryObject<Block> TRAFFIC_LIGHT = registerBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> STREET_LAMP = registerBlock("street_lamp", () -> new StreetLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> DOUBLE_STREET_LAMP = registerBlock("double_street_lamp", () -> new StreetLampBaseBlock(LampType.DOUBLE), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> SMALL_STREET_LAMP = registerBlock("small_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> SMALL_DOUBLE_STREET_LAMP = registerBlock("small_double_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
+    
+    public static final RegistryObject<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> RED_DELINEATOR = registerBlock("red_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
+
+    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new PaintedGuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
+
+    public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModCreativeModeTab.MOD_TAB, true);
+    
+    public static final RegistryObject<Block> TRAFFIC_CONE = registerColoredBlock("traffic_cone", () -> new TrafficConeBlock(), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> TRAFFIC_BOLLARD = registerColoredBlock("traffic_bollard", () -> new TrafficBollardBlock(), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> ROAD_BARRIER_FENCE = registerColoredBlock("road_barrier_fence", () -> new RoadBarrierFenceBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> REFLECTOR = registerColoredBlock("reflector", () -> new ReflectorBlock(), ModCreativeModeTab.MOD_TAB, false);
+
+    
+
 
     private static <T extends Block>RegistryObject<T> registerBlockWithoutItem(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -131,6 +133,12 @@ public class ModBlocks {
         return toReturn;
     }
 
+    private static <T extends Block, I extends BlockItem>RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, toReturn, tab, blockItemClass);
+        return toReturn;
+    }
+
     private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(itemId, toReturn, tab, wearable);
@@ -143,6 +151,17 @@ public class ModBlocks {
         }
 
         return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+    }
+
+    private static <T extends Block, I extends BlockItem>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
+        return ModItems.ITEMS.register(name, () -> {
+            try {
+                return blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), new Item.Properties().tab(tab));
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                e.printStackTrace();
+                return new BlockItem(block.get(), new Item.Properties().tab(tab));
+            }
+        });
     }
 
     public static void register(IEventBus eventBus) {
