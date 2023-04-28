@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "C",
+        "R",
+        "P"
+    ],
+    "key": {
+        "C": [
+            {
+                "item": "minecraft:copper_ingot"
+            }
+        ],
+        "R": [
+            {
+                "item": "minecraft:redstone"
+            }
+        ],
+        "P": [
+            {
+                "item": "minecraft:paper"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:street_lamp_config_card",
+        "count": 1
+    }
+}
