@@ -7,7 +7,7 @@
         "entries": [
           {
             "type": "minecraft:item",
-            "name": "trafficcraft:double_traffic_lamp"
+            "name": "trafficcraft:double_street_lamp"
           }
         ],
         "conditions": [
