@@ -6,6 +6,7 @@ import de.mrjulsen.trafficcraft.block.client.TrafficLightControllerClient;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -71,7 +72,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 
         Item item = pPlayer.getInventory().getSelected().getItem();
-        if (item == null || !(item instanceof ILinkerItem && ((ILinkerItem)item).isSourceBlockAccepted(this))) {
+        if (item != null && (item instanceof WrenchItem && !(item instanceof ILinkerItem && ((ILinkerItem)item).isSourceBlockAccepted(this)))) {
             if(pLevel.isClientSide)
             {
                 if(!pPlayer.isShiftKeyDown())
