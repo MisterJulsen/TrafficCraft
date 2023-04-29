@@ -2,7 +2,6 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
@@ -80,13 +79,13 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
             .requiresCorrectToolForDrops()
             .sound(SoundType.METAL)            
         );
-        this.registerDefaultState(this.stateDefinition.any()
-            .setValue(FACING, Direction.NORTH)       
-            .setValue(LIT, Boolean.valueOf(false))       
-        );
 
         this.lampType = type;
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any()
+            .setValue(WATERLOGGED, false)
+            .setValue(FACING, Direction.NORTH)
+            .setValue(LIT, false)
+        );
     }
 
     @Override
@@ -136,7 +135,7 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
             if (!pLevel.isClientSide) {
                 if (pLevel.getBlockEntity(pPos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
                     if (!pLevel.isClientSide) {
-                        pPlayer.displayClientMessage(new TranslatableComponent("block.trafficcraft.street_lamp.use.error_scheduled"), false);  
+                        pPlayer.displayClientMessage(new TranslatableComponent("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
                         return InteractionResult.FAIL;
                     }
                 } else {                    
@@ -188,7 +187,9 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
         FluidState fluidstate = pContext.getLevel().getFluidState(pContext.getClickedPos());
         boolean flag = fluidstate.getType() == Fluids.WATER;
 
-        return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite()).setValue(WATERLOGGED, Boolean.valueOf(flag));
+        return this.defaultBlockState()
+            .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
+            .setValue(WATERLOGGED, Boolean.valueOf(flag));
     }
 
     @Override
@@ -222,12 +223,11 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        //return createTickerHelper(pBlockEntityType, ModBlockEntities.STREET_LAMP_BLOCK_ENTITY.get(), StreetLampBlockEntity::tick);
         if (!pLevel.isClientSide) {
             return (level, pos, state, blockEntity) -> {
                 long tickCount = level.getGameTime();
-                if (tickCount % 50 == 0) { // führe die Tick-Methode nur alle 5 Ticks aus
-                    ((StreetLampBlockEntity) blockEntity).tick(level, pos, state);
+                if (tickCount % 50 == 0) {
+                    ((StreetLampBlockEntity)blockEntity).tick(level, pos, state);
                 }
             };
         }
