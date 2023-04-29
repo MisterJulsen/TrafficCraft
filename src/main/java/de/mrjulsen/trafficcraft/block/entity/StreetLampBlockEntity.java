@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class StreetLampBlockEntity extends BlockEntity {
 
     // Properties
-    private int onTimeTicks = 13000;
+    private int onTimeTicks = 0;
     private int offTimeTicks = 0;
 
     protected StreetLampBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
