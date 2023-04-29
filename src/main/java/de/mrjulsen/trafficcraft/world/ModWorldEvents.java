@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.world;
 
-import com.google.common.eventbus.Subscribe;
-
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.world.gen.ModOreGeneration;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
