@@ -3,7 +3,7 @@
 
     "core.trafficcraft.credits.line0": "§b§lTrafficCraft",
     "core.trafficcraft.credits.line1": "§cEine Minecraft Mod von §4§lMrJulsen.",
-    "core.trafficcraft.credits.line2": "§6§lHERE BE DRAGONS!",
+    "core.trafficcraft.credits.line2": "§6§lHIER SIND DRACHEN!",
 
     "item.trafficcraft.raw_bitumen": "Rohes Bitumen",
     "item.trafficcraft.wrench": "Schraubenschlüssel",
@@ -66,9 +66,9 @@
     "block.trafficcraft.traffic_cone": "Verkehrskegel",
     "block.trafficcraft.traffic_bollard": "Verkehrspoller",
     "block.trafficcraft.reflector": "Reflektor",
-    "block.trafficcraft.concrete_barrier": "Concrete Barrier",
-    "block.trafficcraft.dragon": "Dragon",
-    "block.trafficcraft.road_barrier_fence": "Road Barrier Fence",
+    "block.trafficcraft.concrete_barrier": "Betonbarriere",
+    "block.trafficcraft.dragon": "Drache",
+    "block.trafficcraft.road_barrier_fence": "Straßen Absperrzaun",
 
     "gui.trafficcraft.signpicker.title": "Texturauswahl",
     "gui.trafficcraft.signpicker.tab.circle": "Runde Verkehrszeichen",
