@@ -98,7 +98,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new PaintedGuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new GuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
 
     public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModCreativeModeTab.MOD_TAB, true);
     
