@@ -43,7 +43,7 @@
     "block.trafficcraft.small_street_lamp": "Small Street Lamp",
     "block.trafficcraft.double_street_lamp": "Double Street Lamp",
     "block.trafficcraft.small_double_street_lamp": "Small Double Street Lamp",
-    "block.trafficcraft.street_lamp.use.error_scheduled": "§cYou cannot turn on or off this street lamp because it has a time schedule. Use an empty Street Lamp Configuration Card on this block to remove the schedule.",
+    "block.trafficcraft.street_lamp.use.error_scheduled": "§cTime scheduled street lamps cannot be toggled.",
     "block.trafficcraft.asphalt": "Asphalt",
     "block.trafficcraft.concrete": "Concrete",
     "block.trafficcraft.bitumen_ore": "Bitumen Ore",

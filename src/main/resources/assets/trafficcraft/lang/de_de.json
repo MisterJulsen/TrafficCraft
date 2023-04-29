@@ -40,7 +40,7 @@
     "block.trafficcraft.traffic_light": "Ampel",
     "block.trafficcraft.traffic_light_controller": "Ampel-Steuerungseinheit",
     "block.trafficcraft.street_lamp": "Straßenlaterne",
-    "block.trafficcraft.street_lamp.use.error_scheduled": "§cDu kannst diese Straßenlaterne nicht umschalten, da sie nach einem Zeitplan arbeitet. Nutze eine leere Straßenlaternenkonfigurationskarte, um den Zeitplan zu entfernen.",
+    "block.trafficcraft.street_lamp.use.error_scheduled": "§cZeitgesteuerte Straßenlaternen können nicht umgeschalten werden.",
     "block.trafficcraft.small_street_lamp": "Kleine Straßenlaterne",
     "block.trafficcraft.double_street_lamp": "Doppelseitige Straßenlaterne",
     "block.trafficcraft.small_double_street_lamp": "Kleine Doppelseitige Straßenlaterne",
