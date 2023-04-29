@@ -1,19 +1,94 @@
 {
     "variants": {
-        "facing=north": {
-            "model": "trafficcraft:block/guardrail"
-        },
-        "facing=east": {
-            "model": "trafficcraft:block/guardrail",
-            "y": 90
-        },
-        "facing=south": {
-            "model": "trafficcraft:block/guardrail",
-            "y": 180
-        },
-        "facing=west": {
-            "model": "trafficcraft:block/guardrail",
-            "y": 270
-        }
+      "facing=east,shape=inner_left": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 180,
+        "uvlock": true
+      },
+      "facing=east,shape=inner_right": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 270
+      },
+      "facing=east,shape=outer_left": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 270,
+        "uvlock": true
+      },
+      "facing=east,shape=outer_right": {
+        "model": "trafficcraft:block/guardrail_outer"
+      },
+      "facing=east,shape=straight": {
+        "model": "trafficcraft:block/guardrail",
+        "y": 270
+      },
+      "facing=north,shape=inner_left": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 90,
+        "uvlock": true
+      },
+      "facing=north,shape=inner_right": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 180,
+        "uvlock": true
+      },
+      "facing=north,shape=outer_left": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 180,
+        "uvlock": true
+      },
+      "facing=north,shape=outer_right": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 270,
+        "uvlock": true
+      },
+      "facing=north,shape=straight": {
+        "model": "trafficcraft:block/guardrail",
+        "y": 180,
+        "uvlock": true
+      },
+      "facing=south,shape=inner_left": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 270
+      },
+      "facing=south,shape=inner_right": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "uvlock": true
+      },
+      "facing=south,shape=outer_left": {
+        "model": "trafficcraft:block/guardrail_outer"
+      },
+      "facing=south,shape=outer_right": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 90,
+        "uvlock": true
+      },
+      "facing=south,shape=straight": {
+        "model": "trafficcraft:block/guardrail",
+        "uvlock": true
+      },
+      "facing=west,shape=inner_left": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "uvlock": true
+      },
+      "facing=west,shape=inner_right": {
+        "model": "trafficcraft:block/guardrail_inner",
+        "y": 90,
+        "uvlock": true
+      },
+      "facing=west,shape=outer_left": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 90,
+        "uvlock": true
+      },
+      "facing=west,shape=outer_right": {
+        "model": "trafficcraft:block/guardrail_outer",
+        "y": 180,
+        "uvlock": true
+      },
+      "facing=west,shape=straight": {
+        "model": "trafficcraft:block/guardrail",
+        "y": 90,
+        "uvlock": true
+      }
     }
-}
+  }
