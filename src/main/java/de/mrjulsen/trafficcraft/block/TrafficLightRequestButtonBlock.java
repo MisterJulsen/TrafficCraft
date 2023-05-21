@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
@@ -52,7 +53,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
@@ -246,5 +247,10 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, ModBlockEntities.TRAFFIC_LIGHT_REQUEST_BUTTON_BLOCK_ENTITY.get(), TrafficLightRequestButtonBlockEntity::tick);
+    }
+
+    @Override
+    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
+        return new Direction[] { state.getValue(FACING) };
     }
 }

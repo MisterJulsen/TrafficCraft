@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import de.mrjulsen.trafficcraft.block.client.TrafficLightClient;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
@@ -53,7 +54,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -245,5 +246,10 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntity::tick);
-    }    
+    } 
+    
+    @Override
+    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
+        return new Direction[] { state.getValue(FACING) };
+    }
 }

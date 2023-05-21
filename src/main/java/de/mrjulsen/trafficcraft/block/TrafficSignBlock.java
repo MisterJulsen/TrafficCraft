@@ -1,11 +1,13 @@
 package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.block.client.TrafficSignClient;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -34,7 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class TrafficSignBlock extends Block implements SimpleWaterloggedBlock {
+public abstract class TrafficSignBlock extends Block implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -128,5 +130,10 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
 
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
         return false;
-    }  
+    }
+
+    @Override
+    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
+        return new Direction[] { state.getValue(FACING), state.getValue(FACING).getClockWise(Axis.Y), state.getValue(FACING).getCounterClockWise(Axis.Y) };
+    }
 }
