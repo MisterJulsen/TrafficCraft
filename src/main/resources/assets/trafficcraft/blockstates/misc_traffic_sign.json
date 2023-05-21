@@ -1215,6 +1215,54 @@
     "type=9,facing=west": {
       "model": "trafficcraft:block/sign/misc/9",
       "y": 270
+    },
+    "type=76,facing=north": {
+      "model": "trafficcraft:block/sign/misc/76",
+      "y": 0
+    },
+    "type=76,facing=east": {
+      "model": "trafficcraft:block/sign/misc/76",
+      "y": 90
+    },
+    "type=76,facing=south": {
+      "model": "trafficcraft:block/sign/misc/76",
+      "y": 180
+    },
+    "type=76,facing=west": {
+      "model": "trafficcraft:block/sign/misc/76",
+      "y": 270
+    },
+    "type=77,facing=north": {
+      "model": "trafficcraft:block/sign/misc/77",
+      "y": 0
+    },
+    "type=77,facing=east": {
+      "model": "trafficcraft:block/sign/misc/77",
+      "y": 90
+    },
+    "type=77,facing=south": {
+      "model": "trafficcraft:block/sign/misc/77",
+      "y": 180
+    },
+    "type=77,facing=west": {
+      "model": "trafficcraft:block/sign/misc/77",
+      "y": 270
+    },
+    "type=78,facing=north": {
+      "model": "trafficcraft:block/sign/misc/78",
+      "y": 0
+    },
+    "type=78,facing=east": {
+      "model": "trafficcraft:block/sign/misc/78",
+      "y": 90
+    },
+    "type=78,facing=south": {
+      "model": "trafficcraft:block/sign/misc/78",
+      "y": 180
+    },
+    "type=78,facing=west": {
+      "model": "trafficcraft:block/sign/misc/78",
+      "y": 270
     }
   }
 }
