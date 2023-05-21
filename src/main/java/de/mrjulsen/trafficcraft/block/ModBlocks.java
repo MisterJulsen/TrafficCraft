@@ -84,6 +84,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> DIAMOND_TRAFFIC_SIGN = registerBlockWithoutItem("diamond_traffic_sign", () -> new DiamondTrafficSignBlock());
     public static final RegistryObject<Block> RECTANGLE_TRAFFIC_SIGN = registerBlockWithoutItem("rectangle_traffic_sign", () -> new RectangleTrafficSignBlock());
     public static final RegistryObject<Block> MISC_TRAFFIC_SIGN = registerBlockWithoutItem("misc_traffic_sign", () -> new MiscTrafficSignBlock());
+    public static final RegistryObject<Block> STREET_SIGN = registerBlock("street_sign", () -> new StreetSignBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LIGHT = registerBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModCreativeModeTab.MOD_TAB, false);
