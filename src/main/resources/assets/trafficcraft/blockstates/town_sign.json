@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/town_sign"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/town_sign",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/town_sign",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/town_sign",
+            "y": 270
+        }
+    }
+}

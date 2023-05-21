@@ -69,6 +69,8 @@
     "block.trafficcraft.concrete_barrier": "Concrete Barrier",
     "block.trafficcraft.dragon": "Dragon",
     "block.trafficcraft.road_barrier_fence": "Road Barrier Fence",
+    "block.trafficcraft.town_sign": "Town Sign",
+    "block.trafficcraft.street_sign": "Street Sign",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
