@@ -1,13 +1,17 @@
 package de.mrjulsen.trafficcraft.proxy;
 
 import de.mrjulsen.trafficcraft.block.ModBlocks;
+import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
+import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -55,6 +59,10 @@ public class ClientProxy implements IProxy {
             ModBlocks.ROAD_BARRIER_FENCE.get(),
             ModBlocks.CONCRETE_BARRIER.get()
         );
+
+        /* BLOCK ENTITY RENDERERS */
+        BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
 
         /* REGISTER CUSTOM ITEM PROPERTIES */
         ItemProperties.register(ModItems.PAINT_BRUSH.get(), new ResourceLocation("paint"), (itemStack, world, entity, id) -> { 
