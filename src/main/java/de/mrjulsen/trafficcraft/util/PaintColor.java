@@ -160,6 +160,16 @@ public enum PaintColor implements StringRepresentable {
       return null;
    }
 
+   /** @retuns true, if color should be white */
+   public static boolean useWhiteOrBlackForeColor(int color) {
+      int red = (color >> 16) & 0xFF;
+      int green = (color >> 8) & 0xFF;
+      int blue = color & 0xFF;
+
+      double luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+      return luminance < 0.5;
+  }
+
    public boolean equals(DyeColor dye) {
       return dye.getId() == this.getId();
    }

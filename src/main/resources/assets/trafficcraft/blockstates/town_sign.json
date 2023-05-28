@@ -1,18 +1,48 @@
 {
     "variants": {
-        "facing=north": {
-            "model": "trafficcraft:block/town_sign"
+        "variant=front,facing=north": {
+            "model": "trafficcraft:block/town_sign_front"
         },
-        "facing=east": {
-            "model": "trafficcraft:block/town_sign",
+        "variant=front,facing=east": {
+            "model": "trafficcraft:block/town_sign_front",
             "y": 90
         },
-        "facing=south": {
-            "model": "trafficcraft:block/town_sign",
+        "variant=front,facing=south": {
+            "model": "trafficcraft:block/town_sign_front",
             "y": 180
         },
-        "facing=west": {
-            "model": "trafficcraft:block/town_sign",
+        "variant=front,facing=west": {
+            "model": "trafficcraft:block/town_sign_front",
+            "y": 270
+        },
+        "variant=back,facing=north": {
+            "model": "trafficcraft:block/town_sign_back"
+        },
+        "variant=back,facing=east": {
+            "model": "trafficcraft:block/town_sign_back",
+            "y": 90
+        },
+        "variant=back,facing=south": {
+            "model": "trafficcraft:block/town_sign_back",
+            "y": 180
+        },
+        "variant=back,facing=west": {
+            "model": "trafficcraft:block/town_sign_back",
+            "y": 270
+        },
+        "variant=both,facing=north": {
+            "model": "trafficcraft:block/town_sign_both"
+        },
+        "variant=both,facing=east": {
+            "model": "trafficcraft:block/town_sign_both",
+            "y": 90
+        },
+        "variant=both,facing=south": {
+            "model": "trafficcraft:block/town_sign_both",
+            "y": 180
+        },
+        "variant=both,facing=west": {
+            "model": "trafficcraft:block/town_sign_both",
             "y": 270
         }
     }

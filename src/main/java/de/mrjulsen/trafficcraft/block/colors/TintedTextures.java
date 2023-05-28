@@ -1,6 +1,8 @@
 package de.mrjulsen.trafficcraft.block.colors;
 
+import de.mrjulsen.trafficcraft.block.StreetSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
@@ -20,6 +22,15 @@ public class TintedTextures{
             
             if (pState.getBlock() instanceof ColorableBlock block) {
                 if (pLevel.getBlockEntity(pPos) instanceof ColoredBlockEntity blockEntity) {
+                    PaintColor c = blockEntity.getColor();
+                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
+                }
+            } else if (pState.getBlock() instanceof StreetSignBlock block) {    
+                if (pLevel == null) {
+                    return block.getDefaultColor();
+                }
+
+                if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {                    
                     PaintColor c = blockEntity.getColor();
                     return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
                 }

@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OIO"
+    ],
+    "key": {
+        "O": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "I": [
+            {
+                "item": "minecraft:iron_ingot"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:street_sign",
+        "count": 4
+    }
+}

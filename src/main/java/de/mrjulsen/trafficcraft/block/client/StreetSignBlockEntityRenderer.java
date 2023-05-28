@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
+import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -24,7 +25,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
     public void render(StreetSignBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         BlockState blockstate = pBlockEntity.getBlockState();
         double currentY = 0;
-        for (int i1 = 0; i1 < pBlockEntity.lineCount(); ++i1) {
+        for (int i1 = 0; i1 < pBlockEntity.getRenderingConfig().getLines(); ++i1) {
             String line = pBlockEntity.getText(i1);
             if (line == null || this.font.width(line) == 0)
                 continue;
@@ -42,7 +43,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
             pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
             pPoseStack.translate(-0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
-            this.font.drawInBatch(line, f3, (float)currentY, DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
+            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
             pPoseStack.popPose();
          
             pPoseStack.pushPose();
@@ -51,7 +52,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
             pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f5));
             pPoseStack.translate(0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
-            this.font.drawInBatch(line, f3, (float)currentY, DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
+            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
                         
             pPoseStack.popPose();
 

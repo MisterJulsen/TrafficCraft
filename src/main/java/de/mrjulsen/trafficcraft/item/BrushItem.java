@@ -5,12 +5,14 @@ import java.util.List;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.PaintedAsphaltBlock;
 import de.mrjulsen.trafficcraft.block.PaintedAsphaltSlope;
+import de.mrjulsen.trafficcraft.block.StreetSignBlock;
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
 import de.mrjulsen.trafficcraft.item.client.BrushClient;
@@ -48,6 +50,9 @@ public class BrushItem extends Item
     public boolean canAttackBlock(BlockState state, Level worldIn, BlockPos pos, Player player) {
         if (player.isCreative()) {
             if (state.getBlock() instanceof ColorableBlock block) {  
+                block.onRemoveColor(state, worldIn, pos, player);
+                return false;
+            } else if (state.getBlock() instanceof StreetSignBlock block) {  
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             }
@@ -212,6 +217,12 @@ public class BrushItem extends Item
                     this.removePaint(player, nbt);
                     return InteractionResult.SUCCESS;
                     
+                } else if (state.getBlock() instanceof StreetSignBlock block && level.getBlockEntity(pos) instanceof StreetSignBlockEntity blockEntity) {
+                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
+                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
+                        this.removePaint(player, nbt);
+                        return InteractionResult.SUCCESS;
+                    }
                 } else {
                     if (state.getBlock() instanceof ColorableBlock block && level.getBlockEntity(pos) instanceof ColoredBlockEntity blockEntity) {
                         if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
@@ -232,5 +243,4 @@ public class BrushItem extends Item
             nbt.putInt("paint", nbt.getInt("paint") - 1);
         }
     }
-
 }

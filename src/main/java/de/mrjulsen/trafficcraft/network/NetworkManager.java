@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.SignPacket;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
+import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
@@ -26,6 +27,7 @@ public class NetworkManager {
         MOD_CHANNEL.messageBuilder(PaintBrushPacket.class, 4).encoder(PaintBrushPacket::encode).decoder(PaintBrushPacket::decode).consumer(PaintBrushPacket::handle).add();
         MOD_CHANNEL.messageBuilder(StreetLampConfigPacket.class, 5).encoder(StreetLampConfigPacket::encode).decoder(StreetLampConfigPacket::decode).consumer(StreetLampConfigPacket::handle).add();
         MOD_CHANNEL.messageBuilder(WritableSignPacket.class, 6).encoder(WritableSignPacket::encode).decoder(WritableSignPacket::decode).consumer(WritableSignPacket::handle).add();
+        MOD_CHANNEL.messageBuilder(TownSignPacket.class, 7).encoder(TownSignPacket::encode).decoder(TownSignPacket::decode).consumer(TownSignPacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()

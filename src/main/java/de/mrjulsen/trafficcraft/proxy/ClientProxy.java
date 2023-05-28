@@ -30,7 +30,9 @@ public class ClientProxy implements IProxy {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.DIAMOND_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.RECTANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MISC_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());   
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
 
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {

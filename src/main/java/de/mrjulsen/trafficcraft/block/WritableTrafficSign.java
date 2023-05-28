@@ -1,9 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.block.client.TrafficSignClient;
 import de.mrjulsen.trafficcraft.block.client.WritableTrafficSignClient;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;

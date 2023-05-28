@@ -9,8 +9,8 @@
 			"from": [7.75, 11, 6.5],
 			"to": [8.25, 14, 22.5],
 			"faces": {
-				"east": {"uv": [0, 13, 16, 16], "texture": "#1"},
-				"west": {"uv": [0, 13, 16, 16], "texture": "#1"}
+				"east": {"uv": [0, 13, 16, 16], "texture": "#1", "tintindex": 0},
+				"west": {"uv": [0, 13, 16, 16], "texture": "#1", "tintindex": 0}
 			}
 		},
 		{

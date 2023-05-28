@@ -29,7 +29,6 @@ public class ColoredBlockEntity extends BlockEntity {
     public void load(CompoundTag compound)
     {
         super.load(compound);
-
         this.color = PaintColor.byId(compound.getInt("color"));
     }
 
