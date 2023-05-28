@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.network.packets;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
@@ -24,7 +25,7 @@ public class WritableSignPacket {
         buffer.writeInt(packet.messages.length);
         for (int i = 0; i < packet.messages.length; i++) {
             String message = packet.messages[i];
-            int messageLength = packet.messages[i].getBytes().length;
+            int messageLength = packet.messages[i].getBytes(StandardCharsets.UTF_8).length;
             buffer.writeInt(messageLength);
             buffer.writeUtf(message, messageLength);
         }
