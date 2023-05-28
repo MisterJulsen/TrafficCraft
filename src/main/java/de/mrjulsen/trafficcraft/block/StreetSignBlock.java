@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
-import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.BrushItem;
