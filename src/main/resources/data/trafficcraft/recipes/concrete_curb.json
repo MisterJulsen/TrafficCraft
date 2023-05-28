@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "SAA"
+    ],
+    "key": {
+        "S": [
+            {
+                "item": "minecraft:stone_bricks"
+            }
+        ],
+        "A": [
+            {
+                "item": "trafficcraft:concrete"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:concrete_curb",
+        "count": 3
+    }
+}
