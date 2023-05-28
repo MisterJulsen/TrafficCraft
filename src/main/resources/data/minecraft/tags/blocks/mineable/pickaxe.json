@@ -1322,6 +1322,10 @@
     "trafficcraft:town_sign",
     "trafficcraft:manhole",
     "trafficcraft:manhole_cover",
-    "trafficcraft:road_gully"
+    "trafficcraft:road_gully",
+    "trafficcraft:asphalt_curb",
+    "trafficcraft:asphalt_curb_slope",
+    "trafficcraft:concrete_curb",
+    "trafficcraft:concrete_curb_slope"
   ]
 }
