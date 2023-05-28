@@ -1301,6 +1301,9 @@
     "trafficcraft:bitumen_ore",
     "trafficcraft:deepslate_bitumen_ore",
     "trafficcraft:bitumen_block",
-    "trafficcraft:concrete_barrier"
+    "trafficcraft:concrete_barrier",
+    "trafficcraft:manhole",
+    "trafficcraft:manhole_cover",
+    "trafficcraft:road_gully"
   ]
 }

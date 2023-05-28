@@ -69,6 +69,15 @@
     "block.trafficcraft.concrete_barrier": "Betonbarriere",
     "block.trafficcraft.dragon": "Drache",
     "block.trafficcraft.road_barrier_fence": "Straßen Absperrzaun",
+    "block.trafficcraft.town_sign": "Ortsschild",
+    "block.trafficcraft.street_sign": "Straßennamenschild",
+    "block.trafficcraft.manhole": "Schacht",
+    "block.trafficcraft.manhole_cover": "Schachtabdeckung",
+    "block.trafficcraft.road_gully": "Straßenabfluss",
+    "block.trafficcraft.asphalt_curb": "Asphalt mit Bordstein",
+    "block.trafficcraft.concrete_curb": "Beton mit Bordstein",
+    "block.trafficcraft.asphalt_curb_slope": "Schicht von Asphalt mit Bordstein",
+    "block.trafficcraft.concrete_curb_slope": "Schicht von Beton mit Bordstein",
 
     "gui.trafficcraft.signpicker.title": "Texturauswahl",
     "gui.trafficcraft.signpicker.tab.circle": "Runde Verkehrszeichen",
@@ -154,6 +163,11 @@
     "gui.trafficcraft.daytime.time_format.ticks": "Minecraft Ticks",
     "gui.trafficcraft.daytime.time_format.hours_24": "24 Stunden",
     "gui.trafficcraft.daytime.time_format.hours_12": "12 Stunden",
+    
+    "gui.trafficcraft.town_sign.variant": "Seiten",
+    "gui.trafficcraft.town_sign.variant.front": "Vorderseite",
+    "gui.trafficcraft.town_sign.variant.back": "Rückseite",
+    "gui.trafficcraft.town_sign.variant.both": "Beide",
 
     "color.trafficcraft.none": "Keine",
     "color.trafficcraft.white": "Weiß",

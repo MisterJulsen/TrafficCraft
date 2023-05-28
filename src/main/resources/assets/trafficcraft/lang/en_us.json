@@ -71,6 +71,13 @@
     "block.trafficcraft.road_barrier_fence": "Road Barrier Fence",
     "block.trafficcraft.town_sign": "Town Sign",
     "block.trafficcraft.street_sign": "Street Sign",
+    "block.trafficcraft.manhole": "Manhole",
+    "block.trafficcraft.manhole_cover": "Manhole Cover",
+    "block.trafficcraft.road_gully": "Road Gully",
+    "block.trafficcraft.asphalt_curb": "Asphalt with Curb",
+    "block.trafficcraft.concrete_curb": "Concrete with Curb",
+    "block.trafficcraft.asphalt_curb_slope": "Asphalt with Curb Slope",
+    "block.trafficcraft.concrete_curb_slope": "Concrete with Curb Slope",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
@@ -156,6 +163,11 @@
     "gui.trafficcraft.daytime.time_format.ticks": "Minecraft Ticks",
     "gui.trafficcraft.daytime.time_format.hours_24": "24 hours",
     "gui.trafficcraft.daytime.time_format.hours_12": "12 hours",
+    
+    "gui.trafficcraft.town_sign.variant": "Sides",
+    "gui.trafficcraft.town_sign.variant.front": "Front",
+    "gui.trafficcraft.town_sign.variant.back": "Back",
+    "gui.trafficcraft.town_sign.variant.both": "Both",
 
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",

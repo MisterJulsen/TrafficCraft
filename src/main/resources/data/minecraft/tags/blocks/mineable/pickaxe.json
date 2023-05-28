@@ -1318,6 +1318,10 @@
     "trafficcraft:paint_bucket",
     "trafficcraft:reflector",
     "trafficcraft:concrete_barrier",
-    "trafficcraft:dragon"
+    "trafficcraft:dragon",
+    "trafficcraft:town_sign",
+    "trafficcraft:manhole",
+    "trafficcraft:manhole_cover",
+    "trafficcraft:road_gully"
   ]
 }
