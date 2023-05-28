@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "T",
+        "M"
+    ],
+    "key": {
+        "T": [
+            {
+                "item": "minecraft:iron_trapdoor"
+            }
+        ],
+        "M": [
+            {
+                "item": "trafficcraft:manhole"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:manhole_cover",
+        "count": 1
+    }
+}

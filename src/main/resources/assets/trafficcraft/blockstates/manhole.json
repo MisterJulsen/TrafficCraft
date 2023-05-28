@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/manhole"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/manhole",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/manhole",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/manhole",
+            "y": 270
+        }
+    }
+}
