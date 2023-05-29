@@ -195,7 +195,7 @@ public class TownSignScreen extends Screen {
         int j = this.signField.getCursorPos();
         int k = this.signField.getSelectionPos();
         String msg = this.messages[this.line];
-        int l = config.getLineHeightsTo(font, this.line, msg == null ? 0 : this.font.width(this.messages[this.line]), config.maxLineWidth - (this.side == ETownSignSide.BACK && this.line == 0 ? 20 : 0));
+        int l = config.getLineHeightsTo(font.lineHeight, this.line, msg == null ? 0 : this.font.width(this.messages[this.line]), config.maxLineWidth - (this.side == ETownSignSide.BACK && this.line == 0 ? 20 : 0));
         pPoseStack.setIdentity();
         pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
         Matrix4f matrix4f = pPoseStack.last().pose();
@@ -221,7 +221,7 @@ public class TownSignScreen extends Screen {
                 }
 
                 float f3 = (float) (-this.minecraft.font.width(s) / 2) + (lineXOffset / scale);
-                this.minecraft.font.drawInBatch(s, f3, (float) (config.getLineHeightsTo(font, i1, s == null ? 0 : this.font.width(s), config.maxLineWidth - (this.side == ETownSignSide.BACK && i1 == 0 ? 20 : 0))), i, false, matrix4f,
+                this.minecraft.font.drawInBatch(s, f3, (float) (config.getLineHeightsTo(font.lineHeight, i1, s == null ? 0 : this.font.width(s), config.maxLineWidth - (this.side == ETownSignSide.BACK && i1 == 0 ? 20 : 0))), i, false, matrix4f,
                         multibuffersource$buffersource, false, 0, 15728880, false);
                 if (i1 == this.line && j >= 0 && flag1) {
                     int j1 = this.minecraft.font.width(s.substring(0, Math.max(Math.min(j, s.length()), 0)));

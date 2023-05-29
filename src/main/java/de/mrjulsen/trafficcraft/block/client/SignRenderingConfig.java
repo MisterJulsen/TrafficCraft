@@ -3,8 +3,6 @@ package de.mrjulsen.trafficcraft.block.client;
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
 
-import net.minecraft.client.gui.Font;
-
 public class SignRenderingConfig {
 
     private int lines = 1;
@@ -39,14 +37,14 @@ public class SignRenderingConfig {
         return this.lines;
     }
 
-    public final int getLineHeightsTo(Font font, int lineIndex, int fontWidth, int lineWidth) {
+    public final int getLineHeightsTo(int lineHeight, int lineIndex, int fontWidth, int lineWidth) {
         if (lineIndex < 0)
             return 0;
 
         if (lineIndex > lines)
             lineIndex = lines;
 
-        return (int)(font.lineHeight * DoubleStream.of(lineHeightMultiplier).limit(lineIndex).sum() / (lineFontScales[lineIndex] == null ? 1.0D : lineFontScales[lineIndex].getScale(fontWidth, lineWidth)));
+        return (int)(lineHeight * DoubleStream.of(lineHeightMultiplier).limit(lineIndex).sum() / (lineFontScales[lineIndex] == null ? 1.0D : lineFontScales[lineIndex].getScale(fontWidth, lineWidth)));
     }
 
     public int width() {

@@ -100,7 +100,7 @@ public class TownSignBlockEntityRenderer implements BlockEntityRenderer<TownSign
             pPoseStack.scale((float)scale, (float)-scale, (float)scale);      
 
             float f3 = (float) (-this.font.width(line) / 2);
-            this.font.drawInBatch(line, f3, (float)config.getLineHeightsTo(font, i1, this.font.width(line), defaultLineWidth), DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
+            this.font.drawInBatch(line, f3, (float)config.getLineHeightsTo(font.lineHeight, i1, this.font.width(line), defaultLineWidth), DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
                         
             pPoseStack.popPose();
         }
