@@ -13,8 +13,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.api.distmarker.Dist;
 
 public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
     private String[] lines = null;
@@ -27,7 +25,6 @@ public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public abstract SignRenderingConfig getRenderingConfig();
 
     private void initTextArray() {
