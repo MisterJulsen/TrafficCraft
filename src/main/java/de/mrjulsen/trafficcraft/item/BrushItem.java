@@ -8,6 +8,7 @@ import de.mrjulsen.trafficcraft.block.PaintedAsphaltSlope;
 import de.mrjulsen.trafficcraft.block.StreetSignBlock;
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltBlock;
+import de.mrjulsen.trafficcraft.block.AsphaltCurbSlope;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
@@ -191,7 +192,7 @@ public class BrushItem extends Item
                         return InteractionResult.SUCCESS;
                     }
                     
-                } else if (state.getBlock() instanceof AsphaltBlock block) {
+                } else if (state.getBlock() instanceof AsphaltBlock block && !(state.getBlock() instanceof AsphaltCurbSlope)) {
     
                     String id = "";
 
