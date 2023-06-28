@@ -1,12 +1,9 @@
 package de.mrjulsen.trafficcraft.block;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
