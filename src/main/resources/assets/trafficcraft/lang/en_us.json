@@ -78,6 +78,7 @@
     "block.trafficcraft.concrete_curb": "Concrete with Curb",
     "block.trafficcraft.asphalt_curb_slope": "Asphalt with Curb Slope",
     "block.trafficcraft.concrete_curb_slope": "Concrete with Curb Slope",
+    "block.trafficcraft.house_number_sign": "House Number Sign",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",

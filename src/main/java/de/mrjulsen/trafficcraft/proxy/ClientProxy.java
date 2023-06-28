@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.proxy;
 
 import de.mrjulsen.trafficcraft.block.ModBlocks;
+import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
@@ -65,6 +66,7 @@ public class ClientProxy implements IProxy {
         /* BLOCK ENTITY RENDERERS */
         BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
 
         /* REGISTER CUSTOM ITEM PROPERTIES */
         ItemProperties.register(ModItems.PAINT_BRUSH.get(), new ResourceLocation("paint"), (itemStack, world, entity, id) -> { 

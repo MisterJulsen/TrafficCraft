@@ -1,0 +1,19 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "trafficcraft:block/house_number_sign"
+        },
+        "facing=east": {
+            "model": "trafficcraft:block/house_number_sign",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "trafficcraft:block/house_number_sign",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "trafficcraft:block/house_number_sign",
+            "y": 270
+        }
+    }
+}

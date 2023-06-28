@@ -10,9 +10,11 @@ import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltCurbSlope;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
+import de.mrjulsen.trafficcraft.block.HouseNumberSignBlock;
 import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
@@ -54,6 +56,9 @@ public class BrushItem extends Item
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             } else if (state.getBlock() instanceof StreetSignBlock block) {  
+                block.onRemoveColor(state, worldIn, pos, player);
+                return false;
+            } else if (state.getBlock() instanceof HouseNumberSignBlock block) {  
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             }
@@ -219,6 +224,12 @@ public class BrushItem extends Item
                     return InteractionResult.SUCCESS;
                     
                 } else if (state.getBlock() instanceof StreetSignBlock block && level.getBlockEntity(pos) instanceof StreetSignBlockEntity blockEntity) {
+                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
+                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
+                        this.removePaint(player, nbt);
+                        return InteractionResult.SUCCESS;
+                    }
+                } else if (state.getBlock() instanceof HouseNumberSignBlock block && level.getBlockEntity(pos) instanceof HouseNumberSignBlockEntity blockEntity) {
                     if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
                         block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
                         this.removePaint(player, nbt);

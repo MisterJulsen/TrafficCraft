@@ -20,6 +20,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<StreetLampBlockEntity>> STREET_LAMP_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_lamp_block_entity", () -> BlockEntityType.Builder.of(StreetLampBlockEntity::new, ModBlocks.STREET_LAMP.get(), ModBlocks.DOUBLE_STREET_LAMP.get(), ModBlocks.SMALL_STREET_LAMP.get(), ModBlocks.SMALL_DOUBLE_STREET_LAMP.get()).build(null));
     public static final RegistryObject<BlockEntityType<TownSignBlockEntity>> TOWN_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("town_sign_block_entity", () -> BlockEntityType.Builder.of(TownSignBlockEntity::new, ModBlocks.TOWN_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<StreetSignBlockEntity>> STREET_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_sign_block_entity", () -> BlockEntityType.Builder.of(StreetSignBlockEntity::new, ModBlocks.STREET_SIGN.get()).build(null));
+    public static final RegistryObject<BlockEntityType<HouseNumberSignBlockEntity>> HOUSE_NUMBER_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("house_number_sign_block_entity", () -> BlockEntityType.Builder.of(HouseNumberSignBlockEntity::new, ModBlocks.HOUSE_NUMBER_SIGN.get()).build(null));
 
     /*
     static
