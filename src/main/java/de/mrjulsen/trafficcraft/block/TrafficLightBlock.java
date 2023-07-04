@@ -85,6 +85,9 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
             .strength(5f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.ANVIL)
+            .lightLevel((state) -> {
+                return state.getValue(MODE) == TrafficLightMode.OFF ? 0 : 1;
+            })
         );
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)            
