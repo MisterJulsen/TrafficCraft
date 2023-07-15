@@ -16,7 +16,7 @@ public class Constants {
 
     public static final int MAX_TRAFFIC_SIGN_STATES = 134;
     public static final int MAX_ASPHALT_PATTERNS = 323;
-    public static final int MAX_PAINT = 64;
+    public static final int MAX_PAINT = 128;
     public static final int TICKS_PER_DAY = 24000;
 
     public static final int METAL_COLOR = 0xFF828282;
