@@ -36,6 +36,7 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class TrafficSignBlock extends Block implements SimpleWaterloggedBlock, ITrafficPostLike {
@@ -44,8 +45,12 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 
-    private static final VoxelShape SHAPE_SN = Block.box(0, 0, 6, 16, 16, 10);
-    private static final VoxelShape SHAPE_EW = Block.box(6, 0, 0, 10, 16, 16);
+    private static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
+    private static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, Block.box(0, 0, 9, 16, 16, 9.5D));    
+    private static final VoxelShape SHAPE_NORTH = Shapes.or(SHAPE_COMMON, Block.box(0, 0, 6.5D, 16, 16, 7));
+    private static final VoxelShape SHAPE_EAST = Shapes.or(SHAPE_COMMON, Block.box(9, 0, 0, 9.5D, 16, 16));
+    private static final VoxelShape SHAPE_WEST = Shapes.or(SHAPE_COMMON, Block.box(6.5D, 0, 0, 7, 16, 16));
+
 
     public TrafficSignBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
@@ -68,7 +73,18 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return pState.getValue(FACING) == Direction.NORTH || pState.getValue(FACING) == Direction.SOUTH ? SHAPE_SN : SHAPE_EW;
+        switch (pState.getValue(FACING)) {
+            case NORTH:
+                return SHAPE_NORTH;
+            case SOUTH:
+                return SHAPE_SOUTH;
+            case EAST:
+                return SHAPE_EAST;
+            case WEST:
+                return SHAPE_WEST;
+            default:
+                return SHAPE_COMMON;
+        }
     }
 
     @Override
@@ -140,7 +156,7 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
     }
 
     @Override
-    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
-        return new Direction[] { state.getValue(FACING), state.getValue(FACING).getClockWise(Axis.Y), state.getValue(FACING).getCounterClockWise(Axis.Y) };
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return pState.getValue(FACING).getOpposite() == pDirection;
     }
 }

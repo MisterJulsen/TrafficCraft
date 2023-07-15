@@ -62,7 +62,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
 
     private static final int PRESS_DURATION = 30;
 
-    public static final VoxelShape SHAPE_COMMON = Block.box(6, 0, 6, 10, 16, 10);
+    public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
     public static final VoxelShape SHAPE_NORTH = Shapes.or(Block.box(5, 1, 3, 11, 10, 8), SHAPE_COMMON);
     public static final VoxelShape SHAPE_SOUTH = Shapes.or(Block.box(5, 1, 8, 11, 10, 13), SHAPE_COMMON);
@@ -250,7 +250,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     }
 
     @Override
-    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
-        return new Direction[] { state.getValue(FACING) };
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return pDirection != pState.getValue(FACING);
     }
 }

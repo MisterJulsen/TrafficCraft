@@ -40,11 +40,10 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    public static final VoxelShape SHAPE_WEST = Block.box(6, 10.5, 7.5, 23, 14.5, 8.5);
    public static final VoxelShape SHAPE_EAST = Block.box(-7, 10.5, 7.5, 10, 14.5, 8.5);
 
-   public StreetSignBlock() {      
+   public StreetSignBlock() {
       super(BlockBehaviour.Properties.of(Material.BAMBOO)
-         .strength(0.2f)
-         .sound(SoundType.BAMBOO)
-      );
+            .strength(0.2f)
+            .sound(SoundType.BAMBOO));
    }
 
    @Override
@@ -79,33 +78,33 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
 
    @Override
    public void attack(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-       onRemoveColor(pState, pLevel, pPos, pPlayer);
+      onRemoveColor(pState, pLevel, pPos, pPlayer);
    }
 
    public void onRemoveColor(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-       ItemStack stack = pPlayer.getInventory().getSelected();
-       Item item = stack.getItem();
+      ItemStack stack = pPlayer.getInventory().getSelected();
+      Item item = stack.getItem();
 
-       if (!(item instanceof BrushItem)) {
-           return;
-       }
+      if (!(item instanceof BrushItem)) {
+         return;
+      }
 
-       if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
-           if (blockEntity.getColor() == PaintColor.NONE) {
-               return;
-           }
-           blockEntity.setColor(PaintColor.NONE);
-           pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
-       } 
+      if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
+         if (blockEntity.getColor() == PaintColor.NONE) {
+            return;
+         }
+         blockEntity.setColor(PaintColor.NONE);
+         pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+      }
    }
 
    public void onSetColor(Level pLevel, BlockPos pPos, PaintColor color) {
-       if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
-           if (!pLevel.isClientSide) {
-               blockEntity.setColor(color);
-               pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
-           }
-       } 
+      if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
+         if (!pLevel.isClientSide) {
+            blockEntity.setColor(color);
+            pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+         }
+      }
    }
 
    @Override
@@ -123,15 +122,13 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
       BlockState blockstate = pBlockReader.getBlockState(pPos);
 
       if (blockstate.getBlock() instanceof ITrafficPostLike postLike) {
-         Direction[] forbiddenDirections = postLike.forbiddenDirections(blockstate, pPos);
-         return forbiddenDirections == null || !Arrays.asList(forbiddenDirections).contains(pDirection);
+         return postLike.canAttach(blockstate, pPos, pDirection);
       }
 
       return false;
    }
 
-   public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel,
-         BlockPos pCurrentPos, BlockPos pFacingPos) {
+   public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
       if (pFacing.getOpposite() == pState.getValue(FACING) && !pState.canSurvive(pLevel, pCurrentPos)) {
          return Blocks.AIR.defaultBlockState();
       } else {
@@ -146,8 +143,7 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    @Nullable
    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
       if (!pContext.replacingClickedOnBlock()) {
-         BlockState blockstate = pContext.getLevel()
-               .getBlockState(pContext.getClickedPos().relative(pContext.getClickedFace().getOpposite()));
+         BlockState blockstate = pContext.getLevel().getBlockState(pContext.getClickedPos().relative(pContext.getClickedFace().getOpposite()));
          if (blockstate.is(this) && blockstate.getValue(FACING) == pContext.getClickedFace()) {
             return null;
          }
@@ -171,11 +167,16 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    }
 
    @Override
-   public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
-      return Direction.values();
+   public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+      return false;
    }
 
-public int getDefaultColor() {
-    return 0xFFFFFFFF;
-}
+   @Override
+   public boolean canConnect(BlockState pState, Direction pDirection) {
+      return false;
+   }
+
+   public int getDefaultColor() {
+      return 0xFFFFFFFF;
+   }
 }

@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:street_lamp",
+        "trafficcraft:double_street_lamp",
+        "trafficcraft:small_street_lamp",
+        "trafficcraft:small_double_street_lamp",
+        "trafficcraft:street_light"
+    ]
+}

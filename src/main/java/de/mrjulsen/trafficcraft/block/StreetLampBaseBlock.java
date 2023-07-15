@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.block;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,13 +46,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    public static final VoxelShape SHAPE_COMMON = Block.box(6, 0, 6, 10, 11, 10);
+    public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 11, 9);
 
     public static final VoxelShape SHAPE_PART_NORTH = Block.box(6, 4, 6, 10, 11, 25);
     public static final VoxelShape SHAPE_PART_SOUTH = Block.box(6, 4, -9, 10, 11, 10);
@@ -189,7 +190,8 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
 
         return this.defaultBlockState()
             .setValue(FACING, pContext.getHorizontalDirection().getOpposite())
-            .setValue(WATERLOGGED, Boolean.valueOf(flag));
+            .setValue(WATERLOGGED, Boolean.valueOf(flag))
+            .setValue(LIT, false);
     }
 
     @Override
@@ -206,7 +208,8 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
         NORMAL,
         SMALL,
         DOUBLE,
-        SMALL_DOUBLE
+        SMALL_DOUBLE,
+        SINGLE_LIGHT
     }
 
     /* BLOCK ENTITY */
@@ -232,5 +235,15 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
             };
         }
         return null;
+    }
+
+    @Override
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return false;
     }  
+
+    @Override
+    public boolean canConnect(BlockState pState, Direction pDirection) {
+        return pDirection == Direction.DOWN;
+    }
 }

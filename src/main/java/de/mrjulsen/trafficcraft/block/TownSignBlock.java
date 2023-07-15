@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.block.client.WritableTrafficSignClient;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TownSignVariant;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
@@ -27,12 +28,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TownSignBlock extends WritableTrafficSign {
+public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLike {
 
-    private static final VoxelShape BASE_SHAPE = Block.box(6, 0, 6, 10, 16, 10);
-    
-    protected static final VoxelShape SHAPE_SN = Shapes.or(BASE_SHAPE, Block.box(0, 4, 6, 16, 16, 10));
-    protected static final VoxelShape SHAPE_EW = Shapes.or(BASE_SHAPE, Block.box(6, 4, 0, 10, 16, 16));
+    private static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
+    private static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, Block.box(0, 4, 9, 16, 16, 9.5D));    
+    private static final VoxelShape SHAPE_NORTH = Shapes.or(SHAPE_COMMON, Block.box(0, 4, 6.5D, 16, 16, 7));
+    private static final VoxelShape SHAPE_EAST = Shapes.or(SHAPE_COMMON, Block.box(9, 4, 0, 9.5D, 16, 16));
+    private static final VoxelShape SHAPE_WEST = Shapes.or(SHAPE_COMMON, Block.box(6.5D, 4, 0, 7, 16, 16));
 
     public static final EnumProperty<TownSignVariant> VARIANT = EnumProperty.create("variant", TownSignVariant.class);
 
@@ -48,7 +50,18 @@ public class TownSignBlock extends WritableTrafficSign {
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return pState.getValue(FACING) == Direction.NORTH || pState.getValue(FACING) == Direction.SOUTH ? SHAPE_SN : SHAPE_EW;
+        switch (pState.getValue(FACING)) {
+            case NORTH:
+                return pState.getValue(VARIANT) == TownSignVariant.BOTH ? Shapes.or(SHAPE_NORTH, SHAPE_SOUTH) : SHAPE_NORTH;
+            case SOUTH:
+                return pState.getValue(VARIANT) == TownSignVariant.BOTH ? Shapes.or(SHAPE_NORTH, SHAPE_SOUTH) : SHAPE_SOUTH;
+            case EAST:
+                return pState.getValue(VARIANT) == TownSignVariant.BOTH ? Shapes.or(SHAPE_EAST, SHAPE_WEST) : SHAPE_EAST;
+            case WEST:
+                return pState.getValue(VARIANT) == TownSignVariant.BOTH ? Shapes.or(SHAPE_EAST, SHAPE_WEST) : SHAPE_WEST;
+            default:
+                return SHAPE_COMMON;
+        }
     }
 
     @Override
@@ -138,5 +151,10 @@ public class TownSignBlock extends WritableTrafficSign {
         public String getSerializedName() {
             return side;
         }
+    }
+
+    @Override
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return pState.getValue(VARIANT) != TownSignVariant.BOTH && pDirection == pState.getValue(FACING).getOpposite();
     }
 }

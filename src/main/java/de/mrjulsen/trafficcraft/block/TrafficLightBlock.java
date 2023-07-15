@@ -63,7 +63,7 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
     public static final EnumProperty<TrafficLightDirection> DIRECTION = EnumProperty.create("direction", TrafficLightDirection.class);
     public static final EnumProperty<TrafficLightMode> MODE = EnumProperty.create("mode", TrafficLightMode.class);
 
-    public static final VoxelShape SHAPE_COMMON = Block.box(6, 0, 6, 10, 16, 10);
+    public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
     public static final VoxelShape SHAPE_PART_NORTH = Block.box(4, 4.5d, 1, 12, 16, 6);
     public static final VoxelShape SHAPE_PART_SOUTH = Block.box(4, 4.5d, 10, 12, 16, 15);
@@ -249,10 +249,10 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntity::tick);
-    } 
-    
+    }
+
     @Override
-    public Direction[] forbiddenDirections(BlockState state, BlockPos pos) {
-        return new Direction[] { state.getValue(FACING) };
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return pDirection != pState.getValue(FACING);
     }
 }

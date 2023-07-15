@@ -1,7 +1,106 @@
 {
-    "variants": {
-        "": {
-            "model": "trafficcraft:block/traffic_sign_post"
+    "multipart": [
+        {
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_base"
+            }
+        },
+        {
+            "when": {
+                "axis": "x",
+                "north": "false",
+                "south": "false",
+                "up": "false",
+                "down": "false"
+            },
+            "apply": [
+                {
+                    "model": "trafficcraft:block/traffic_sign_post_double",
+                    "y": 90
+                }
+            ]
+        },
+        {
+            "when": {
+                "axis": "z",
+                "east": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+            },
+            "apply": [
+                {
+                    "model": "trafficcraft:block/traffic_sign_post_double"
+                }
+            ]
+        },
+        {
+            "when": {
+                "axis": "y",
+                "east": "false",
+                "west": "false",
+                "north": "false",
+                "south": "false"
+            },
+            "apply": [
+                {
+                    "model": "trafficcraft:block/traffic_sign_post_double",
+                    "x": 90
+                }
+            ]
+        },
+        {
+            "when": {
+                "north": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection"
+            }
+        },
+        {
+            "when": {
+                "east": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "south": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "x": 180
+            }
+        },
+        {
+            "when": {
+                "west": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "up": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "x": 270
+            }
+        },
+        {
+            "when": {
+                "down": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "x": 90
+            }
         }
-    }
+    ]
 }

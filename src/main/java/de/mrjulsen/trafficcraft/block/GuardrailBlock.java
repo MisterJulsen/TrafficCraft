@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
+import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -29,13 +30,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedBlock {
+public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    private static final VoxelShape SHAPE_POST = Block.box(6, 0, 6, 10, 16, 10);    
+    private static final VoxelShape SHAPE_POST = Block.box(7, 0, 7, 9, 16, 9);    
     private static final VoxelShape SHAPE_XP_SOUTH = Block.box(9D, 8.5D, 5.5D, 16, 15.5D, 7D);
     private static final VoxelShape SHAPE_XN_SOUTH = Block.box(0, 8.5D, 5.5D, 7, 15.5D, 7D);
     private static final VoxelShape SHAPE_XP_NORTH = Block.box(9D, 8.5D, 9, 16, 15.5D, 10.5D);
@@ -49,7 +50,7 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
     private static final VoxelShape SHAPE_EAST = Block.box(5.5D, 8.5D, 5.5D, 7, 15.5D, 10.5D);
     private static final VoxelShape SHAPE_WEST = Block.box(9, 8.5D, 5.5D, 10.5D, 15.5D, 10.5D);
 
-    private static final VoxelShape COLLISION_POST = Block.box(6, 0, 6, 10, 24, 10);
+    private static final VoxelShape COLLISION_POST = Block.box(7, 0, 7, 9, 24, 9);
     private static final VoxelShape COLLISION_XP_SOUTH = Block.box(9D, 8.5D, 5.5D, 16, 24, 7D);
     private static final VoxelShape COLLISION_XN_SOUTH = Block.box(0, 8.5D, 5.5D, 7, 24, 7D);
     private static final VoxelShape COLLISION_XP_NORTH = Block.box(9D, 8.5D, 9, 16, 24, 10.5D);
@@ -339,5 +340,10 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
     @Override
     public int getDefaultColor() {
         return Constants.METAL_COLOR;
+    }
+
+    @Override
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        return pDirection == pState.getValue(FACING).getOpposite();
     }
 }
