@@ -1,0 +1,33 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NIN",
+        "GLG"
+    ],
+    "key": {
+        "I": [
+            {
+                "item": "minecraft:iron_ingot"
+            }
+        ],
+        "N": [
+            {
+                "item": "minecraft:iron_nugget"
+            }
+        ],
+        "L": [
+            {
+                "item": "minecraft:glowstone"
+            }
+        ],
+        "G": [
+            {
+                "item": "minecraft:glass_pane"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:street_light",
+        "count": 4
+    }
+}

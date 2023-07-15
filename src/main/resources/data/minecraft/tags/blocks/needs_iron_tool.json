@@ -17,6 +17,7 @@
     "trafficcraft:traffic_light",
     "trafficcraft:traffic_light_request_button",
     "trafficcraft:traffic_light_controller",
-    "trafficcraft:town_sign"
+    "trafficcraft:town_sign",
+    "trafficcraft:street_light"
   ]
 }

@@ -79,6 +79,7 @@
     "block.trafficcraft.asphalt_curb_slope": "Schicht von Asphalt mit Bordstein",
     "block.trafficcraft.concrete_curb_slope": "Schicht von Beton mit Bordstein",
     "block.trafficcraft.house_number_sign": "Hausnummernschild",
+    "block.trafficcraft.street_light": "Straßenlicht",
 
     "gui.trafficcraft.signpicker.title": "Texturauswahl",
     "gui.trafficcraft.signpicker.tab.circle": "Runde Verkehrszeichen",

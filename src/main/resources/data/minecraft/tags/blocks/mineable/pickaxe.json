@@ -1327,6 +1327,7 @@
     "trafficcraft:asphalt_curb_slope",
     "trafficcraft:concrete_curb",
     "trafficcraft:concrete_curb_slope",
-    "trafficcraft:house_number_sign"
+    "trafficcraft:house_number_sign",
+    "trafficcraft:street_light"
   ]
 }
