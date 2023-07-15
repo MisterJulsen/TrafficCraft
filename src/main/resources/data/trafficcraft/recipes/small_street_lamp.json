@@ -2,8 +2,8 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "GI ",
-        " I ",
-        " I "
+        " R ",
+        " R "
     ],
     "key": {
         "I": [
@@ -11,9 +11,14 @@
                 "item": "minecraft:iron_ingot"
             }
         ],
+        "R": [
+            {
+                "item": "trafficcraft:traffic_sign_post"
+            }
+        ],
         "G": [
             {
-                "item": "minecraft:redstone_lamp"
+                "item": "trafficcraft:street_light"
             }
         ]
     },
