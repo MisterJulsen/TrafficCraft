@@ -1,0 +1,126 @@
+{
+    "multipart": [        
+        {
+            "when": {
+                "facing": "north",
+                "lit": false
+            },
+            "apply": {
+                "model": "trafficcraft:block/fluorescent_tube_lamp"
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "lit": false
+            },
+            "apply": {
+                "model": "trafficcraft:block/fluorescent_tube_lamp",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "lit": false
+            },
+            "apply": {
+                "model": "trafficcraft:block/fluorescent_tube_lamp",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "lit": false
+            },
+            "apply": {
+                "model": "trafficcraft:block/fluorescent_tube_lamp",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "facing": "north",
+                "lit": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/lit_fluorescent_tube_lamp"
+            }
+        },
+        {
+            "when": {
+                "facing": "east",
+                "lit": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/lit_fluorescent_tube_lamp",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "facing": "south",
+                "lit": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/lit_fluorescent_tube_lamp",
+                "y": 180
+            }
+        },
+        {
+            "when": {
+                "facing": "west",
+                "lit": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/lit_fluorescent_tube_lamp",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "north": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection"
+            }
+        },
+        {
+            "when": {
+                "east": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "y": 90
+            }
+        },
+        {
+            "when": {
+                "south": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "x": 180
+            }
+        },
+        {
+            "when": {
+                "west": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "y": 270
+            }
+        },
+        {
+            "when": {
+                "up": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_connection",
+                "x": 270
+            }
+        }
+    ]
+}

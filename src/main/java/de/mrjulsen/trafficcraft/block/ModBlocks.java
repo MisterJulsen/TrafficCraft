@@ -102,6 +102,7 @@ public class ModBlocks {
     public static final RegistryObject<Block> SMALL_STREET_LAMP = registerBlock("small_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
     public static final RegistryObject<Block> SMALL_DOUBLE_STREET_LAMP = registerBlock("small_double_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
     public static final RegistryObject<Block> STREET_LIGHT = registerBlock("street_light", () -> new StreetLightBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> FLUORESCENT_TUBE_LAMP = registerBlock("fluorescent_tube_lamp", () -> new FluorescentTubeLampBlock(), ModCreativeModeTab.MOD_TAB, false);
     
     public static final RegistryObject<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistryObject<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(), ModCreativeModeTab.MOD_TAB, false);

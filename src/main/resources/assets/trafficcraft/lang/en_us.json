@@ -80,6 +80,7 @@
     "block.trafficcraft.concrete_curb_slope": "Concrete with Curb Slope",
     "block.trafficcraft.house_number_sign": "House Number Sign",
     "block.trafficcraft.street_light": "Street Light",
+    "block.trafficcraft.fluorescent_tube_lamp": "Fluorescent Tube Lamp",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",

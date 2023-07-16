@@ -80,6 +80,7 @@
     "block.trafficcraft.concrete_curb_slope": "Schicht von Beton mit Bordstein",
     "block.trafficcraft.house_number_sign": "Hausnummernschild",
     "block.trafficcraft.street_light": "Straßenlicht",
+    "block.trafficcraft.fluorescent_tube_lamp": "Leuchtstoffröhrenlampe",
 
     "gui.trafficcraft.signpicker.title": "Texturauswahl",
     "gui.trafficcraft.signpicker.tab.circle": "Runde Verkehrszeichen",

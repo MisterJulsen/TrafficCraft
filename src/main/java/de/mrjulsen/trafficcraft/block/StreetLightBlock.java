@@ -28,13 +28,13 @@ public class StreetLightBlock extends StreetLampBaseBlock {
 
     protected static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().collect(Util.toMap());
 
-    private static final VoxelShape SHAPE_BASE_SN = Block.box(5, 5.75D, 3, 11, 9.3D, 13);
-    private static final VoxelShape SHAPE_BASE_EW = Block.box(3, 5.75D, 5, 13, 9.3D, 11);
-    private static final VoxelShape SHAPE_NORTH = Block.box(7, 7, 0, 9, 9, 7);
-    private static final VoxelShape SHAPE_EAST = Block.box(9, 7, 7, 16, 9, 9);
-    private static final VoxelShape SHAPE_SOUTH = Block.box(7, 7, 9, 9, 9, 16);
-    private static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
-    private static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
+    protected static final VoxelShape SHAPE_BASE_SN = Block.box(5, 5.75D, 3, 11, 9.3D, 13);
+    protected static final VoxelShape SHAPE_BASE_EW = Block.box(3, 5.75D, 5, 13, 9.3D, 11);
+    protected static final VoxelShape SHAPE_NORTH = Block.box(7, 7, 0, 9, 9, 7);
+    protected static final VoxelShape SHAPE_EAST = Block.box(9, 7, 7, 16, 9, 9);
+    protected static final VoxelShape SHAPE_SOUTH = Block.box(7, 7, 9, 9, 9, 16);
+    protected static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
+    protected static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
     
     public StreetLightBlock() {
         super(LampType.SINGLE_LIGHT);

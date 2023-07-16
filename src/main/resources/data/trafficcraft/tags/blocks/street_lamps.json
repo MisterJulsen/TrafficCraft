@@ -5,6 +5,7 @@
         "trafficcraft:double_street_lamp",
         "trafficcraft:small_street_lamp",
         "trafficcraft:small_double_street_lamp",
-        "trafficcraft:street_light"
+        "trafficcraft:street_light",
+        "trafficcraft:fluorescent_tube_lamp"
     ]
 }
