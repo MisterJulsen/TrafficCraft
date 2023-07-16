@@ -1,20 +1,79 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "trafficcraft:block/asphalt_curb",
-      "y": 0
-    },
-    "facing=east": {
-      "model": "trafficcraft:block/asphalt_curb",
-      "y": 90
-    },
-    "facing=south": {
-      "model": "trafficcraft:block/asphalt_curb",
+    "facing=east,shape=inner_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
       "y": 180
     },
-    "facing=west": {
-      "model": "trafficcraft:block/asphalt_curb",
+    "facing=east,shape=inner_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
       "y": 270
+    },
+    "facing=east,shape=outer_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 270
+    },
+    "facing=east,shape=outer_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer"
+    },
+    "facing=east,shape=straight": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb",
+      "y": 270
+    },
+    "facing=north,shape=inner_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
+      "y": 90
+    },
+    "facing=north,shape=inner_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
+      "y": 180
+    },
+    "facing=north,shape=outer_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 180
+    },
+    "facing=north,shape=outer_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 270
+    },
+    "facing=north,shape=straight": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb",
+      "y": 180
+    },
+    "facing=south,shape=inner_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
+      "y": 270
+    },
+    "facing=south,shape=inner_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner"
+    },
+    "facing=south,shape=outer_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer"
+    },
+    "facing=south,shape=outer_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 90
+    },
+    "facing=south,shape=straight": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb"
+    },
+    "facing=west,shape=inner_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner"
+    },
+    "facing=west,shape=inner_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_inner",
+      "y": 90
+    },
+    "facing=west,shape=outer_left": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 90
+    },
+    "facing=west,shape=outer_right": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb_outer",
+      "y": 180
+    },
+    "facing=west,shape=straight": {
+      "model": "trafficcraft:block/asphalt/curb/asphalt_curb",
+      "y": 90
     }
   }
 }

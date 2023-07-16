@@ -19,7 +19,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -33,6 +35,8 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
+
     protected static final VoxelShape[] SHAPE_BY_LAYER = new VoxelShape[] { Shapes.empty(),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 4.0D, 16.0D),
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 8.0D, 16.0D),
@@ -96,7 +100,44 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
 
     @Override
     public BlockState mirror(BlockState pState, Mirror pMirror) {
-        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
+        Direction direction = pState.getValue(FACING);
+        StairsShape stairsshape = pState.getValue(SHAPE);
+
+        switch(pMirror) {
+        case LEFT_RIGHT:
+           if (direction.getAxis() == Direction.Axis.Z) {
+              switch(stairsshape) {
+              case INNER_LEFT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              case INNER_RIGHT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              case OUTER_LEFT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              case OUTER_RIGHT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              default:
+                 return pState.rotate(Rotation.CLOCKWISE_180);
+              }
+           }
+           break;
+        case FRONT_BACK:
+           if (direction.getAxis() == Direction.Axis.X) {
+              switch(stairsshape) {
+              case INNER_LEFT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_LEFT);
+              case INNER_RIGHT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.INNER_RIGHT);
+              case OUTER_LEFT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_RIGHT);
+              case OUTER_RIGHT:
+                 return pState.rotate(Rotation.CLOCKWISE_180).setValue(SHAPE, StairsShape.OUTER_LEFT);
+              case STRAIGHT:
+                 return pState.rotate(Rotation.CLOCKWISE_180);
+              }
+           }
+        }
+  
+        return super.mirror(pState, pMirror);
     }
 
     @Override
@@ -117,26 +158,52 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        BlockState blockstate = pContext.getLevel().getBlockState(pContext.getClickedPos());
-        FluidState fluidstate = pContext.getLevel().getFluidState(pContext.getClickedPos());
+        
+        /*BlockPos blockpos = pContext.getClickedPos();
+        BlockState blockstate = pContext.getLevel().getBlockState(blockpos);
+        FluidState fluidstate = pContext.getLevel().getFluidState(blockpos);
         boolean flag = fluidstate.getType() == Fluids.WATER;
 
         if (blockstate.getBlock() instanceof AsphaltCurbSlope) {
             int i = blockstate.getValue(LAYERS);
             return blockstate.setValue(LAYERS, Integer.valueOf(Math.min(MAX_HEIGHT, i + 1)))
                 .setValue(WATERLOGGED, Boolean.valueOf(flag))
-                .setValue(FACING, pContext.getHorizontalDirection().getOpposite());
+                .setValue(FACING, pContext.getHorizontalDirection())
+                .setValue(SHAPE, getBlockShape(blockstate, pContext.getLevel(), blockpos))
+            ;
         } else {
-            return super.getStateForPlacement(pContext)
+            BlockState state = this.defaultBlockState()
                 .setValue(WATERLOGGED, Boolean.valueOf(flag))
-                .setValue(FACING, pContext.getHorizontalDirection().getOpposite());
+                .setValue(FACING, pContext.getHorizontalDirection())
+            ;
+
+            return state.setValue(SHAPE, getBlockShape(state, pContext.getLevel(), blockpos));
         }
+        */
+
+        BlockPos blockpos = pContext.getClickedPos();
+        FluidState fluidstate = pContext.getLevel().getFluidState(blockpos);
+        boolean flag = fluidstate.getType() == Fluids.WATER;
+        BlockState currentState = pContext.getLevel().getBlockState(blockpos);
+
+        int layers = 1;
+        if (currentState.getBlock() instanceof AsphaltCurbSlope curbSlope) {
+            layers = Math.min(MAX_HEIGHT, currentState.getValue(LAYERS) + 1);
+        }
+
+        BlockState blockstate = this.defaultBlockState()
+            .setValue(WATERLOGGED, flag)
+            .setValue(LAYERS, layers)
+            .setValue(FACING, pContext.getHorizontalDirection())
+        ;
+
+        return blockstate.setValue(SHAPE, getBlockShape(blockstate, pContext.getLevel(), blockpos));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        pBuilder.add(LAYERS, WATERLOGGED, FACING);
         super.createBlockStateDefinition(pBuilder);
+        pBuilder.add(LAYERS, WATERLOGGED, FACING, SHAPE);
     }
 
     @Override
@@ -145,7 +212,7 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
   
-        return super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
+        return pFacing.getAxis().isHorizontal() ? pState.setValue(SHAPE, getBlockShape(pState, pLevel, pCurrentPos)) : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
     }
 
     @Override
@@ -153,4 +220,42 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
+    private static StairsShape getBlockShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
+        Direction direction = pState.getValue(FACING);
+        BlockState blockstate = pLevel.getBlockState(pPos.relative(direction));
+
+        if (isThis(blockstate)) {
+           Direction direction1 = blockstate.getValue(FACING);
+           if (direction1.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction1.getOpposite())) {
+              if (direction1 == direction.getCounterClockWise()) {
+                 return StairsShape.OUTER_LEFT;
+              }
+  
+              return StairsShape.OUTER_RIGHT;
+           }
+        }
+  
+        BlockState blockstate1 = pLevel.getBlockState(pPos.relative(direction.getOpposite()));
+        if (isThis(blockstate1)) {
+           Direction direction2 = blockstate1.getValue(FACING);
+           if (direction2.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction2)) {
+              if (direction2 == direction.getCounterClockWise()) {
+                 return StairsShape.INNER_LEFT;
+              }
+  
+              return StairsShape.INNER_RIGHT;
+           }
+        }
+  
+        return StairsShape.STRAIGHT;
+    }
+
+    private static boolean canTakeShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, Direction pFace) {
+        BlockState blockstate = pLevel.getBlockState(pPos.relative(pFace));
+        return !isThis(blockstate) || blockstate.getValue(FACING) != pState.getValue(FACING);
+    }
+
+    public static boolean isThis(BlockState pState) {
+        return pState.getBlock() instanceof AsphaltCurbSlope;
+    }
 }
