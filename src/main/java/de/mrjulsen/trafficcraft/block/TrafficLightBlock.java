@@ -3,7 +3,9 @@ package de.mrjulsen.trafficcraft.block;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.client.TrafficLightClient;
+import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
+import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
@@ -14,10 +16,13 @@ import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
+import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +59,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
+public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike, IPaintableBlock {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -96,6 +101,37 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
             .setValue(MODE, TrafficLightMode.OFF)
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(VARIANT, TrafficLightVariant.NORMAL).setValue(DIRECTION, TrafficLightDirection.NORMAL).setValue(MODE, TrafficLightMode.OFF));
+    }
+
+    @Override
+    public void attack(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
+       onRemoveColor(pState, pLevel, pPos, pPlayer);
+    }
+
+    public void onRemoveColor(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
+        ItemStack stack = pPlayer.getInventory().getSelected();
+        Item item = stack.getItem();
+
+        if (!(item instanceof BrushItem)) {
+            return;
+        }
+
+        if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {
+            if (blockEntity.getColor() == PaintColor.NONE) {
+                return;
+            }
+            blockEntity.setColor(PaintColor.NONE);
+            pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+        }
+    }
+
+    public void onSetColor(Level pLevel, BlockPos pPos, PaintColor color) {
+        if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {
+            if (!pLevel.isClientSide) {
+                blockEntity.setColor(color);
+                pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
+            }
+        }
     }
 
     @Override
@@ -254,5 +290,9 @@ public class TrafficLightBlock extends BaseEntityBlock implements SimpleWaterlog
     @Override
     public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
         return pDirection != pState.getValue(FACING);
+    }
+
+    public int getDefaultColor() {
+        return 0xFFFFFFFF;
     }
 }

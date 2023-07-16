@@ -2,9 +2,11 @@ package de.mrjulsen.trafficcraft.block.colors;
 
 import de.mrjulsen.trafficcraft.block.HouseNumberSignBlock;
 import de.mrjulsen.trafficcraft.block.StreetSignBlock;
+import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
@@ -45,8 +47,17 @@ public class TintedTextures{
                     PaintColor c = blockEntity.getColor();
                     return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
                 }
+            } else if (pState.getBlock() instanceof TrafficLightBlock block) {    
+                if (pLevel == null) {
+                    return block.getDefaultColor();
+                }
+
+                if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {                    
+                    PaintColor c = blockEntity.getColor();
+                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
+                }
             }
-            
+                        
             return 0;
         }
     }

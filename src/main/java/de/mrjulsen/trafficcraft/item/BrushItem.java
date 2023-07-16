@@ -6,6 +6,7 @@ import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.PaintedAsphaltBlock;
 import de.mrjulsen.trafficcraft.block.PaintedAsphaltSlope;
 import de.mrjulsen.trafficcraft.block.StreetSignBlock;
+import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltBlock;
 import de.mrjulsen.trafficcraft.block.AsphaltCurbSlope;
@@ -16,6 +17,7 @@ import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
 import de.mrjulsen.trafficcraft.item.client.BrushClient;
@@ -59,6 +61,9 @@ public class BrushItem extends Item
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             } else if (state.getBlock() instanceof HouseNumberSignBlock block) {  
+                block.onRemoveColor(state, worldIn, pos, player);
+                return false;
+            } else if (state.getBlock() instanceof TrafficLightBlock block) {  
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             }
@@ -230,6 +235,12 @@ public class BrushItem extends Item
                         return InteractionResult.SUCCESS;
                     }
                 } else if (state.getBlock() instanceof HouseNumberSignBlock block && level.getBlockEntity(pos) instanceof HouseNumberSignBlockEntity blockEntity) {
+                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
+                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
+                        this.removePaint(player, nbt);
+                        return InteractionResult.SUCCESS;
+                    }
+                } else if (state.getBlock() instanceof TrafficLightBlock block && level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
                     if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
                         block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
                         this.removePaint(player, nbt);
