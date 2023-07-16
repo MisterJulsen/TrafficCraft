@@ -98,7 +98,7 @@ public class AsphaltCurb extends Block {
         Direction direction = pState.getValue(FACING);
         BlockState blockstate = pLevel.getBlockState(pPos.relative(direction));
 
-        if (isThis(blockstate)) {
+        if (isLikeThis(blockstate)) {
            Direction direction1 = blockstate.getValue(FACING);
            if (direction1.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction1.getOpposite())) {
               if (direction1 == direction.getCounterClockWise()) {
@@ -110,7 +110,7 @@ public class AsphaltCurb extends Block {
         }
   
         BlockState blockstate1 = pLevel.getBlockState(pPos.relative(direction.getOpposite()));
-        if (isThis(blockstate1)) {
+        if (isLikeThis(blockstate1)) {
            Direction direction2 = blockstate1.getValue(FACING);
            if (direction2.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction2)) {
               if (direction2 == direction.getCounterClockWise()) {
@@ -126,11 +126,11 @@ public class AsphaltCurb extends Block {
 
     private static boolean canTakeShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, Direction pFace) {
         BlockState blockstate = pLevel.getBlockState(pPos.relative(pFace));
-        return !isThis(blockstate) || blockstate.getValue(FACING) != pState.getValue(FACING);
+        return !isLikeThis(blockstate) || blockstate.getValue(FACING) != pState.getValue(FACING);
     }
 
-    public static boolean isThis(BlockState pState) {
-        return pState.getBlock() instanceof AsphaltCurb;
+    public static boolean isLikeThis(BlockState pState) {
+        return pState.getBlock() instanceof AsphaltCurb || pState.getBlock() instanceof AsphaltCurbSlope;
     }
 
     @Override

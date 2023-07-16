@@ -158,28 +158,6 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
-        
-        /*BlockPos blockpos = pContext.getClickedPos();
-        BlockState blockstate = pContext.getLevel().getBlockState(blockpos);
-        FluidState fluidstate = pContext.getLevel().getFluidState(blockpos);
-        boolean flag = fluidstate.getType() == Fluids.WATER;
-
-        if (blockstate.getBlock() instanceof AsphaltCurbSlope) {
-            int i = blockstate.getValue(LAYERS);
-            return blockstate.setValue(LAYERS, Integer.valueOf(Math.min(MAX_HEIGHT, i + 1)))
-                .setValue(WATERLOGGED, Boolean.valueOf(flag))
-                .setValue(FACING, pContext.getHorizontalDirection())
-                .setValue(SHAPE, getBlockShape(blockstate, pContext.getLevel(), blockpos))
-            ;
-        } else {
-            BlockState state = this.defaultBlockState()
-                .setValue(WATERLOGGED, Boolean.valueOf(flag))
-                .setValue(FACING, pContext.getHorizontalDirection())
-            ;
-
-            return state.setValue(SHAPE, getBlockShape(state, pContext.getLevel(), blockpos));
-        }
-        */
 
         BlockPos blockpos = pContext.getClickedPos();
         FluidState fluidstate = pContext.getLevel().getFluidState(blockpos);
@@ -224,7 +202,7 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
         Direction direction = pState.getValue(FACING);
         BlockState blockstate = pLevel.getBlockState(pPos.relative(direction));
 
-        if (isThis(blockstate)) {
+        if (isLikeThis(blockstate)) {
            Direction direction1 = blockstate.getValue(FACING);
            if (direction1.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction1.getOpposite())) {
               if (direction1 == direction.getCounterClockWise()) {
@@ -236,7 +214,7 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
         }
   
         BlockState blockstate1 = pLevel.getBlockState(pPos.relative(direction.getOpposite()));
-        if (isThis(blockstate1)) {
+        if (isLikeThis(blockstate1)) {
            Direction direction2 = blockstate1.getValue(FACING);
            if (direction2.getAxis() != pState.getValue(FACING).getAxis() && canTakeShape(pState, pLevel, pPos, direction2)) {
               if (direction2 == direction.getCounterClockWise()) {
@@ -252,10 +230,10 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
 
     private static boolean canTakeShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, Direction pFace) {
         BlockState blockstate = pLevel.getBlockState(pPos.relative(pFace));
-        return !isThis(blockstate) || blockstate.getValue(FACING) != pState.getValue(FACING);
+        return !isLikeThis(blockstate) || blockstate.getValue(FACING) != pState.getValue(FACING);
     }
 
-    public static boolean isThis(BlockState pState) {
-        return pState.getBlock() instanceof AsphaltCurbSlope;
+    public static boolean isLikeThis(BlockState pState) {
+        return pState.getBlock() instanceof AsphaltCurbSlope || pState.getBlock() instanceof AsphaltCurb;
     }
 }
