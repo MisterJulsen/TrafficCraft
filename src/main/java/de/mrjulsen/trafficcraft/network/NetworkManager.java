@@ -12,26 +12,35 @@ import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel.MessageBuilder;
 
 public class NetworkManager {
     public static final String PROTOCOL_VERSION = String.valueOf(1);
+    private static int currentId = 0;
 
     public static final SimpleChannel MOD_CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(ModMain.MOD_ID, "trafficcraft_channel")).networkProtocolVersion(() -> PROTOCOL_VERSION).clientAcceptedVersions(PROTOCOL_VERSION::equals).serverAcceptedVersions(PROTOCOL_VERSION::equals).simpleChannel();
     
     public static void registerNetworkPackets()
     {
-        MOD_CHANNEL.messageBuilder(SignPacket.class, 0).encoder(SignPacket::encode).decoder(SignPacket::decode).consumer(SignPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(TrafficLightPacket.class, 1).encoder(TrafficLightPacket::encode).decoder(TrafficLightPacket::decode).consumer(TrafficLightPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(TrafficLightSchedulePacket.class, 2).encoder(TrafficLightSchedulePacket::encode).decoder(TrafficLightSchedulePacket::decode).consumer(TrafficLightSchedulePacket::handle).add();
-        MOD_CHANNEL.messageBuilder(TrafficLightControllerPacket.class, 3).encoder(TrafficLightControllerPacket::encode).decoder(TrafficLightControllerPacket::decode).consumer(TrafficLightControllerPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(PaintBrushPacket.class, 4).encoder(PaintBrushPacket::encode).decoder(PaintBrushPacket::decode).consumer(PaintBrushPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(StreetLampConfigPacket.class, 5).encoder(StreetLampConfigPacket::encode).decoder(StreetLampConfigPacket::decode).consumer(StreetLampConfigPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(WritableSignPacket.class, 6).encoder(WritableSignPacket::encode).decoder(WritableSignPacket::decode).consumer(WritableSignPacket::handle).add();
-        MOD_CHANNEL.messageBuilder(TownSignPacket.class, 7).encoder(TownSignPacket::encode).decoder(TownSignPacket::decode).consumer(TownSignPacket::handle).add();
+        register(SignPacket.class).encoder(SignPacket::encode).decoder(SignPacket::decode).consumer(SignPacket::handle).add();
+        register(TrafficLightPacket.class).encoder(TrafficLightPacket::encode).decoder(TrafficLightPacket::decode).consumer(TrafficLightPacket::handle).add();
+        register(TrafficLightSchedulePacket.class).encoder(TrafficLightSchedulePacket::encode).decoder(TrafficLightSchedulePacket::decode).consumer(TrafficLightSchedulePacket::handle).add();
+        register(TrafficLightControllerPacket.class).encoder(TrafficLightControllerPacket::encode).decoder(TrafficLightControllerPacket::decode).consumer(TrafficLightControllerPacket::handle).add();
+        register(PaintBrushPacket.class).encoder(PaintBrushPacket::encode).decoder(PaintBrushPacket::decode).consumer(PaintBrushPacket::handle).add();
+        register(StreetLampConfigPacket.class).encoder(StreetLampConfigPacket::encode).decoder(StreetLampConfigPacket::decode).consumer(StreetLampConfigPacket::handle).add();
+        register(WritableSignPacket.class).encoder(WritableSignPacket::encode).decoder(WritableSignPacket::decode).consumer(WritableSignPacket::handle).add();
+        register(TownSignPacket.class).encoder(TownSignPacket::encode).decoder(TownSignPacket::decode).consumer(TownSignPacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()
     {
         return MOD_CHANNEL;
+    }
+
+    private static <T> MessageBuilder<T> register(Class<T> clazz) {
+        MessageBuilder<T> mb = MOD_CHANNEL.messageBuilder(clazz, currentId);
+        currentId++;
+        return mb;
+
     }
 }
