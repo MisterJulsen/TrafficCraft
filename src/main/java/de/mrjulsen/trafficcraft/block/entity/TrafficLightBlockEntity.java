@@ -10,7 +10,6 @@ import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
 import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.util.Location;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -20,9 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightBlockEntity extends BlockEntity {
-
-    private PaintColor color = PaintColor.NONE;
+public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     // Properties
     private int phaseId = 0;
@@ -50,7 +47,6 @@ public class TrafficLightBlockEntity extends BlockEntity {
     {
         super.load(compound);
 
-        this.color = PaintColor.byId(compound.getInt("color"));
         this.phaseId = compound.getInt("phaseId");
         this.controlType = compound.getInt("controlType");
         this.powered = compound.getBoolean("powered");
@@ -67,7 +63,6 @@ public class TrafficLightBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag)
     {
-        tag.putInt("color", color.getId());
         tag.putInt("phaseId", phaseId);
         tag.putBoolean("powered", powered);
         tag.putInt("controlType", controlType);
@@ -154,16 +149,6 @@ public class TrafficLightBlockEntity extends BlockEntity {
 
 
     /* GETTERS AND SETTERS */
-
-    public void setColor(PaintColor color) {
-        this.color = color;
-        BlockEntityUtil.sendUpdatePacket(this);
-        this.setChanged();
-    }
-
-    public PaintColor getColor() {
-        return this.color;
-    }
 
     public void setPhaseId(int id)
     {

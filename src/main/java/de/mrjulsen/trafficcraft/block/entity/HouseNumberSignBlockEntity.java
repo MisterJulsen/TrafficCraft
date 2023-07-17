@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
 import de.mrjulsen.trafficcraft.block.client.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
@@ -8,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity {
+public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity implements IColorStorageBlockEntity {
     
     private PaintColor color = PaintColor.NONE;
 
@@ -44,12 +45,14 @@ public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity {
         super.saveAdditional(tag);
     }
 
+    @Override
     public void setColor(PaintColor color) {
         this.color = color;
         BlockEntityUtil.sendUpdatePacket(this);
         this.setChanged();
     }
 
+    @Override
     public PaintColor getColor() {
         return this.color;
     }

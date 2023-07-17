@@ -3,27 +3,12 @@ package de.mrjulsen.trafficcraft.item;
 import java.util.List;
 
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.PaintedAsphaltBlock;
-import de.mrjulsen.trafficcraft.block.PaintedAsphaltSlope;
-import de.mrjulsen.trafficcraft.block.StreetSignBlock;
-import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
-import de.mrjulsen.trafficcraft.block.AsphaltBlock;
-import de.mrjulsen.trafficcraft.block.AsphaltCurbSlope;
-import de.mrjulsen.trafficcraft.block.AsphaltSlope;
-import de.mrjulsen.trafficcraft.block.HouseNumberSignBlock;
-import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
-import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
-import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
 import de.mrjulsen.trafficcraft.item.client.BrushClient;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -54,16 +39,7 @@ public class BrushItem extends Item
     @Override
     public boolean canAttackBlock(BlockState state, Level worldIn, BlockPos pos, Player player) {
         if (player.isCreative()) {
-            if (state.getBlock() instanceof ColorableBlock block) {  
-                block.onRemoveColor(state, worldIn, pos, player);
-                return false;
-            } else if (state.getBlock() instanceof StreetSignBlock block) {  
-                block.onRemoveColor(state, worldIn, pos, player);
-                return false;
-            } else if (state.getBlock() instanceof HouseNumberSignBlock block) {  
-                block.onRemoveColor(state, worldIn, pos, player);
-                return false;
-            } else if (state.getBlock() instanceof TrafficLightBlock block) {  
+            if (state.getBlock() instanceof IPaintableBlock block) {  
                 block.onRemoveColor(state, worldIn, pos, player);
                 return false;
             }
@@ -149,6 +125,14 @@ public class BrushItem extends Item
         return PaintColor.byId(checkNbt(stack).getInt("color"));
     }
 
+    public static int getPatternId(ItemStack stack) {
+        return checkNbt(stack).getInt("pattern");
+    }
+
+    public static int getPaint(ItemStack stack) {
+        return checkNbt(stack).getInt("paint");
+    }
+
     public int getMaxPaint() {
         return Constants.MAX_PAINT;
     }
@@ -167,94 +151,22 @@ public class BrushItem extends Item
         BlockState state = pContext.getLevel().getBlockState(pos);
         Player player = pContext.getPlayer();
 
-        if (state.getBlock() instanceof IPaintableBlock) {
-            
-            if (!level.isClientSide) {
-                if (state.getBlock() instanceof PaintBucketBlock) {
-                    level.playSound(null, pos, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, 0.8F, 1.0F);
-                    return InteractionResult.SUCCESS;
-                } else if (state.getBlock() instanceof RoadBlock road && level.getBlockEntity(pos) instanceof ColoredBlockEntity blockEntity) {
-    
-                    String id = "";
-                    if (state.getBlock() instanceof PaintedAsphaltBlock)
-                        id = road.getDefaultRoadType().getRoadType() + "_pattern_" + nbt.getInt("pattern");
-                    else if (state.getBlock() instanceof PaintedAsphaltSlope)
-                        id = road.getDefaultRoadType().getRoadType() + "_slope_pattern_" + nbt.getInt("pattern");
-                        
-                    if (!ModBlocks.ROAD_BLOCKS.containsKey(id)) {
-                        return InteractionResult.FAIL;
+        if (!level.isClientSide) {
+            if (state.getBlock() instanceof PaintBucketBlock) {
+                level.playSound(null, pos, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, 0.8F, 1.0F);
+                return InteractionResult.SUCCESS;
+            } else {
+                if (state.getBlock() instanceof IPaintableBlock block) {
+                    if (level.getBlockEntity(pos) instanceof IColorStorageBlockEntity blockEntity && blockEntity.getColor() == PaintColor.byId(nbt.getInt("color"))) { 
+                        return block.update(pContext) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
                     }
-    
-                    if (state.getBlock() == ModBlocks.ROAD_BLOCKS.get(id).get() && blockEntity.getColor() == PaintColor.byId(nbt.getInt("color"))) {
-                        level.setBlockAndUpdate(pos, state.setValue(RoadBlock.FACING, state.getValue(RoadBlock.FACING).getClockWise(Axis.Y)));
-                        level.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
-                        return InteractionResult.SUCCESS;
-                    } else {
-                        BlockState newState = ModBlocks.ROAD_BLOCKS.get(id).get().defaultBlockState().setValue(RoadBlock.FACING, player.getDirection());
-                        if (state.getBlock() instanceof PaintedAsphaltSlope) {
-                            newState = newState.setValue(PaintedAsphaltSlope.LAYERS, state.getValue(PaintedAsphaltSlope.LAYERS));
-                        }
-    
-                        level.setBlockAndUpdate(pos, newState);
-                        road.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));
-    
+
+                    InteractionResult res = block.onSetColor(pContext);
+                    if (res == InteractionResult.CONSUME) {
                         this.removePaint(player, nbt);
-                        return InteractionResult.SUCCESS;
+                        res = InteractionResult.SUCCESS;
                     }
-                    
-                } else if (state.getBlock() instanceof AsphaltBlock block && !(state.getBlock() instanceof AsphaltCurbSlope)) {
-    
-                    String id = "";
-
-                    if (state.getBlock() instanceof AsphaltSlope)
-                        id = block.getDefaultRoadType().getRoadType() + "_slope_pattern_" + nbt.getInt("pattern");
-                    else if (state.getBlock() instanceof AsphaltBlock)
-                        id = block.getDefaultRoadType().getRoadType() + "_pattern_" + nbt.getInt("pattern");
-                        
-                    if (!ModBlocks.ROAD_BLOCKS.containsKey(id) || !(ModBlocks.ROAD_BLOCKS.get(id).get() instanceof RoadBlock)) {
-                        return InteractionResult.FAIL;
-                    }
-
-                    RoadBlock road = (RoadBlock)ModBlocks.ROAD_BLOCKS.get(id).get();
-                    BlockState newState = road.defaultBlockState().setValue(RoadBlock.FACING, player.getDirection());
-
-                    if (state.getBlock() instanceof AsphaltSlope) {
-                        newState = newState.setValue(PaintedAsphaltSlope.LAYERS, state.getValue(AsphaltSlope.LAYERS));
-                    }
-
-                    level.setBlockAndUpdate(pos, newState);
-                    road.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));
-
-                    this.removePaint(player, nbt);
-                    return InteractionResult.SUCCESS;
-                    
-                } else if (state.getBlock() instanceof StreetSignBlock block && level.getBlockEntity(pos) instanceof StreetSignBlockEntity blockEntity) {
-                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
-                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
-                        this.removePaint(player, nbt);
-                        return InteractionResult.SUCCESS;
-                    }
-                } else if (state.getBlock() instanceof HouseNumberSignBlock block && level.getBlockEntity(pos) instanceof HouseNumberSignBlockEntity blockEntity) {
-                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
-                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
-                        this.removePaint(player, nbt);
-                        return InteractionResult.SUCCESS;
-                    }
-                } else if (state.getBlock() instanceof TrafficLightBlock block && level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
-                    if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
-                        block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));    
-                        this.removePaint(player, nbt);
-                        return InteractionResult.SUCCESS;
-                    }
-                } else {
-                    if (state.getBlock() instanceof ColorableBlock block && level.getBlockEntity(pos) instanceof ColoredBlockEntity blockEntity) {
-                        if (blockEntity.getColor() != PaintColor.byId(nbt.getInt("color"))) { 
-                            block.onSetColor(level, pos, PaintColor.byId(nbt.getInt("color")));
-        
-                            this.removePaint(player, nbt);
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
+                    return res;
                 }
             }
         }

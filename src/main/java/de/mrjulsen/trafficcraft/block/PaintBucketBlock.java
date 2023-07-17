@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -112,7 +114,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             return InteractionResult.FAIL;
         }
 
-        ColoredBlockEntity blockEntity = (ColoredBlockEntity)level.getBlockEntity(pos);
+        IColorStorageBlockEntity blockEntity = (IColorStorageBlockEntity)level.getBlockEntity(pos);
 
         ItemStack stack = player.getItemInHand(hand);
 
@@ -189,15 +191,10 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
     }
 
     @Override
-    public int getDefaultColor() {
-        return 0xFFFFFFFF;
-    }
-
-    @Override
-    public void attack(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-        super.attack(pState, pLevel, pPos, pPlayer);
-    }
-
-    @Override
     public void onRemoveColor(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {}
+
+    @Override
+    public InteractionResult onSetColor(UseOnContext pContext) {
+        return InteractionResult.SUCCESS;
+    }
 }

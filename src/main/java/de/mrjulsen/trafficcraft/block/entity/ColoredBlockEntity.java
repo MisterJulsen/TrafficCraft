@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
@@ -12,10 +13,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ColoredBlockEntity extends BlockEntity {
+public class ColoredBlockEntity extends BlockEntity implements IColorStorageBlockEntity {
 
     // Properties
-    private PaintColor color = PaintColor.NONE;
+    protected PaintColor color = PaintColor.NONE;
 
     protected ColoredBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -35,8 +36,8 @@ public class ColoredBlockEntity extends BlockEntity {
     @Override
     protected void saveAdditional(CompoundTag tag)
     {
-        tag.putInt("color", color.getId());
         super.saveAdditional(tag);
+        tag.putInt("color", color.getId());
     }
 
     @Nullable
@@ -60,13 +61,14 @@ public class ColoredBlockEntity extends BlockEntity {
     }
 
     /* GETTERS AND SETTERS */
+    @Override
     public void setColor(PaintColor color) {
         this.color = color;
         BlockEntityUtil.sendUpdatePacket(this);
         this.setChanged();
-        //this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 11, 0);
     }
 
+    @Override
     public PaintColor getColor() {
         return this.color;
     }

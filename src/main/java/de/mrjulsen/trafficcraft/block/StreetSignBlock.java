@@ -1,21 +1,13 @@
 package de.mrjulsen.trafficcraft.block;
 
-import java.util.Arrays;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
-import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -79,32 +71,6 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    @Override
    public void attack(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
       onRemoveColor(pState, pLevel, pPos, pPlayer);
-   }
-
-   public void onRemoveColor(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
-      ItemStack stack = pPlayer.getInventory().getSelected();
-      Item item = stack.getItem();
-
-      if (!(item instanceof BrushItem)) {
-         return;
-      }
-
-      if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
-         if (blockEntity.getColor() == PaintColor.NONE) {
-            return;
-         }
-         blockEntity.setColor(PaintColor.NONE);
-         pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
-      }
-   }
-
-   public void onSetColor(Level pLevel, BlockPos pPos, PaintColor color) {
-      if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {
-         if (!pLevel.isClientSide) {
-            blockEntity.setColor(color);
-            pLevel.playSound(null, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
-         }
-      }
    }
 
    @Override
@@ -174,9 +140,5 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    @Override
    public boolean canConnect(BlockState pState, Direction pDirection) {
       return false;
-   }
-
-   public int getDefaultColor() {
-      return 0xFFFFFFFF;
    }
 }

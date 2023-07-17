@@ -154,8 +154,4 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
 
       return null;
    }
-
-   public int getDefaultColor() {
-      return 0xFFFFFFFF;
-   }
 }

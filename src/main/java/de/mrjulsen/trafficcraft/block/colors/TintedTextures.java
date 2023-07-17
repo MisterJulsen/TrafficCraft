@@ -1,13 +1,5 @@
 package de.mrjulsen.trafficcraft.block.colors;
 
-import de.mrjulsen.trafficcraft.block.HouseNumberSignBlock;
-import de.mrjulsen.trafficcraft.block.StreetSignBlock;
-import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
-import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.client.color.block.BlockColor;
@@ -24,35 +16,12 @@ public class TintedTextures{
         @Override
         public int getColor(BlockState pState, BlockAndTintGetter pLevel, BlockPos pPos, int pTintIndex) {
             
-            if (pState.getBlock() instanceof ColorableBlock block) {
-                if (pLevel.getBlockEntity(pPos) instanceof ColoredBlockEntity blockEntity) {
-                    PaintColor c = blockEntity.getColor();
-                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
-                }
-            } else if (pState.getBlock() instanceof StreetSignBlock block) {    
+            if (pState.getBlock() instanceof IPaintableBlock block) {
                 if (pLevel == null) {
                     return block.getDefaultColor();
                 }
 
-                if (pLevel.getBlockEntity(pPos) instanceof StreetSignBlockEntity blockEntity) {                    
-                    PaintColor c = blockEntity.getColor();
-                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
-                }
-            } else if (pState.getBlock() instanceof HouseNumberSignBlock block) {    
-                if (pLevel == null) {
-                    return block.getDefaultColor();
-                }
-
-                if (pLevel.getBlockEntity(pPos) instanceof HouseNumberSignBlockEntity blockEntity) {                    
-                    PaintColor c = blockEntity.getColor();
-                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
-                }
-            } else if (pState.getBlock() instanceof TrafficLightBlock block) {    
-                if (pLevel == null) {
-                    return block.getDefaultColor();
-                }
-
-                if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {                    
+                if (pLevel.getBlockEntity(pPos) instanceof IColorStorageBlockEntity blockEntity) {
                     PaintColor c = blockEntity.getColor();
                     return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
                 }
@@ -68,7 +37,7 @@ public class TintedTextures{
         public int getColor(ItemStack pStack, int pTintIndex) {
 
             if (pStack.getItem() instanceof BlockItem blockItem) {
-                if (blockItem.getBlock() instanceof ColorableBlock coloredBlock) {
+                if (blockItem.getBlock() instanceof IPaintableBlock coloredBlock) {
                     return coloredBlock.getDefaultColor();
                 }
             } else if (pStack.getItem() instanceof BrushItem) {                
