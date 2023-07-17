@@ -11,12 +11,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class TrafficBarrelBlock extends TrafficConeBlock {
 
     private static final VoxelShape SHAPE = Shapes.or(
-        Block.box(4, 0, 4, 12, 1, 12),
-        Block.box(6, 1, 6, 10, 2, 10),
-        Block.box(7, 2, 7, 9, 16, 9)
+        Block.box(3, 0, 3, 13, 1, 13),
+        Block.box(5, 1, 5, 11, 14, 11),
+        Block.box(5, 14, 7, 11, 16, 9)
     );
 
-    private static final VoxelShape COLLISION = Block.box(6, 0, 6, 10, 24, 10);
+    private static final VoxelShape COLLISION = Block.box(5, 0, 5, 11, 24, 11);
     
     public TrafficBarrelBlock() {
         super();

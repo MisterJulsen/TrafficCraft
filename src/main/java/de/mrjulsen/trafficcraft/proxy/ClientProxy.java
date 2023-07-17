@@ -59,6 +59,7 @@ public class ClientProxy implements IProxy {
             ModItems.PAINT_BRUSH.get(),
             ModBlocks.TRAFFIC_CONE.get(),
             ModBlocks.TRAFFIC_BOLLARD.get(),
+            ModBlocks.TRAFFIC_BARREL.get(),
             ModBlocks.ROAD_BARRIER_FENCE.get(),
             ModBlocks.CONCRETE_BARRIER.get()
         );

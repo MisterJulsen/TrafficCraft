@@ -81,6 +81,7 @@
     "block.trafficcraft.house_number_sign": "Hausnummernschild",
     "block.trafficcraft.street_light": "Straßenlicht",
     "block.trafficcraft.fluorescent_tube_lamp": "Leuchtstoffröhrenlampe",
+    "block.trafficcraft.traffic_barrel": "Großer Verkehrspoller",
 
     "gui.trafficcraft.signpicker.title": "Texturauswahl",
     "gui.trafficcraft.signpicker.tab.circle": "Runde Verkehrszeichen",

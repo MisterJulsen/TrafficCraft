@@ -81,6 +81,7 @@
     "block.trafficcraft.house_number_sign": "House Number Sign",
     "block.trafficcraft.street_light": "Street Light",
     "block.trafficcraft.fluorescent_tube_lamp": "Fluorescent Tube Lamp",
+    "block.trafficcraft.traffic_barrel": "Traffic Barrel",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
