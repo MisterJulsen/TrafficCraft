@@ -47,6 +47,7 @@ public class AsphaltCurb extends Block {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         Direction direction = pState.getValue(FACING);
         StairsShape stairsshape = pState.getValue(SHAPE);
@@ -83,6 +84,9 @@ public class AsphaltCurb extends Block {
                  return pState.rotate(Rotation.CLOCKWISE_180);
               }
            }
+         case NONE:
+         default:
+            break;
         }
   
         return super.mirror(pState, pMirror);
@@ -90,6 +94,7 @@ public class AsphaltCurb extends Block {
     
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {        
         return pFacing.getAxis().isHorizontal() ? pState.setValue(SHAPE, getBlockShape(pState, pLevel, pCurrentPos)) : super.updateShape(pState, pFacing, pFacingState, pLevel, pCurrentPos, pFacingPos);
     }

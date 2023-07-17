@@ -279,7 +279,7 @@ public class ResizableCycleButton<T> extends AbstractButton implements TooltipAc
 
     @OnlyIn(Dist.CLIENT)
     public interface OnValueChange<T> {
-        void onValueChange(ResizableCycleButton pCycleButton, T pValue);
+        void onValueChange(ResizableCycleButton<T> pCycleButton, T pValue);
     }
 
     @FunctionalInterface

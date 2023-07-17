@@ -53,6 +53,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     }    
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
@@ -69,6 +70,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 
         Item item = pPlayer.getInventory().getSelected().getItem();

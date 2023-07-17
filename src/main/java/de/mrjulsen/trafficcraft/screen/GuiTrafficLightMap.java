@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
+@SuppressWarnings("all")
 public class GuiTrafficLightMap extends Screen
 {
     public static final Component title = new TextComponent("trafficlightcontroller");

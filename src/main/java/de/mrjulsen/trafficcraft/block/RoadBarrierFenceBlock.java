@@ -109,6 +109,7 @@ public class RoadBarrierFenceBlock extends TrafficConeBlock {
     }    
 
     @Override
+    @SuppressWarnings("deprecation")
     public BlockState mirror(BlockState pState, Mirror pMirror) {
         return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }

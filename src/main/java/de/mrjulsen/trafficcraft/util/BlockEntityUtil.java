@@ -58,6 +58,7 @@ public class BlockEntityUtil
         sendUpdatePacket(blockEntity.getLevel(), blockEntity.getBlockPos(), packet);
     }
 
+    @SuppressWarnings("resource")
     private static void sendUpdatePacket(Level level, BlockPos pos, Packet<ClientGamePacketListener> packet)
     {
         if(level instanceof ServerLevel server)
