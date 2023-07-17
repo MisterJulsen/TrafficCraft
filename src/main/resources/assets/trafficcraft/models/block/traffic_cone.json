@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"0": "minecraft:block/anvil",
-		"1": "trafficcraft:block/sign_blank",
+		"1": "block/white_concrete",
 		"2": "trafficcraft:block/sign_blank",
 		"particle": "minecraft:block/white_concrete"
 	},

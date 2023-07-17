@@ -3,6 +3,7 @@
 	"textures": {
 		"1": "block/anvil",
 		"2": "trafficcraft:block/sign_blank",
+		"3": "block/white_concrete",
 		"particle": "block/white_concrete"
 	},
 	"elements": [
@@ -36,10 +37,10 @@
 			"from": [5, 10, 5],
 			"to": [11, 13, 11],
 			"faces": {
-				"north": {"uv": [6, 1, 12, 4], "texture": "#2"},
-				"east": {"uv": [0, 1, 6, 4], "texture": "#2"},
-				"south": {"uv": [3, 1, 9, 4], "texture": "#2"},
-				"west": {"uv": [10, 1, 16, 4], "texture": "#2"}
+				"north": {"uv": [6, 1, 12, 4], "texture": "#3"},
+				"east": {"uv": [0, 1, 6, 4], "texture": "#3"},
+				"south": {"uv": [3, 1, 9, 4], "texture": "#3"},
+				"west": {"uv": [10, 1, 16, 4], "texture": "#3"}
 			}
 		},
 		{
@@ -58,10 +59,10 @@
 			"from": [5, 4, 5],
 			"to": [11, 7, 11],
 			"faces": {
-				"north": {"uv": [6, 1, 12, 4], "texture": "#2"},
-				"east": {"uv": [0, 1, 6, 4], "texture": "#2"},
-				"south": {"uv": [3, 1, 9, 4], "texture": "#2"},
-				"west": {"uv": [10, 1, 16, 4], "texture": "#2"}
+				"north": {"uv": [6, 1, 12, 4], "texture": "#3"},
+				"east": {"uv": [0, 1, 6, 4], "texture": "#3"},
+				"south": {"uv": [3, 1, 9, 4], "texture": "#3"},
+				"west": {"uv": [10, 1, 16, 4], "texture": "#3"}
 			}
 		},
 		{
