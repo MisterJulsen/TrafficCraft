@@ -32,9 +32,7 @@ public class AsphaltBlock extends Block implements IPaintableBlock {
 
     @Override
     public InteractionResult onSetColor(UseOnContext pContext) {
-        if (this instanceof AsphaltCurbSlope)
-            return InteractionResult.FAIL;
-
+        
         String id = "";
         Level level = pContext.getLevel();
         BlockPos pos = pContext.getClickedPos();

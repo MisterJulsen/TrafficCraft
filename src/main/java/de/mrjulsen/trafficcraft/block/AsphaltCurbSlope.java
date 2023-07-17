@@ -24,13 +24,15 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedBlock {
+public class AsphaltCurbSlope extends Block implements SimpleWaterloggedBlock {
 
+    private RoadType defaultRoadType;
     public static final int MAX_HEIGHT = 8;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
@@ -45,12 +47,21 @@ public class AsphaltCurbSlope extends AsphaltBlock implements SimpleWaterloggedB
     public static final int HEIGHT_IMPASSABLE = 5;
 
     public AsphaltCurbSlope(RoadType type) {
-        super(type);
+        super(Properties.of(Material.STONE)
+            .strength(1.5f)
+            .requiresCorrectToolForDrops()
+        );
+        
+        this.defaultRoadType = type;
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(LAYERS, 1)
             .setValue(WATERLOGGED, false)
             .setValue(FACING, Direction.NORTH)
         );
+    }
+
+    public RoadType getDefaultRoadType() {
+        return this.defaultRoadType;
     }
 
     @Override
