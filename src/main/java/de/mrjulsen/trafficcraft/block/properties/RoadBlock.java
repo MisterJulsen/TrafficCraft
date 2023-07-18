@@ -99,14 +99,25 @@ public abstract class RoadBlock extends ColorableBlock {
     }
 
     @Override
-    public boolean update(UseOnContext pContext) {
+    public InteractionResult update(UseOnContext pContext) {
         Level level = pContext.getLevel();
         BlockPos pos = pContext.getClickedPos();
         BlockState state = level.getBlockState(pos);
+        ItemStack stack = pContext.getItemInHand();
+
+        String id = "";
+        if (state.getBlock() instanceof PaintedAsphaltBlock)
+            id = this.getDefaultRoadType().getRoadType() + "_pattern_" + BrushItem.getPatternId(stack);
+        else if (state.getBlock() instanceof PaintedAsphaltSlope)
+            id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + BrushItem.getPatternId(stack);
+
+        if (ModBlocks.ROAD_BLOCKS.containsKey(id) && state.getBlock() != ModBlocks.ROAD_BLOCKS.get(id).get()) {
+            return this.onSetColor(pContext);
+        }
 
         level.setBlockAndUpdate(pos, state.setValue(RoadBlock.FACING, state.getValue(RoadBlock.FACING).getClockWise(Axis.Y)));
         level.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
 
-        return true;
+        return InteractionResult.SUCCESS;
     }
 }
