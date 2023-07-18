@@ -1,0 +1,33 @@
+{
+    "display": {
+      "icon": {
+        "item": "trafficcraft:asphalt"
+      },
+      "title": {
+        "translate": "advancement.trafficcraft.craft_road"
+      },
+      "description": {
+        "translate": "advancement.trafficcraft.craft_road.description"
+      },
+      "frame": "task",
+      "show_toast": true,
+      "announce_to_chat": true
+    },
+    "parent": "trafficcraft:root",
+    "criteria": {
+      "requirement": {
+        "trigger": "minecraft:inventory_changed",
+        "conditions": {
+          "items": [
+            {
+              "tag": "trafficcraft:blocks/road"
+            }
+          ]
+        }
+      }
+    },
+    "rewards": {
+      "experience": 20
+    }
+  }
+  

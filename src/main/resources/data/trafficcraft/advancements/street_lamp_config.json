@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:asphalt"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.street_lamp_config"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.street_lamp_config.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:root",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 30
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:paint_brush"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.final_destination"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.final_destination.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:highway_to_hell",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "player": {
+          "nbt": "{Dimension:\"minecraft:the_end\"}"
+        },
+        "item": {
+          "items": [
+            "trafficcraft:paint_brush"
+          ]
+        },
+        "location": {
+          "block": {
+            "tag": "trafficcraft:blocks/road"
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}
