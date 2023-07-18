@@ -1,26 +1,26 @@
 {
     "display": {
       "icon": {
-        "item": "trafficcraft:asphalt"
+        "item": "trafficcraft:white_delineator"
       },
       "title": {
-        "translate": "advancement.trafficcraft.craft_road"
+        "translate": "advancement.trafficcraft.delineator"
       },
       "description": {
-        "translate": "advancement.trafficcraft.craft_road.description"
+        "translate": "advancement.trafficcraft.delineator.description"
       },
       "frame": "task",
       "show_toast": true,
       "announce_to_chat": true
     },
-    "parent": "trafficcraft:root",
+    "parent": "trafficcraft:paint_road",
     "criteria": {
       "requirement": {
         "trigger": "minecraft:inventory_changed",
         "conditions": {
           "items": [
             {
-              "tag": "trafficcraft:road"
+              "tag": "trafficcraft:delineators"
             }
           ]
         }

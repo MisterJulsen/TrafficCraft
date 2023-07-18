@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_light_linker"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.traffic_light_linker"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.traffic_light_linker.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:traffic_light_controller",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "item": {
+          "items": [
+            "trafficcraft:traffic_light_linker"
+          ]
+        },
+        "location": {
+          "block": {
+            "blocks": [
+              "trafficcraft:traffic_light"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 30
+  }
+}

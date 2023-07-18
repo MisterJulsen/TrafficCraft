@@ -1,0 +1,15 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:traffic_cone",
+        "trafficcraft:traffic_bollard",
+        "trafficcraft:road_barrier_fence",
+        "trafficcraft:traffic_barrel",
+        "trafficcraft:guardrail",
+        "trafficcraft:concrete_barrier",
+        "trafficcraft:street_sign",
+        "trafficcraft:house_number_sign",
+        "trafficcraft:traffic_light",
+        "trafficcraft:reflector"
+    ]
+}

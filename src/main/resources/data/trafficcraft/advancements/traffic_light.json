@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_light"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.traffic_light"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.traffic_light.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:wrench",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "trafficcraft:traffic_light"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

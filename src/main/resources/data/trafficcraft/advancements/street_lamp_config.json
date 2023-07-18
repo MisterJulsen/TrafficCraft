@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "trafficcraft:asphalt"
+      "item": "trafficcraft:street_lamp_config_card"
     },
     "title": {
       "translate": "advancement.trafficcraft.street_lamp_config"
@@ -13,7 +13,7 @@
     "show_toast": true,
     "announce_to_chat": true
   },
-  "parent": "trafficcraft:root",
+  "parent": "trafficcraft:craft_street_lamp",
   "criteria": {
     "requirement": {
       "trigger": "minecraft:impossible"

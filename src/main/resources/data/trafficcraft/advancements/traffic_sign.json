@@ -1,7 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "trafficcraft:asphalt"
+      "item": "trafficcraft:traffic_sign"
     },
     "title": {
       "translate": "advancement.trafficcraft.craft_traffic_sign"
@@ -13,7 +13,7 @@
     "show_toast": true,
     "announce_to_chat": true
   },
-  "parent": "trafficcraft:root",
+  "parent": "trafficcraft:wrench",
   "criteria": {
     "requirement": {
       "trigger": "minecraft:inventory_changed",

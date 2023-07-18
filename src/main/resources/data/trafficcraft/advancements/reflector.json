@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:reflector"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.reflector"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.reflector.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:crash_course",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "trafficcraft:reflector"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

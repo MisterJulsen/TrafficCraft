@@ -1,7 +1,8 @@
 {
   "display": {
     "icon": {
-      "item": "trafficcraft:paint_brush"
+      "item": "trafficcraft:paint_brush",
+      "nbt": "{color:10,paint:100,Enchantments:[{lvl:0}]}"
     },
     "title": {
       "translate": "advancement.trafficcraft.final_destination"
@@ -11,7 +12,8 @@
     },
     "frame": "challenge",
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": true
   },
   "parent": "trafficcraft:highway_to_hell",
   "criteria": {
@@ -28,7 +30,7 @@
         },
         "location": {
           "block": {
-            "tag": "trafficcraft:blocks/road"
+            "tag": "trafficcraft:road"
           }
         }
       }
