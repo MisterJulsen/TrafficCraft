@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:asphalt_curb",
+        "trafficcraft:concrete_curb",
+        "trafficcraft:asphalt_curb_slope",
+        "trafficcraft:concrete_curb_slope"
+    ]
+}

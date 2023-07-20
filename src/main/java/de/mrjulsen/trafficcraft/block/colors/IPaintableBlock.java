@@ -47,8 +47,8 @@ public interface IPaintableBlock {
         return InteractionResult.FAIL;
     }
 
-    default boolean update(UseOnContext pContext) {
-        return false;
+    default InteractionResult update(UseOnContext pContext) {
+        return InteractionResult.FAIL;
     }
 
     default int getDefaultColor() {

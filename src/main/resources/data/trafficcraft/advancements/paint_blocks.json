@@ -1,19 +1,19 @@
 {
     "display": {
       "icon": {
-        "item": "trafficcraft:paint_brush"
+        "item": "trafficcraft:paint_bucket"
       },
       "title": {
-        "translate": "advancement.trafficcraft.paint_road"
+        "translate": "advancement.trafficcraft.paint_blocks"
       },
       "description": {
-        "translate": "advancement.trafficcraft.paint_road.description"
+        "translate": "advancement.trafficcraft.paint_blocks.description"
       },
       "frame": "task",
       "show_toast": true,
       "announce_to_chat": true
     },
-    "parent": "trafficcraft:craft_road",
+    "parent": "trafficcraft:paint_road",
     "criteria": {
       "req": {
         "trigger": "minecraft:item_used_on_block",
@@ -25,7 +25,7 @@
           },
           "location": {
             "block": {
-              "tag": "trafficcraft:road"
+              "tag": "trafficcraft:paintable"
             }
           }
         }

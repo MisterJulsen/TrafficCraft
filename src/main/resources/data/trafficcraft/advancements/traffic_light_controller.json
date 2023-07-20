@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_light_controller"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.traffic_light_controller"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.traffic_light_controller.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:traffic_light",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "trafficcraft:traffic_light_controller"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 30
+  }
+}

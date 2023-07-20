@@ -158,7 +158,12 @@ public class BrushItem extends Item
             } else {
                 if (state.getBlock() instanceof IPaintableBlock block) {
                     if (level.getBlockEntity(pos) instanceof IColorStorageBlockEntity blockEntity && blockEntity.getColor() == PaintColor.byId(nbt.getInt("color"))) { 
-                        return block.update(pContext) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+                        InteractionResult res = block.update(pContext);
+                        if (res == InteractionResult.CONSUME) {
+                            this.removePaint(player, nbt);
+                            res = InteractionResult.SUCCESS;
+                        }
+                        return res;
                     }
 
                     InteractionResult res = block.onSetColor(pContext);

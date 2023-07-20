@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:white_delineator",
+        "trafficcraft:yellow_delineator",
+        "trafficcraft:red_delineator",
+        "trafficcraft:small_white_delineator",
+        "trafficcraft:small_yellow_delineator"
+    ]
+}

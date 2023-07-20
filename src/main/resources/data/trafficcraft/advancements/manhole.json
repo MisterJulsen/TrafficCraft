@@ -1,0 +1,29 @@
+{
+    "display": {
+      "icon": {
+        "item": "trafficcraft:manhole"
+      },
+      "title": {
+        "translate": "advancement.trafficcraft.manhole"
+      },
+      "description": {
+        "translate": "advancement.trafficcraft.manhole.description"
+      },
+      "frame": "task",
+      "show_toast": true,
+      "announce_to_chat": true
+    },
+    "parent": "trafficcraft:accessibility",
+    "criteria": {
+      "requirement": {
+        "trigger": "minecraft:enter_block",
+        "conditions": {
+          "block": "trafficcraft:manhole"
+        }
+      }
+    },
+    "rewards": {
+      "experience": 20
+    }
+  }
+  

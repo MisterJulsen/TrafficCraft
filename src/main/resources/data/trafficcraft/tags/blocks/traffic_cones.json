@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:traffic_cone",
+        "trafficcraft:traffic_bollard",
+        "trafficcraft:road_barrier_fence",
+        "trafficcraft:traffic_barrel"
+    ]
+}

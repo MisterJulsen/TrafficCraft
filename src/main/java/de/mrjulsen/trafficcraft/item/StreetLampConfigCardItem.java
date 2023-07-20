@@ -7,10 +7,12 @@ import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.TimeFormat;
 import de.mrjulsen.trafficcraft.item.client.StreetLampConfigCardClient;
 import de.mrjulsen.trafficcraft.util.TimeUtils;
+import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -110,6 +112,7 @@ public class StreetLampConfigCardItem extends Item
                     blockEntity.setOnTime(TimeUtils.shiftTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
                     blockEntity.setOffTime(TimeUtils.shiftTimeToMinecraftTicks(nbt.getInt("turnOffTime")));
                     player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.set"), true);
+                    Utils.giveAdvancement((ServerPlayer)player, "street_lamp_config", "requirement");
                 } else {
                     blockEntity.setOnTime(-1);
                     blockEntity.setOffTime(-1);

@@ -1,32 +1,34 @@
 {
   "display": {
     "icon": {
-      "item": "trafficcraft:street_lamp"
+      "item": "trafficcraft:wrench"
     },
     "title": {
-      "translate": "advancement.trafficcraft.craft_street_lamp"
+      "translate": "advancement.trafficcraft.wrench"
     },
     "description": {
-      "translate": "advancement.trafficcraft.craft_street_lamp.description"
+      "translate": "advancement.trafficcraft.wrench.description"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true
   },
   "parent": "trafficcraft:paint_road",
   "criteria": {
-    "requirement": {
+    "req": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "trafficcraft:street_lamps"
+            "items": [
+              "trafficcraft:wrench"
+            ]
           }
         ]
       }
     }
   },
   "rewards": {
-    "experience": 20
+    "experience": 30
   }
 }
