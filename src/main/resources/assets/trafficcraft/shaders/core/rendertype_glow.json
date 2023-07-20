@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "rendertype_solid",
-    "fragment": "rendertype_solid",
+    "vertex": "trafficcraft:rendertype_glow",
+    "fragment": "trafficcraft:rendertype_glow",
     "attributes": [
         "Position",
         "Color",

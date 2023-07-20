@@ -1,9 +1,11 @@
 package de.mrjulsen.trafficcraft.proxy;
 
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.client.rendering.CustomRenderType;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.item.ModItems;
@@ -34,6 +36,9 @@ public class ClientProxy implements IProxy {
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
+        
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_LIGHT.get(), RenderType.solid());
+            ModMain.LOGGER.debug("Test 2");
 
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {
