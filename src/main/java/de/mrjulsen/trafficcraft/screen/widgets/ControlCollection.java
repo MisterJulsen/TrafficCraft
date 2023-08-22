@@ -12,6 +12,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ControlCollection {
     public final List<AbstractWidget> components = new ArrayList<>(); 
+    
+    private boolean enabled = true;
+    private boolean visible = true;
 
     public void performForEach(Predicate<? super AbstractWidget> filter, Consumer<? super AbstractWidget> consumer) {
         components.stream().filter(filter).forEach(consumer);
@@ -19,5 +22,31 @@ public class ControlCollection {
 
     public void performForEach(Consumer<? super AbstractWidget> consumer) {
         components.stream().forEach(consumer);
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setVisible(boolean v) {
+        if (this.visible == v) {
+            return;
+        }
+
+        this.visible = v;
+        performForEach(x -> x.visible = v);
+    }
+
+    public void setEnabled(boolean e) {
+        if (this.enabled == e) {
+            return;
+        }
+        
+        this.enabled = e;
+        performForEach(x -> x.active = e);
     }
 }

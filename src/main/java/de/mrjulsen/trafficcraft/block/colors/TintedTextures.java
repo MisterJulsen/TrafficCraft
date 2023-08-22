@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.block.colors;
 
 import de.mrjulsen.trafficcraft.item.BrushItem;
+import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -32,7 +33,6 @@ public class TintedTextures{
     }
 
     public static class BasicItemTint implements ItemColor {
-
         @Override
         public int getColor(ItemStack pStack, int pTintIndex) {
 
@@ -46,6 +46,8 @@ public class TintedTextures{
                 } else {
                     return 0xFFFFFFFF;
                 }
+            } else if (pStack.getItem() instanceof ColorPaletteItem) { 
+                return ColorPaletteItem.getColorAt(pStack, pTintIndex);
             }
             return 0;
         }
