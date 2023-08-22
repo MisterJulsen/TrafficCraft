@@ -72,6 +72,8 @@
     "item.trafficcraft.street_lamp_config_card.use.unset": "Removed time schedule from selected street lamp.",
     "item.trafficcraft.street_lamp_config_card.use.error_same_time": "§cThe schedule cannot be applied because the turn on time and turn off time are equal.",
     "item.trafficcraft.street_lamp_config_card.use.clear": "Cleared time shedule.",
+    "item.trafficcraft.color_palette": "Color Palette",
+    "item.trafficcraft.pattern_catalogue": "Pattern Catalogue",
 
     "block.trafficcraft.circle_traffic_sign": "Traffic Sign",
     "block.trafficcraft.square_traffic_sign": "Square Traffic Sign",
@@ -215,6 +217,23 @@
     "gui.trafficcraft.town_sign.variant.front": "Front",
     "gui.trafficcraft.town_sign.variant.back": "Back",
     "gui.trafficcraft.town_sign.variant.both": "Both",
+
+    "gui.trafficcraft.colorpicker.title": "Color Picker",
+    "gui.trafficcraft.colorpicker.hsv": "HSV",
+    "gui.trafficcraft.colorpicker.rgb": "RGB",
+    
+    "gui.trafficcraft.trafficsignworkbench.title": "Traffic Sign Workbench",
+    "gui.trafficcraft.trafficsignworkbench.label.canvas": "Canvas",
+    "gui.trafficcraft.trafficsignworkbench.label.shape": "Sign Shape",
+    "gui.trafficcraft.trafficsignworkbench.label.color": "Colors",
+    "gui.trafficcraft.trafficsignworkbench.label.pattern": "Patterns",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.draw": "Draw",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.eraser": "Eraser",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.pick_color": "Pick Color",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.text": "Text",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.background": "Background Color",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.clear": "Clear Canvas",
+    "gui.trafficcraft.trafficsignworkbench.toolbar.load": "Load Pattern...",
 
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",

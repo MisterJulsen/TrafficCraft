@@ -28,19 +28,7 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<TownSignBlockEntity>> TOWN_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("town_sign_block_entity", () -> BlockEntityType.Builder.of(TownSignBlockEntity::new, ModBlocks.TOWN_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<StreetSignBlockEntity>> STREET_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_sign_block_entity", () -> BlockEntityType.Builder.of(StreetSignBlockEntity::new, ModBlocks.STREET_SIGN.get()).build(null));
     public static final RegistryObject<BlockEntityType<HouseNumberSignBlockEntity>> HOUSE_NUMBER_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("house_number_sign_block_entity", () -> BlockEntityType.Builder.of(HouseNumberSignBlockEntity::new, ModBlocks.HOUSE_NUMBER_SIGN.get()).build(null));
-
-    /*
-    static
-    {
-        Block[] blocks = new Block[ModBlocks.COLORED_BLOCKS.size()];
-        for (int i = 0; i < ModBlocks.COLORED_BLOCKS.size(); i++) {
-            blocks[i] = ModBlocks.COLORED_BLOCKS.get(i).get();
-        }
-
-        COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new, blocks).build(null));    
-    }
-    */
-
+    
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }

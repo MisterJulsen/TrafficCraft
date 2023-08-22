@@ -7,9 +7,12 @@ import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.item.ModItems;
+import de.mrjulsen.trafficcraft.screen.TrafficSignWorkbenchGui;
+import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -67,6 +70,9 @@ public class ClientProxy implements IProxy {
         BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
+
+        /* REGISTER MENUS */
+        MenuScreens.register(ModMenuTypes.TRAFFIC_SIGN_WORKBENCH_MENU.get(), TrafficSignWorkbenchGui::new);
 
         /* REGISTER CUSTOM ITEM PROPERTIES */
         ItemProperties.register(ModItems.PAINT_BRUSH.get(), new ResourceLocation("paint"), (itemStack, world, entity, id) -> { 

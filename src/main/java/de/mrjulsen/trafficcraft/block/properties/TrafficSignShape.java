@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block.properties;
 
+import de.mrjulsen.trafficcraft.ModMain;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 public enum TrafficSignShape implements StringRepresentable {
@@ -37,6 +39,10 @@ public enum TrafficSignShape implements StringRepresentable {
 			}
 		}
 		return TrafficSignShape.CIRCLE;
+	}
+
+	public final ResourceLocation getIconResourceLocation() {
+		return new ResourceLocation(ModMain.MOD_ID, String.format("textures/block/sign/icons/%s.png", this.getShape()));
 	}
 
     @Override

@@ -12,5 +12,4 @@ public class TrafficSignClient {
     public static void showGui(int pattern, float scroll, TrafficSignShape shape, BlockPos pos, Level level, Player player) {
         Minecraft.getInstance().setScreen(new TrafficSignEditScreen(pattern, scroll, shape, pos, level, player));
     }
-
 }
