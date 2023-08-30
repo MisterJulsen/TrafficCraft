@@ -1,15 +1,12 @@
 package de.mrjulsen.trafficcraft.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.screen.widgets.ResizableButton;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.SliderButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -22,7 +19,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderTooltipEvent.Color;
 
 @OnlyIn(Dist.CLIENT)
 public class ColorPickerGui extends Screen {

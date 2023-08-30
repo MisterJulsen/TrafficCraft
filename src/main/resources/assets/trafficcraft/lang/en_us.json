@@ -237,6 +237,7 @@
     "gui.trafficcraft.trafficsignworkbench.menu.add": "Add new pattern",
     "gui.trafficcraft.trafficsignworkbench.menu.edit": "Edit selected pattern",
     "gui.trafficcraft.trafficsignworkbench.menu.delete": "Delete selected pattern",
+    "gui.trafficcraft.trafficsignworkbench.createpattern.title": "Create new pattern",
 
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",
