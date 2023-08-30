@@ -182,8 +182,8 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
             .setValue(EAST, Boolean.valueOf(this.connectsTo(newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite())))
             .setValue(SOUTH, Boolean.valueOf(this.connectsTo(newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite())))
             .setValue(WEST, Boolean.valueOf(this.connectsTo(newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite())))
-            .setValue(UP, Boolean.valueOf(this.connectsTo(newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.UP), Direction.UP.getOpposite())))
-            .setValue(DOWN, Boolean.valueOf(this.connectsTo(newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.DOWN), Direction.DOWN.getOpposite())))
+            .setValue(UP, Boolean.valueOf(this.connectsTo(newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.UP), Direction.UP)))
+            .setValue(DOWN, Boolean.valueOf(this.connectsTo(newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.DOWN), Direction.DOWN)))
         ;
     }
 
