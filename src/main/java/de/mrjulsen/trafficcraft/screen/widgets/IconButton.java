@@ -1,15 +1,11 @@
 package de.mrjulsen.trafficcraft.screen.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.BrownAreaStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -86,7 +82,7 @@ public class IconButton extends Button {
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        AreaRenderer.renderBrownArea(pPoseStack, x, y, WIDTH, HEIGHT, selected ? BrownAreaStyle.SUNKEN : (isHovered ? BrownAreaStyle.SELECTED : BrownAreaStyle.BUTTON));
+        AreaRenderer.renderBrownArea(pPoseStack, x, y, WIDTH, HEIGHT, active ? (selected ? BrownAreaStyle.SUNKEN : (isHovered ? BrownAreaStyle.SELECTED : BrownAreaStyle.BUTTON)) : BrownAreaStyle.RAISED);
         this.renderBg(pPoseStack, minecraft, pMouseX, pMouseY);
     }
 

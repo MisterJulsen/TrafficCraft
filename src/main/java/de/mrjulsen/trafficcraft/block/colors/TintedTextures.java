@@ -46,8 +46,11 @@ public class TintedTextures{
                 } else {
                     return 0xFFFFFFFF;
                 }
-            } else if (pStack.getItem() instanceof ColorPaletteItem) { 
-                return ColorPaletteItem.getColorAt(pStack, pTintIndex);
+            } else if (pStack.getItem() instanceof ColorPaletteItem) {
+                if (pTintIndex == 0) {
+                    return 0xFFFFFFFF;
+                }
+                return ColorPaletteItem.getColorAt(pStack, pTintIndex - 1);
             }
             return 0;
         }

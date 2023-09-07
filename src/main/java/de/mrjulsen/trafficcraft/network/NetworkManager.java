@@ -1,12 +1,16 @@
 package de.mrjulsen.trafficcraft.network;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.network.packets.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
+import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
+import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.SignPacket;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
 import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
+import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
 import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +34,10 @@ public class NetworkManager {
         register(StreetLampConfigPacket.class).encoder(StreetLampConfigPacket::encode).decoder(StreetLampConfigPacket::decode).consumer(StreetLampConfigPacket::handle).add();
         register(WritableSignPacket.class).encoder(WritableSignPacket::encode).decoder(WritableSignPacket::decode).consumer(WritableSignPacket::handle).add();
         register(TownSignPacket.class).encoder(TownSignPacket::encode).decoder(TownSignPacket::decode).consumer(TownSignPacket::handle).add();
+        register(ColorPaletteItemPacket.class).encoder(ColorPaletteItemPacket::encode).decoder(ColorPaletteItemPacket::decode).consumer(ColorPaletteItemPacket::handle).add();
+        register(TrafficSignPatternPacket.class).encoder(TrafficSignPatternPacket::encode).decoder(TrafficSignPatternPacket::decode).consumer(TrafficSignPatternPacket::handle).add();
+        register(PatternCatalogueIndexPacketGui.class).encoder(PatternCatalogueIndexPacketGui::encode).decoder(PatternCatalogueIndexPacketGui::decode).consumer(PatternCatalogueIndexPacketGui::handle).add();
+        register(PatternCatalogueDeletePacket.class).encoder(PatternCatalogueDeletePacket::encode).decoder(PatternCatalogueDeletePacket::decode).consumer(PatternCatalogueDeletePacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()

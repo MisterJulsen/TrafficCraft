@@ -10,6 +10,7 @@ import de.mrjulsen.trafficcraft.proxy.ClientProxy;
 import de.mrjulsen.trafficcraft.proxy.IProxy;
 import de.mrjulsen.trafficcraft.proxy.ServerProxy;
 import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
+import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -31,6 +32,11 @@ public class ModMain
 
     public ModMain()
     {
+        ItemModelGenerator.LAYERS.add("layer5");
+        ItemModelGenerator.LAYERS.add("layer6");
+        ItemModelGenerator.LAYERS.add("layer7");
+        ItemModelGenerator.LAYERS.add("layer8");
+
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::setup);
 

@@ -1,36 +1,47 @@
 package de.mrjulsen.trafficcraft.item;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class PatternCatalogueItem extends Item {
 
-    public static final int MAX_SIGN_PATTERNS = 16;
+    public static final int MAX_SIGN_PATTERNS = 27;
 
     public PatternCatalogueItem(Properties properties) {
         super(properties.stacksTo(1));
     }
 
     public static CompoundTag checkNbt(ItemStack stack) {
-        CompoundTag nbt;
+        CompoundTag nbt = stack.getOrCreateTag();
+        if (!nbt.contains("patterns")) {            
+            nbt.put("patterns", new ListTag());
+        }
 
-        if (stack.hasTag()) {
-            nbt = stack.getTag();
-        } else {
-            nbt = new CompoundTag();
+        if (!nbt.contains("selectedIndex")) {
             nbt.putInt("selectedIndex", 0);
-            nbt.put("patterns", new ListTag());            
         }
 
         return nbt;
     }
 
+    public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
+        NonNullList<TrafficSignData> nonnulllist = NonNullList.create();
+        Arrays.stream(getStoredPatterns(pStack)).forEach(nonnulllist::add);
+        return Optional.of(new TrafficSignTooltip(nonnulllist, getSelectedIndex(pStack)));
+    }
+
     private static boolean indexInBounds(ItemStack stack, int index) {
-        return index < 0 || index >= getStoredPatternCount(stack);
+        return index >= 0 && index < getStoredPatternCount(stack);
     }
 
     public static int getSelectedIndex(ItemStack stack) {
@@ -63,6 +74,14 @@ public class PatternCatalogueItem extends Item {
             return false;
 
         checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
+        return true;
+    }
+
+    public static boolean replacePattern(ItemStack stack, TrafficSignData pattern, int index) {
+        if (getStoredPatternCount(stack) >= MAX_SIGN_PATTERNS)
+            return false;
+
+        checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
         return true;
     }
 

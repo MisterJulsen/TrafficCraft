@@ -33,19 +33,11 @@ public class ControlCollection {
     }
 
     public void setVisible(boolean v) {
-        if (this.visible == v) {
-            return;
-        }
-
         this.visible = v;
         performForEach(x -> x.visible = v);
     }
 
     public void setEnabled(boolean e) {
-        if (this.enabled == e) {
-            return;
-        }
-        
         this.enabled = e;
         performForEach(x -> x.active = e);
     }

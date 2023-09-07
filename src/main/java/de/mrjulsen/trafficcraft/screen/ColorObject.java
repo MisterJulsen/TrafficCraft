@@ -36,13 +36,13 @@ public class ColorObject {
         return (int)(255 * f);
     }
 
-    public static ColorObject fromHSB(float h, float s, float b) {
+    public static ColorObject fromHSV(float h, float s, float b) {
         Color c = Color.getHSBColor(h, s, b);
         return new ColorObject(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
-    public static ColorObject fromHSB(double h, double s, double b) {
-        return fromHSB((float)h, (float)s, (float)b);
+    public static ColorObject fromHSV(double h, double s, double b) {
+        return fromHSV((float)h, (float)s, (float)b);
     }
 
     public int getR() {
@@ -85,5 +85,20 @@ public class ColorObject {
 
         int rgba = (a << 24) | (r << 16) | (g << 8) | b;
         return rgba;
+    }
+
+    public static ColorObject fromInt(int rgba) {
+        int a = (rgba >> 24) & 0xFF;
+        int r = (rgba >> 16) & 0xFF;
+        int g = (rgba >> 8) & 0xFF;
+        int b = rgba & 0xFF;
+        return new ColorObject(r, g, b, a);
+    }
+
+    public float[] toHSV() {
+        float[] hsb = new float[4]; // Hier verwenden wir float anstelle von double
+
+        Color.RGBtoHSB(r, g, b, hsb);
+        return hsb;
     }
 }

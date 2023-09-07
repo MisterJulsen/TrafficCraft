@@ -11,12 +11,10 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 public class TrafficSignWorkbenchMenu extends AbstractContainerMenu {
 
-    private final Level level;
-    private final ContainerLevelAccess access;
+    public final ContainerLevelAccess access;
     private static final int INVENTORY_SIZE = 2;
 
     // Slots
@@ -32,7 +30,6 @@ public class TrafficSignWorkbenchMenu extends AbstractContainerMenu {
     public TrafficSignWorkbenchMenu(int pContainerId, Inventory inv, final ContainerLevelAccess access) {
         super(ModMenuTypes.TRAFFIC_SIGN_WORKBENCH_MENU.get(), pContainerId);
         checkContainerSize(inv, INVENTORY_SIZE);
-        this.level = inv.player.level;
         this.access = access;
 
         addPlayerInventory(inv);
