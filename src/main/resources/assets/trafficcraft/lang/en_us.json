@@ -77,12 +77,7 @@
     "item.trafficcraft.color_palette.color_unset": "(no color)",
     "item.trafficcraft.pattern_catalogue": "Pattern Catalogue",
 
-    "block.trafficcraft.circle_traffic_sign": "Traffic Sign",
-    "block.trafficcraft.square_traffic_sign": "Square Traffic Sign",
-    "block.trafficcraft.triangle_traffic_sign": "Triangular Traffic Sign",
-    "block.trafficcraft.rectangle_traffic_sign": "Rectangular Traffic Sign",
-    "block.trafficcraft.diamond_traffic_sign": "Diamond Traffic Sign",
-    "block.trafficcraft.misc_traffic_sign": "Miscellaneous Traffic Sign",
+    "block.trafficcraft.traffic_sign": "Traffic Sign",
     "block.trafficcraft.traffic_sign_post": "Traffic Sign Post",
     "block.trafficcraft.traffic_light": "Traffic Light",
     "block.trafficcraft.traffic_light_controller": "Traffic Light Controller",
@@ -129,6 +124,7 @@
     "block.trafficcraft.street_light": "Street Light",
     "block.trafficcraft.fluorescent_tube_lamp": "Fluorescent Tube Lamp",
     "block.trafficcraft.traffic_barrel": "Traffic Barrel",
+    "block.trafficcraft.traffic_sign_workbench": "Traffic Sign Workbench",
 
     "gui.trafficcraft.signpicker.title": "Texture Picker",
     "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",

@@ -2,14 +2,9 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.trafficcraft.block.CircleTrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.DiamondTrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.MiscTrafficSignBlock;
+
 import de.mrjulsen.trafficcraft.block.ModBlocks;
-import de.mrjulsen.trafficcraft.block.RectangleTrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.SquareTrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.TriangleTrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -54,32 +49,7 @@ public class SignPacket {
     {
         context.get().enqueueWork(() ->
         {
-            ServerPlayer sender = context.get().getSender();
-            BlockState state;
-            switch (TrafficSignShape.getShapeByIndex(packet.shape)) {                
-                case TRIANGLE:
-                    state = ModBlocks.TRIANGLE_TRAFFIC_SIGN.get().defaultBlockState().setValue(TriangleTrafficSignBlock.TYPE, packet.pattern);
-                    break;
-                case SQUARE:
-                    state = ModBlocks.SQUARE_TRAFFIC_SIGN.get().defaultBlockState().setValue(SquareTrafficSignBlock.TYPE, packet.pattern);
-                    break;
-                case DIAMOND:
-                    state = ModBlocks.DIAMOND_TRAFFIC_SIGN.get().defaultBlockState().setValue(DiamondTrafficSignBlock.TYPE, packet.pattern);
-                    break;
-                case RECTANGLE:
-                    state = ModBlocks.RECTANGLE_TRAFFIC_SIGN.get().defaultBlockState().setValue(RectangleTrafficSignBlock.TYPE, packet.pattern);
-
-                    break;
-                case MISC:
-                    state = ModBlocks.MISC_TRAFFIC_SIGN.get().defaultBlockState().setValue(MiscTrafficSignBlock.TYPE, packet.pattern);
-                    break;
-                case CIRCLE:
-                default:
-                    state = ModBlocks.CIRCLE_TRAFFIC_SIGN.get().defaultBlockState().setValue(CircleTrafficSignBlock.TYPE, packet.pattern);
-                    break;
-            }
-            BlockState oldState = sender.getLevel().getBlockState(packet.pos);
-            sender.getLevel().setBlock(packet.pos, state.setValue(TrafficSignBlock.FACING, oldState.getValue(TrafficSignBlock.FACING)), 3);
+            
         });
         context.get().setPacketHandled(true);
     }

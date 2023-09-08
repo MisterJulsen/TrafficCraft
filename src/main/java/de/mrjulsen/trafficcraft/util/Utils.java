@@ -1,8 +1,12 @@
 package de.mrjulsen.trafficcraft.util;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 
+import org.apache.commons.codec.binary.Base64;
+
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
@@ -46,5 +50,14 @@ public class Utils {
         int bgrColor = (alpha << 24) | (blue << 16) | (green << 8) | red;
     
         return bgrColor;
+    }
+
+    public static  String textureToBase64(NativeImage image) {
+        try {
+            return Base64.encodeBase64String(image.asByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 }

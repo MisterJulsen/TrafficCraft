@@ -73,12 +73,7 @@
     "item.trafficcraft.street_lamp_config_card.use.error_same_time": "§cDer Zeitplan kann nicht angewandt werden, da die Einschaltzeit und die Ausschaltzeit identisch sind.",
     "item.trafficcraft.street_lamp_config_card.use.clear": "Zeitplan gelöscht.",
 
-    "block.trafficcraft.circle_traffic_sign": "Verkehrszeichen",
-    "block.trafficcraft.square_traffic_sign": "Quadratisches Verkehrszeichen",
-    "block.trafficcraft.triangle_traffic_sign": "Dreieckiges Verkehrszeichen",
-    "block.trafficcraft.rectangle_traffic_sign": "Rechteckiges Verkehrszeichen",
-    "block.trafficcraft.diamond_traffic_sign": "Diamantenes Verkehrszeichen",
-    "block.trafficcraft.misc_traffic_sign": "Sonstiges Verkehrszeichen",
+    "block.trafficcraft.traffic_sign": "Verkehrszeichen",
     "block.trafficcraft.traffic_sign_post": "Verkehrszeichenmast",
     "block.trafficcraft.traffic_light": "Ampel",
     "block.trafficcraft.traffic_light_controller": "Ampel-Steuerungseinheit",

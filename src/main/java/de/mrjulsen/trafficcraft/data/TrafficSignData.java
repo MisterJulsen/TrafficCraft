@@ -129,7 +129,7 @@ public class TrafficSignData implements AutoCloseable {
         copy.copyFrom(texture);
         this.dynTex.setPixels(copy);
         this.dynTex.upload();
-}
+    }
 
     private String textureToBase64() {
         try {

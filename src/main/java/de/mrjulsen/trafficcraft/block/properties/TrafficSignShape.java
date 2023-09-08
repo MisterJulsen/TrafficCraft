@@ -8,9 +8,13 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public enum TrafficSignShape implements StringRepresentable {
     CIRCLE("circle", 0, new int[] {0,1,2,3,4,5,6,7,8,9,22,23,24,25,26,27,28,29,30,31,65536,65537,65538,65539,65540,65541,65542,65543,65544,65545,65558,65559,65560,65561,65562,65563,65564,65565,65566,65567,131072,131073,131074,131075,131076,131077,131098,131099,131100,131101,131102,131103,196608,196609,196610,196611,196612,196613,196634,196635,196636,196637,196638,196639,262144,262145,262146,262147,262172,262173,262174,262175,327680,327681,327682,327683,327708,327709,327710,327711,393216,393217,393246,393247,458752,458753,458782,458783,524288,524289,524318,524319,589824,589825,589854,589855,1441792,1441793,1441822,1441823,1507328,1507329,1507358,1507359,1572864,1572865,1572894,1572895,1638400,1638401,1638430,1638431,1703936,1703937,1703938,1703939,1703964,1703965,1703966,1703967,1769472,1769473,1769474,1769475,1769500,1769501,1769502,1769503,1835008,1835009,1835010,1835011,1835012,1835013,1835034,1835035,1835036,1835037,1835038,1835039,1900544,1900545,1900546,1900547,1900548,1900549,1900570,1900571,1900572,1900573,1900574,1900575,1966080,1966081,1966082,1966083,1966084,1966085,1966086,1966087,1966088,1966089,1966102,1966103,1966104,1966105,1966106,1966107,1966108,1966109,1966110,1966111,2031616,2031617,2031618,2031619,2031620,2031621,2031622,2031623,2031624,2031625,2031638,2031639,2031640,2031641,2031642,2031643,2031644,2031645,2031646,2031647}),
@@ -82,6 +86,117 @@ public enum TrafficSignShape implements StringRepresentable {
 
 	public final ResourceLocation getIconResourceLocation() {
 		return new ResourceLocation(ModMain.MOD_ID, String.format("textures/block/sign/icons/%s.png", this.getShape()));
+	}
+
+	public VoxelShape getVoxelShape(Direction direction) {
+		final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
+		// S, W, N, E
+		VoxelShape[] shapes;
+		switch (this) {
+			case CIRCLE:
+				shapes = new VoxelShape[] {
+					Shapes.or(SHAPE_COMMON,
+					Block.box(5, 15, 9, 11, 16, 9.5),
+					Block.box(5, 0, 9, 11, 1, 9.5),
+					Block.box(3, 14, 9, 13, 15, 9.5),
+					Block.box(3, 1, 9, 13, 2, 9.5),
+					Block.box(2, 13, 9, 14, 14, 9.5),
+					Block.box(2, 2, 9, 14, 3, 9.5),
+					Block.box(1, 11, 9, 15, 13, 9.5),
+					Block.box(1, 3, 9, 15, 5, 9.5),
+					Block.box(0, 5, 9, 16, 11, 9.5)),
+
+					Shapes.or(SHAPE_COMMON,
+					Block.box(6.5, 15, 5, 7, 16, 11),
+					Block.box(6.5, 0, 5, 7, 1, 11),
+					Block.box(6.5, 14, 3, 7, 15, 13),
+					Block.box(6.5, 1, 3, 7, 2, 13),
+					Block.box(6.5, 13, 2, 7, 14, 14),
+					Block.box(6.5, 2, 2, 7, 3, 14),
+					Block.box(6.5, 11, 1, 7, 13, 15),
+					Block.box(6.5, 3, 1, 7, 5, 15),
+					Block.box(6.5, 5, 0, 7, 11, 16)),
+					
+					Shapes.or(SHAPE_COMMON,
+					Block.box(5, 15, 6.5, 11, 16, 7),
+					Block.box(5, 0, 6.5, 11, 1, 7),
+					Block.box(3, 14, 6.5, 13, 15, 7),
+					Block.box(3, 1, 6.5, 13, 2, 7),
+					Block.box(2, 13, 6.5, 14, 14, 7),
+					Block.box(2, 2, 6.5, 14, 3, 7),
+					Block.box(1, 11, 6.5, 15, 13, 7),
+					Block.box(1, 3, 6.5, 15, 5, 7),
+					Block.box(0, 5, 6.5, 16, 11, 7)),
+
+					Shapes.or(SHAPE_COMMON,
+					Block.box(9, 15, 5, 9.5, 16, 11),
+					Block.box(9, 0, 5, 9.5, 1, 11),
+					Block.box(9, 14, 3, 9.5, 15, 13),
+					Block.box(9, 1, 3, 9.5, 2, 13),
+					Block.box(9, 13, 2, 9.5, 14, 14),
+					Block.box(9, 2, 2, 9.5, 3, 14),
+					Block.box(9, 11, 1, 9.5, 13, 15),
+					Block.box(9, 3, 1, 9.5, 5, 15),
+					Block.box(9, 5, 0, 9.5, 11, 16))
+				};
+				return shapes[direction.get2DDataValue()];
+			case TRIANGLE:
+				shapes = new VoxelShape[] {
+					
+					Shapes.or(SHAPE_COMMON,
+					Block.box(6, 14, 9, 10, 16, 9.5),
+					Block.box(7, 0, 7, 9, 16, 9),
+					Block.box(5, 12, 9, 11, 14, 9.5),
+					Block.box(4, 10, 9, 12, 12, 9.5),
+					Block.box(3, 8, 9, 13, 10, 9.5),
+					Block.box(2, 6, 9, 14, 8, 9.5),
+					Block.box(1, 4, 9, 15, 6, 9.5),
+					Block.box(0, 1, 9, 16, 4, 9.5),
+					Block.box(1, 0, 9, 15, 1, 9.5)),
+
+					Shapes.or(SHAPE_COMMON,
+					Block.box(6.5, 14, 6, 7, 16, 10),
+					Block.box(7, 0, 7, 9, 16, 9),
+					Block.box(6.5, 12, 5, 7, 14, 11),
+					Block.box(6.5, 10, 4, 7, 12, 12),
+					Block.box(6.5, 8, 3, 7, 10, 13),
+					Block.box(6.5, 6, 2, 7, 8, 14),
+					Block.box(6.5, 4, 1, 7, 6, 15),
+					Block.box(6.5, 1, 0, 7, 4, 16),
+					Block.box(6.5, 0, 1, 7, 1, 15)),
+
+					Shapes.or(SHAPE_COMMON,
+					Block.box(6, 14, 6.5, 10, 16, 7),
+					Block.box(7, 0, 7, 9, 16, 9),
+					Block.box(5, 12, 6.5, 11, 14, 7),
+					Block.box(4, 10, 6.5, 12, 12, 7),
+					Block.box(3, 8, 6.5, 13, 10, 7),
+					Block.box(2, 6, 6.5, 14, 8, 7),
+					Block.box(1, 4, 6.5, 15, 6, 7),
+					Block.box(0, 1, 6.5, 16, 4, 7),
+					Block.box(1, 0, 6.5, 15, 1, 7)),
+
+					Shapes.or(SHAPE_COMMON,
+					Block.box(9, 14, 6, 9.5, 16, 10),
+					Block.box(7, 0, 7, 9, 16, 9),
+					Block.box(9, 12, 5, 9.5, 14, 11),
+					Block.box(9, 10, 4, 9.5, 12, 12),
+					Block.box(9, 8, 3, 9.5, 10, 13),
+					Block.box(9, 6, 2, 9.5, 8, 14),
+					Block.box(9, 4, 1, 9.5, 6, 15),
+					Block.box(9, 1, 0, 9.5, 4, 16),
+					Block.box(9, 0, 1, 9.5, 1, 15))
+				};
+				return shapes[direction.get2DDataValue()];
+			default:
+				shapes = new VoxelShape[] {
+					Shapes.or(SHAPE_COMMON, Block.box(0, 0, 9, 16, 16, 9.5D)),
+					Shapes.or(SHAPE_COMMON, Block.box(6.5D, 0, 0, 7, 16, 16)),
+					Shapes.or(SHAPE_COMMON, Block.box(0, 0, 6.5D, 16, 16, 7)),
+					Shapes.or(SHAPE_COMMON, Block.box(9, 0, 0, 9.5D, 16, 16))
+				};
+				return shapes[direction.get2DDataValue()];
+		}
 	}
 
     @Override

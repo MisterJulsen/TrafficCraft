@@ -2,6 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"base": "trafficcraft:block/sign",
+		"sign": "trafficcraft:block/sign/diamond",
 		"particle": "trafficcraft:block/sign"
 	},
 	"elements": [

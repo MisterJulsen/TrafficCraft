@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.item.ModItems;
@@ -31,12 +32,7 @@ public class ClientProxy implements IProxy {
     @Override
     public void setup(FMLCommonSetupEvent event) {
         /* RENDER LAYERS */
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CIRCLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRIANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SQUARE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.DIAMOND_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.RECTANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MISC_TRAFFIC_SIGN.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
@@ -74,6 +70,7 @@ public class ClientProxy implements IProxy {
         BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
 
         MinecraftForgeClient.registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
             return new ClientTrafficSignTooltipStack(tooltip);
