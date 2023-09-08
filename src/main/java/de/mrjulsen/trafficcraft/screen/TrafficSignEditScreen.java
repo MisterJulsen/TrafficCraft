@@ -93,7 +93,7 @@ public class TrafficSignEditScreen extends Screen
     }
 
     private void recalculateMaxPatterns() {
-        MAX_PATTERNS = Constants.SIGN_PATTERNS.get(shape) + 1;
+        MAX_PATTERNS = 0;
         ROWS = Math.max((MAX_PATTERNS / 9) - 10 + 1, 0);
     }
 

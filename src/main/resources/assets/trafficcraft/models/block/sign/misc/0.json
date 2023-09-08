@@ -1,7 +1,0 @@
-{
-	"parent": "trafficcraft:block/sign/model0",
-	"textures": {
-		"back": "trafficcraft:block/sign/misc/misc0b",
-		"sign": "trafficcraft:block/sign/misc/misc0"
-	}
-}

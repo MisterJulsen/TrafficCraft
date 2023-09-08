@@ -13,8 +13,8 @@
 				"east": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"south": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
-				"up": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#base", "tintindex": 0},
-				"down": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#base", "tintindex": 0}
+				"up": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#base", "cullface": "up", "tintindex": 0},
+				"down": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#base", "cullface": "down", "tintindex": 0}
 			}
 		},
 		{
@@ -40,15 +40,15 @@
 			}
 		},
 		{
-			"from": [2, 0, 6.5],
-			"to": [14, 16, 7],
+			"from": [4, 0, 6.5],
+			"to": [12, 16, 7],
 			"faces": {
-				"north": {"uv": [0, 0, 12, 16], "texture": "#base"},
+				"north": {"uv": [0, 0, 8, 16], "texture": "#base"},
 				"east": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
-				"south": {"uv": [0, 0, 12, 16], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 8, 16], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
-				"up": {"uv": [0, 0, 0.5, 12], "rotation": 90, "texture": "#base", "tintindex": 0},
-				"down": {"uv": [0, 0, 0.5, 12], "rotation": 270, "texture": "#base", "tintindex": 0}
+				"up": {"uv": [0, 0, 0.5, 8], "rotation": 90, "texture": "#base", "cullface": "up", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.5, 8], "rotation": 270, "texture": "#base", "cullface": "down", "tintindex": 0}
 			}
 		}
 	],
@@ -84,14 +84,21 @@
 		}
 	},
 	"groups": [
-		0,
-		1,
-		2,
 		{
-			"name": "Sign",
-			"origin": [0, 0, 0],
+			"name": "road_sign_square",
+			"origin": [8, 8, 8],
 			"color": 0,
-			"children": [3]
+			"children": [
+				0,
+				1,
+				2,
+				{
+					"name": "Sign",
+					"origin": [0, 0, 0],
+					"color": 0,
+					"children": [3]
+				}
+			]
 		}
 	]
 }
