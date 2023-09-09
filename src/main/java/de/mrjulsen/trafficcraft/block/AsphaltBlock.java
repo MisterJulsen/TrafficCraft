@@ -20,8 +20,8 @@ public class AsphaltBlock extends Block implements IPaintableBlock {
 
     public AsphaltBlock(RoadType type) {
         super(Properties.of(Material.STONE)
-                .strength(1.5f)
-                .requiresCorrectToolForDrops());
+            .strength(1.5f)
+            .requiresCorrectToolForDrops());
 
         this.defaultRoadType = type;
     }

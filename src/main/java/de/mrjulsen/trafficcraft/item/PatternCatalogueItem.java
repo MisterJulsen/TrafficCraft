@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 
 public class PatternCatalogueItem extends Item {
 
-    public static final int MAX_SIGN_PATTERNS = 27;
+    protected static final int MAX_SIGN_PATTERNS = 36;
 
     public PatternCatalogueItem(Properties properties) {
         super(properties.stacksTo(1));

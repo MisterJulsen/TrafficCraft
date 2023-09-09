@@ -12,12 +12,13 @@ import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.AreaStyle;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.ColorStyle;
 import de.mrjulsen.trafficcraft.screen.widgets.ControlCollection;
 import de.mrjulsen.trafficcraft.screen.widgets.GuiAreaDefinition;
 import de.mrjulsen.trafficcraft.screen.widgets.HScrollBar;
 import de.mrjulsen.trafficcraft.screen.widgets.ICustomAreaControl;
 import de.mrjulsen.trafficcraft.screen.widgets.IconButton;
-import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.BrownAreaStyle;
 import de.mrjulsen.trafficcraft.screen.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
@@ -130,7 +131,7 @@ public class TrafficSignPatternSelectionScreen extends Screen
         
         RenderSystem.setShaderTexture(0, OVERLAY);
         blit(pPoseStack, guiLeft, guiTop + 26, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 256, 256);
-        AreaRenderer.renderBrownArea(pPoseStack, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, BrownAreaStyle.SUNKEN);
+        AreaRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
 
         RenderSystem.setShaderTexture(0, PatternCatalogueItem.getSelectedPattern(stack).getDynamicTexture().getId());
         blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, 32, 32, 32, 32);
@@ -139,7 +140,6 @@ public class TrafficSignPatternSelectionScreen extends Screen
         pPoseStack.scale(scale, scale, scale);
         this.font.draw(pPoseStack, PatternCatalogueItem.getSelectedPattern(stack).getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
         pPoseStack.setIdentity();
-        //pPoseStack.scale(1.3333334f, 1.3333334f, 1.3333334f);
 
         drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);
         

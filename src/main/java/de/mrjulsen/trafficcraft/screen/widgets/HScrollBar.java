@@ -6,7 +6,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.GrayAreaStyle;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.AreaStyle;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.ColorStyle;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -138,10 +139,10 @@ public class HScrollBar extends WidgetBase implements ICustomAreaControl {
         RenderSystem.setShaderTexture(0, UI);
 
         // Render background
-        AreaRenderer.renderGrayArea(pPoseStack, x, y, width, height, GrayAreaStyle.SUNKEN);
+        AreaRenderer.renderArea(pPoseStack, x, y, width, height, ColorStyle.GRAY, AreaStyle.SUNKEN);
 
         // Render scrollbar
-        int startU = canScroll() ? 0 : 5;
+        int startU = canScroll() ? 20 : 25;
         int startV = 5;
 
         int x1 = x + 1;

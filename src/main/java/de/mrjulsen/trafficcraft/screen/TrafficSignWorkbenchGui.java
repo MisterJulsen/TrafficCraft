@@ -26,8 +26,8 @@ import de.mrjulsen.trafficcraft.screen.widgets.GuiAreaDefinition;
 import de.mrjulsen.trafficcraft.screen.widgets.HScrollBar;
 import de.mrjulsen.trafficcraft.screen.widgets.ICustomAreaControl;
 import de.mrjulsen.trafficcraft.screen.widgets.IconButton;
-import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.BrownAreaStyle;
-import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.GrayAreaStyle;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.AreaStyle;
+import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.ColorStyle;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -319,7 +319,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             IconButton btn = new IconButton(ButtonType.DEFAULT, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
                 switch (j) {
                     case 0:
-                        
+                        this.minecraft.setScreen(new SignPickerScreen(this, shape));
                         break;
                     case 1:
                         TrafficSignData data = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
@@ -502,21 +502,21 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 }
 
                 // render buttons bg
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 56, BrownAreaStyle.SUNKEN);
+                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 56, ColorStyle.BROWN, AreaStyle.SUNKEN);
                 break;
             case CREATE_NEW:
                 renderPatternBackground(pPoseStack);
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, BrownAreaStyle.SUNKEN);
+                AreaRenderer.renderArea(pPoseStack, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, ColorStyle.BROWN, AreaStyle.SUNKEN);
                 this.font.draw(pPoseStack, createPattern, guiLeft + WIDTH / 2 - font.width(createPattern) / 2, guiTop + 40 - font.lineHeight / 2, 4210752);
                 this.font.draw(pPoseStack, createPatternInstruction, guiLeft + WIDTH / 2 - font.width(createPatternInstruction) / 2, guiTop + 55 - font.lineHeight / 2, 4210752);
                 break;
             case EDITOR:
                 renderPatternBackground(pPoseStack);  
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, BrownAreaStyle.SUNKEN);
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + 8, guiTop + 147, 20, 18 * 2 + 2, BrownAreaStyle.SUNKEN);
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, BrownAreaStyle.SUNKEN);   
-                AreaRenderer.renderBrownArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, BrownAreaStyle.SUNKEN);           
-                AreaRenderer.renderGrayArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, GrayAreaStyle.SUNKEN); // textbox
+                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
+                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 147, 20, 18 * 2 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
+                AreaRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, ColorStyle.BROWN, AreaStyle.SUNKEN);   
+                AreaRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);           
+                AreaRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, ColorStyle.GRAY, AreaStyle.SUNKEN); // textbox
                 RenderSystem.setShaderTexture(0, shape.getShapeTextureId());
                 RenderSystem.setShaderColor(0, 0, 0, 1);
 
