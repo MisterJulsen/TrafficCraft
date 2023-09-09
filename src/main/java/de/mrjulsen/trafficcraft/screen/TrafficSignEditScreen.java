@@ -9,7 +9,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.network.NetworkManager;

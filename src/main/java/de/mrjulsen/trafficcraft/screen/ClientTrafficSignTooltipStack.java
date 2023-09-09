@@ -3,17 +3,20 @@ package de.mrjulsen.trafficcraft.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientBundleTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -60,7 +63,13 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         ClientTooltipComponent.super.renderText(pFont, pX, pY, pMatrix4f, pBufferSource);
         for (int i = 0; i < this.data.size(); i++) {
             String label = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-            pFont.drawInBatch(new TextComponent(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY), pX + 3 + IMAGE_HEIGHT, pY + i * IMAGE_HEIGHT + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2, 16777215, true, pMatrix4f, pBufferSource, false, 16777215, 16777215);
+
+            float scale = 0.75f;
+            pMatrix4f.multiply(scale);
+            pMatrix4f.translate(new Vector3f(0, 0, 100));
+            pFont.drawInBatch(new TextComponent(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY), (pX + 3 + IMAGE_HEIGHT) / scale, (pY + i * IMAGE_HEIGHT + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / scale, 16777215, true, pMatrix4f, pBufferSource, false, 16777215, 16777215);
+            pMatrix4f.translate(new Vector3f(0, 0, -100));
+            pMatrix4f.multiply(1 / scale);
         }
     }
 }

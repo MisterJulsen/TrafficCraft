@@ -242,6 +242,8 @@
     "gui.trafficcraft.trafficsignworkbench.pattern.name_unknown": "Unnamed Sign",
     "gui.trafficcraft.trafficsignworkbench.delete.question": "Are you sure you want to delete this pattern?",
 
+    "gui.trafficcraft.patternselection.title": "Select a Traffic Sign Pattern",
+
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",
     "color.trafficcraft.orange": "Orange",

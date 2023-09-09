@@ -12,15 +12,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class IconButton extends Button {
 
-    public static final int WIDTH = 18;
-    public static final int HEIGHT = 18;
-
     private boolean selected = false;
     private final ButtonType type;
     private final ControlCollection collection;
 
-    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, Component pMessage, OnPress pOnPress) {
-        super(pX, pY, WIDTH, HEIGHT, pMessage, pOnPress);
+    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress) {
+        super(pX, pY, w, h, pMessage, pOnPress);
         this.type = type;
 
         if (collection != null) {
@@ -29,8 +26,8 @@ public class IconButton extends Button {
         this.collection = collection;
     }
 
-    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, Component pMessage, OnPress pOnPress, OnTooltip pOnTooltip) {
-        super(pX, pY, WIDTH, HEIGHT, pMessage, pOnPress, pOnTooltip);
+    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress, OnTooltip pOnTooltip) {
+        super(pX, pY, w, h, pMessage, pOnPress, pOnTooltip);
         this.type = type;
 
         if (collection != null) {
@@ -82,7 +79,7 @@ public class IconButton extends Button {
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        AreaRenderer.renderBrownArea(pPoseStack, x, y, WIDTH, HEIGHT, active ? (selected ? BrownAreaStyle.SUNKEN : (isHovered ? BrownAreaStyle.SELECTED : BrownAreaStyle.BUTTON)) : BrownAreaStyle.RAISED);
+        AreaRenderer.renderBrownArea(pPoseStack, x, y, width, height, active ? (selected ? BrownAreaStyle.SUNKEN : (isHovered ? BrownAreaStyle.SELECTED : BrownAreaStyle.BUTTON)) : BrownAreaStyle.RAISED);
         this.renderBg(pPoseStack, minecraft, pMouseX, pMouseY);
     }
 

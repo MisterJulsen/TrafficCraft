@@ -49,7 +49,7 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             0, 0,
             1, 1,
             255, 255, 255, 255,
-            (int)(pPackedLight * 0.85f),
+            (int)(pPackedLight * 0.8f),
             pPackedOverlay
         );
         pPoseStack.popPose();

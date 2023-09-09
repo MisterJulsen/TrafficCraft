@@ -2,14 +2,8 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
-
-import de.mrjulsen.trafficcraft.block.ModBlocks;
-import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
 public class SignPacket {

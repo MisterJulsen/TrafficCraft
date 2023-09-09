@@ -2,7 +2,7 @@
 	"credit": "Made with Blockbench",
 	"textures": {
 		"base": "trafficcraft:block/sign",
-		"sign": "trafficcraft:block/sign/square",
+		"sign": "trafficcraft:block/sign",
 		"particle": "trafficcraft:block/sign"
 	},
 	"elements": [

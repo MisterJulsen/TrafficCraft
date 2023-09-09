@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.packets.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
+import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.SignPacket;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
@@ -38,6 +39,7 @@ public class NetworkManager {
         register(TrafficSignPatternPacket.class).encoder(TrafficSignPatternPacket::encode).decoder(TrafficSignPatternPacket::decode).consumer(TrafficSignPatternPacket::handle).add();
         register(PatternCatalogueIndexPacketGui.class).encoder(PatternCatalogueIndexPacketGui::encode).decoder(PatternCatalogueIndexPacketGui::decode).consumer(PatternCatalogueIndexPacketGui::handle).add();
         register(PatternCatalogueDeletePacket.class).encoder(PatternCatalogueDeletePacket::encode).decoder(PatternCatalogueDeletePacket::decode).consumer(PatternCatalogueDeletePacket::handle).add();
+        register(PatternCatalogueIndexPacket.class).encoder(PatternCatalogueIndexPacket::encode).decoder(PatternCatalogueIndexPacket::decode).consumer(PatternCatalogueIndexPacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()
