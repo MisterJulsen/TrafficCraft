@@ -154,20 +154,8 @@ public enum TrafficSignShape implements StringRepresentable {
 		}
 	}
 
-	public VoxelShape getCollision(Direction direction) {
-		final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
-		// S, W, N, E
-		VoxelShape[] shapes;
-		switch (this) {
-			default:
-				shapes = new VoxelShape[] {
-					Shapes.or(SHAPE_COMMON, Block.box(0, 0, 9, 16, 16, 9.5D)),
-					Shapes.or(SHAPE_COMMON, Block.box(6.5D, 0, 0, 7, 16, 16)),
-					Shapes.or(SHAPE_COMMON, Block.box(0, 0, 6.5D, 16, 16, 7)),
-					Shapes.or(SHAPE_COMMON, Block.box(9, 0, 0, 9.5D, 16, 16))
-				};
-				return shapes[direction.get2DDataValue()];
-		}
+	public int[] getInvalidPixels() {
+		return invalidPixels;
 	}
 
     @Override

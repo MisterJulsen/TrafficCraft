@@ -148,6 +148,7 @@ public class ModBlocks {
         return toReturn;
     }
 
+    @SuppressWarnings("unused")
     private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(itemId, toReturn, tab, wearable);

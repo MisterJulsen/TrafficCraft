@@ -1,8 +1,16 @@
 package de.mrjulsen.trafficcraft.util;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Supplier;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -52,12 +60,27 @@ public class Utils {
         return bgrColor;
     }
 
-    public static  String textureToBase64(NativeImage image) {
+    public static String textureToBase64(NativeImage image) {
         try {
             return Base64.encodeBase64String(image.asByteArray());
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
+    }
+
+    public static InputStream scaleImage(InputStream inputStream, int width, int height) throws IOException {
+        BufferedImage originalImage = ImageIO.read(inputStream);
+
+        BufferedImage scaledImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.drawImage(originalImage, 0, 0, width, height, null);
+        g2d.dispose();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(scaledImage, "png", outputStream);
+        byte[] imageBytes = outputStream.toByteArray();
+        return new ByteArrayInputStream(imageBytes);
     }
 }

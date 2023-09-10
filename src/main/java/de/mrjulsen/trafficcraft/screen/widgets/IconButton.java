@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.screen.widgets;
 
-import org.jline.utils.Colors;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.AreaStyle;

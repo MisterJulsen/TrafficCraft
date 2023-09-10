@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.screen;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;

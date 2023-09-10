@@ -6,7 +6,6 @@ import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
-import de.mrjulsen.trafficcraft.network.packets.SignPacket;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
 import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
@@ -27,7 +26,6 @@ public class NetworkManager {
     
     public static void registerNetworkPackets()
     {
-        register(SignPacket.class).encoder(SignPacket::encode).decoder(SignPacket::decode).consumer(SignPacket::handle).add();
         register(TrafficLightPacket.class).encoder(TrafficLightPacket::encode).decoder(TrafficLightPacket::decode).consumer(TrafficLightPacket::handle).add();
         register(TrafficLightSchedulePacket.class).encoder(TrafficLightSchedulePacket::encode).decoder(TrafficLightSchedulePacket::decode).consumer(TrafficLightSchedulePacket::handle).add();
         register(TrafficLightControllerPacket.class).encoder(TrafficLightControllerPacket::encode).decoder(TrafficLightControllerPacket::decode).consumer(TrafficLightControllerPacket::handle).add();

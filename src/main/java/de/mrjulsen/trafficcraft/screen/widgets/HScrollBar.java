@@ -25,6 +25,8 @@ public class HScrollBar extends WidgetBase implements ICustomAreaControl {
     private int maxRowsOnPage = 1;
     private int scrollerHeight = 15;
 
+    private boolean autoScrollerHeight = false;
+
     // Events
     public Consumer<HScrollBar> onValueChanged;
 
@@ -50,6 +52,11 @@ public class HScrollBar extends WidgetBase implements ICustomAreaControl {
         return this;
     }
 
+    public HScrollBar setAutoScrollerHeight(boolean b) {
+        autoScrollerHeight = b;
+        return this;
+    }
+
     public HScrollBar setScrollerHeight(int h) {
         scrollerHeight = Math.max(5, h);
         return this;
@@ -57,13 +64,19 @@ public class HScrollBar extends WidgetBase implements ICustomAreaControl {
 
     public HScrollBar updateMaxScroll(int rows) {
         this.maxScroll = Math.max(rows - maxRowsOnPage, 0);
-        this.scrollerHeight = (int)(height / Math.max(rows / (float)maxRowsOnPage, 1.0f));
+        if (autoScrollerHeight) {
+            this.scrollerHeight = Math.max((int)((height - 2) / Math.max(rows / (float)maxRowsOnPage, 1.0f)), 5);
+        }
         return this;
     }
 
     public HScrollBar setOnValueChangedEvent(Consumer<HScrollBar> event) {
         this.onValueChanged = event;
         return this;
+    }
+
+    public boolean getAutoScrollerHeight() {
+        return this.autoScrollerHeight;
     }
 
     public int getScrollValue() {

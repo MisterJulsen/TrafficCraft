@@ -125,15 +125,6 @@
     "block.trafficcraft.fluorescent_tube_lamp": "Fluorescent Tube Lamp",
     "block.trafficcraft.traffic_barrel": "Traffic Barrel",
     "block.trafficcraft.traffic_sign_workbench": "Traffic Sign Workbench",
-
-    "gui.trafficcraft.signpicker.title": "Texture Picker",
-    "gui.trafficcraft.signpicker.tab.circle": "Circular Traffic Signs",
-    "gui.trafficcraft.signpicker.tab.square": "Square Traffic Signs",
-    "gui.trafficcraft.signpicker.tab.triangle": "Triangular Traffic Signs",
-    "gui.trafficcraft.signpicker.tab.diamond": "Diamond Traffic Signs",
-    "gui.trafficcraft.signpicker.tab.rectangle": "Rectangular Traffic Signs",
-    "gui.trafficcraft.signpicker.tab.misc": "Miscellaneous Traffic Signs",
-
     
     "gui.trafficcraft.trafficlightsettings.title": "§lTraffic Light Configuration",
     "gui.trafficcraft.trafficlightsettings.id": "Traffic Light Phase ID",
@@ -243,6 +234,11 @@
     "gui.trafficcraft.trafficsignworkbench.delete.question": "Are you sure you want to delete this pattern?",
 
     "gui.trafficcraft.patternselection.title": "Select a Traffic Sign Pattern",
+    
+    "gui.trafficcraft.signpicker.title": "Traffic Sign Texture Browser",
+    "gui.trafficcraft.signpicker.openfiledialog": "Import texture from computer",
+    "gui.trafficcraft.signpicker.load": "Load",
+    "gui.trafficcraft.signpicker.tooltip.import": "Import custom texture from computer",
 
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",

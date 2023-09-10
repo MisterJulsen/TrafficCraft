@@ -316,10 +316,18 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         // Save/Load
         for (int i = 0; i < 2; i++) {  
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
+            IconButton btn = new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (button) -> {
                 switch (j) {
                     case 0:
-                        this.minecraft.setScreen(new SignPickerScreen(this, shape));
+                        this.minecraft.setScreen(new SignPickerScreen(this, shape, (image) -> {
+                            if (image != null) {
+                                for (int a = 0; a < TrafficSignShape.MAX_WIDTH; a++) {
+                                    for (int b = 0; b < TrafficSignShape.MAX_HEIGHT; b++) {
+                                        pixels[a][b] = Utils.swapRedBlue(image.getPixelRGBA(a, b)); 
+                                    }
+                                }
+                            }
+                        }));
                         break;
                     case 1:
                         TrafficSignData data = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
@@ -868,7 +876,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         ADD(7),
         ADD_SMALL(8),
         SAVE(9),
-        OPEN(10);
+        OPEN(10),
+        IMPORT(11);
 
         private int index;
 
