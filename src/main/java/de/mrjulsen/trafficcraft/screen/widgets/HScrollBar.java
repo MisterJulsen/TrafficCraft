@@ -57,6 +57,7 @@ public class HScrollBar extends WidgetBase implements ICustomAreaControl {
 
     public HScrollBar updateMaxScroll(int rows) {
         this.maxScroll = Math.max(rows - maxRowsOnPage, 0);
+        this.scrollerHeight = (int)(height / Math.max(rows / (float)maxRowsOnPage, 1.0f));
         return this;
     }
 

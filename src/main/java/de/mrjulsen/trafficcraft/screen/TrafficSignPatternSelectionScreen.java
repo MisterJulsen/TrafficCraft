@@ -96,7 +96,7 @@ public class TrafficSignPatternSelectionScreen extends Screen
         final int count = PatternCatalogueItem.getStoredPatternCount(stack);
         for (int i = 0; i < count; i++) {
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
                 PatternCatalogueItem.setSelectedIndex(stack, j);
             }, (button, poseStack, mouseX, mouseY) -> {
                 Utils.renderTooltip(this, button, () -> List.of(new TextComponent(PatternCatalogueItem.getPatternAt(stack, j).getName()).getVisualOrderText()), poseStack, mouseX, mouseY);

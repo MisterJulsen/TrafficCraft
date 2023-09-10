@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.screen;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -49,12 +51,18 @@ public class SignPickerScreen extends Screen {
       
     private int guiLeft;
     private int guiTop;
+    private int selectedId;
+
+    private int scroll = 0;
 
     private final Screen lastScreen;
     private final TrafficSignShape shape;
 
     private final ControlCollection groupPatterns = new ControlCollection();
     private HScrollBar scrollbar;
+
+    final ResourceLocation[] resources;
+    final int count;
 
     
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/ui.png");
@@ -68,6 +76,8 @@ public class SignPickerScreen extends Screen {
         super(title);
         this.lastScreen = lastScreen;
         this.shape = shape;
+        this.resources = Minecraft.getInstance().getResourceManager().listResources(new ResourceLocation(ModMain.MOD_ID, "textures/block/sign/" + shape.getShape()).getPath(), (x) -> { return x.endsWith(".png"); }).toArray(ResourceLocation[]::new);
+        this.count = this.resources.length;
     }
 
     @Override
@@ -83,29 +93,41 @@ public class SignPickerScreen extends Screen {
     public void init() {
         super.init();
         guiLeft = this.width / 2 - WIDTH / 2;
-        guiTop = this.height / 2 - (HEIGHT + 24) / 2;        
+        guiTop = this.height / 2 - (HEIGHT + 24) / 2; 
+        
+        this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_DONE, (p) -> {
+            this.onDone();
+        }));
 
-        int count = Constants.SIGN_PATTERNS.get(shape);
+        this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
+            this.onClose();
+        }));
+
+        
+        
         for (int i = 0; i < count; i++) {
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
-                
+            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+                selectedId = j;
             }, (button, poseStack, mouseX, mouseY) -> {
                 
             }) {
                 @Override
                 protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                     super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                    RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + j + ".png"));
+                    RenderSystem.setShaderTexture(0, resources[j]);
                     blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, 32, 32, 32, 32);
                 }
             };
             this.addRenderableWidget(btn);
         }
 
-        this.scrollbar = this.addRenderableOnly(new HScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)));
+        this.scrollbar = this.addRenderableOnly(new HScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)).setOnValueChangedEvent(v -> {
+            this.scroll = v.getScrollValue();
+            fillButtons(groupPatterns.components.toArray(IconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
+        }));
 
-        fillButtons(groupPatterns.components.toArray(IconButton[]::new), scrollbar.getScrollValue(), guiLeft + 8, guiTop + 17, scrollbar);
+        fillButtons(groupPatterns.components.toArray(IconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
     }
 
     private void onDone() {
@@ -119,6 +141,9 @@ public class SignPickerScreen extends Screen {
         AreaRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
 
         super.render(stack, mouseX, mouseY, partialTicks);
+        
+        RenderSystem.setShaderTexture(0, resources[selectedId]);
+        blit(stack, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
     }
 
     private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, HScrollBar scrollbar) {

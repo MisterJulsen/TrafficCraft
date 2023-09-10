@@ -152,7 +152,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
         //#region DEFAULT MODE CONTROLS
         // Add new
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
         }) {
             @Override
@@ -163,7 +163,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         });
         
         // Edit selected
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 1 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 1 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             if (preview == null) {
                 return;
             }
@@ -182,7 +182,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         });
 
         // Delete selected
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 2 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 2 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             if (preview == null) {
                 return;
             }
@@ -212,7 +212,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         final int y = guiTop + 70;
         final IconButton[] shapeButtons = Arrays.stream(TrafficSignShape.values()).map(pShape -> {
             final TrafficSignShape shape = pShape;
-            IconButton button = new IconButton(ButtonType.RADIO_BUTTON, groupShapes, x, y, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+            IconButton button = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupShapes, x, y, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
                 this.shape = shape;
             }) {
                 @Override
@@ -230,7 +230,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         
         fillButtons(shapeButtons, 0, x, y, null);
 
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupCreatePattern, guiLeft + WIDTH / 2 - 20, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.GRAY, groupCreatePattern, guiLeft + WIDTH / 2 - 20, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             switchMode(TrafficSignWorkbenchMode.EDITOR);
         }) {
             @Override
@@ -243,7 +243,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             }
         });
 
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupCreatePattern, guiLeft + WIDTH / 2 + 2, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.GRAY, groupCreatePattern, guiLeft + WIDTH / 2 + 2, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             switchMode(TrafficSignWorkbenchMode.DEFAULT);
         }) {
             @Override
@@ -278,7 +278,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         // Toolbar 1
         for (int i = 0; i < 4; i++) {  
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, groupEditorToolbar1, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
+            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
                 tool = TrafficSignWorkbenchEditorTool.byIndex(j);
             }) {
                 @Override
@@ -316,7 +316,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         // Save/Load
         for (int i = 0; i < 2; i++) {  
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.DEFAULT, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
+            IconButton btn = new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
                 switch (j) {
                     case 0:
                         this.minecraft.setScreen(new SignPickerScreen(this, shape));
@@ -358,7 +358,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         } 
 
         // Color picker
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupEditorToolbar1, guiLeft + 203, guiTop + 36, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
+        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 203, guiTop + 36, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             minecraft.setScreen(new ColorPickerGui(this, selectedColor, (c) -> {
                 this.selectedColor = c.toInt();
             }));
@@ -375,7 +375,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         // Colors
         for (int i = 0; i < 7; i++) { 
             final int j = i;
-            this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, groupColors, guiLeft + 203, guiTop + 40 + (j + 1) * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> { }) {    
+            this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupColors, guiLeft + 203, guiTop + 40 + (j + 1) * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> { }) {    
                 @Override
                 protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                     super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);

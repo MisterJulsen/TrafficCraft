@@ -18,10 +18,12 @@ public class IconButton extends Button {
     private boolean selected = false;
     private final ButtonType type;
     private final ControlCollection collection;
+    private final ColorStyle style;
 
-    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress) {
+    public IconButton(ButtonType type, ColorStyle color, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress) {
         super(pX, pY, w, h, pMessage, pOnPress);
         this.type = type;
+        this.style = color;
 
         if (collection != null) {
             collection.components.add(this);
@@ -29,9 +31,10 @@ public class IconButton extends Button {
         this.collection = collection;
     }
 
-    public IconButton(ButtonType type, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress, OnTooltip pOnTooltip) {
+    public IconButton(ButtonType type, ColorStyle color, ControlCollection collection, int pX, int pY, int w, int h, Component pMessage, OnPress pOnPress, OnTooltip pOnTooltip) {
         super(pX, pY, w, h, pMessage, pOnPress, pOnTooltip);
         this.type = type;
+        this.style = color;
 
         if (collection != null) {
             collection.components.add(this);
@@ -82,7 +85,7 @@ public class IconButton extends Button {
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         Minecraft minecraft = Minecraft.getInstance();
-        AreaRenderer.renderArea(pPoseStack, x, y, width, height, ColorStyle.BROWN, active ? (selected ? AreaStyle.SUNKEN : (isHovered ? AreaStyle.SELECTED : AreaStyle.BUTTON)) : AreaStyle.RAISED);
+        AreaRenderer.renderArea(pPoseStack, x, y, width, height, this.style, active ? (selected ? AreaStyle.SUNKEN : (isHovered ? AreaStyle.SELECTED : AreaStyle.BUTTON)) : AreaStyle.RAISED);
         this.renderBg(pPoseStack, minecraft, pMouseX, pMouseY);
     }
 

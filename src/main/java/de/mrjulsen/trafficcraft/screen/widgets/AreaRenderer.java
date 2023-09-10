@@ -42,12 +42,12 @@ public class AreaRenderer {
         GuiComponent.blit(poseStack, x + w - 4, y, 4, 4, startU + 6, startV, 4, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // top right
         GuiComponent.blit(poseStack, x + w - 4, y + h - 4, 4, 4, startU + 6, startV + 6, 4, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // bottom right
 
-        GuiComponent.blit(poseStack, x + 4, y, w, 4, startU + 4, startV, 2, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // top
-        GuiComponent.blit(poseStack, x + 4, y + h - 4, w, 4, startU + 4, startV + 6, 2, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // bottom
-        GuiComponent.blit(poseStack, x, y + 4, 4, h, startU, startV + 4, 4, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT); // left
-        GuiComponent.blit(poseStack, x + w - 4, y + 4, 4, h, startU + 6, startV + 4, 4, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT); // right
+        GuiComponent.blit(poseStack, x + 4, y, w - 8, 4, startU + 4, startV, 2, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // top
+        GuiComponent.blit(poseStack, x + 4, y + h - 4, w - 8, 4, startU + 4, startV + 6, 2, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT); // bottom
+        GuiComponent.blit(poseStack, x, y + 4, 4, h - 8, startU, startV + 4, 4, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT); // left
+        GuiComponent.blit(poseStack, x + w - 4, y + 4, 4, h - 8, startU + 6, startV + 4, 4, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT); // right
         
-        GuiComponent.blit(poseStack, x + 4, y + 4, w, h, startU + 4, startV + 4, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiComponent.blit(poseStack, x + 4, y + 4, w - 8, h - 8, startU + 4, startV + 4, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     public static enum AreaStyle {

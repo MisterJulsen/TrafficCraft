@@ -228,7 +228,7 @@
     "gui.trafficcraft.trafficsignworkbench.editor.text": "Text",
     "gui.trafficcraft.trafficsignworkbench.editor.fill": "Fill Area",
     "gui.trafficcraft.trafficsignworkbench.editor.save": "Save and Close",
-    "gui.trafficcraft.trafficsignworkbench.editor.load": "Load Pattern...",
+    "gui.trafficcraft.trafficsignworkbench.editor.load": "Load Texture...",
     "gui.trafficcraft.trafficsignworkbench.editor.color.slot": "Color #%s",
     "gui.trafficcraft.trafficsignworkbench.editor.color.get": "Left click to use the color.",
     "gui.trafficcraft.trafficsignworkbench.editor.color.set": "Right click to save the current color.",
