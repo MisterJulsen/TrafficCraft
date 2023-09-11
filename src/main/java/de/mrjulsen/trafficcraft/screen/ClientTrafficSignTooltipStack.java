@@ -86,6 +86,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 16777215
             );
             pPoseStack.setIdentity();
+            texture.close();
         }
     }
 }

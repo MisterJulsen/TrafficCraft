@@ -1,6 +1,8 @@
 package de.mrjulsen.trafficcraft.data;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -18,11 +20,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 
-public class TrafficSignData implements AutoCloseable {
+public class TrafficSignData implements Closeable {
 
     private final int width;
     private final int height;
-    private NativeImage texture;
     private DynamicTexture dynTex;
     private final TrafficSignShape shape;
     private String name = "";    
@@ -31,16 +32,9 @@ public class TrafficSignData implements AutoCloseable {
         this.width = width;
         this.height = height;
         this.shape = shape;
-        this.texture = new NativeImage(Format.RGBA, width, height, false);
-        this.clearImage();
-
-        NativeImage copy = new NativeImage(width, height, false);
-        copy.copyFrom(texture);
-        this.dynTex = new DynamicTexture(copy);
-    }
-
-    public NativeImage getTexture() {
-        return texture;
+        NativeImage texture = new NativeImage(Format.RGBA, width, height, false);
+        this.clearImage(texture);
+        this.dynTex = new DynamicTexture(texture);
     }
 
     public DynamicTexture getDynamicTexture() {
@@ -67,29 +61,17 @@ public class TrafficSignData implements AutoCloseable {
         return height;
     }
 
-    public void clearImage() {
+    public void clearImage(NativeImage texture) {
         texture.fillRect(0, 0, width, height, 0);
-
-        if (dynTex != null) {
-            NativeImage copy = new NativeImage(width, height, false);
-            copy.copyFrom(texture);
-            this.dynTex.setPixels(copy);
-            this.dynTex.upload();
-        }
     }
 
-    public NativeImage setFromBase64(String base64) {
+    public void setFromBase64(String base64) {
         try {
-            this.texture = NativeImage.fromBase64(base64); 
-
-            NativeImage copy = new NativeImage(width, height, false);
-            copy.copyFrom(texture);
-            this.dynTex.setPixels(copy);
+            NativeImage texture = NativeImage.fromBase64(base64); 
+            this.dynTex.setPixels(texture);
             this.dynTex.upload();
-            return this.texture;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
     }
 
@@ -98,42 +80,34 @@ public class TrafficSignData implements AutoCloseable {
         for (int x = 0; x < width; x++) {
             a[x] = new int[height];
             for (int y = 0; y < height; y++) {
-                a[x][y] = flipRgb ? Utils.swapRedBlue(this.getTexture().getPixelRGBA(x, y)) : this.getTexture().getPixelRGBA(x, y);
+                a[x][y] = flipRgb ? Utils.swapRedBlue(this.getDynamicTexture().getPixels().getPixelRGBA(x, y)) : this.getDynamicTexture().getPixels().getPixelRGBA(x, y);
             }
         }
         return a;
     }
 
     public void setImage(NativeImage img) {
-        this.texture = new NativeImage(Format.RGBA, width, height, false);
-        this.clearImage();
-        this.texture.copyFrom(img);           
-        
-        NativeImage copy = new NativeImage(width, height, false);
-        copy.copyFrom(texture);
-        this.dynTex.setPixels(copy);
+        this.dynTex.setPixels(img);
         this.dynTex.upload();
     }
 
     public int getPixelRGBA(int x, int y) {
-        return texture.getPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height));
+        return this.getDynamicTexture().getPixels().getPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height));
     }
 
     public void setPixelRGBA(int x, int y, int rgba) {
         if (!shape.isPixelValid(x, y))
             return;
 
-        texture.setPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height), rgba);                
-        
-        NativeImage copy = new NativeImage(width, height, false);
-        copy.copyFrom(texture);
-        this.dynTex.setPixels(copy);
+        NativeImage texture = this.getDynamicTexture().getPixels();
+        texture.setPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height), rgba);   
+        this.dynTex.setPixels(texture);
         this.dynTex.upload();
     }
 
     private String textureToBase64() {
         try {
-            return Base64.encodeBase64String(this.getTexture().asByteArray());
+            return Base64.encodeBase64String(this.getDynamicTexture().getPixels().asByteArray());
         } catch (IOException e) {
             e.printStackTrace();
             return "";
@@ -179,19 +153,31 @@ public class TrafficSignData implements AutoCloseable {
         buf.writeInt(height);
         buf.writeInt(shape.getIndex());
         buf.writeUtf(name);
-        buf.writeUtf(textureToBase64());
+
+        String texture = textureToBase64();
+        int length = texture.getBytes(StandardCharsets.UTF_8).length;
+        buf.writeInt(length);
+        buf.writeUtf(texture, length);
     }
 
     public static TrafficSignData fromBytes(FriendlyByteBuf buf) {
         TrafficSignData data = new TrafficSignData(buf.readInt(), buf.readInt(), TrafficSignShape.getShapeByIndex(buf.readInt()));
         data.setName(buf.readUtf());
-        data.setFromBase64(buf.readUtf());
+
+        int length = buf.readInt();
+        data.setFromBase64(buf.readUtf(length));
         return data;
     }
 
     @Override
     public void close() {
-        texture.close();
-        dynTex.close();
+        if (dynTex != null) {
+            dynTex.close();
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        this.clone();
     }
 }

@@ -4,6 +4,7 @@
     "core.trafficcraft.credits.line0": "§b§lTrafficCraft",
     "core.trafficcraft.credits.line1": "§cA mod created by §4§lMrJulsen.",
     "core.trafficcraft.credits.line2": "§6§lHERE BE DRAGONS!",
+    "core.trafficcraft.creative_only.tooltip": "Creative Mode only!",
 
     "advancement.trafficcraft.craft_road": "Road Worker",
     "advancement.trafficcraft.craft_road.description": "Craft asphalt, concrete or slopes of them.",
@@ -76,6 +77,7 @@
     "item.trafficcraft.color_palette.no_color": "No colors stored",
     "item.trafficcraft.color_palette.color_unset": "(no color)",
     "item.trafficcraft.pattern_catalogue": "Pattern Catalogue",
+    "item.trafficcraft.creative_pattern_catalogue": "Creative Pattern Catalogue",
 
     "block.trafficcraft.traffic_sign": "Traffic Sign",
     "block.trafficcraft.traffic_sign_post": "Traffic Sign Post",
@@ -225,6 +227,8 @@
     "gui.trafficcraft.trafficsignworkbench.editor.color.set": "Right click to save the current color.",
     "gui.trafficcraft.trafficsignworkbench.editor.color.remove": "Middle click to delete the color.",
     "gui.trafficcraft.trafficsignworkbench.menu.add": "Add new pattern",
+    "gui.trafficcraft.trafficsignworkbench.menu.add_full1": "This Pattern Catalogue is full!",
+    "gui.trafficcraft.trafficsignworkbench.menu.add_full2": "Please use a new one to store more signs.",
     "gui.trafficcraft.trafficsignworkbench.menu.edit": "Edit selected pattern",
     "gui.trafficcraft.trafficsignworkbench.menu.delete": "Delete selected pattern",
     "gui.trafficcraft.trafficsignworkbench.menu.no_pattern": "Empty Pattern!",
@@ -234,11 +238,25 @@
     "gui.trafficcraft.trafficsignworkbench.delete.question": "Are you sure you want to delete this pattern?",
 
     "gui.trafficcraft.patternselection.title": "Select a Traffic Sign Pattern",
+    "gui.trafficcraft.patternselection.build_in_pattern": "Build-In %s %s",
     
     "gui.trafficcraft.signpicker.title": "Traffic Sign Texture Browser",
     "gui.trafficcraft.signpicker.openfiledialog": "Import texture from computer",
     "gui.trafficcraft.signpicker.load": "Load",
     "gui.trafficcraft.signpicker.tooltip.import": "Import custom texture from computer",
+    
+    "gui.trafficcraft.signshape.circle": "Circle",
+    "gui.trafficcraft.signshape.square": "Square",
+    "gui.trafficcraft.signshape.diamond": "Diamond",
+    "gui.trafficcraft.signshape.triangle": "Triangle",
+    "gui.trafficcraft.signshape.triangle_down": "Triangle (down)",
+    "gui.trafficcraft.signshape.rectangle": "Rectangle",
+    "gui.trafficcraft.signshape.rectangle_small": "Rectangle (slim)",
+    "gui.trafficcraft.signshape.rectangle_horizontal": "Rectangle (across)",
+    "gui.trafficcraft.signshape.small_upper": "Small (upper)",
+    "gui.trafficcraft.signshape.small_lower": "Small (lower)",
+    "gui.trafficcraft.signshape.octagon": "Octagon",
+    "gui.trafficcraft.signshape.misc": "Miscellaneous",
 
     "color.trafficcraft.none": "None",
     "color.trafficcraft.white": "White",

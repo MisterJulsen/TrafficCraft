@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,8 +31,14 @@ public class PatternCatalogueIndexPacket
             ServerPlayer sender = context.get().getSender();
             if (sender.getMainHandItem().getItem() instanceof PatternCatalogueItem) {
                 PatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), packet.index);
+                if (sender.getMainHandItem().getItem() instanceof CreativePatternCatalogueItem) {
+                    CreativePatternCatalogueItem.clearCustomImage(sender.getMainHandItem());
+                }
             } else if (sender.getOffhandItem().getItem() instanceof PatternCatalogueItem) { 
                 PatternCatalogueItem.setSelectedIndex(sender.getOffhandItem(), packet.index);
+                if (sender.getOffhandItem().getItem() instanceof CreativePatternCatalogueItem) { 
+                    CreativePatternCatalogueItem.clearCustomImage(sender.getOffhandItem());
+                }
             }
         });
         context.get().setPacketHandled(true);

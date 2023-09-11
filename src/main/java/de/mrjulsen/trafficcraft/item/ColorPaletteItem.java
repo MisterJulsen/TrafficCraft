@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.item;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -28,10 +29,15 @@ public class ColorPaletteItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, player, list, flag);
+        if (!stack.hasTag()) {
+            list.add(new TranslatableComponent("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+            return;
+        }
+
         CompoundTag tag = checkNbt(stack);
 
         if (!IntStream.of(tag.getIntArray(COLORS_TAG)).anyMatch(x -> x != 0)) {
-            list.add(new TranslatableComponent("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+            list.add(new TranslatableComponent("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
         } else {
             for (int i : tag.getIntArray(COLORS_TAG)) {
                 if (i == 0) {
@@ -46,13 +52,20 @@ public class ColorPaletteItem extends Item {
 
     public static CompoundTag checkNbt(ItemStack stack) {
         CompoundTag nbt = stack.getOrCreateTag();
-        if (!nbt.contains(COLORS_TAG))
-            nbt.putIntArray(COLORS_TAG, new int[7]);
+        if (!nbt.contains(COLORS_TAG)) {
+            int[] c = new int[7];
+            Arrays.fill(c, 0);
+            nbt.putIntArray(COLORS_TAG, c);
+        }
 
         return nbt;
     }
 
     public static int getColorAt(ItemStack stack, int index) {
+        if (!stack.hasTag()) {
+            return 0;
+        }
+
         if (index < 0 || index >= MAX_COLORS) {
             return 0;
         }

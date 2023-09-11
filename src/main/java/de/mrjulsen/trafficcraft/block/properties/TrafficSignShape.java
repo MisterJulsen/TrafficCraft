@@ -66,7 +66,7 @@ public enum TrafficSignShape implements StringRepresentable {
 	}
 
 	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.signpicker.tab.%s", shape);
+		return String.format("gui.trafficcraft.signshape.%s", shape);
 	}
 
 	public boolean isPixelValid(int x, int y) {

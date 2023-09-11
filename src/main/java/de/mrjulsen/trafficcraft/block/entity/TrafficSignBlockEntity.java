@@ -73,6 +73,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements AutoCloseable
         close();
         this.texture = texture;
         BlockEntityUtil.sendUpdatePacket(this);
+        this.setChanged();
         return this.texture;
     }
 
@@ -81,6 +82,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements AutoCloseable
             close();
             this.texture = new DynamicTexture(NativeImage.fromBase64(base64));
             BlockEntityUtil.sendUpdatePacket(this);
+            this.setChanged();
         } catch (IOException e) {
             e.printStackTrace();
         }

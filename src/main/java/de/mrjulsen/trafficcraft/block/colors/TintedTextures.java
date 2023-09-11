@@ -50,7 +50,11 @@ public class TintedTextures{
                 if (pTintIndex == 0) {
                     return 0xFFFFFFFF;
                 }
-                return ColorPaletteItem.getColorAt(pStack, pTintIndex - 1);
+                int color = ColorPaletteItem.getColorAt(pStack, pTintIndex - 1);
+                if (color == 0) {
+                    color = 0xFFFFFFFF;
+                }
+                return color;
             }
             return 0;
         }

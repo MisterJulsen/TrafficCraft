@@ -1,15 +1,23 @@
 package de.mrjulsen.trafficcraft.screen;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
+import de.mrjulsen.trafficcraft.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
+import de.mrjulsen.trafficcraft.network.packets.CreativePatternCataloguePacket;
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer;
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.AreaStyle;
 import de.mrjulsen.trafficcraft.screen.widgets.AreaRenderer.ColorStyle;
@@ -23,10 +31,13 @@ import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -48,19 +59,54 @@ public class TrafficSignPatternSelectionScreen extends Screen
     private static final int ICON_BUTTON_WIDTH = 18;
     private static final int ICON_BUTTON_HEIGHT = 18;
     
+    private static final int BOOKMARK_U = WIDTH;
+    private static final int BOOKMARK_V_UNSELECTED_LEFT = 0;
+    private static final int BOOKMARK_V_SELECTED_LEFT = 20;
+    private static final int BOOKMARK_V_UNSELECTED_RIGHT = 40;
+    private static final int BOOKMARK_V_SELECTED_RIGHT = 60;
+    private static final int BOOKMARK_HEIGHT = 20;
+    private static final int BOOKMARK_WIDTH = 44;
+    private static final int BOOKMARK_SPACING = 2;
+    private static final int BOOKMARK_COUNT_PER_SIDE = 6;
+    
+    private static final int BOOKMARK_Y_START = 17;
+    private static final int BOOKMARK_X_LEFT = -33;
+    private static final int BOOKMARK_X_RIGHT = WIDTH - 16;
+    
     private final ControlCollection groupPatterns = new ControlCollection();
     private HScrollBar scrollbar;
 
     private int guiTop;
     private int guiLeft;
 
+    // bookmarks
+    private final TrafficSignShape[] bookmarks = new TrafficSignShape[] {
+        TrafficSignShape.CIRCLE,
+        TrafficSignShape.TRIANGLE,
+        TrafficSignShape.SQUARE,
+        TrafficSignShape.DIAMOND,
+        TrafficSignShape.RECTANGLE,
+        TrafficSignShape.MISC,
+    };
+    private int selectedBookmark = bookmarks.length;
+    private int scroll = 0;
+    private int selectedIndex;
+
     private final ItemStack stack;
+    private final boolean creative;
     
     private static final ResourceLocation OVERLAY = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_sign_workbench_overlay.png");
 
     public TrafficSignPatternSelectionScreen(ItemStack stack) {
         super(title);
+
+        if (!(stack.getItem() instanceof PatternCatalogueItem)) {
+            throw new IllegalStateException("ItemStack is no PatternCatalogueItem.");
+        }
+
         this.stack = stack;
+        this.creative = stack.getItem() instanceof CreativePatternCatalogueItem;
+        selectedBookmark = bookmarks.length;
     }
 
     @Override
@@ -70,7 +116,11 @@ public class TrafficSignPatternSelectionScreen extends Screen
 
     @Override
     public void onClose() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
+        if (selectedBookmark >= bookmarks.length) {
+            NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
+        } else {
+            NetworkManager.MOD_CHANNEL.sendToServer(new CreativePatternCataloguePacket(CreativePatternCatalogueItem.getCustomImage(stack)));
+        }
         super.onClose();
     }
 
@@ -80,9 +130,82 @@ public class TrafficSignPatternSelectionScreen extends Screen
         
         guiLeft = this.width / 2 - WIDTH / 2;
         guiTop = this.height / 2 - HEIGHT / 2;
+        scroll = 0;
 
         groupPatterns.components.clear();
 
+        if (selectedBookmark >= bookmarks.length) {
+            final int count = PatternCatalogueItem.getStoredPatternCount(stack);
+            for (int i = 0; i < count; i++) {
+                final int j = i;
+                IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+                    PatternCatalogueItem.setSelectedIndex(stack, j);
+                    if (stack.getItem() instanceof CreativePatternCatalogueItem) {
+                        CreativePatternCatalogueItem.clearCustomImage(stack);
+                    }
+                }, (button, poseStack, mouseX, mouseY) -> {
+                    Utils.renderTooltip(this, button, () -> List.of(new TextComponent(PatternCatalogueItem.getPatternAt(stack, j).getName()).getVisualOrderText()), poseStack, mouseX, mouseY);
+                }) {
+                    @Override
+                    protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
+                        super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+                        try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
+                            RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
+                            NativeImage img = data.getDynamicTexture().getPixels();
+                            blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                        }
+                        
+                    }
+                };
+                this.addRenderableWidget(btn);
+            }
+        } else {
+            // builtin textures
+            final TrafficSignShape[] shapes = bookmarks[selectedBookmark] == TrafficSignShape.MISC ? Arrays.stream(TrafficSignShape.values()).filter(x -> {
+                return !Arrays.stream(bookmarks).anyMatch(y -> x == y) || x == TrafficSignShape.MISC;
+            }).toArray(TrafficSignShape[]::new) : new TrafficSignShape[] { bookmarks[selectedBookmark] };
+
+            for (TrafficSignShape shape : shapes) {
+                int a = 1;
+                ResourceLocation path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
+                List<ResourceLocation> locs = new ArrayList<>();
+                while (Minecraft.getInstance().getResourceManager().hasResource(path)) {
+                    locs.add(path);
+                    a++;
+                    path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
+                }
+                final ResourceLocation[] resources = locs.toArray(ResourceLocation[]::new);
+                final int count = resources.length;
+
+                for (int i = 0; i < count; i++) {
+                    final int j = i;
+                    IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+                        
+                        try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).getInputStream())) {
+                            TrafficSignData tsd = new TrafficSignData(img.getWidth(), img.getHeight(), shape);
+                            tsd.setImage(img);
+                            CreativePatternCatalogueItem.setCustomImage(stack, tsd);
+                            selectedIndex = j;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }, (button, poseStack, mouseX, mouseY) -> {
+
+                    }) {
+                        @Override
+                        protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
+                            super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+                            RenderSystem.setShaderTexture(0, resources[j]);
+                            int w = 32;
+                            int h = 32;
+                            blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, w, h, w, h);
+                        }
+                    };
+                    this.addRenderableWidget(btn);
+                }
+            }
+        }
+        
         this.scrollbar = this.addRenderableWidget(new HScrollBar(guiLeft + WIDTH / 2 + ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2, guiTop + 45 - 1, 8, MAX_ROWS * ICON_BUTTON_HEIGHT + 2,
             new GuiAreaDefinition(
                 guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2,
@@ -90,37 +213,32 @@ public class TrafficSignPatternSelectionScreen extends Screen
                 MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH,
                 MAX_ROWS * ICON_BUTTON_HEIGHT
             )
-        ));
+        )).setAutoScrollerHeight(true).setOnValueChangedEvent((scrollbar) -> {
+            this.scroll = scrollbar.getScrollValue();
+            fillButtons(groupPatterns.components.toArray(IconButton[]::new), scroll, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 1, guiTop + 45, this.scrollbar);
+        });
 
-        final int count = PatternCatalogueItem.getStoredPatternCount(stack);
-        for (int i = 0; i < count; i++) {
-            final int j = i;
-            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
-                PatternCatalogueItem.setSelectedIndex(stack, j);
-            }, (button, poseStack, mouseX, mouseY) -> {
-                Utils.renderTooltip(this, button, () -> List.of(new TextComponent(PatternCatalogueItem.getPatternAt(stack, j).getName()).getVisualOrderText()), poseStack, mouseX, mouseY);
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                    RenderSystem.setShaderTexture(0, PatternCatalogueItem.getPatternAt(stack, j).getDynamicTexture().getId());
-                    blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, 32, 32, 32, 32);
-                }
-            };
-            this.addRenderableWidget(btn);
-        }
-
-        fillButtons(groupPatterns.components.toArray(IconButton[]::new), guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 1, guiTop + 45);
+        this.scrollbar.visible = groupPatterns.components.size() > MAX_ENTRIES_IN_ROW * MAX_ROWS;
+        fillButtons(groupPatterns.components.toArray(IconButton[]::new), scroll, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 1, guiTop + 45, this.scrollbar);
     }
 
-    private void fillButtons(IconButton[] buttons, int defX, int defY) {
+    private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, HScrollBar scrollbar) {
+        if (buttons.length <= 0) {
+            return;
+        }
+
         int currentRow = -1;
         for (int i = 0; i < buttons.length; i++) {
             if (i % MAX_ENTRIES_IN_ROW == 0)
                 currentRow++;
 
             buttons[i].x = defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH;
-            buttons[i].y = defY + (currentRow) * ICON_BUTTON_HEIGHT;
+            buttons[i].y = defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT);
+            buttons[i].visible = currentRow >= scrollRow && currentRow < scrollRow + MAX_ROWS;
+        }
+
+        if (scrollbar != null) {
+            scrollbar.setMaxRowsOnPage(MAX_ROWS).updateMaxScroll(currentRow + 1);
         }
     }
 
@@ -130,20 +248,121 @@ public class TrafficSignPatternSelectionScreen extends Screen
         
         RenderSystem.setShaderTexture(0, OVERLAY);
         blit(pPoseStack, guiLeft, guiTop + 26, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 256, 256);
+        
+        if (creative) {
+            int bookY = guiTop + 26;
+            int bookmarkIndex = 0;
+            for (TrafficSignShape shape : bookmarks) {      
+                bookmarkIndex = addBookmark(pPoseStack, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, shape.getIconResourceLocation(), 0, 0, 32, 32, 32, 32);
+            }
+            // Bookmark custom textures
+            bookmarkIndex = addBookmark(pPoseStack, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, OVERLAY, 239, 0, 16, 16, 256, 256);
+        }
+
         AreaRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
 
-        RenderSystem.setShaderTexture(0, PatternCatalogueItem.getSelectedPattern(stack).getDynamicTexture().getId());
-        blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, 32, 32, 32, 32);
+        if (CreativePatternCatalogueItem.hasCustomPattern(stack)) {            
+            try (TrafficSignData data = CreativePatternCatalogueItem.getCustomImage(stack)) {
+                RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
+                NativeImage img = data.getDynamicTexture().getPixels();
+                blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                img.close();
 
-        float scale = 0.75f;
-        pPoseStack.scale(scale, scale, scale);
-        this.font.draw(pPoseStack, PatternCatalogueItem.getSelectedPattern(stack).getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
-        pPoseStack.setIdentity();
+                float scale = 0.75f;
+                pPoseStack.scale(scale, scale, scale);
+                this.font.draw(pPoseStack, new TranslatableComponent("gui.trafficcraft.patternselection.build_in_pattern", new TranslatableComponent(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
+                pPoseStack.setIdentity();
+            }
+            
+        } else {
+            try (TrafficSignData data = PatternCatalogueItem.getSelectedPattern(stack)) {
+                if (data == null) {
+                    return;
+                }
+                RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
+                NativeImage img = data.getDynamicTexture().getPixels();
+                blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                img.close();
 
-        drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);
+                float scale = 0.75f;
+                pPoseStack.scale(scale, scale, scale);
+                this.font.draw(pPoseStack, data.getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
+                pPoseStack.setIdentity();
+            }            
+        }
+
+        drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);        
         
         super.render(pPoseStack, mouseX, mouseY, partialTicks);
         groupPatterns.performForEach(x -> x.renderToolTip(pPoseStack, mouseX, mouseY));
+    }
+
+    private int addBookmark(PoseStack pPoseStack, int mouseX, int mouseY, float partialTicks, int bookY, int bookmarkIndex, ResourceLocation icon, int u, int v, int uW, int vH, int texW, int texH) {
+        int idx = bookmarkIndex % BOOKMARK_COUNT_PER_SIDE;
+        int bookmarkX = bookmarkIndex / BOOKMARK_COUNT_PER_SIDE <= 0 ? BOOKMARK_X_LEFT : BOOKMARK_X_RIGHT;
+        int bookmarkV = bookmarkIndex / BOOKMARK_COUNT_PER_SIDE <= 0 ? (selectedBookmark == bookmarkIndex ? BOOKMARK_V_SELECTED_LEFT : BOOKMARK_V_UNSELECTED_LEFT) : (selectedBookmark == bookmarkIndex ? BOOKMARK_V_SELECTED_RIGHT : BOOKMARK_V_UNSELECTED_RIGHT);
+        RenderSystem.setShaderTexture(0, OVERLAY);
+        blit(pPoseStack, 
+            guiLeft + bookmarkX,
+            bookY + BOOKMARK_Y_START + idx * (BOOKMARK_HEIGHT + BOOKMARK_SPACING),
+            BOOKMARK_WIDTH,
+            BOOKMARK_HEIGHT,
+            BOOKMARK_U,
+            bookmarkV,
+            BOOKMARK_WIDTH,
+            BOOKMARK_HEIGHT,
+            256,
+            256
+        );
+        RenderSystem.setShaderTexture(0, icon);
+        blit(pPoseStack, 
+            guiLeft + bookmarkX + 14,
+            bookY + BOOKMARK_Y_START + idx * (BOOKMARK_HEIGHT + BOOKMARK_SPACING) + 2,
+            16,
+            16,
+            u,
+            v,
+            uW,
+            vH,
+            texW,
+            texH
+        );
+
+        bookmarkIndex++;
+
+        return bookmarkIndex;
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {  
+        if (creative) {
+            int bookY = guiTop + 26;
+            int xLeft = guiLeft + BOOKMARK_X_LEFT;
+            int xRight = guiLeft + BOOKMARK_X_RIGHT;
+            int y = bookY + BOOKMARK_Y_START;
+            int h1 = y + Math.min(BOOKMARK_COUNT_PER_SIDE, bookmarks.length + 1) * (BOOKMARK_HEIGHT + BOOKMARK_SPACING);
+            int h2 = y + (bookmarks.length - BOOKMARK_COUNT_PER_SIDE + 1) * (BOOKMARK_HEIGHT + BOOKMARK_SPACING);
+
+            //left tabs
+            if (pMouseX > xLeft && pMouseX < xLeft + BOOKMARK_WIDTH && pMouseY > y && pMouseY < h1) {
+                int index = Mth.clamp((int)((pMouseY - y) / (BOOKMARK_HEIGHT + BOOKMARK_SPACING)), 0, BOOKMARK_COUNT_PER_SIDE);
+                this.selectedBookmark = index;
+                this.clearWidgets();
+                init();
+                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
+            }
+
+            //right tabs
+            if (bookmarks.length + 1 > BOOKMARK_COUNT_PER_SIDE && pMouseX > xRight && pMouseX < xRight + BOOKMARK_WIDTH && pMouseY > y && pMouseY < h2) {
+                int index = BOOKMARK_COUNT_PER_SIDE + Mth.clamp((int)((pMouseY - y) / (BOOKMARK_HEIGHT + BOOKMARK_SPACING)), 0, BOOKMARK_COUNT_PER_SIDE);
+                this.selectedBookmark = index;
+                this.clearWidgets();
+                init();
+                minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
+            }
+        }
+              
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     @Override

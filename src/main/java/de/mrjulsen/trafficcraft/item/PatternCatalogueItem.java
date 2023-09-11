@@ -2,7 +2,6 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.Arrays;
 import java.util.Optional;
-
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.client.PatternCatalogueClient;
 import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
@@ -21,7 +20,7 @@ import net.minecraft.world.level.Level;
 
 public class PatternCatalogueItem extends Item {
 
-    protected static final int MAX_SIGN_PATTERNS = 36;
+    private static final int MAX_SIGN_PATTERNS = 36;
 
     public PatternCatalogueItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -40,6 +39,10 @@ public class PatternCatalogueItem extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 
+    public int getMaxPatterns() {
+        return MAX_SIGN_PATTERNS;
+    }
+
     public static CompoundTag checkNbt(ItemStack stack) {
         CompoundTag nbt = stack.getOrCreateTag();
         if (!nbt.contains("patterns")) {            
@@ -54,12 +57,16 @@ public class PatternCatalogueItem extends Item {
     }
 
     public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
+        if (!pStack.hasTag()) {
+            return Optional.of(new TrafficSignTooltip(NonNullList.create(), getSelectedIndex(pStack)));
+        }
+
         NonNullList<TrafficSignData> nonnulllist = NonNullList.create();
         Arrays.stream(getStoredPatterns(pStack)).forEach(nonnulllist::add);
         return Optional.of(new TrafficSignTooltip(nonnulllist, getSelectedIndex(pStack)));
     }
 
-    private static boolean indexInBounds(ItemStack stack, int index) {
+    protected static boolean indexInBounds(ItemStack stack, int index) {
         return index >= 0 && index < getStoredPatternCount(stack);
     }
 
@@ -89,19 +96,23 @@ public class PatternCatalogueItem extends Item {
     }
 
     public static boolean setPattern(ItemStack stack, TrafficSignData pattern) {
-        if (getStoredPatternCount(stack) >= MAX_SIGN_PATTERNS)
-            return false;
+        try (pattern) {
+            if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
+                return false;
 
-        checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
-        return true;
+            checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
+            return true;
+        }
     }
 
     public static boolean replacePattern(ItemStack stack, TrafficSignData pattern, int index) {
-        if (getStoredPatternCount(stack) >= MAX_SIGN_PATTERNS)
+        try (pattern) {
+            if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
             return false;
-
-        checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
-        return true;
+            checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
+            
+            return true;
+        }
     }
 
     public static boolean removePatternAt(ItemStack stack, int index) {
@@ -117,6 +128,6 @@ public class PatternCatalogueItem extends Item {
     }
 
     public static void setSelectedIndex(ItemStack stack, int index) {
-        checkNbt(stack).putInt("selectedIndex", Mth.clamp(index, 0, MAX_SIGN_PATTERNS - 1));
+        checkNbt(stack).putInt("selectedIndex", Mth.clamp(index, -1, ((PatternCatalogueItem)stack.getItem()).getMaxPatterns() - 1));
     }
 }

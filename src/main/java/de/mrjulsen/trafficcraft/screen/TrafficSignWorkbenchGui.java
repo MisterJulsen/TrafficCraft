@@ -94,12 +94,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private final TranslatableComponent createPatternInstruction = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
     private final TranslatableComponent emptyPattern = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
 
-    // tooltips
-    private final FormattedCharSequence[] defaultModeButtonsTooltips = new FormattedCharSequence[] {
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.edit").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.delete").getVisualOrderText()
-    };
+    private final TranslatableComponent tooltipDefaultNew = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add");
+    private final TranslatableComponent tooltipDefaultNewFull1 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
+    private final TranslatableComponent tooltipDefaultNewFull2 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
+    private final TranslatableComponent tooltipDefaultEdit = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.edit");
+    private final TranslatableComponent tooltipDefaultDelete = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.delete");
 
     private final FormattedCharSequence[] editorToolbar1Tooltips = new FormattedCharSequence[] {
         new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.draw").getVisualOrderText(),
@@ -473,12 +472,17 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 groupColors.setVisible(this.getMenu().colorSlot.hasItem());
                 break;
             case DEFAULT:
+                groupDefaultModeButtons.components.get(0).active = !isFull();
                 groupDefaultModeButtons.components.get(1).active = preview != null;
                 groupDefaultModeButtons.components.get(2).active = preview != null;
                 break;
             default:
                 break;
         }
+    }
+
+    private boolean isFull() {
+        return this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem && PatternCatalogueItem.getStoredPatternCount(this.getMenu().patternSlot.getItem()) >= ((PatternCatalogueItem)this.getMenu().patternSlot.getItem().getItem()).getMaxPatterns();
     }
 
     @Override
@@ -668,10 +672,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         
         switch (this.mode) {
             case DEFAULT:
-                for (int i = 0; i < groupDefaultModeButtons.components.size(); i++) {
-                    final int j = i;
-                    Utils.renderTooltip(this, groupDefaultModeButtons.components.get(j), () -> List.of(defaultModeButtonsTooltips[j]), pPoseStack, pMouseX, pMouseY);
-                }
+                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(0), () -> isFull() ? List.of(tooltipDefaultNewFull1.withStyle(ChatFormatting.RED).getVisualOrderText(), tooltipDefaultNewFull2.withStyle(ChatFormatting.GRAY).getVisualOrderText()) : List.of(tooltipDefaultNew.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(1), () -> List.of(tooltipDefaultEdit.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(2), () -> List.of(tooltipDefaultDelete.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
                 break;
             case CREATE_NEW:
 

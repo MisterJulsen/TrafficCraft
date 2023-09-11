@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " Q ",
+        "QPQ",
+        " Q "
+    ],
+    "key": {
+        "Q": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "P": [
+            {
+                "item": "minecraft:heavy_weighted_pressure_plate"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:color_palette",
+        "count": 1
+    }
+}
