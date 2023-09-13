@@ -10,7 +10,7 @@
 				"east": {"uv": [0, 0, 16, 10], "texture": "#base", "cullface": "east"},
 				"south": {"uv": [0, 0, 16, 10], "texture": "#base", "cullface": "south"},
 				"west": {"uv": [0, 0, 16, 10], "texture": "#base", "cullface": "west"},
-				"up": {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": "up"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#base"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": "down"}
 			}
 		}

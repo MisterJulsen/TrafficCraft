@@ -1,10 +1,11 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "cutout",
 	"textures": {
-		"0": "minecraft:block/anvil",
+		"0": "block/anvil",
 		"1": "block/white_concrete",
 		"2": "trafficcraft:block/sign_blank",
-		"particle": "minecraft:block/white_concrete"
+		"particle": "block/white_concrete"
 	},
 	"elements": [
 		{
@@ -16,7 +17,7 @@
 				"south": {"uv": [4, 3, 12, 4], "texture": "#0"},
 				"west": {"uv": [4, 3, 12, 4], "texture": "#0"},
 				"up": {"uv": [4, 3, 12, 11], "texture": "#0"},
-				"down": {"uv": [4, 3, 12, 11], "texture": "#0"}
+				"down": {"uv": [4, 3, 12, 11], "texture": "#0", "cullface": "down"}
 			}
 		},
 		{
@@ -99,7 +100,7 @@
 				"east": {"uv": [0, 0, 2, 1], "texture": "#2", "tintindex": 0},
 				"south": {"uv": [0, 0, 2, 1], "texture": "#2", "tintindex": 0},
 				"west": {"uv": [0, 0, 2, 1], "texture": "#2", "tintindex": 0},
-				"up": {"uv": [0, 0, 2, 2], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [0, 0, 2, 2], "texture": "#2", "cullface": "up", "tintindex": 0},
 				"down": {"uv": [0, 0, 2, 2], "texture": "#2", "tintindex": 0}
 			}
 		}

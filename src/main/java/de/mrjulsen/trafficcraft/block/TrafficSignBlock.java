@@ -52,7 +52,7 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()            
+            .noOcclusion()
             .sound(SoundType.LANTERN)
         );
 
