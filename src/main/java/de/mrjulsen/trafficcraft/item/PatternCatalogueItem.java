@@ -96,23 +96,20 @@ public class PatternCatalogueItem extends Item {
     }
 
     public static boolean setPattern(ItemStack stack, TrafficSignData pattern) {
-        try (pattern) {
-            if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
+        if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
                 return false;
 
-            checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
-            return true;
-        }
+        checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
+        return true;
     }
 
     public static boolean replacePattern(ItemStack stack, TrafficSignData pattern, int index) {
-        try (pattern) {
-            if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
+        if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
             return false;
-            checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
-            
-            return true;
-        }
+
+        checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
+        
+        return true;
     }
 
     public static boolean removePatternAt(ItemStack stack, int index) {

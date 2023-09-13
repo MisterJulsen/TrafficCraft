@@ -106,7 +106,8 @@ public class TrafficSignPatternSelectionScreen extends Screen
 
         this.stack = stack;
         this.creative = stack.getItem() instanceof CreativePatternCatalogueItem;
-        selectedBookmark = bookmarks.length;
+        selectedBookmark = stack.getItem() instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? 1 : bookmarks.length;
+        this.selectedIndex = PatternCatalogueItem.getSelectedIndex(stack);
     }
 
     @Override
@@ -119,7 +120,11 @@ public class TrafficSignPatternSelectionScreen extends Screen
         if (selectedBookmark >= bookmarks.length) {
             NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
         } else {
-            NetworkManager.MOD_CHANNEL.sendToServer(new CreativePatternCataloguePacket(CreativePatternCatalogueItem.getCustomImage(stack)));
+            TrafficSignData data = CreativePatternCatalogueItem.getCustomImage(stack);
+            if (data != null) {                
+                NetworkManager.MOD_CHANNEL.sendToServer(new CreativePatternCataloguePacket(data));
+                data.close();
+            }
         }
         super.onClose();
     }
@@ -276,18 +281,17 @@ public class TrafficSignPatternSelectionScreen extends Screen
             
         } else {
             try (TrafficSignData data = PatternCatalogueItem.getSelectedPattern(stack)) {
-                if (data == null) {
-                    return;
-                }
-                RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
-                NativeImage img = data.getDynamicTexture().getPixels();
-                blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
-                img.close();
+                if (data != null) {
+                    RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
+                    NativeImage img = data.getDynamicTexture().getPixels();
+                    blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                    img.close();
 
-                float scale = 0.75f;
-                pPoseStack.scale(scale, scale, scale);
-                this.font.draw(pPoseStack, data.getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
-                pPoseStack.setIdentity();
+                    float scale = 0.75f;
+                    pPoseStack.scale(scale, scale, scale);
+                    this.font.draw(pPoseStack, data.getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
+                    pPoseStack.setIdentity();
+                }
             }            
         }
 

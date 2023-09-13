@@ -55,7 +55,6 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()              
             .sound(SoundType.LANTERN)
         );
         

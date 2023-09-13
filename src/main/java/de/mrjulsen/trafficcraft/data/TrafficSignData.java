@@ -100,8 +100,7 @@ public class TrafficSignData implements Closeable {
             return;
 
         NativeImage texture = this.getDynamicTexture().getPixels();
-        texture.setPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height), rgba);   
-        this.dynTex.setPixels(texture);
+        texture.setPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height), rgba); 
         this.dynTex.upload();
     }
 
@@ -137,7 +136,7 @@ public class TrafficSignData implements Closeable {
         tag.putInt("height", height);
         tag.putInt("shape", shape.getIndex());
         tag.putString("name", name);
-        tag.putString("pixelData", textureToBase64());
+        tag.putString("pixelData", textureToBase64());  
         return tag;
     }
 

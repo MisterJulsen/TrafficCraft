@@ -34,19 +34,23 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
 
     public int getWidth(Font pFont) {
         int maxWidth = 0;
-        int w = 0;
-        for (int i = 0; i < this.data.size(); i++) {
-            if (i % 12 == 0) {
-                maxWidth += w;
-                w = 0;
+        if (true) { //(Screen.hasShiftDown()) {
+            int w = 0;
+            for (int i = 0; i < this.data.size(); i++) {
+                if (i % 12 == 0) {
+                    maxWidth += w;
+                    w = 0;
+                }
+                String label = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
+                int textWidth = (int)(pFont.width(new TextComponent(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET)) * FONT_SCALE);
+                if (w < textWidth + IMAGE_HEIGHT + 10) {
+                    w = textWidth + IMAGE_HEIGHT + 10;
+                }
             }
-            String label = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-            int textWidth = (int)(pFont.width(new TextComponent(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET)) * FONT_SCALE);
-            if (w < textWidth + IMAGE_HEIGHT + 10) {
-                w = textWidth + IMAGE_HEIGHT + 10;
-            }
-        }
-        maxWidth += w;
+            maxWidth += w;
+        }/* else {
+            maxWidth = 10;
+        }*/
         return maxWidth;
     }
 
@@ -70,22 +74,24 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
             RenderSystem.setShaderTexture(0, texture.getId());
             GuiComponent.blit(pPoseStack, pMouseX + x, pMouseY + y, 16, 16, 0, 0, w, h, w, h);
             
-            String txt = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-            MutableComponent label = new TextComponent(txt).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
-            int fW = (int)(pFont.width(label) * FONT_SCALE);
-            if (maxW < fW) {
-                maxW = fW;
+            if (true) { //(Screen.hasShiftDown()) {
+                String txt = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
+                MutableComponent label = new TextComponent(txt).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
+                int fW = (int)(pFont.width(label) * FONT_SCALE);
+                if (maxW < fW) {
+                    maxW = fW;
+                }
+                pPoseStack.scale(FONT_SCALE, FONT_SCALE, FONT_SCALE);
+                pPoseStack.translate(0, 0, 1000);
+                
+                pFont.draw(pPoseStack,
+                    label,
+                    (pMouseX + 3 + IMAGE_HEIGHT + x) / FONT_SCALE,
+                    (pMouseY + y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
+                    16777215
+                );
+                pPoseStack.setIdentity();
             }
-            pPoseStack.scale(FONT_SCALE, FONT_SCALE, FONT_SCALE);
-            pPoseStack.translate(0, 0, 1000);
-            
-            pFont.draw(pPoseStack,
-                label,
-                (pMouseX + 3 + IMAGE_HEIGHT + x) / FONT_SCALE,
-                (pMouseY + y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
-                16777215
-            );
-            pPoseStack.setIdentity();
             texture.close();
         }
     }

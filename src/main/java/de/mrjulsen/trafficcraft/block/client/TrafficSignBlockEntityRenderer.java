@@ -4,8 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
+import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -29,17 +30,16 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             return;
         }
 
-        ResourceLocation textureLocation = Minecraft.getInstance().textureManager.register("salz", pBlockEntity.getDynamicTexture());
+        ResourceLocation textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_front", pBlockEntity.getDynamicTexture());
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.text(textureLocation));
         double p = 1 / 16f;
-        double z = 9.5d * p - 0.5d;
+        double z = blockstate.getValue(TrafficSignBlock.SHAPE) == TrafficSignShape.MISC ? 9.0d * p - 0.5d : 9.5d * p - 0.5d;
         pPoseStack.pushPose();
         pPoseStack.translate(0.5f, 0.5f, 0.5f);
 
-        float f4 = blockstate.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockstate.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockstate.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockstate.getValue(WritableTrafficSign.FACING).toYRot();
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
-         
-        pPoseStack.translate(-0.5d, -0.5d, z + 0.001d);
+        float f4 = blockstate.getValue(TrafficSignBlock.FACING) == Direction.EAST || blockstate.getValue(TrafficSignBlock.FACING) == Direction.WEST ? blockstate.getValue(TrafficSignBlock.FACING).getOpposite().toYRot() : blockstate.getValue(TrafficSignBlock.FACING).toYRot();
+        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));         
+        pPoseStack.translate(-0.5d, -0.5d, z + 0.002d);
            
         addQuadSide(vertexconsumer, pPoseStack,
             0, 0, 0,
@@ -51,6 +51,29 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             pPackedOverlay
         );
         pPoseStack.popPose();
+
+        
+        if (pBlockEntity.hasBackground()) {
+            textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_back", pBlockEntity.getBackground());
+            vertexconsumer = pBufferSource.getBuffer(RenderType.text(textureLocation));
+            z = 7.0d * p - 0.5d;
+            pPoseStack.pushPose();
+            pPoseStack.translate(0.5f, 0.5f, 0.5f);
+            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4)); 
+            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(180));         
+            pPoseStack.translate(-0.5d, -0.5d, z - 0.002d);
+            
+            addQuadSide(vertexconsumer, pPoseStack,
+                0, 0, 0,
+                1, 1, 0,
+                0, 0,
+                1, 1,
+                255, 255, 255, 255,
+                (int)(pPackedLight * 0.8f),
+                pPackedOverlay
+            );
+            pPoseStack.popPose();
+        }
     }
 
     public static void addVert(VertexConsumer builder, PoseStack pPoseStack, float x, float y, float z, float u, float v, int r, int g, int b, int a, int light, int pPackedOverlay) {

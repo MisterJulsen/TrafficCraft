@@ -51,7 +51,7 @@ public class TrafficSignPatternPacket
                 }
                 menu.patternSlot.set(stack);
                 menu.patternSlot.setChanged();
-                menu.broadcastChanges();     
+                menu.broadcastChanges();
             }
         });
         context.get().setPacketHandled(true);
