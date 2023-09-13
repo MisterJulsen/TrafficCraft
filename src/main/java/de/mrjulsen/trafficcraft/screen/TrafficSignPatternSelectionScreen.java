@@ -106,7 +106,7 @@ public class TrafficSignPatternSelectionScreen extends Screen
 
         this.stack = stack;
         this.creative = stack.getItem() instanceof CreativePatternCatalogueItem;
-        selectedBookmark = stack.getItem() instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? 1 : bookmarks.length;
+        selectedBookmark = stack.getItem() instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? 0 : bookmarks.length;
         this.selectedIndex = PatternCatalogueItem.getSelectedIndex(stack);
     }
 
