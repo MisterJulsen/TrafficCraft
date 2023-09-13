@@ -12,6 +12,7 @@ import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
+import de.mrjulsen.trafficcraft.network.packets.TrafficSignWorkbenchUpdateClientPacket;
 import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -40,6 +41,7 @@ public class NetworkManager {
         register(PatternCatalogueDeletePacket.class).encoder(PatternCatalogueDeletePacket::encode).decoder(PatternCatalogueDeletePacket::decode).consumer(PatternCatalogueDeletePacket::handle).add();
         register(PatternCatalogueIndexPacket.class).encoder(PatternCatalogueIndexPacket::encode).decoder(PatternCatalogueIndexPacket::decode).consumer(PatternCatalogueIndexPacket::handle).add();
         register(CreativePatternCataloguePacket.class).encoder(CreativePatternCataloguePacket::encode).decoder(CreativePatternCataloguePacket::decode).consumer(CreativePatternCataloguePacket::handle).add();
+        register(TrafficSignWorkbenchUpdateClientPacket.class).encoder(TrafficSignWorkbenchUpdateClientPacket::encode).decoder(TrafficSignWorkbenchUpdateClientPacket::decode).consumer(TrafficSignWorkbenchUpdateClientPacket::handle).add();
     }
 
     public static SimpleChannel getPlayChannel()

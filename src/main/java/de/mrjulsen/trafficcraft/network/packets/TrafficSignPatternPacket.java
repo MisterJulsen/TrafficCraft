@@ -4,10 +4,12 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.screen.menu.TrafficSignWorkbenchMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficSignPatternPacket
@@ -52,6 +54,8 @@ public class TrafficSignPatternPacket
                 menu.patternSlot.set(stack);
                 menu.patternSlot.setChanged();
                 menu.broadcastChanges();
+
+                NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignWorkbenchUpdateClientPacket(), context.get().getSender().connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
             }
         });
         context.get().setPacketHandled(true);

@@ -665,6 +665,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         this.preview = PatternCatalogueItem.getSelectedPattern(this.getMenu().patternSlot.getItem());
     }
 
+    public void updatePreview() {
+        this.initPreview();
+    }
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         renderBackground(pPoseStack, pMouseY);

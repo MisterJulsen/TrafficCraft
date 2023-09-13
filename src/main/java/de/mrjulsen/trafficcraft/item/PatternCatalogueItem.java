@@ -99,7 +99,9 @@ public class PatternCatalogueItem extends Item {
         if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
                 return false;
 
-        checkNbt(stack).getList("patterns", 10).add(pattern.toNbt());
+        ListTag tag = checkNbt(stack).getList("patterns", 10);
+        tag.add(pattern.toNbt());
+        setSelectedIndex(stack, tag.size() - 1);
         return true;
     }
 
@@ -108,7 +110,7 @@ public class PatternCatalogueItem extends Item {
             return false;
 
         checkNbt(stack).getList("patterns", 10).set(index, pattern.toNbt());
-        
+        setSelectedIndex(stack, index);
         return true;
     }
 
