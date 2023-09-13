@@ -340,6 +340,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                         data.setName(name);
                         NetworkManager.MOD_CHANNEL.sendToServer(new TrafficSignPatternPacket(data, selectedIndex));
                         switchMode(TrafficSignWorkbenchMode.DEFAULT);
+                        initPreview();
                         break;
                     default:
                         break;
@@ -719,7 +720,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     switchPreview(PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1);
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
                 } else if (prevButton.isInBounds(pMouseX, pMouseY)) {
-                    switchPreview(PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) - 1);
+                    switchPreview(Math.max(PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) - 1, 0));
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
                 }
                 break;
