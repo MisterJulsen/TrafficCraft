@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_sign_workbench"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.traffic_sign_workbench"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.traffic_sign_workbench.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:traffic_sign",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "trafficcraft:traffic_sign_workbench"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

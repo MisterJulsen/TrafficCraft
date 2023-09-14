@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:creative_pattern_catalogue"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.assign_traffic_sign_pattern"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.assign_traffic_sign_pattern.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:create_traffic_sign_pattern",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "item": {
+          "tag": "trafficcraft:pattern_catalogues"
+        },
+        "location": {
+          "block": {
+            "blocks": [
+              "trafficcraft:traffic_sign"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 30
+  }
+}

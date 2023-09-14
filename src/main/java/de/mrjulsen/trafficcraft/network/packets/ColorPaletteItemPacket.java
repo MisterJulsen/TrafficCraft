@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.screen.menu.TrafficSignWorkbenchMenu;
+import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +43,9 @@ public class ColorPaletteItemPacket
                 ColorPaletteItem.setColor(stack, packet.index, packet.color);
                 menu.colorSlot.set(stack);
                 menu.colorSlot.setChanged();
-                menu.broadcastChanges();     
+                menu.broadcastChanges();
+                
+                Utils.giveAdvancement(sender, "store_color_palette", "requirement");
             }
         });
         context.get().setPacketHandled(true);

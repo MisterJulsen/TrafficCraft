@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:color_palette",
+      "nbt": "{colors:[I; -9371720, -6065861, -23184, -36752, -3216, -9404673, -9378305]}"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.store_color_palette"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.store_color_palette.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:traffic_sign_workbench",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 30
+  }
+}
