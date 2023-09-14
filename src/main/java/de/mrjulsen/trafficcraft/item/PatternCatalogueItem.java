@@ -119,6 +119,10 @@ public class PatternCatalogueItem extends Item {
             return false;
 
         checkNbt(stack).getList("patterns", 10).remove(index);
+        int count = PatternCatalogueItem.getStoredPatternCount(stack);
+        if (index >= count) {
+            setSelectedIndex(stack, Math.max(0, count - 1));
+        }
         return true;
     }
 
@@ -127,6 +131,6 @@ public class PatternCatalogueItem extends Item {
     }
 
     public static void setSelectedIndex(ItemStack stack, int index) {
-        checkNbt(stack).putInt("selectedIndex", Mth.clamp(index, -1, ((PatternCatalogueItem)stack.getItem()).getMaxPatterns() - 1));
+        checkNbt(stack).putInt("selectedIndex", Mth.clamp(index, -1, Math.max(0, PatternCatalogueItem.getStoredPatternCount(stack) - 1)));
     }
 }
