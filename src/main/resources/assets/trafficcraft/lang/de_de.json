@@ -235,7 +235,7 @@
     "gui.trafficcraft.trafficsignworkbench.createpattern.title": "Neue Vorlage erstellen",
     "gui.trafficcraft.trafficsignworkbench.createpattern.instruction": "Bitte wähle eine Form aus.",
     "gui.trafficcraft.trafficsignworkbench.pattern.name_unknown": "Unbenanntes Schild",
-    "gui.trafficcraft.trafficsignworkbench.delete.question": "Bist du sicher, dass du diese Vorlage löschen möchtest??",
+    "gui.trafficcraft.trafficsignworkbench.delete.question": "Bist du sicher, dass du diese Vorlage löschen möchtest?",
 
     "gui.trafficcraft.patternselection.title": "Verkehrszeichenvorlage auswählen",
     "gui.trafficcraft.patternselection.build_in_pattern": "Eingebaut %s %s",
@@ -257,6 +257,7 @@
     "gui.trafficcraft.signshape.small_lower": "Klein (unten)",
     "gui.trafficcraft.signshape.octagon": "Oktagon",
     "gui.trafficcraft.signshape.misc": "Verschiedenes",
+    
     "color.trafficcraft.none": "Keine",
     "color.trafficcraft.white": "Weiß",
     "color.trafficcraft.orange": "Orange",
