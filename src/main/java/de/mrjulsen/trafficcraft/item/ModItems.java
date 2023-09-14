@@ -29,6 +29,9 @@ public class ModItems {
     ));
 
     public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = ITEMS.register("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> COLOR_PALETTE = ITEMS.register("color_palette", () -> new ColorPaletteItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> PATTERN_CATALOGUE = ITEMS.register("pattern_catalogue", () -> new PatternCatalogueItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> CREATIVE_PATTERN_CATALOGUE = ITEMS.register("creative_pattern_catalogue", () -> new CreativePatternCatalogueItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
 
     /*
     public static final RegistryObject<Item> TRAFFIC_LIGHT_LINKER = ITEMS.register("salt", () -> new Item(new Item.Properties()

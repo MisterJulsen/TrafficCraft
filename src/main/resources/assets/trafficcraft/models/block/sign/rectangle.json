@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"base": "trafficcraft:block/sign",
-		"particle": "trafficcraft:block/sign"
+		"particle": "trafficcraft:block/sign",
+		"base": "trafficcraft:block/sign"
 	},
 	"elements": [
 		{
@@ -10,19 +10,17 @@
 			"from": [7, 0, 7],
 			"to": [9, 16, 9],
 			"faces": {
-				"north": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"east": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"south": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
-				"up": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#base", "tintindex": 0},
-				"down": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#base", "tintindex": 0}
+				"up": {"uv": [0, 0, 2, 2], "rotation": 90, "texture": "#base", "cullface": "up", "tintindex": 0},
+				"down": {"uv": [0, 0, 2, 2], "rotation": 270, "texture": "#base", "cullface": "down", "tintindex": 0}
 			}
 		},
 		{
 			"from": [6, 2, 7],
 			"to": [10, 3, 8],
 			"faces": {
-				"north": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
 				"east": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
 				"south": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
@@ -34,7 +32,6 @@
 			"from": [6, 13, 7],
 			"to": [10, 14, 8],
 			"faces": {
-				"north": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
 				"east": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
 				"south": {"uv": [0, 0, 4, 1], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 1, 1], "texture": "#base", "tintindex": 0},
@@ -43,23 +40,15 @@
 			}
 		},
 		{
-			"name": "sign_tex",
-			"from": [0, 0, 6.5],
-			"to": [16, 16, 6.5],
-			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 8, 6]},
-			"faces": {
-				"north": {"uv": [0, 0, 16, 16], "texture": "#sign"}
-			}
-		},
-		{
 			"from": [2, 0, 6.5],
 			"to": [14, 16, 7],
 			"faces": {
+				"north": {"uv": [0, 0, 12, 16], "texture": "#base"},
 				"east": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
-				"south": {"uv": [0, 0, 16, 16], "texture": "#base", "tintindex": 0},
+				"south": {"uv": [0, 0, 12, 16], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 0.5, 16], "texture": "#base", "tintindex": 0},
-				"up": {"uv": [0, 0, 0.5, 16], "rotation": 90, "texture": "#base", "tintindex": 0},
-				"down": {"uv": [0, 0, 0.5, 16], "rotation": 270, "texture": "#base", "tintindex": 0}
+				"up": {"uv": [0, 0, 0.5, 12], "rotation": 90, "texture": "#base", "cullface": "up", "tintindex": 0},
+				"down": {"uv": [0, 0, 0.5, 12], "rotation": 270, "texture": "#base", "cullface": "down", "tintindex": 0}
 			}
 		}
 	],
@@ -102,7 +91,7 @@
 			"name": "Sign",
 			"origin": [0, 0, 0],
 			"color": 0,
-			"children": [3, 4]
+			"children": [3]
 		}
 	]
 }

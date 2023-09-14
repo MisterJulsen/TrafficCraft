@@ -1,0 +1,44 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "PBI",
+        "TTT",
+        "FNF"
+    ],
+    "key": {
+        "P": [
+            {
+                "item": "trafficcraft:paint_bucket"
+            }
+        ],
+        "B": [
+            {
+                "item": "trafficcraft:paint_brush"
+            }
+        ],
+        "I": [
+            {
+                "item": "minecraft:flower_pot"
+            }
+        ],
+        "T": [
+            {
+                "tag": "minecraft:wooden_slabs"
+            }
+        ],
+        "F": [
+            {
+                "tag": "minecraft:logs"
+            }
+        ],
+        "N": [
+            {
+                "item": "minecraft:iron_nugget"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:traffic_sign_workbench",
+        "count": 1
+    }
+}

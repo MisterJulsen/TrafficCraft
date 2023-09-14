@@ -1,6 +1,0 @@
-{
-	"parent": "trafficcraft:block/sign/diamond",
-	"textures": {
-		"sign": "trafficcraft:block/sign/diamond/diamond24"
-	}
-}

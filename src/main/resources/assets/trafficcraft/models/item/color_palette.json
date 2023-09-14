@@ -1,0 +1,13 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "trafficcraft:item/color_palette",
+        "layer1": "trafficcraft:item/color_palette_color_1",
+        "layer2": "trafficcraft:item/color_palette_color_2",
+        "layer3": "trafficcraft:item/color_palette_color_3",
+        "layer4": "trafficcraft:item/color_palette_color_4",
+        "layer5": "trafficcraft:item/color_palette_color_5",
+        "layer6": "trafficcraft:item/color_palette_color_6",
+        "layer7": "trafficcraft:item/color_palette_color_7"
+    }
+}

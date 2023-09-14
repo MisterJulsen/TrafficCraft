@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "cutout",
 	"textures": {
 		"0": "trafficcraft:block/ger_delineator",
 		"particle": "trafficcraft:block/ger_delineator"
@@ -13,7 +14,7 @@
 				"east": {"uv": [6, 2, 8, 16], "texture": "#0"},
 				"south": {"uv": [3, 2, 6, 16], "texture": "#0"},
 				"west": {"uv": [6, 2, 8, 16], "texture": "#0"},
-				"down": {"uv": [6, 14, 8, 16], "texture": "#0"}
+				"down": {"uv": [6, 14, 8, 16], "texture": "#0", "cullface": "down"}
 			}
 		},
 		{
@@ -23,7 +24,7 @@
 				"north": {"uv": [10, 0, 11, 2], "texture": "#0"},
 				"south": {"uv": [11, 0, 12, 2], "texture": "#0"},
 				"west": {"uv": [6, 0, 8, 2], "texture": "#0"},
-				"up": {"uv": [7, 0, 8, 2], "texture": "#0"}
+				"up": {"uv": [7, 0, 8, 2], "texture": "#0", "cullface": "up"}
 			}
 		},
 		{

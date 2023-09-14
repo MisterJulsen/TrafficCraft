@@ -46,7 +46,6 @@ public class AreaImage {
 
     private NativeImage createImage(){
         NativeImage image = new NativeImage(NativeImage.Format.RGBA, areaWidth, areaHeight, false);
-
         int rWidth = areaWidth / 2;
         int rHeight = areaHeight / 2;
         int minX = pos.getX() - rWidth;

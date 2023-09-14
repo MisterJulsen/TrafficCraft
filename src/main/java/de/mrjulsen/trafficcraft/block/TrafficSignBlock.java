@@ -1,12 +1,14 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.block.client.TrafficSignClient;
+import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
-import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.item.WrenchItem;
+import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
+import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -16,74 +18,78 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class TrafficSignBlock extends Block implements SimpleWaterloggedBlock, ITrafficPostLike {
+public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-
-
-    private static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
-    private static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, Block.box(0, 0, 9, 16, 16, 9.5D));    
-    private static final VoxelShape SHAPE_NORTH = Shapes.or(SHAPE_COMMON, Block.box(0, 0, 6.5D, 16, 16, 7));
-    private static final VoxelShape SHAPE_EAST = Shapes.or(SHAPE_COMMON, Block.box(9, 0, 0, 9.5D, 16, 16));
-    private static final VoxelShape SHAPE_WEST = Shapes.or(SHAPE_COMMON, Block.box(6.5D, 0, 0, 7, 16, 16));
-
+    public static final EnumProperty<TrafficSignShape> SHAPE = EnumProperty.create("shape", TrafficSignShape.class);
 
     public TrafficSignBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()
-            .noOcclusion()            
+            .noOcclusion()
             .sound(SoundType.LANTERN)
         );
 
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)
             .setValue(WATERLOGGED, false)
+            .setValue(SHAPE, TrafficSignShape.SQUARE)
         );
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
-        return new ItemStack(ModBlocks.CIRCLE_TRAFFIC_SIGN.get());
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return pState.getValue(SHAPE).getVoxelShape(pState.getValue(FACING));
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        switch (pState.getValue(FACING)) {
-            case NORTH:
-                return SHAPE_NORTH;
-            case SOUTH:
-                return SHAPE_SOUTH;
-            case EAST:
-                return SHAPE_EAST;
-            case WEST:
-                return SHAPE_WEST;
-            default:
-                return SHAPE_COMMON;
+    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
+        ItemStack stack = pPlayer.getInventory().getSelected();
+        Item item = stack.getItem();
+
+        if (item instanceof PatternCatalogueItem patternItem && ((item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) || PatternCatalogueItem.getSelectedPattern(stack) != null)) {
+            if (!pLevel.isClientSide) {
+                if (pLevel.getBlockEntity(pPos) instanceof TrafficSignBlockEntity blockEntity) {
+                    if (item instanceof CreativePatternCatalogueItem creativeItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
+                        blockEntity.setTexture(CreativePatternCatalogueItem.getCustomImage(stack).getDynamicTexture());
+                    } else {
+                        blockEntity.setTexture(PatternCatalogueItem.getSelectedPattern(stack).getDynamicTexture());
+                    }
+                }
+            } else {            
+                pLevel.playSound(pPlayer, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
+            }
+            pLevel.setBlockAndUpdate(pPos, pState.setValue(SHAPE, item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getShape() : PatternCatalogueItem.getSelectedPattern(stack).getShape()));
+            return InteractionResult.SUCCESS;
         }
+
+        return InteractionResult.FAIL;
     }
 
     @Override
@@ -108,7 +114,7 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, WATERLOGGED);
+        pBuilder.add(FACING, WATERLOGGED, SHAPE);
     }
 
     @Override
@@ -127,32 +133,6 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
 
-    protected abstract int getType(BlockState state);
-    protected abstract TrafficSignShape getSignShape();
-
-
-
-    @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {        
-        Item item = pPlayer.getInventory().getSelected().getItem();
-
-        if (item instanceof BrushItem) {
-            return InteractionResult.FAIL;
-        }
-
-        if(pLevel.isClientSide)
-        {
-            if (item instanceof WrenchItem) {
-                if(!pPlayer.isShiftKeyDown()) {                
-                    TrafficSignClient.showGui(getType(pState), 0, getSignShape(), pPos, pLevel, pPlayer);
-                }
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return InteractionResult.FAIL;
-
-    }
-
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
         return false;
     }
@@ -160,5 +140,16 @@ public abstract class TrafficSignBlock extends Block implements SimpleWaterlogge
     @Override
     public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
         return pState.getValue(FACING).getOpposite() == pDirection;
+    }
+
+    /* BLOCK ENTITY */
+    @Override
+    public RenderShape getRenderShape(BlockState pState) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new TrafficSignBlockEntity(pPos, pState);
     }
 }

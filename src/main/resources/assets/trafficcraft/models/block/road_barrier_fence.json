@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "cutout",
 	"textures": {
 		"0": "block/anvil",
 		"2": "trafficcraft:block/sign_blank",

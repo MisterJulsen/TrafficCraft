@@ -4,12 +4,18 @@ import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.item.ModItems;
+import de.mrjulsen.trafficcraft.screen.ClientTrafficSignTooltipStack;
+import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
+import de.mrjulsen.trafficcraft.screen.TrafficSignWorkbenchGui;
+import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -17,6 +23,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -25,15 +32,10 @@ public class ClientProxy implements IProxy {
     @Override
     public void setup(FMLCommonSetupEvent event) {
         /* RENDER LAYERS */
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.CIRCLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRIANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.SQUARE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.DIAMOND_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.RECTANGLE_TRAFFIC_SIGN.get(), RenderType.cutout());
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.MISC_TRAFFIC_SIGN.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_SIGN_WORKBENCH.get(), RenderType.cutout());
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {
             if (block.getId().toString().contains("pattern")) {
@@ -60,13 +62,22 @@ public class ClientProxy implements IProxy {
             ModBlocks.TRAFFIC_BOLLARD.get(),
             ModBlocks.TRAFFIC_BARREL.get(),
             ModBlocks.ROAD_BARRIER_FENCE.get(),
-            ModBlocks.CONCRETE_BARRIER.get()
+            ModBlocks.CONCRETE_BARRIER.get(),
+            ModItems.COLOR_PALETTE.get()
         );
 
         /* BLOCK ENTITY RENDERERS */
         BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
+
+        MinecraftForgeClient.registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
+            return new ClientTrafficSignTooltipStack(tooltip);
+        });
+
+        /* REGISTER MENUS */
+        MenuScreens.register(ModMenuTypes.TRAFFIC_SIGN_WORKBENCH_MENU.get(), TrafficSignWorkbenchGui::new);
 
         /* REGISTER CUSTOM ITEM PROPERTIES */
         ItemProperties.register(ModItems.PAINT_BRUSH.get(), new ResourceLocation("paint"), (itemStack, world, entity, id) -> { 

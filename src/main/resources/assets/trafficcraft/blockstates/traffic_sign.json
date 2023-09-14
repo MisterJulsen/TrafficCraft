@@ -1,0 +1,207 @@
+{
+  "variants": {
+    "shape=square,facing=north": {
+      "model": "trafficcraft:block/sign/square",
+      "y": 0
+    },
+    "shape=square,facing=south": {
+      "model": "trafficcraft:block/sign/square",
+      "y": 180
+    },
+    "shape=square,facing=east": {
+      "model": "trafficcraft:block/sign/square",
+      "y": 90
+    },
+    "shape=square,facing=west": {
+      "model": "trafficcraft:block/sign/square",
+      "y": 270
+    },
+
+    "shape=circle,facing=north": {
+      "model": "trafficcraft:block/sign/circle",
+      "y": 0
+    },
+    "shape=circle,facing=south": {
+      "model": "trafficcraft:block/sign/circle",
+      "y": 180
+    },
+    "shape=circle,facing=east": {
+      "model": "trafficcraft:block/sign/circle",
+      "y": 90
+    },
+    "shape=circle,facing=west": {
+      "model": "trafficcraft:block/sign/circle",
+      "y": 270
+    },
+
+    "shape=triangle,facing=north": {
+      "model": "trafficcraft:block/sign/triangle",
+      "y": 0
+    },
+    "shape=triangle,facing=south": {
+      "model": "trafficcraft:block/sign/triangle",
+      "y": 180
+    },
+    "shape=triangle,facing=east": {
+      "model": "trafficcraft:block/sign/triangle",
+      "y": 90
+    },
+    "shape=triangle,facing=west": {
+      "model": "trafficcraft:block/sign/triangle",
+      "y": 270
+    },
+
+    "shape=triangle_down,facing=north": {
+      "model": "trafficcraft:block/sign/triangle_down",
+      "y": 0
+    },
+    "shape=triangle_down,facing=south": {
+      "model": "trafficcraft:block/sign/triangle_down",
+      "y": 180
+    },
+    "shape=triangle_down,facing=east": {
+      "model": "trafficcraft:block/sign/triangle_down",
+      "y": 90
+    },
+    "shape=triangle_down,facing=west": {
+      "model": "trafficcraft:block/sign/triangle_down",
+      "y": 270
+    },
+
+    "shape=diamond,facing=north": {
+      "model": "trafficcraft:block/sign/diamond",
+      "y": 0
+    },
+    "shape=diamond,facing=south": {
+      "model": "trafficcraft:block/sign/diamond",
+      "y": 180
+    },
+    "shape=diamond,facing=east": {
+      "model": "trafficcraft:block/sign/diamond",
+      "y": 90
+    },
+    "shape=diamond,facing=west": {
+      "model": "trafficcraft:block/sign/diamond",
+      "y": 270
+    },
+
+    "shape=rectangle,facing=north": {
+      "model": "trafficcraft:block/sign/rectangle",
+      "y": 0
+    },
+    "shape=rectangle,facing=south": {
+      "model": "trafficcraft:block/sign/rectangle",
+      "y": 180
+    },
+    "shape=rectangle,facing=east": {
+      "model": "trafficcraft:block/sign/rectangle",
+      "y": 90
+    },
+    "shape=rectangle,facing=west": {
+      "model": "trafficcraft:block/sign/rectangle",
+      "y": 270
+    },
+
+    "shape=rectangle_small,facing=north": {
+      "model": "trafficcraft:block/sign/rectangle_small",
+      "y": 0
+    },
+    "shape=rectangle_small,facing=south": {
+      "model": "trafficcraft:block/sign/rectangle_small",
+      "y": 180
+    },
+    "shape=rectangle_small,facing=east": {
+      "model": "trafficcraft:block/sign/rectangle_small",
+      "y": 90
+    },
+    "shape=rectangle_small,facing=west": {
+      "model": "trafficcraft:block/sign/rectangle_small",
+      "y": 270
+    },
+
+    "shape=rectangle_horizontal,facing=north": {
+      "model": "trafficcraft:block/sign/rectangle_horizontal",
+      "y": 0
+    },
+    "shape=rectangle_horizontal,facing=south": {
+      "model": "trafficcraft:block/sign/rectangle_horizontal",
+      "y": 180
+    },
+    "shape=rectangle_horizontal,facing=east": {
+      "model": "trafficcraft:block/sign/rectangle_horizontal",
+      "y": 90
+    },
+    "shape=rectangle_horizontal,facing=west": {
+      "model": "trafficcraft:block/sign/rectangle_horizontal",
+      "y": 270
+    },
+
+    "shape=small_upper,facing=north": {
+      "model": "trafficcraft:block/sign/small_upper",
+      "y": 0
+    },
+    "shape=small_upper,facing=south": {
+      "model": "trafficcraft:block/sign/small_upper",
+      "y": 180
+    },
+    "shape=small_upper,facing=east": {
+      "model": "trafficcraft:block/sign/small_upper",
+      "y": 90
+    },
+    "shape=small_upper,facing=west": {
+      "model": "trafficcraft:block/sign/small_upper",
+      "y": 270
+    },
+
+    "shape=small_lower,facing=north": {
+      "model": "trafficcraft:block/sign/small_lower",
+      "y": 0
+    },
+    "shape=small_lower,facing=south": {
+      "model": "trafficcraft:block/sign/small_lower",
+      "y": 180
+    },
+    "shape=small_lower,facing=east": {
+      "model": "trafficcraft:block/sign/small_lower",
+      "y": 90
+    },
+    "shape=small_lower,facing=west": {
+      "model": "trafficcraft:block/sign/small_lower",
+      "y": 270
+    },
+
+    "shape=octagon,facing=north": {
+      "model": "trafficcraft:block/sign/octagon",
+      "y": 0
+    },
+    "shape=octagon,facing=south": {
+      "model": "trafficcraft:block/sign/octagon",
+      "y": 180
+    },
+    "shape=octagon,facing=east": {
+      "model": "trafficcraft:block/sign/octagon",
+      "y": 90
+    },
+    "shape=octagon,facing=west": {
+      "model": "trafficcraft:block/sign/octagon",
+      "y": 270
+    },
+
+    "shape=misc,facing=north": {
+      "model": "trafficcraft:block/sign/misc",
+      "y": 0
+    },
+    "shape=misc,facing=south": {
+      "model": "trafficcraft:block/sign/misc",
+      "y": 180
+    },
+    "shape=misc,facing=east": {
+      "model": "trafficcraft:block/sign/misc",
+      "y": 90
+    },
+    "shape=misc,facing=west": {
+      "model": "trafficcraft:block/sign/misc",
+      "y": 270
+    }
+  }
+}

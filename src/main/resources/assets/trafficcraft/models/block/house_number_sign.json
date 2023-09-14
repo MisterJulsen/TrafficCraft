@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "cutout",
 	"textures": {
 		"1": "trafficcraft:block/street_sign",
 		"particle": "trafficcraft:block/sign"

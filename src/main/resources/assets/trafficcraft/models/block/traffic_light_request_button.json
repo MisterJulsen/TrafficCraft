@@ -1,5 +1,6 @@
 {
 	"credit": "Made with Blockbench",
+	"render_type": "cutout",
 	"textures": {
 		"0": "trafficcraft:block/traffic_light_request_button",
 		"1": "trafficcraft:block/traffic_light_request_button_extra",
@@ -15,8 +16,8 @@
 				"east": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"south": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
 				"west": {"uv": [0, 0, 2, 16], "texture": "#base", "tintindex": 0},
-				"up": {"uv": [0, 0, 2, 2], "texture": "#base", "tintindex": 0},
-				"down": {"uv": [0, 0, 2, 2], "texture": "#base", "tintindex": 0}
+				"up": {"uv": [0, 0, 2, 2], "texture": "#base", "cullface": "up", "tintindex": 0},
+				"down": {"uv": [0, 0, 2, 2], "texture": "#base", "cullface": "down", "tintindex": 0}
 			}
 		},
 		{
