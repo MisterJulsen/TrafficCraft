@@ -3,12 +3,7 @@
   "values": [
     "trafficcraft:guardrail",
     "trafficcraft:traffic_sign_post",
-    "trafficcraft:circle_traffic_sign",
-    "trafficcraft:triangle_traffic_sign",
-    "trafficcraft:square_traffic_sign",
-    "trafficcraft:diamond_traffic_sign",
-    "trafficcraft:rectangle_traffic_sign",
-    "trafficcraft:misc_traffic_sign",
+    "trafficcraft:traffic_sign",
     "trafficcraft:street_lamp",
     "trafficcraft:double_street_lamp",
     "trafficcraft:small_street_lamp",
