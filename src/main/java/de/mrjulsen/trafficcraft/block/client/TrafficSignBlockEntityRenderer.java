@@ -70,7 +70,7 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
                 1, 1, 0,
                 0, 0,
                 1, 1,
-                1, 1, 1, 1,
+                255, 255, 255, 255,
                 lu, lv
             );
             pPoseStack.popPose();
