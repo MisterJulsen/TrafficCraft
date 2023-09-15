@@ -3,9 +3,6 @@
     "ingredients": [
       {
         "item": "trafficcraft:traffic_sign"
-      },
-      {
-        "item": "minecraft:yellow_dye"
       }
     ],
     "result": {
