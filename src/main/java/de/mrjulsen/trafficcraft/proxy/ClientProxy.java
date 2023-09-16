@@ -9,7 +9,6 @@ import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TrafficSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
@@ -61,19 +60,6 @@ public class ClientProxy implements IProxy {
         ItemModelGenerator.LAYERS.add("layer6");
         ItemModelGenerator.LAYERS.add("layer7");
         ItemModelGenerator.LAYERS.add("layer8");
-
-        
-        new Thread(() -> {
-            while (Minecraft.getInstance().isRunning()) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Cache: " + TrafficSignTextureCacheClient.textureCache.size());
-            }
-            
-        }).start();
         
         /* RENDER LAYERS */
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());

@@ -1,9 +1,6 @@
 package de.mrjulsen.trafficcraft.block.properties;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
-
-import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.proxy.ClientProxy;
