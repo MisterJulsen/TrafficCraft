@@ -1,41 +1,39 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 
-import com.mojang.blaze3d.platform.NativeImage;
-
-import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
-import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
-import de.mrjulsen.trafficcraft.util.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
-public class TrafficSignBlockEntity extends BlockEntity implements AutoCloseable {
+public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable, AutoCloseable {
 
     private static final String TEXTURE_TAG = "texture";
+    private final long ID;
 
-    // Properties
-    private DynamicTexture texture = null;
-    private DynamicTexture background = null;
+    private String textureData;
 
     protected TrafficSignBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        ID = System.nanoTime();
     }
 
     public TrafficSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), pos, state);
+        ID = System.nanoTime();
+    }
+
+    @Override
+    public long getId() {
+        return ID;
     }
 
     @Override
@@ -43,16 +41,18 @@ public class TrafficSignBlockEntity extends BlockEntity implements AutoCloseable
         super.load(compound);
 
         if (compound.contains(TEXTURE_TAG))
-            setTexture(compound.getString(TEXTURE_TAG));
+            setBase64Texture(compound.getString(TEXTURE_TAG));
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
-        if (texture != null) {
-            tag.putString(TEXTURE_TAG, Utils.textureToBase64(this.texture.getPixels()));
+        if (textureData != null) {
+            tag.putString(TEXTURE_TAG, getTexture());
         }
         super.saveAdditional(tag);
     }
+
+
 
     @Nullable
     @Override
@@ -70,61 +70,42 @@ public class TrafficSignBlockEntity extends BlockEntity implements AutoCloseable
         this.load(pkt.getTag());
     }
 
-    public DynamicTexture getDynamicTexture() {
-        return this.texture;
+    public String getTexture() {
+        return textureData;
     }
 
-    public DynamicTexture getBackground() {
-        return this.background;
-    }
-
-    public boolean hasBackground() {
-        return this.background != null;
-    }
-
-    public DynamicTexture setTexture(DynamicTexture texture) {
-        close();
-        this.texture = texture;
-    
-        if (this.texture != null && this.getBlockState().getValue(TrafficSignBlock.SHAPE) == TrafficSignShape.MISC) {
-            try {
-                NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(ModMain.MOD_ID, "textures/block/sign/blank.png")).getInputStream());
-                for (int x = 0; x < 32; x++) {
-                    for (int y = 0; y < 32; y++) {
-                        if (texture.getPixels().getPixelRGBA(x, y) != 0)
-                            continue;
-
-                        bg.setPixelRGBA(31 - x, y, 0);
-                    }
-                }
-                this.background = new DynamicTexture(bg);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }            
-        } else if (hasBackground()) {
-            this.background.close();
-            this.background = null;
+    public void setAndResetTexture(String base64) {
+        setBase64Texture(base64);
+        if (this.level.isClientSide) {
+            ClientWrapper.clearTexture(this);
         }
+    }
 
+    public void setBase64Texture(String base64) {        
+        textureData = base64;
         BlockEntityUtil.sendUpdatePacket(this);
         this.setChanged();
-        return this.texture;
     }
 
-    public DynamicTexture setTexture(String base64) {
-        try {
-            return this.setTexture(new DynamicTexture(NativeImage.fromBase64(base64)));
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void onChunkUnloaded() {
+        clear();
+        super.onChunkUnloaded();
+    }
+
+    private void clear() {
+        if (this.level.isClientSide) {
+            ClientWrapper.clearTexture(this);
         }
-        return this.texture;
     }
 
     @Override
     public void close() {
-        if (texture != null) {
-            texture.close();
-            texture = null;
-        }
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
+    }
+
+    @Override
+    protected void finalize() {
+        this.close();
     }
 }

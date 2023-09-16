@@ -1,12 +1,18 @@
 package de.mrjulsen.trafficcraft.proxy;
 
+import java.util.Arrays;
+
+import com.mojang.blaze3d.platform.NativeImage;
+
 import de.mrjulsen.trafficcraft.block.ModBlocks;
 import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.block.client.TrafficSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
 import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
+import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.item.ModItems;
 import de.mrjulsen.trafficcraft.screen.ClientTrafficSignTooltipStack;
 import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
@@ -21,14 +27,32 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
+@OnlyIn(Dist.CLIENT)
 public class ClientProxy implements IProxy {
+    
+	private static final int TRANSPARENCY_COLOR_PRIMARY = 0xFFE9E9E9;
+	private static final int TRANSPARENCY_COLOR_SECONDARY = 0xFFD9D9D9;
+    public static final DynamicTexture[] SHAPE_TEXTURES = Arrays.stream(TrafficSignShape.values()).map(v -> {
+		NativeImage image = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
+		for (int x = 0; x < image.getWidth(); x++) {
+			for (int y = 0; y < image.getHeight(); y++) {
+				if (v.isPixelValid(x, y)) {
+					image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? TRANSPARENCY_COLOR_PRIMARY : TRANSPARENCY_COLOR_SECONDARY) : (y % 2 == 0 ? TRANSPARENCY_COLOR_SECONDARY : TRANSPARENCY_COLOR_PRIMARY));
+				}
+			}
+		}
+		return new DynamicTexture(image);
+	}).toArray(DynamicTexture[]::new);
 
     @Override
     public void setup(FMLCommonSetupEvent event) {
@@ -37,6 +61,19 @@ public class ClientProxy implements IProxy {
         ItemModelGenerator.LAYERS.add("layer6");
         ItemModelGenerator.LAYERS.add("layer7");
         ItemModelGenerator.LAYERS.add("layer8");
+
+        
+        new Thread(() -> {
+            while (Minecraft.getInstance().isRunning()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Cache: " + TrafficSignTextureCacheClient.textureCache.size());
+            }
+            
+        }).start();
         
         /* RENDER LAYERS */
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());

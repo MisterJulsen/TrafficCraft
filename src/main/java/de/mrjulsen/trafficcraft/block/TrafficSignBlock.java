@@ -1,8 +1,10 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import net.minecraft.core.BlockPos;
@@ -74,15 +76,15 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
         Item item = stack.getItem();
 
         if (item instanceof PatternCatalogueItem patternItem && ((item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) || PatternCatalogueItem.getSelectedPattern(stack) != null)) {
-            if (!pLevel.isClientSide) {
-                if (pLevel.getBlockEntity(pPos) instanceof TrafficSignBlockEntity blockEntity) {
-                    if (item instanceof CreativePatternCatalogueItem creativeItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
-                        blockEntity.setTexture(CreativePatternCatalogueItem.getCustomImage(stack).getDynamicTexture());
-                    } else {
-                        blockEntity.setTexture(PatternCatalogueItem.getSelectedPattern(stack).getDynamicTexture());
-                    }
+            if (pLevel.getBlockEntity(pPos) instanceof TrafficSignBlockEntity blockEntity) {
+                if (item instanceof CreativePatternCatalogueItem creativeItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
+                    blockEntity.setAndResetTexture(CreativePatternCatalogueItem.getCustomImage(stack).getTexture());
+                } else {
+                    blockEntity.setAndResetTexture(PatternCatalogueItem.getSelectedPattern(stack).getTexture());
                 }
-            } else {            
+            }
+            
+            if (pLevel.isClientSide) {
                 pLevel.playSound(pPlayer, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
             }
             pLevel.setBlockAndUpdate(pPos, pState.setValue(SHAPE, item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getShape() : PatternCatalogueItem.getSelectedPattern(stack).getShape()));
@@ -151,5 +153,16 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new TrafficSignBlockEntity(pPos, pState);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
+        if (pLevel.isClientSide) {
+            if (pLevel.getBlockEntity(pPos) instanceof IIdentifiable id) {
+                ClientWrapper.clearTexture(id);
+            }
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 }

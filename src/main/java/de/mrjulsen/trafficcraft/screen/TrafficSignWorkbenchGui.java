@@ -4,10 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
@@ -34,6 +37,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -169,7 +173,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
             switchMode(TrafficSignWorkbenchMode.EDITOR);
             shape = preview.getShape();
-            pixels = preview.textureToIntArray(true);
+            pixels = TrafficSignTextureCacheClient.textureToIntArray(preview, true);
             nameBox.setValue(preview.getName());
             selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
         }) {
@@ -329,16 +333,20 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                         }));
                         break;
                     case 1:
-                        TrafficSignData data = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
-                        for (int k = 0; k < TrafficSignShape.MAX_WIDTH; k++) {
-                            for (int l = 0; l < TrafficSignShape.MAX_HEIGHT; l++) {
-                                data.setPixelRGBA(k, l, 0);
+                        TrafficSignData tsd = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
+                        NativeImage img = new NativeImage(Format.RGBA, tsd.getWidth(), tsd.getHeight(), false);
+                        for (int k = 0; k < tsd.getWidth(); k++) {
+                            for (int l = 0; l < tsd.getHeight(); l++) {
+                                img.setPixelRGBA(k, l, 0);
                                 if (shape.isPixelValid(k, l))
-                                    data.setPixelRGBA(k, l, Utils.swapRedBlue(pixels[k][l]));
+                                    img.setPixelRGBA(k, l, Utils.swapRedBlue(pixels[k][l]));
                             }
+
                         }
-                        data.setName(name);
-                        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficSignPatternPacket(data, selectedIndex));
+                        tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
+                        tsd.setName(name);
+                        img.close();
+                        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficSignPatternPacket(tsd, selectedIndex));
                         switchMode(TrafficSignWorkbenchMode.DEFAULT);
                         initPreview();
                         break;

@@ -1,30 +1,35 @@
 package de.mrjulsen.trafficcraft.data;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.codec.binary.Base64;
-
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
+import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
-import de.mrjulsen.trafficcraft.util.Utils;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 
-public class TrafficSignData implements Closeable {
+public class TrafficSignData implements Closeable, IIdentifiable {
+
+    private final long ID;
 
     private final int width;
     private final int height;
-    private DynamicTexture dynTex;
+
+    private String texture;
+
     private final TrafficSignShape shape;
     private String name = "";    
 
@@ -32,13 +37,23 @@ public class TrafficSignData implements Closeable {
         this.width = width;
         this.height = height;
         this.shape = shape;
+
+        /*
         NativeImage texture = new NativeImage(Format.RGBA, width, height, false);
         this.clearImage(texture);
         this.dynTex = new DynamicTexture(texture);
+        */
+
+        ID = System.nanoTime();
     }
 
-    public DynamicTexture getDynamicTexture() {
-        return dynTex;
+    @Override
+    public long getId() {
+        return ID;
+    }
+
+    public String getTexture() {
+        return texture;
     }
 
     public TrafficSignShape getShape() {
@@ -66,54 +81,29 @@ public class TrafficSignData implements Closeable {
     }
 
     public void setFromBase64(String base64) {
-        try {
-            NativeImage texture = NativeImage.fromBase64(base64); 
-            this.dynTex.setPixels(texture);
-            this.dynTex.upload();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        texture = base64;
     }
 
-    public int[][] textureToIntArray(boolean flipRgb) {
-        final int[][] a = new int[width][];
-        for (int x = 0; x < width; x++) {
-            a[x] = new int[height];
-            for (int y = 0; y < height; y++) {
-                a[x][y] = flipRgb ? Utils.swapRedBlue(this.getDynamicTexture().getPixels().getPixelRGBA(x, y)) : this.getDynamicTexture().getPixels().getPixelRGBA(x, y);
-            }
-        }
-        return a;
-    }
-
-    public void setImage(NativeImage img) {
-        this.dynTex.setPixels(img);
-        this.dynTex.upload();
-    }
-
-    public int getPixelRGBA(int x, int y) {
-        return this.getDynamicTexture().getPixels().getPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height));
-    }
-
+    @OnlyIn(Dist.CLIENT)
     public void setPixelRGBA(int x, int y, int rgba) {
         if (!shape.isPixelValid(x, y))
             return;
 
-        NativeImage texture = this.getDynamicTexture().getPixels();
+        DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(this, texture, false, (texture) -> {
+            this.texture = TrafficSignTextureCacheClient.textureToBase64(this);
+        });
+        
+        NativeImage texture = tex.getPixels();
         texture.setPixelRGBA(Mth.clamp(x, 0, width), Mth.clamp(y, 0, height), rgba); 
-        this.dynTex.upload();
+        tex.upload();
     }
 
-    private String textureToBase64() {
-        try {
-            return Base64.encodeBase64String(this.getDynamicTexture().getPixels().asByteArray());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
+    @OnlyIn(Dist.CLIENT)
     public void render(PoseStack stack, int x, int y, int w, int h) {
+        DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(this, texture, false, (texture) -> {
+            this.texture = TrafficSignTextureCacheClient.textureToBase64(this);
+        });
+
         RenderSystem.setShaderTexture(0, shape.getShapeTextureId());
         RenderSystem.setShaderColor(0, 0, 0, 1);
         GuiComponent.blit(stack, x - 1, y - 1, w, h, 0, 0, 32, 32, 32, 32);
@@ -123,7 +113,7 @@ public class TrafficSignData implements Closeable {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         GuiComponent.blit(stack, x, y, w, h, 0, 0, 32, 32, 32, 32);
 
-        RenderSystem.setShaderTexture(0, dynTex.getId());
+        RenderSystem.setShaderTexture(0, tex.getId());
         GuiComponent.blit(stack, x, y, w, h, 0, 0, width, height, width, height);
     }
 
@@ -136,7 +126,7 @@ public class TrafficSignData implements Closeable {
         tag.putInt("height", height);
         tag.putInt("shape", shape.getIndex());
         tag.putString("name", name);
-        tag.putString("pixelData", textureToBase64());  
+        tag.putString("pixelData", texture);  
         return tag;
     }
 
@@ -153,7 +143,6 @@ public class TrafficSignData implements Closeable {
         buf.writeInt(shape.getIndex());
         buf.writeUtf(name);
 
-        String texture = textureToBase64();
         int length = texture.getBytes(StandardCharsets.UTF_8).length;
         buf.writeInt(length);
         buf.writeUtf(texture, length);
@@ -170,13 +159,11 @@ public class TrafficSignData implements Closeable {
 
     @Override
     public void close() {
-        if (dynTex != null) {
-            dynTex.close();
-        }
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        this.clone();
+    protected void finalize() {
+        this.close();
     }
 }

@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -67,7 +68,10 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 y = 0;
             }
 
-            DynamicTexture texture = this.data.get(i).getDynamicTexture();
+            final int j = i;
+            DynamicTexture texture = TrafficSignTextureCacheClient.getTexture(this.data.get(j), this.data.get(j).getTexture(), false, (tex) -> {
+                this.data.get(j).setFromBase64(TrafficSignTextureCacheClient.textureToBase64(this.data.get(j)));
+            });
             int w = texture.getPixels().getWidth();
             int h = texture.getPixels().getHeight();
 
@@ -92,7 +96,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 );
                 pPoseStack.setIdentity();
             }
-            texture.close();
+            this.data.get(j).close();
         }
     }
 }

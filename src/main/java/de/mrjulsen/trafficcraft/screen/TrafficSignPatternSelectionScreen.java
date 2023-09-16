@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
@@ -31,6 +32,7 @@ import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -155,8 +157,11 @@ public class TrafficSignPatternSelectionScreen extends Screen
                     protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                         super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
                         try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
-                            RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
-                            NativeImage img = data.getDynamicTexture().getPixels();
+                            DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
+                                data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
+                            });
+                            RenderSystem.setShaderTexture(0, tex.getId());
+                            NativeImage img = tex.getPixels();
                             blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                         }
                         
@@ -188,7 +193,7 @@ public class TrafficSignPatternSelectionScreen extends Screen
                         
                         try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).getInputStream())) {
                             TrafficSignData tsd = new TrafficSignData(img.getWidth(), img.getHeight(), shape);
-                            tsd.setImage(img);
+                            tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
                             CreativePatternCatalogueItem.setCustomImage(stack, tsd);
                             selectedIndex = j;
                         } catch (IOException e) {
@@ -268,8 +273,11 @@ public class TrafficSignPatternSelectionScreen extends Screen
 
         if (CreativePatternCatalogueItem.hasCustomPattern(stack)) {            
             try (TrafficSignData data = CreativePatternCatalogueItem.getCustomImage(stack)) {
-                RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
-                NativeImage img = data.getDynamicTexture().getPixels();
+                DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
+                    data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
+                });
+                RenderSystem.setShaderTexture(0, tex.getId());
+                NativeImage img = tex.getPixels();
                 blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                 img.close();
 
@@ -282,8 +290,11 @@ public class TrafficSignPatternSelectionScreen extends Screen
         } else {
             try (TrafficSignData data = PatternCatalogueItem.getSelectedPattern(stack)) {
                 if (data != null) {
-                    RenderSystem.setShaderTexture(0, data.getDynamicTexture().getId());
-                    NativeImage img = data.getDynamicTexture().getPixels();
+                    DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
+                        data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
+                    });
+                    RenderSystem.setShaderTexture(0, tex.getId());
+                    NativeImage img = tex.getPixels();
                     blit(pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                     img.close();
 

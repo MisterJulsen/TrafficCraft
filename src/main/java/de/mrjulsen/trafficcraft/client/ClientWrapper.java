@@ -2,6 +2,8 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.trafficcraft.block.client.TrafficSignTextureCacheClient;
+import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignWorkbenchUpdateClientPacket;
 import de.mrjulsen.trafficcraft.screen.TrafficSignWorkbenchGui;
 import net.minecraft.client.Minecraft;
@@ -14,5 +16,9 @@ public class ClientWrapper {
         if (Minecraft.getInstance().screen instanceof TrafficSignWorkbenchGui screen) {
             screen.updatePreview();
         }
+    }
+
+    public synchronized static <B extends IIdentifiable> void clearTexture(B id) {
+        TrafficSignTextureCacheClient.clear(id);
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,14 +28,19 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
     @SuppressWarnings("resource")
     public void render(TrafficSignBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         BlockState blockstate = pBlockEntity.getBlockState();
-        if (pBlockEntity.getDynamicTexture() == null) {
+
+        DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(pBlockEntity, pBlockEntity.getTexture(), pBlockEntity.getBlockState().getValue(TrafficSignBlock.SHAPE) == TrafficSignShape.MISC, (texture) -> {
+            pBlockEntity.setBase64Texture(TrafficSignTextureCacheClient.textureToBase64(pBlockEntity));
+        });
+
+        if (tex == null) {
             return;
         }
 
         int lu = pPackedLight & '\uffff';
         int lv = pPackedLight >> 16 & '\uffff';
 
-        ResourceLocation textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_front", pBlockEntity.getDynamicTexture());
+        ResourceLocation textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_front", tex);
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.text(textureLocation));
         double p = 1 / 16f;
         double z = blockstate.getValue(TrafficSignBlock.SHAPE) == TrafficSignShape.MISC ? 9.0d * p - 0.5d : 9.5d * p - 0.5d;
@@ -55,8 +61,8 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
         );
         pPoseStack.popPose();
         
-        if (pBlockEntity.hasBackground()) {
-            textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_back", pBlockEntity.getBackground());
+        if (TrafficSignTextureCacheClient.hasBackground(pBlockEntity)) {
+            textureLocation = Minecraft.getInstance().textureManager.register("trafficsign_back", TrafficSignTextureCacheClient.getBackground(pBlockEntity));
             vertexconsumer = pBufferSource.getBuffer(RenderType.text(textureLocation));
             z = 7.0d * p - 0.5d;
             pPoseStack.pushPose();

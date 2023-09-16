@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.proxy.ClientProxy;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Direction;
@@ -15,6 +16,8 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
 
 public enum TrafficSignShape implements StringRepresentable {
     CIRCLE("circle", 0, new int[] {0,1,2,3,4,5,6,7,8,9,22,23,24,25,26,27,28,29,30,31,65536,65537,65538,65539,65540,65541,65542,65543,65544,65545,65558,65559,65560,65561,65562,65563,65564,65565,65566,65567,131072,131073,131074,131075,131076,131077,131098,131099,131100,131101,131102,131103,196608,196609,196610,196611,196612,196613,196634,196635,196636,196637,196638,196639,262144,262145,262146,262147,262172,262173,262174,262175,327680,327681,327682,327683,327708,327709,327710,327711,393216,393217,393246,393247,458752,458753,458782,458783,524288,524289,524318,524319,589824,589825,589854,589855,1441792,1441793,1441822,1441823,1507328,1507329,1507358,1507359,1572864,1572865,1572894,1572895,1638400,1638401,1638430,1638431,1703936,1703937,1703938,1703939,1703964,1703965,1703966,1703967,1769472,1769473,1769474,1769475,1769500,1769501,1769502,1769503,1835008,1835009,1835010,1835011,1835012,1835013,1835034,1835035,1835036,1835037,1835038,1835039,1900544,1900545,1900546,1900547,1900548,1900549,1900570,1900571,1900572,1900573,1900574,1900575,1966080,1966081,1966082,1966083,1966084,1966085,1966086,1966087,1966088,1966089,1966102,1966103,1966104,1966105,1966106,1966107,1966108,1966109,1966110,1966111,2031616,2031617,2031618,2031619,2031620,2031621,2031622,2031623,2031624,2031625,2031638,2031639,2031640,2031641,2031642,2031643,2031644,2031645,2031646,2031647}),
@@ -36,20 +39,6 @@ public enum TrafficSignShape implements StringRepresentable {
 
 	public static final int MAX_WIDTH = 32;
 	public static final int MAX_HEIGHT = 32;
-	private static final int TRANSPARENCY_COLOR_PRIMARY = 0xFFE9E9E9;
-	private static final int TRANSPARENCY_COLOR_SECONDARY = 0xFFD9D9D9;
-
-	private static final DynamicTexture[] SHAPE_TEXTURES = Arrays.stream(values()).map(v -> {
-		NativeImage image = new NativeImage(NativeImage.Format.RGBA, MAX_WIDTH, MAX_HEIGHT, false);
-		for (int x = 0; x < image.getWidth(); x++) {
-			for (int y = 0; y < image.getHeight(); y++) {
-				if (v.isPixelValid(x, y)) {
-					image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? TRANSPARENCY_COLOR_PRIMARY : TRANSPARENCY_COLOR_SECONDARY) : (y % 2 == 0 ? TRANSPARENCY_COLOR_SECONDARY : TRANSPARENCY_COLOR_PRIMARY));
-				}
-			}
-		}
-		return new DynamicTexture(image);
-	}).toArray(DynamicTexture[]::new);
 	
 	private TrafficSignShape(String shape, int index, int[] invalidPixels) {
 		this.shape = shape;
@@ -82,8 +71,9 @@ public enum TrafficSignShape implements StringRepresentable {
 		return TrafficSignShape.CIRCLE;
 	}
 
+	@OnlyIn(Dist.CLIENT)
 	public DynamicTexture getShapeTexture() {
-		return SHAPE_TEXTURES[this.getIndex()];
+		return ClientProxy.SHAPE_TEXTURES[this.getIndex()];
 	}
 
 	public int getShapeTextureId() {
