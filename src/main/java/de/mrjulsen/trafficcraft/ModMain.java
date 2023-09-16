@@ -10,7 +10,6 @@ import de.mrjulsen.trafficcraft.proxy.ClientProxy;
 import de.mrjulsen.trafficcraft.proxy.IProxy;
 import de.mrjulsen.trafficcraft.proxy.ServerProxy;
 import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
-import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
@@ -22,20 +21,14 @@ import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ModMain.MOD_ID)
-public class ModMain
-{
+public class ModMain {
     public static final String MOD_ID = "trafficcraft";
     public final IProxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public ModMain()
-    {
-        ItemModelGenerator.LAYERS.add("layer5");
-        ItemModelGenerator.LAYERS.add("layer6");
-        ItemModelGenerator.LAYERS.add("layer7");
-        ItemModelGenerator.LAYERS.add("layer8");
+    public ModMain() {
 
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(this::setup);
@@ -49,8 +42,7 @@ public class ModMain
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
+    private void setup(final FMLCommonSetupEvent event) {
         // some preinit code
         LOGGER.info("Welcome to the TrafficCraft mod.");
 

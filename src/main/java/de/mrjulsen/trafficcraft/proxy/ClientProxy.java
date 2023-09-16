@@ -18,6 +18,7 @@ import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +32,12 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void setup(FMLCommonSetupEvent event) {
+        
+        ItemModelGenerator.LAYERS.add("layer5");
+        ItemModelGenerator.LAYERS.add("layer6");
+        ItemModelGenerator.LAYERS.add("layer7");
+        ItemModelGenerator.LAYERS.add("layer8");
+        
         /* RENDER LAYERS */
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
