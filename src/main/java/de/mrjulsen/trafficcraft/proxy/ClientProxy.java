@@ -47,7 +47,9 @@ public class ClientProxy implements IProxy {
 			for (int y = 0; y < image.getHeight(); y++) {
 				if (v.isPixelValid(x, y)) {
 					image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? TRANSPARENCY_COLOR_PRIMARY : TRANSPARENCY_COLOR_SECONDARY) : (y % 2 == 0 ? TRANSPARENCY_COLOR_SECONDARY : TRANSPARENCY_COLOR_PRIMARY));
-				}
+				} else {
+                    image.setPixelRGBA(x, y, 0);
+                }
 			}
 		}
 		return new DynamicTexture(image);
