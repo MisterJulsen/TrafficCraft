@@ -12,6 +12,7 @@ import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
+import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignWorkbenchUpdateClientPacket;
 import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
@@ -42,6 +43,8 @@ public class NetworkManager {
         register(PatternCatalogueIndexPacket.class).encoder(PatternCatalogueIndexPacket::encode).decoder(PatternCatalogueIndexPacket::decode).consumer(PatternCatalogueIndexPacket::handle).add();
         register(CreativePatternCataloguePacket.class).encoder(CreativePatternCataloguePacket::encode).decoder(CreativePatternCataloguePacket::decode).consumer(CreativePatternCataloguePacket::handle).add();
         register(TrafficSignWorkbenchUpdateClientPacket.class).encoder(TrafficSignWorkbenchUpdateClientPacket::encode).decoder(TrafficSignWorkbenchUpdateClientPacket::decode).consumer(TrafficSignWorkbenchUpdateClientPacket::handle).add();
+        register(TrafficSignTextureResetPacket.class).encoder(TrafficSignTextureResetPacket::encode).decoder(TrafficSignTextureResetPacket::decode).consumer(TrafficSignTextureResetPacket::handle).add();
+    
     }
 
     public static SimpleChannel getPlayChannel()

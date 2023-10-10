@@ -14,8 +14,8 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class TrafficSignTextureCacheClient {
-    public static final HashMap<Long, DynamicTexture> textureCache = new HashMap<>();
-    public static final HashMap<Long, DynamicTexture> backgroundTextureCache = new HashMap<>();
+    public static final HashMap<String, DynamicTexture> textureCache = new HashMap<>();
+    public static final HashMap<String, DynamicTexture> backgroundTextureCache = new HashMap<>();
 
     public static <B extends IIdentifiable> DynamicTexture setTexture(B id, boolean hasBg, DynamicTexture texture) {
         clear(id);
@@ -84,6 +84,18 @@ public class TrafficSignTextureCacheClient {
         if (backgroundTextureCache.containsKey(id.getId())) {
             backgroundTextureCache.get(id.getId()).close();
             backgroundTextureCache.remove(id.getId());
+        }
+    }
+
+    public static void clear(String id) {
+        if (textureCache.containsKey(id)) {
+            textureCache.get(id).close();
+            textureCache.remove(id);
+        }
+
+        if (backgroundTextureCache.containsKey(id)) {
+            backgroundTextureCache.get(id).close();
+            backgroundTextureCache.remove(id);
         }
     }
 

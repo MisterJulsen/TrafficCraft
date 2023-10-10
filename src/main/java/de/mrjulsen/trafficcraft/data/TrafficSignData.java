@@ -23,7 +23,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class TrafficSignData implements Closeable, IIdentifiable {
 
-    private final long ID;
+    private final String ID;
 
     private final int width;
     private final int height;
@@ -38,17 +38,11 @@ public class TrafficSignData implements Closeable, IIdentifiable {
         this.height = height;
         this.shape = shape;
 
-        /*
-        NativeImage texture = new NativeImage(Format.RGBA, width, height, false);
-        this.clearImage(texture);
-        this.dynTex = new DynamicTexture(texture);
-        */
-
-        ID = System.nanoTime();
+        ID = String.valueOf(System.nanoTime());
     }
 
     @Override
-    public long getId() {
+    public String getId() {
         return ID;
     }
 

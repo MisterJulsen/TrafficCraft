@@ -83,4 +83,22 @@ public class Utils {
         byte[] imageBytes = outputStream.toByteArray();
         return new ByteArrayInputStream(imageBytes);
     }
+
+    public static long encodeCoordinates(int x, int y, int z) {
+        long encodedValue = 0;
+
+        encodedValue |= ((long)x & 0xFFFFFFFFL) << 32;
+        encodedValue |= ((long)y & 0xFFFFFFFFL) << 16;
+        encodedValue |= ((long)z & 0xFFFFFFFFL);
+
+        return encodedValue;
+    }
+
+    public static int[] decodeCoordinates(long encodedValue) {
+        int x = (int) (encodedValue >> 32);
+        int y = (int) ((encodedValue >> 16) & 0xFFFF);
+        int z = (int) (encodedValue & 0xFFFF);
+
+        return new int[]{x, y, z};
+    }
 }
