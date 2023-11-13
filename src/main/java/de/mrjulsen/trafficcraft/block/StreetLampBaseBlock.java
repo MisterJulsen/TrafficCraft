@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

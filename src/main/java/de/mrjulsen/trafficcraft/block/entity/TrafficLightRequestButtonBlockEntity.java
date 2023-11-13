@@ -3,9 +3,10 @@ package de.mrjulsen.trafficcraft.block.entity;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.data.Location;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
-import de.mrjulsen.trafficcraft.util.Location;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;

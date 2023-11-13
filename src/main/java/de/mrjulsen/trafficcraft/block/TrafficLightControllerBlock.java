@@ -2,12 +2,12 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.client.TrafficLightControllerClient;
-import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.item.ILinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -78,7 +78,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
             if(pLevel.isClientSide)
             {
                 if(!pPlayer.isShiftKeyDown())
-                    TrafficLightControllerClient.showGui(pPos, pLevel);
+                    ClientWrapper.showTrafficLightControllerScreen(pPos, pLevel);
             }
 
             return InteractionResult.SUCCESS;

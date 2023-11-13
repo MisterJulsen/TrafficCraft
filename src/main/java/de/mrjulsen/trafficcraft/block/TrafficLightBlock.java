@@ -2,19 +2,19 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.client.TrafficLightClient;
-import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
+import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
+import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightVariant;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
+import de.mrjulsen.trafficcraft.item.ILinkerItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -181,7 +181,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
         if (item == null || !isValidLinker) {    
             if(pLevel.isClientSide && item instanceof WrenchItem) {
                 if(!pPlayer.isShiftKeyDown())
-                    TrafficLightClient.showGui(pPos, pLevel);
+                    ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
                     
                 return InteractionResult.SUCCESS;
             }

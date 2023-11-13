@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
+import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TownSignVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

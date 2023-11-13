@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.item;
 import java.util.List;
 
 import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
-import de.mrjulsen.trafficcraft.item.client.PatternCatalogueClient;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -42,7 +42,7 @@ public class CreativePatternCatalogueItem extends PatternCatalogueItem {
 
         if (level.isClientSide) {
             if (player.isShiftKeyDown()) {
-                PatternCatalogueClient.showGui(stack);
+                ClientWrapper.showSignPatternSelectionScreen(stack);
             }
         }
 

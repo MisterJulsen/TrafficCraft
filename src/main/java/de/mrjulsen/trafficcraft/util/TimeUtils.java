@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.util;
 
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.properties.TimeFormat;
+import de.mrjulsen.trafficcraft.data.TimeFormat;
 
 public class TimeUtils {
 

@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.trafficcraft.block.properties.TimeFormat;
+import de.mrjulsen.trafficcraft.data.TimeFormat;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

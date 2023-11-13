@@ -2,9 +2,10 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.Arrays;
 import java.util.Optional;
+
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
-import de.mrjulsen.trafficcraft.item.client.PatternCatalogueClient;
-import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -32,7 +33,7 @@ public class PatternCatalogueItem extends Item {
 
         if (level.isClientSide) {
             if (player.isShiftKeyDown()) {
-                PatternCatalogueClient.showGui(stack);
+                ClientWrapper.showSignPatternSelectionScreen(stack);
             }
         }
 

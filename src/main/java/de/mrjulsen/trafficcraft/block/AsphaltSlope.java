@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.properties.RoadType;
+import de.mrjulsen.trafficcraft.block.data.RoadType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;

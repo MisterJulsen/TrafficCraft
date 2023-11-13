@@ -5,11 +5,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightControlType;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
-import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.data.Location;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
-import de.mrjulsen.trafficcraft.util.Location;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;

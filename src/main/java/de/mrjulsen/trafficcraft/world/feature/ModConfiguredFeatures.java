@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.world.feature;
 
 import java.util.List;
 
-import de.mrjulsen.trafficcraft.block.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.OreFeatures;

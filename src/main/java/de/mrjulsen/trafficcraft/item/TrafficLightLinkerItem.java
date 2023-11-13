@@ -2,8 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
-import de.mrjulsen.trafficcraft.block.ModBlocks;
-import de.mrjulsen.trafficcraft.item.properties.ILinkerItem;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
-import de.mrjulsen.trafficcraft.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

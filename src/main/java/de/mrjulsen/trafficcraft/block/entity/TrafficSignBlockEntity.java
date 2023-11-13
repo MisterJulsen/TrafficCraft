@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

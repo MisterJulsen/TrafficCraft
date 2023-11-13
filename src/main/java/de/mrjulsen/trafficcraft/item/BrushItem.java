@@ -3,11 +3,11 @@ package de.mrjulsen.trafficcraft.item;
 import java.util.List;
 
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
-import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
-import de.mrjulsen.trafficcraft.item.client.BrushClient;
-import de.mrjulsen.trafficcraft.util.PaintColor;
+import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
+import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class BrushItem extends Item
 
         if (level.isClientSide) {
             if (player.isShiftKeyDown()) {
-                BrushClient.showGui(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll"));
+                ClientWrapper.showPaintBrushScreen(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll"));
             }
         }
 
@@ -157,7 +157,7 @@ public class BrushItem extends Item
                 return InteractionResult.SUCCESS;
             } else {
                 if (state.getBlock() instanceof IPaintableBlock block) {
-                    if (level.getBlockEntity(pos) instanceof IColorStorageBlockEntity blockEntity && blockEntity.getColor() == PaintColor.byId(nbt.getInt("color"))) { 
+                    if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity && blockEntity.getColor() == PaintColor.byId(nbt.getInt("color"))) { 
                         InteractionResult res = block.update(pContext);
                         if (res == InteractionResult.CONSUME) {
                             this.removePaint(player, nbt);

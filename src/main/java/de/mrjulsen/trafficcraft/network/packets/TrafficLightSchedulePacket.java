@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

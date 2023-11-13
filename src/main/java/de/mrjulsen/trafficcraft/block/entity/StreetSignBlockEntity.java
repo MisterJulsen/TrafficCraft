@@ -1,15 +1,16 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import de.mrjulsen.trafficcraft.block.client.SignRenderingConfig;
-import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
+import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
+import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.data.PaintColor;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StreetSignBlockEntity extends WritableTrafficSignBlockEntity implements IColorStorageBlockEntity {
+public class StreetSignBlockEntity extends WritableTrafficSignBlockEntity implements IColorBlockEntity {
     
     private PaintColor color = PaintColor.NONE;
 

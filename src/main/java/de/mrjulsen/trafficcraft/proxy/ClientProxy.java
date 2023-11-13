@@ -4,19 +4,19 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.trafficcraft.block.ModBlocks;
-import de.mrjulsen.trafficcraft.block.client.HouseNumberSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.block.client.StreetSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.block.client.TownSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.block.client.TrafficSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.block.colors.TintedTextures;
-import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
-import de.mrjulsen.trafficcraft.block.properties.TrafficSignShape;
-import de.mrjulsen.trafficcraft.item.ModItems;
-import de.mrjulsen.trafficcraft.screen.ClientTrafficSignTooltipStack;
-import de.mrjulsen.trafficcraft.screen.TrafficSignTooltip;
-import de.mrjulsen.trafficcraft.screen.TrafficSignWorkbenchGui;
-import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
+import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.TintedTextures;
+import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.ber.StreetSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.ber.TownSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.ber.TrafficSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
+import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
+import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
+import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
@@ -41,6 +41,7 @@ public class ClientProxy implements IProxy {
     
 	private static final int TRANSPARENCY_COLOR_PRIMARY = 0xFFE9E9E9;
 	private static final int TRANSPARENCY_COLOR_SECONDARY = 0xFFD9D9D9;
+
     public static final DynamicTexture[] SHAPE_TEXTURES = Arrays.stream(TrafficSignShape.values()).map(v -> {
 		NativeImage image = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
 		for (int x = 0; x < image.getWidth(); x++) {
@@ -82,12 +83,12 @@ public class ClientProxy implements IProxy {
             blocks[i] = ModBlocks.COLORED_BLOCKS.get(i).get();
         }
         
-        blockColors.register(new TintedTextures.BasicBlockTint(),
+        blockColors.register(new TintedTextures.TintedBlock(),
             blocks
         );
         
         ItemColors itemColors = Minecraft.getInstance().getItemColors();
-        itemColors.register(new TintedTextures.BasicItemTint(),
+        itemColors.register(new TintedTextures.TintedItem(),
             ModBlocks.GUARDRAIL.get(),
             ModItems.PAINT_BRUSH.get(),
             ModBlocks.TRAFFIC_CONE.get(),

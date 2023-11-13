@@ -4,8 +4,8 @@ import java.util.List;
 
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TimeFormat;
-import de.mrjulsen.trafficcraft.item.client.StreetLampConfigCardClient;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.data.TimeFormat;
 import de.mrjulsen.trafficcraft.util.TimeUtils;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -62,7 +62,7 @@ public class StreetLampConfigCardItem extends Item
                     timeFormat = nbt.getInt("timeFormat");
                 }
 
-                StreetLampConfigCardClient.showGui(turnOn, turnOff, TimeFormat.getFormatByIndex(timeFormat));
+                ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, TimeFormat.getFormatByIndex(timeFormat));
             }
         }
 

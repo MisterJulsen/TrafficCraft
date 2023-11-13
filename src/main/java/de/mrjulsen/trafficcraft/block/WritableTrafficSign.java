@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.block.client.WritableTrafficSignClient;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
@@ -108,10 +108,10 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
             return InteractionResult.FAIL;
         }
 
-        if(pLevel.isClientSide) {
+        if (pLevel.isClientSide) {
             if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof WritableTrafficSignBlockEntity blockEntity) {
-                if(!pPlayer.isShiftKeyDown()) {                
-                    WritableTrafficSignClient.showGui(blockEntity);
+                if (!pPlayer.isShiftKeyDown()) {                
+                    ClientWrapper.showWritableSignScreen(blockEntity);
                 }
                 return InteractionResult.SUCCESS;
             }

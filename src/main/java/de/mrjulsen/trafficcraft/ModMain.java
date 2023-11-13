@@ -2,14 +2,14 @@ package de.mrjulsen.trafficcraft;
 
 import com.mojang.logging.LogUtils;
 
-import de.mrjulsen.trafficcraft.block.ModBlocks;
-import de.mrjulsen.trafficcraft.block.entity.ModBlockEntities;
-import de.mrjulsen.trafficcraft.item.ModItems;
+import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.proxy.ClientProxy;
 import de.mrjulsen.trafficcraft.proxy.IProxy;
 import de.mrjulsen.trafficcraft.proxy.ServerProxy;
-import de.mrjulsen.trafficcraft.screen.menu.ModMenuTypes;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;

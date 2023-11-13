@@ -2,10 +2,10 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
+import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
+import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;

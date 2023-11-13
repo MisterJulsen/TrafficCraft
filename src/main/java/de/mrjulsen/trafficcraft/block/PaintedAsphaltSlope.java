@@ -2,9 +2,10 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.properties.RoadBlock;
-import de.mrjulsen.trafficcraft.block.properties.RoadType;
+import de.mrjulsen.trafficcraft.block.data.RoadBlock;
+import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.BrushItem;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;

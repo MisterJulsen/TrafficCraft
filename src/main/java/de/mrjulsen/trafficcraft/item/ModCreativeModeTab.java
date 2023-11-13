@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.item;
 
-import de.mrjulsen.trafficcraft.block.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 

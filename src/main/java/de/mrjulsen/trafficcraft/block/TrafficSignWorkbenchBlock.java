@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.screen.menu.TrafficSignWorkbenchMenu;
+import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;

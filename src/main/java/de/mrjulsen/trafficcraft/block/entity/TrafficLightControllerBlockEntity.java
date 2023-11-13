@@ -7,8 +7,9 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
-import de.mrjulsen.trafficcraft.screen.widgets.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

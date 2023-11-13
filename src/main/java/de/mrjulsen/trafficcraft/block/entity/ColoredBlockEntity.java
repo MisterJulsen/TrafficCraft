@@ -2,9 +2,10 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
+import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
+import de.mrjulsen.trafficcraft.data.PaintColor;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -13,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ColoredBlockEntity extends BlockEntity implements IColorStorageBlockEntity {
+public class ColoredBlockEntity extends BlockEntity implements IColorBlockEntity {
 
     // Properties
     protected PaintColor color = PaintColor.NONE;

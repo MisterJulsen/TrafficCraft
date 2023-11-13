@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import java.util.Map;
 
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
+import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

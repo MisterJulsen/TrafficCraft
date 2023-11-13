@@ -3,10 +3,10 @@ package de.mrjulsen.trafficcraft.network.packets;
 import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightMode;
-import de.mrjulsen.trafficcraft.block.properties.TrafficLightVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

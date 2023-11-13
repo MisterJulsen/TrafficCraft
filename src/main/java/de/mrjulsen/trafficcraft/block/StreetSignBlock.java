@@ -2,9 +2,9 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.colors.IPaintableBlock;
+import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
+import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ITrafficPostLike;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;

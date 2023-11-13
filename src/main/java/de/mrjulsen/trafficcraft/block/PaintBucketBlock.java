@@ -1,10 +1,10 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.block.colors.IColorStorageBlockEntity;
+import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
+import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
-import de.mrjulsen.trafficcraft.block.properties.ColorableBlock;
+import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.util.PaintColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -116,7 +116,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             return InteractionResult.FAIL;
         }
 
-        IColorStorageBlockEntity blockEntity = (IColorStorageBlockEntity)level.getBlockEntity(pos);
+        IColorBlockEntity blockEntity = (IColorBlockEntity)level.getBlockEntity(pos);
 
         ItemStack stack = player.getItemInHand(hand);
 
