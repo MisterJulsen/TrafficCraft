@@ -141,7 +141,7 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
 
     @Override
     public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
-        return pState.getValue(FACING).getOpposite() == pDirection;
+        return pState.getValue(SHAPE) != TrafficSignShape.SMALL_LOWER && pState.getValue(FACING).getOpposite() == pDirection;
     }
 
     /* BLOCK ENTITY */
