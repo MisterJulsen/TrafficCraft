@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.world.feature;
 
 import java.util.List;
 
+import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -17,5 +18,5 @@ public class ModConfiguredFeatures {
         OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, ModBlocks.DEEPSLATE_BITUMEN_ORE.get().defaultBlockState()));
 
     public static final Holder<ConfiguredFeature<OreConfiguration, ?>> BITUMEN_ORE = FeatureUtils.register("bitumen_ore",
-        Feature.ORE, new OreConfiguration(OVERWORLD_BITUMEN_ORES, 25));
+        Feature.ORE, new OreConfiguration(OVERWORLD_BITUMEN_ORES, ModCommonConfig.WORLD_BITUMEN_VEIN_SIZE.get()));
 }
