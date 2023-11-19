@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.client.screen.menu;
 
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
@@ -116,7 +117,7 @@ public class TrafficSignWorkbenchMenu extends AbstractContainerMenu {
                 return ItemStack.EMPTY;
             }
         } else {
-            System.out.println("Invalid slotIndex:" + index);
+            ModMain.LOGGER.warn("Invalid slotIndex:" + index);
             return ItemStack.EMPTY;
         }
         // If stack size == 0 (the entire stack was moved) set slot contents to null
