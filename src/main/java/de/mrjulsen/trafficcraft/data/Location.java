@@ -2,11 +2,17 @@ package de.mrjulsen.trafficcraft.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.Vec3;
 
 public class Location {
-    public int x;
-    public int y;
-    public int z;
+    private static final String NBT_X = "x";
+    private static final String NBT_Y = "y";
+    private static final String NBT_Z = "z";
+    private static final String NBT_DIM = "dim";
+
+    public double x;
+    public double y;
+    public double z;
     public String dimension;
     private BlockPos blockPos;
 
@@ -20,16 +26,28 @@ public class Location {
         this.generateBlockPos();
     }
 
+    public Location(double x, double y, double z, String dimension) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.dimension = dimension;
+        this.generateBlockPos();
+    }
+
     public BlockPos getLocationAsBlockPos() {
         return blockPos;
     }
 
+    public Vec3 getLocationAsVec3() {
+        return new Vec3(x, y, z);
+    }
+
     public CompoundTag toNbt() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("x", x);
-        tag.putInt("y", y);
-        tag.putInt("z", z);
-        tag.putString("dim", dimension);
+        tag.putDouble(NBT_X, x);
+        tag.putDouble(NBT_Y, y);
+        tag.putDouble(NBT_Z, z);
+        tag.putString(NBT_DIM, dimension);
 
         return tag;
     }
@@ -39,16 +57,20 @@ public class Location {
     }
 
     public static Location fromNbt(CompoundTag tag) {
+        if (!tag.contains(NBT_X) || !tag.contains(NBT_Y) || !tag.contains(NBT_Z) || !tag.contains(NBT_DIM)) {
+            return null;
+        }
+
         Location loc = new Location();
         loc.loadFromNbt(tag);
         return loc;
     }
 
     public void loadFromNbt(CompoundTag tag) {
-        this.x = tag.getInt("x");
-        this.y = tag.getInt("y");
-        this.z = tag.getInt("z");
-        this.dimension = tag.getString("dim");
+        this.x = tag.getDouble(NBT_X);
+        this.y = tag.getDouble(NBT_Y);
+        this.z = tag.getDouble(NBT_Z);
+        this.dimension = tag.getString(NBT_DIM);
         this.generateBlockPos();
     }
 }

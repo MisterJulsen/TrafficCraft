@@ -7,6 +7,7 @@ import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;
+import de.mrjulsen.trafficcraft.client.screen.RoadConstructionToolScreen;
 import de.mrjulsen.trafficcraft.client.screen.StreetLampScheduleScreen;
 import de.mrjulsen.trafficcraft.client.screen.TownSignScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
@@ -67,5 +68,9 @@ public class ClientWrapper {
 
     public static void handleTrafficSignTextureResetPacket(TrafficSignTextureResetPacket packet, Supplier<NetworkEvent.Context> ctx) { 
         TrafficSignTextureCacheClient.clear(packet.id);
+    }
+
+    public static void showRoadBuilderGadgetScreen(ItemStack itemstack, int blocksCount, int slopesCount) {
+        Minecraft.getInstance().setScreen(new RoadConstructionToolScreen(itemstack, blocksCount, slopesCount));
     }
 }

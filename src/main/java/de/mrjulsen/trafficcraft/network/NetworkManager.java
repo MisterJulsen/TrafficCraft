@@ -6,6 +6,9 @@ import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
+import de.mrjulsen.trafficcraft.network.packets.RoadBuilderBuildRoadPacket;
+import de.mrjulsen.trafficcraft.network.packets.RoadBuilderDataPacket;
+import de.mrjulsen.trafficcraft.network.packets.RoadBuilderResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.CreativePatternCataloguePacket;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
 import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
@@ -44,6 +47,9 @@ public class NetworkManager {
         register(CreativePatternCataloguePacket.class).encoder(CreativePatternCataloguePacket::encode).decoder(CreativePatternCataloguePacket::decode).consumer(CreativePatternCataloguePacket::handle).add();
         register(TrafficSignWorkbenchUpdateClientPacket.class).encoder(TrafficSignWorkbenchUpdateClientPacket::encode).decoder(TrafficSignWorkbenchUpdateClientPacket::decode).consumer(TrafficSignWorkbenchUpdateClientPacket::handle).add();
         register(TrafficSignTextureResetPacket.class).encoder(TrafficSignTextureResetPacket::encode).decoder(TrafficSignTextureResetPacket::decode).consumer(TrafficSignTextureResetPacket::handle).add();
+        register(RoadBuilderResetPacket.class).encoder(RoadBuilderResetPacket::encode).decoder(RoadBuilderResetPacket::decode).consumer(RoadBuilderResetPacket::handle).add();
+        register(RoadBuilderDataPacket.class).encoder(RoadBuilderDataPacket::encode).decoder(RoadBuilderDataPacket::decode).consumer(RoadBuilderDataPacket::handle).add();
+        register(RoadBuilderBuildRoadPacket.class).encoder(RoadBuilderBuildRoadPacket::encode).decoder(RoadBuilderBuildRoadPacket::decode).consumer(RoadBuilderBuildRoadPacket::handle).add();
     
     }
 

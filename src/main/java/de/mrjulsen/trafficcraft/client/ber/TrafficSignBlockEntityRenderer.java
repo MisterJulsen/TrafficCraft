@@ -10,6 +10,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.AmbientOcclusion;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
+import net.minecraft.client.AmbientOcclusionStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -60,7 +61,8 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             1, 1, 0,
             0, 0,
             1, 1,
-            1.0F, 1.0F, 1.0F, 1.0F
+            1.0F, 1.0F, 1.0F, 1.0F,
+            pPackedLight
         );
         
 
@@ -81,7 +83,8 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
                 1, 1, 0,
                 0, 0,
                 1, 1,
-                1.0F, 1.0F, 1.0F, 1.0F
+                1.0F, 1.0F, 1.0F, 1.0F,
+                pPackedLight
             );
             pPoseStack.popPose();
         }
@@ -91,16 +94,26 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
         builder.vertex(pPoseStack.last().pose(), x, y, z).color(r, g, b, a).uv(u, v).uv2(lu, lv).overlayCoords(OverlayTexture.NO_OVERLAY).normal(pPoseStack.last().normal(), 0, 0, 1).endVertex();
     }
 
-    public static void addQuadSide(BlockEntity be, BlockState state, Direction direction, VertexConsumer builder, PoseStack pPoseStack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1, float r, float g, float b, float a) {
-        float[] afloat = new float[Direction.values().length * 2];
-        BitSet bitset = new BitSet(3);
-        AmbientOcclusion ao = new AmbientOcclusion();
-        BlockPos origin = be.getLevel().getChunk(be.getBlockPos()).getPos().getWorldPosition();
-        ao.calculate(new RenderRegionCache().createRegion(be.getLevel(), origin.offset(-1, -1, -1), origin.offset(16, 16, 16), 1), state, be.getBlockPos(), direction, afloat, bitset, true);
+    @SuppressWarnings("resource")
+    public static void addQuadSide(BlockEntity be, BlockState state, Direction direction, VertexConsumer builder, PoseStack pPoseStack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1, float r, float g, float b, float a, int packedLight) {
 
-        addVert(builder, pPoseStack, x0, y1, z0, u0, v0, r * ao.brightness[0], g * ao.brightness[0], b * ao.brightness[0], a, ao.lightmap[0] & 0xFFFF, (ao.lightmap[0] >> 16) & 0xFFFF);
-        addVert(builder, pPoseStack, x0, y0, z0, u0, v1, r * ao.brightness[1], g * ao.brightness[1], b * ao.brightness[1], a, ao.lightmap[1] & 0xFFFF, (ao.lightmap[1] >> 16) & 0xFFFF);
-        addVert(builder, pPoseStack, x1, y0, z1, u1, v1, r * ao.brightness[2], g * ao.brightness[2], b * ao.brightness[2], a, ao.lightmap[2] & 0xFFFF, (ao.lightmap[2] >> 16) & 0xFFFF);
-        addVert(builder, pPoseStack, x1, y1, z1, u1, v0, r * ao.brightness[3], g * ao.brightness[3], b * ao.brightness[3], a, ao.lightmap[3] & 0xFFFF, (ao.lightmap[3] >> 16) & 0xFFFF);        
+        if (Minecraft.getInstance().options.ambientOcclusion == AmbientOcclusionStatus.OFF) {
+            addVert(builder, pPoseStack, x0, y1, z0, u0, v0, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x0, y0, z0, u0, v1, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x1, y0, z1, u1, v1, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x1, y1, z1, u1, v0, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
+        } else {
+             float[] afloat = new float[Direction.values().length * 2];
+            BitSet bitset = new BitSet(3);
+            AmbientOcclusion ao = new AmbientOcclusion();
+            BlockPos origin = be.getLevel().getChunk(be.getBlockPos()).getPos().getWorldPosition();
+            ao.calculate(new RenderRegionCache().createRegion(be.getLevel(), origin.offset(-1, -1, -1), origin.offset(16, 16, 16), 1), state, be.getBlockPos(), direction, afloat, bitset, true);
+            
+            addVert(builder, pPoseStack, x0, y1, z0, u0, v0, r * ao.brightness[0], g * ao.brightness[0], b * ao.brightness[0], a, ao.lightmap[0] & 0xFFFF, (ao.lightmap[0] >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x0, y0, z0, u0, v1, r * ao.brightness[1], g * ao.brightness[1], b * ao.brightness[1], a, ao.lightmap[1] & 0xFFFF, (ao.lightmap[1] >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x1, y0, z1, u1, v1, r * ao.brightness[2], g * ao.brightness[2], b * ao.brightness[2], a, ao.lightmap[2] & 0xFFFF, (ao.lightmap[2] >> 16) & 0xFFFF);
+            addVert(builder, pPoseStack, x1, y1, z1, u1, v0, r * ao.brightness[3], g * ao.brightness[3], b * ao.brightness[3], a, ao.lightmap[3] & 0xFFFF, (ao.lightmap[3] >> 16) & 0xFFFF);
+        }
+
     }
 }

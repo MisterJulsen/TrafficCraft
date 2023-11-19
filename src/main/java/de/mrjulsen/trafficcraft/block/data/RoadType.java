@@ -1,6 +1,8 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Block;
 
 public enum RoadType implements StringRepresentable {
     NONE("none", 0, 0xFFFFFFFF),
@@ -45,5 +47,25 @@ public enum RoadType implements StringRepresentable {
     @Override
     public String getSerializedName() {
         return this.roadType;
+    }
+
+	public Block getBlock() {
+        switch (this) {
+            default:
+            case ASPHALT:
+                return ModBlocks.ASPHALT.get();
+            case CONCRETE:
+                return ModBlocks.CONCRETE.get();
+        }
+    }
+
+    public Block getSlope() {
+        switch (this) {
+            default:
+            case ASPHALT:
+                return ModBlocks.ASPHALT_SLOPE.get();
+            case CONCRETE:
+                return ModBlocks.CONCRETE_SLOPE.get();
+        }
     }
 }

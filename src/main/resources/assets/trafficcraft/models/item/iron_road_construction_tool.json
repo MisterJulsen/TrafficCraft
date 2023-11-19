@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "trafficcraft:item/iron_road_construction_tool"
+    }
+}

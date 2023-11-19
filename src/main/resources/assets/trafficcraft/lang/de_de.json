@@ -6,6 +6,8 @@
     "core.trafficcraft.credits.line2": "§6§lHIER SIND DRACHEN!",
     "core.trafficcraft.creative_only.tooltip": "Nur im Kreativmodus!",
 
+    "gui.trafficcraft.common.close": "Schließen",
+
     "advancement.trafficcraft.craft_road": "Straßenarbeiter",
     "advancement.trafficcraft.craft_road.description": "Stelle Asphalt, Beton oder entsprechend Schichten davon her.",
     "advancement.trafficcraft.paint_road": "Straßenkünstler",
@@ -252,7 +254,23 @@
     "gui.trafficcraft.signpicker.openfiledialog": "Textur vom Computer importieren...",
     "gui.trafficcraft.signpicker.load": "Laden",
     "gui.trafficcraft.signpicker.tooltip.import": "Benutzerdefinierte Textur vom Computer importieren",
-        
+    
+    "gui.trafficcraft.road_builder.title": "Straßenbauwerkzeug Einstellungen",
+    "gui.trafficcraft.road_builder.reset": "Zurücksetzen",
+    "gui.trafficcraft.road_builder.build": "BAUEN",
+    "gui.trafficcraft.road_builder.replace_blocks": "Blöcke ersetzen",
+    "gui.trafficcraft.road_builder.road_width": "Straßenbreite: ",
+    "gui.trafficcraft.road_builder.road_blocks": "Straßen Baublöcke",
+    "gui.trafficcraft.road_builder.required_resources": "Benötigte Ressourcen:",
+    "gui.trafficcraft.road_builder.no_pos_defined": "Position undefiniert",
+    "gui.trafficcraft.road_builder.tooltip.pos1": "Erste Position",
+    "gui.trafficcraft.road_builder.tooltip.pos2": "Zweite Position",
+    "gui.trafficcraft.road_builder.tooltip.replace_blocks": "Gibt an, ob bestehende Blöcke zerstört oder diese ausgelassen werden sollen.",
+    "gui.trafficcraft.road_builder.tooltip.reset": "Setzt alle Wert auf den Standard zurück.",
+    "gui.trafficcraft.road_builder.tooltip.build": "Straße mit festgelegten Einstellungen bauen.",
+    "gui.trafficcraft.road_builder.tooltip.build_missing_pos": "§eWähle zwei Positionen aus, um diese Aktion auszuführen..",
+    "gui.trafficcraft.road_builder.tooltip.build_missing_res": "§eDu hast nicht genügend Ressourcen, um diese Aktion auszuführen.",
+
     "gui.trafficcraft.signshape.circle": "Rund",
     "gui.trafficcraft.signshape.square": "Quadrat",
     "gui.trafficcraft.signshape.diamond": "Raute",

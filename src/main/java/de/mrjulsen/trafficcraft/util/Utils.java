@@ -18,12 +18,15 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.trafficcraft.ModMain;
+import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.phys.Vec3;
 
 public class Utils {
     public static void giveAdvancement(ServerPlayer player, String name, String criteriaKey) {
@@ -32,10 +35,25 @@ public class Utils {
     }
 
     @SuppressWarnings("resource")
+    public static List<FormattedCharSequence> getTooltipData(Screen s, Component c, int maxWidth) {
+        return s.getMinecraft().font.split(c, maxWidth);
+    }
+
+    @SuppressWarnings("resource")
     public static <W extends AbstractWidget> void renderTooltip(Screen s, W w, Supplier<List<FormattedCharSequence>> lines, PoseStack stack, int mouseX, int mouseY) {
         if (w.isMouseOver(mouseX, mouseY)) {
+            
             s.renderTooltip(stack, lines.get(), mouseX, mouseY, s.getMinecraft().font);
         }
+    }
+
+    @SuppressWarnings("resource")
+    public static boolean renderTooltip(Screen screen, GuiAreaDefinition area, List<FormattedCharSequence> lines, PoseStack stack, int mouseX, int mouseY) {
+        if (area.isInBounds(mouseX, mouseY)) {
+            screen.renderTooltip(stack, lines, mouseX, mouseY, screen.getMinecraft().font);
+			return true;
+        }
+		return false;
     }
 
     public static int coordsToInt(byte x, byte y) {
@@ -100,5 +118,12 @@ public class Utils {
         int z = (int) (encodedValue & 0xFFFF);
 
         return new int[]{x, y, z};
+    }
+
+    public static double slopeStrength(Vec3 a, Vec3 b) {
+        double heightDiff = Math.max(a.y, b.y) - Math.min(a.y, b.y);
+        Vec3 vec = b.subtract(a);
+        double distance = vec.horizontalDistance();
+        return distance / heightDiff;
     }
 }

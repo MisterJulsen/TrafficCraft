@@ -38,7 +38,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy implements IProxy {
-    
+
 	private static final int TRANSPARENCY_COLOR_PRIMARY = 0xFFE9E9E9;
 	private static final int TRANSPARENCY_COLOR_SECONDARY = 0xFFD9D9D9;
 
