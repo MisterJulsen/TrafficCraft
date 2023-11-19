@@ -1,5 +1,5 @@
 {
-    "parent": "item/generated",
+    "parent": "item/handheld",
     "textures": {
         "layer0": "trafficcraft:item/paint_brush_base",
         "layer1": "trafficcraft:item/paint_brush_overlay"
