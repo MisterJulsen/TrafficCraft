@@ -42,8 +42,8 @@ public class ModItems {
     static
     {
         for (Tiers tier : Tiers.values()) {
-            ITEMS.register(tier.name().toLowerCase() + "_road_construction_tool", () -> new RoadConstructionTool(new Item.Properties()
-                .tab(ModCreativeModeTab.MOD_TAB).stacksTo(1).durability(tier.getUses() * 10)
+            ITEMS.register(tier.name().toLowerCase() + "_road_construction_tool", () -> new RoadConstructionTool(tier, new Item.Properties()
+                .tab(ModCreativeModeTab.MOD_TAB)
             ));
         }
     }

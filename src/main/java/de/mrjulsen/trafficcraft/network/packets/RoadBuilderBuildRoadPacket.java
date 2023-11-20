@@ -51,11 +51,14 @@ public class RoadBuilderBuildRoadPacket {
             ServerPlayer sender = context.get().getSender();
             Level level = sender.getLevel();
             ItemStack item = null;
+            InteractionHand hand = null;
 
             if (sender.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool) {
                 item = sender.getItemInHand(InteractionHand.MAIN_HAND);
+                hand = InteractionHand.MAIN_HAND;
             } else if (sender.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof RoadConstructionTool) {
                 item = sender.getItemInHand(InteractionHand.OFF_HAND);
+                hand = InteractionHand.OFF_HAND;
             } else {
                 return;
             }
@@ -63,6 +66,7 @@ public class RoadBuilderBuildRoadPacket {
             RoadConstructionTool.buildRoad(
                 level,
                 sender,
+                hand,
                 item,
                 packet.pos1.getLocationAsVec3(),
                 packet.pos2.getLocationAsVec3(), 
