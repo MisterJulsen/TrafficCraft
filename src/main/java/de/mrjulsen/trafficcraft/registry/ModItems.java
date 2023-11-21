@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
+import de.mrjulsen.trafficcraft.item.HammerItem;
 import de.mrjulsen.trafficcraft.item.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
@@ -48,8 +49,8 @@ public class ModItems {
         }
     }
 
-    public static final RegistryObject<Item> HAMMER = ITEMS.register("hammer", () -> new Item(new Item.Properties()
-        .tab(ModCreativeModeTab.MOD_TAB).stacksTo(1).durability(Tiers.IRON.getUses())
+    public static final RegistryObject<Item> HAMMER = ITEMS.register("hammer", () -> new HammerItem(new Item.Properties()
+        .tab(ModCreativeModeTab.MOD_TAB)
     ));
 
     public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = ITEMS.register("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
