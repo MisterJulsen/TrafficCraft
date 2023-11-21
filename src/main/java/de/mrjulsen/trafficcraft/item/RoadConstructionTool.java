@@ -66,8 +66,8 @@ public class RoadConstructionTool extends Item {
         float attackDamageModifier = 0.5f;
         this.attackDamage = tier.getAttackDamageBonus() + attackDamageModifier;
         Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -3.0D, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -3.0D, AttributeModifier.Operation.ADDITION));
         this.defaultModifiers = builder.build();
     }
 
@@ -160,10 +160,6 @@ public class RoadConstructionTool extends Item {
             blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks); 
         }
 
-        if (pPlayer.isShiftKeyDown()) {
-            
-        }
-
         if (pLevel.isClientSide) {
             ClientWrapper.showRoadBuilderGadgetScreen(
                 itemstack,
@@ -242,21 +238,21 @@ public class RoadConstructionTool extends Item {
                             pLevel.setBlockAndUpdate(block.getKey(), roadType.getSlope().defaultBlockState().setValue(AsphaltSlope.LAYERS, Math.min(block.getValue(), isPlayerCreative(pPlayer) ? Integer.MAX_VALUE : pPlayer.getInventory().countItem(roadType.getSlope().asItem()))));
                             if (!isPlayerCreative(pPlayer)) {
                                 pPlayer.getInventory().items.stream().filter(x -> x.is(roadType.getSlope().asItem())).findFirst().get().shrink(block.getValue());
-                                
-                            }pStack.hurtAndBreak(1, pPlayer, (player) -> {
+                                pStack.hurtAndBreak(1, pPlayer, (player) -> {
                                     player.broadcastBreakEvent(pHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                                     canContinue[0] = false;
                                 });
+                            }
                         } else if (block.getValue() > 7 && (isPlayerCreative(pPlayer) || pPlayer.getInventory().countItem(roadType.getBlock().asItem()) > 0)) {
                             pLevel.destroyBlock(block.getKey(), !isPlayerCreative(pPlayer));
                             pLevel.setBlockAndUpdate(block.getKey(), roadType.getBlock().defaultBlockState());
                             if (!isPlayerCreative(pPlayer)) {
                                 pPlayer.getInventory().items.stream().filter(x -> x.is(roadType.getBlock().asItem())).findFirst().get().shrink(1);
-                                
-                            }pStack.hurtAndBreak(1, pPlayer, (player) -> {
+                                pStack.hurtAndBreak(1, pPlayer, (player) -> {
                                     player.broadcastBreakEvent(pHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                                     canContinue[0] = false;
-                                });
+                                });                             
+                            }
                         }
                     }
                 }
@@ -273,9 +269,9 @@ public class RoadConstructionTool extends Item {
     private static double setLayer(Level pLevel, double lastY, Vec3 pos, Vec3 normalizedRightVec, Map<BlockPos, Integer> blockList, final byte roadWidth, final boolean replaceBlocks) {
         final double halfWidth = roadWidth / 2;
         final double step = 0.5D;
-        double pixel = 1.0D / 16;
-        double slopeHeight = pixel * 2;
-        double height = pos.y < 0 ? pos.y - (int)pos.y + 1 : pos.y - (int)pos.y;
+        final double pixel = 1.0D / 16;
+        final double slopeHeight = pixel * 2;
+        final double height = pos.y < 0 ? pos.y - (int)pos.y + (Math.abs(pos.y - (int)pos.y) <= 0 ? 0 : 1) : pos.y - (int)pos.y; // wth
         
 
         if (lastY < (int)pos.y + slopeHeight) {

@@ -40,8 +40,7 @@ public class ModItems {
     ));
 
 
-    static
-    {
+    static {
         for (Tiers tier : Tiers.values()) {
             ITEMS.register(tier.name().toLowerCase() + "_road_construction_tool", () -> new RoadConstructionTool(tier, new Item.Properties()
                 .tab(ModCreativeModeTab.MOD_TAB)
