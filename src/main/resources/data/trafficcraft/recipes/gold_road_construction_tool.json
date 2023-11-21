@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NB ",
+        " RB",
+        "R N"
+    ],
+    "key": {
+        "N": [
+            {
+                "item": "minecraft:iron_nugget"
+            }
+        ],
+        "B": [
+            {
+                "item": "minecraft:gold_block"
+            }
+        ],
+        "R": [
+            {
+                "item": "trafficcraft:iron_rod"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:gold_road_construction_tool"
+    }
+}
