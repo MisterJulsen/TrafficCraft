@@ -8,22 +8,22 @@
     "key": {
         "R": [
             {
-                "item": "minecraft:red_stained_glass_pane"
+                "tag": "forge:glass_panes/red"
             }
         ],
         "Y": [
             {
-                "item": "minecraft:yellow_stained_glass_pane"
+                "tag": "forge:glass_panes/yellow"
             }
         ],
         "G": [
             {
-                "item": "minecraft:green_stained_glass_pane"
+                "tag": "forge:glass_panes/green"
             }
         ],
         "T": [
             {
-                "item": "minecraft:redstone"
+                "tag": "forge:dusts/redstone"
             }
         ],
         "L": [
@@ -33,7 +33,7 @@
         ],
         "I": [
             {
-                "item": "minecraft:iron_ingot"
+                "tag": "forge:ingots/iron"
             }
         ],
         "C": [

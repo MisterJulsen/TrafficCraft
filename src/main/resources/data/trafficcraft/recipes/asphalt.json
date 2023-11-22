@@ -8,12 +8,12 @@
     "key": {
         "O": [
             {
-                "item": "trafficcraft:raw_bitumen"
+                "tag": "forge:bitumen"
             }
         ],
         "X": [
             {
-                "item": "minecraft:gravel"
+                "tag": "forge:gravel"
             }
         ]
     },

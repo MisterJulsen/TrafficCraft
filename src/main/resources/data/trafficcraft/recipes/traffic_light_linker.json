@@ -13,7 +13,7 @@
         ],
         "G": [
             {
-                "item": "minecraft:glass_pane"
+                "tag": "forge:glass_panes/colorless"
             }
         ],
         "V": [
@@ -23,17 +23,17 @@
         ],
         "C": [
             {
-                "item": "minecraft:copper_ingot"
+                "tag": "forge:ingots/copper"
             }
         ],
         "I": [
             {
-                "item": "minecraft:iron_ingot"
+                "tag": "forge:ingots/iron"
             }
         ],
         "N": [
             {
-                "item": "minecraft:gold_nugget"
+                "tag": "forge:nuggets/gold"
             }
         ]
     },

@@ -8,22 +8,22 @@
     "key": {
         "I": [
             {
-                "item": "minecraft:iron_ingot"
+                "tag": "forge:ingots/iron"
             }
         ],
         "N": [
             {
-                "item": "minecraft:iron_nugget"
+                "tag": "forge:nuggets/iron"
             }
         ],
         "L": [
             {
-                "item": "minecraft:glowstone_dust"
+                "tag": "forge:dusts/glowstone"
             }
         ],
         "G": [
             {
-                "item": "minecraft:glass_pane"
+                "tag": "forge:glass_panes/colorless"
             }
         ]
     },
