@@ -8,12 +8,12 @@
     "key": {
         "C": [
             {
-                "item": "minecraft:copper_ingot"
+                "tag": "forge:ingots/copper"
             }
         ],
         "R": [
             {
-                "item": "minecraft:redstone"
+                "tag": "forge:dusts/redstone"
             }
         ],
         "P": [

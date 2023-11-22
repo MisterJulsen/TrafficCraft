@@ -8,7 +8,7 @@
     "key": {
         "R": [
             {
-                "item": "minecraft:red_dye"
+                "tag": "forge:dyes/red"
             }
         ],
         "W": [
@@ -18,7 +18,7 @@
         ],
         "B": [
             {
-                "item": "trafficcraft:raw_bitumen"
+                "tag": "forge:bitumen"
             }
         ]
     },

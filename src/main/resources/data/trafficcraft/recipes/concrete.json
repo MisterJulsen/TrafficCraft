@@ -7,12 +7,12 @@
     "key": {
         "O": [
             {
-                "item": "minecraft:gravel"
+                "tag": "forge:gravel"
             }
         ],
         "X": [
             {
-                "item": "minecraft:sand"
+                "tag": "forge:sand"
             }
         ]
     },

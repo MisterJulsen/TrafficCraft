@@ -2,18 +2,17 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "#",
-        "#",
         "#"
     ],
     "key": {
         "#": [
             {
-                "item": "minecraft:iron_ingot"
+                "tag": "forge:rods/iron"
             }
         ]
     },
     "result": {
         "item": "trafficcraft:traffic_sign_post",
-        "count": 8
+        "count": 6
     }
 }

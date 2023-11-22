@@ -8,17 +8,17 @@
     "key": {
         "F": [
             {
-                "item": "minecraft:feather"
+                "tag": "forge:feathers"
             }
         ],
         "I": [
             {
-                "item": "minecraft:iron_nugget"
+                "tag": "forge:nuggets/iron"
             }
         ],
         "S": [
             {
-                "item": "minecraft:stick"
+                "tag": "forge:rods/wooden"
             }
         ]
     },

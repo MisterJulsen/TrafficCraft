@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
+import de.mrjulsen.trafficcraft.item.HammerItem;
 import de.mrjulsen.trafficcraft.item.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
@@ -33,14 +34,17 @@ public class ModItems {
         .tab(ModCreativeModeTab.MOD_TAB)
     ));
 
+    public static final RegistryObject<Item> IRON_ROD = ITEMS.register("iron_rod", () -> new Item(new Item.Properties()
+        .tab(ModCreativeModeTab.MOD_TAB)
+    ));
+
     public static final RegistryObject<Item> PAINT_BRUSH = ITEMS.register("paint_brush", () -> new BrushItem(new Item.Properties()
         .tab(ModCreativeModeTab.MOD_TAB),
         0
     ));
 
 
-    static
-    {
+    static {
         for (Tiers tier : Tiers.values()) {
             ITEMS.register(tier.name().toLowerCase() + "_road_construction_tool", () -> new RoadConstructionTool(tier, new Item.Properties()
                 .tab(ModCreativeModeTab.MOD_TAB)
@@ -48,8 +52,8 @@ public class ModItems {
         }
     }
 
-    public static final RegistryObject<Item> HAMMER = ITEMS.register("hammer", () -> new Item(new Item.Properties()
-        .tab(ModCreativeModeTab.MOD_TAB).stacksTo(1).durability(Tiers.IRON.getUses())
+    public static final RegistryObject<Item> HAMMER = ITEMS.register("hammer", () -> new HammerItem(new Item.Properties()
+        .tab(ModCreativeModeTab.MOD_TAB)
     ));
 
     public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = ITEMS.register("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));

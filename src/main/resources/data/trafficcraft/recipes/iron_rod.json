@@ -1,14 +1,10 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "OIO"
+        "I",
+        "I"
     ],
     "key": {
-        "O": [
-            {
-                "item": "minecraft:quartz"
-            }
-        ],
         "I": [
             {
                 "tag": "forge:ingots/iron"
@@ -16,7 +12,7 @@
         ]
     },
     "result": {
-        "item": "trafficcraft:street_sign",
+        "item": "trafficcraft:iron_rod",
         "count": 4
     }
 }

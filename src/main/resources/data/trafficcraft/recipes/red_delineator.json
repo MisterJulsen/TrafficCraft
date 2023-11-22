@@ -13,12 +13,12 @@
         ],
         "S": [
             {
-                "item": "minecraft:stick"
+                "tag": "forge:rods/wooden"
             }
         ],
         "R": [
             {
-                "item": "minecraft:red_dye"
+                "tag": "forge:dyes/red"
             }
         ]
     },
