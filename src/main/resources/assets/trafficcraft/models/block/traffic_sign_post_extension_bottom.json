@@ -13,6 +13,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 2, 16], "texture": "#0", "cullface": "north", "tintindex": 0},
 				"east": {"uv": [0, 0, 2, 16], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [0, 0, 2, 16], "texture": "#0"},
 				"west": {"uv": [0, 0, 2, 16], "texture": "#0", "tintindex": 0}
 			}
 		}
