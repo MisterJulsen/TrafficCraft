@@ -186,6 +186,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
                 return InteractionResult.SUCCESS;
             }
         } else if (isValidLinker) {
+            /*
             if (pLevel.isLoaded(pPos)) {
                 if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity && item instanceof TrafficLightLinkerItem linker) {
                     CompoundTag tag = null;
@@ -216,8 +217,8 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
                 if (pLevel.isClientSide) {
                     pPlayer.sendMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.target_not_loaded"), pPlayer.getUUID());
                 }
-            }            
-
+            }
+            */
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.FAIL;

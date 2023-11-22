@@ -121,6 +121,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
 
         boolean isValidLinker = (item instanceof ILinkerItem && ((ILinkerItem)item).isTargetBlockAccepted(this));
         
+        /*
         if (isValidLinker) {
             if (pLevel.isLoaded(pPos)) {
                 if (pLevel.getBlockEntity(pPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity && item instanceof TrafficLightLinkerItem linker) {
@@ -156,6 +157,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
 
             return InteractionResult.SUCCESS;
         }
+        */
         return InteractionResult.FAIL;
     }
 

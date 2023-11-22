@@ -8,12 +8,14 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -23,12 +25,15 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TrafficLightControllerBlockEntity extends BlockEntity {
 
+    private static final String NBT_TRAFFIC_LIGHT_LOCATIONS = "LinkedTrafficLights";
+
     // Properties
     private List<TrafficLightSchedule> schedules = new ArrayList<>();
     private int ticks = 0;
     private long totalTicks = 0;
     private boolean running = true;
     private boolean powered = false;
+    private List<Location> trafficLightLocations = new ArrayList<>();
 
     // ticking
     private Map<Integer, TrafficLightMode> modes = new HashMap<>();
@@ -42,8 +47,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound)
-    {
+    public void load(CompoundTag compound) {
         super.load(compound);
 
         this.ticks = compound.getInt("ticks");
@@ -51,19 +55,28 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         this.totalTicks = compound.getLong("totalTicks");
         this.powered = compound.getBoolean("powered");
 
-        ListTag listTag = compound.getList("schedules", 10); // 10 ist der ID-Typ für CompoundTags
+        ListTag listTag = compound.getList("schedules", Tag.TAG_COMPOUND);
+        schedules.clear();
         for (int i = 0; i < listTag.size(); i++) {
             TrafficLightSchedule data = new TrafficLightSchedule();
             data.fromNbt(listTag.getCompound(i));
             schedules.add(data);
         }
 
-        ListTag modesList = compound.getList("modes", 10);
+        ListTag modesList = compound.getList("modes", Tag.TAG_COMPOUND);
+        modes.clear();
         for (int i = 0; i < modesList.size(); i++) {
             CompoundTag c = modesList.getCompound(i);
             int key = c.getInt("key");
             int value = compound.getInt("value");
             modes.put(key, TrafficLightMode.getModeByIndex(value));
+        }
+
+        ListTag trafficLightsList = compound.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
+        trafficLightLocations.clear();
+        for (int i = 0; i < modesList.size(); i++) {
+            Location loc = Location.fromNbt(trafficLightsList.getCompound(i));
+            trafficLightLocations.add(loc);
         }
 
     }
@@ -84,12 +97,18 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             modesTag.add(c);
         }
 
+        ListTag trafficLightsList = new ListTag();
+        for (Location loc : trafficLightLocations) {
+            trafficLightsList.add(loc.toNbt());
+        }
+
         tag.putInt("ticks", ticks);
         tag.putLong("totalTicks", totalTicks);
         tag.putBoolean("powered", powered);
         tag.putBoolean("running", running);
         tag.put("schedules", listTag);
         tag.put("modes", modesTag);
+        tag.put(NBT_TRAFFIC_LIGHT_LOCATIONS, trafficLightsList);
         super.saveAdditional(tag);
     }
 
@@ -172,12 +191,14 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             this.schedules.remove(0);
 
         this.schedules.add(0, schedule);
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
     public void setSchedules(List<TrafficLightSchedule> schedules) {
         this.schedules.clear();
         this.schedules = schedules;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
@@ -187,6 +208,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
     public void setCurrentTick(int t) {
         this.ticks = t;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
@@ -196,6 +218,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
     public void setRunning(boolean b) {
         this.running = b;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
@@ -211,7 +234,8 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             this.totalTicks = 0;
             this.ticks = 0;
             this.running = true;
-            BlockEntityUtil.sendUpdatePacket(this);
+        setChanged();
+        BlockEntityUtil.sendUpdatePacket(this);
         }
     }
 
@@ -225,10 +249,29 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
     public void setPowered(boolean b) {
         this.powered = b;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
     public boolean isPowered() {
         return this.powered;
+    }
+
+    public List<Location> getTrafficLightLocations() {
+        return trafficLightLocations;
+    }
+
+    public void addTrafficLightLocation(Location loc) {
+        if (!trafficLightLocations.contains(loc)) {
+            trafficLightLocations.add(loc);
+            setChanged();
+            BlockEntityUtil.sendUpdatePacket(this);
+        }
+    }
+
+    public void removeTrafficLightLocation(Location loc) {
+        trafficLightLocations.removeIf(x -> x.equals(loc));
+        setChanged();
+        BlockEntityUtil.sendUpdatePacket(this);
     }
 }

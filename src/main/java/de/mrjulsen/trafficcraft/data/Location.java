@@ -73,4 +73,17 @@ public class Location {
         this.dimension = tag.getString(NBT_DIM);
         this.generateBlockPos();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Location other) {
+            return x == other.x && y == other.y && z == other.z && dimension.equals(other.dimension);
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("x=%s, y=%s, z=%s, dim=%s", x, y, z, dimension);
+    }
 }

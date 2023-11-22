@@ -2,6 +2,8 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
+import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -21,6 +23,8 @@ import net.minecraft.world.level.block.Block;
 
 public class TrafficLightLinkerItem extends Item implements ILinkerItem {
 
+    private static final String NBT_LINK_TARGET = "LinkTargetLocation";
+
     public TrafficLightLinkerItem(Properties pProperties) {
         super(pProperties);
     }
@@ -31,17 +35,36 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
         BlockPos clickedPos = pContext.getClickedPos();
         Player player = pContext.getPlayer();
         
-        if (!player.isShiftKeyDown() && pContext.getLevel().getBlockState(clickedPos).getBlock() == ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get()) {            
-            if (!level.isClientSide) {
-                CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
-                compound.putInt("x", clickedPos.getX());
-                compound.putInt("y", clickedPos.getY());
-                compound.putInt("z", clickedPos.getZ());
-                compound.putString("dim", level.dimension().location().toString());
+        if (!player.isShiftKeyDown()) {
+            if (isSourceBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {            
+                if (!level.isClientSide) {
+                    CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
+                    compound.put(getDescriptionId(), new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
+                    /*
+                    compound.putInt("x", clickedPos.getX());
+                    compound.putInt("y", clickedPos.getY());
+                    compound.putInt("z", clickedPos.getZ());
+                    compound.putString("dim", level.dimension().location().toString());
+                    */
 
-                player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()), false);
+                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()), false);
+                }
+                return InteractionResult.SUCCESS;
+            } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {
+                CompoundTag nbt = doesContainValidLinkData(pContext.getItemInHand());
+                if (nbt == null) {
+                    return InteractionResult.FAIL;
+                }
+
+                Location linkLoc = Location.fromNbt(nbt.getCompound(NBT_LINK_TARGET));
+                if (pContext.getLevel().isLoaded(linkLoc.getLocationAsBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationAsBlockPos()).getBlock())) {
+                    if (pContext.getLevel().getBlockEntity(linkLoc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                        blockEntity.addTrafficLightLocation(linkLoc);
+                    }
+                }
+
+                return InteractionResult.SUCCESS;
             }
-            return InteractionResult.SUCCESS;
         }
 
         return super.useOn(pContext);
@@ -55,6 +78,10 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
             if (!level.isClientSide) {
                 if (itemstack.getTag() != null) {
                     CompoundTag tag = itemstack.getTag();
+                    if (tag.contains(NBT_LINK_TARGET)) {
+                        tag.remove(NBT_LINK_TARGET);
+                    }
+                    /*
                     if (tag.contains("x"))
                         tag.remove("x");
                     if (tag.contains("y"))
@@ -63,6 +90,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                         tag.remove("z");
                     if (tag.contains("dim"))
                         tag.remove("dim");
+                    */
                 }
 
                 
@@ -78,11 +106,18 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
     public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         CompoundTag tag = null;
         if ((tag = doesContainValidLinkData(pStack)) != null) {
+            Location loc = Location.fromNbt(tag.getCompound(NBT_LINK_TARGET));
             pTooltipComponents.add(new TranslatableComponent("item.trafficcraft.traffic_light_linker.tooltip",
+                Double.toString(loc.x),
+                Double.toString(loc.y),
+                Double.toString(loc.z),
+                loc.dimension,
+                /*
                 Integer.toString(tag.getInt("x")),
                 Integer.toString(tag.getInt("y")),
                 Integer.toString(tag.getInt("z")),
                 tag.getString("dim"),
+                */
                 new KeybindComponent("key.sneak"),
                 new KeybindComponent("key.use")
             ));
@@ -98,7 +133,9 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
 
     public CompoundTag doesContainValidLinkData(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        return tag != null && tag.contains("x") && tag.contains("y") && tag.contains("z") && tag.contains("dim") ? tag : null;
+        return tag != null && tag.contains(NBT_LINK_TARGET) ? tag : null;
+    
+        //return tag != null && tag.contains("x") && tag.contains("y") && tag.contains("z") && tag.contains("dim") ? tag : null;
     }
 
     @Override
