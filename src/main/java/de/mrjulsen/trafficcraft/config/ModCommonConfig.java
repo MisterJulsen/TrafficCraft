@@ -32,14 +32,14 @@ public class ModCommonConfig {
             .define("world_generation.bitumen_ore_vein_size", 25);
             
 
-        ROAD_BUILDER_MAX_DISTANCE = BUILDER.comment("The max distance in blocks the road building gadget can be used for. Default: 32 blocks")
-            .defineInRange("road_builder_gadget.max_distance", 32, 0, 64);
+        ROAD_BUILDER_MAX_DISTANCE = BUILDER.comment("The max distance in blocks the road construction tool can be used for. Default: 32 blocks")
+            .defineInRange("road_construction_tool.max_distance", 32, 0, 64);
 
-        ROAD_BUILDER_MAX_ROAD_WIDTH = BUILDER.comment("Max width of roads built by the road builder gadget. Default: 9 blocks.")
-            .defineInRange("road_builder_gadget.max_width", 9, 1, 15);
+        ROAD_BUILDER_MAX_ROAD_WIDTH = BUILDER.comment("Max width of roads built by the road construction tool. Default: 9 blocks.")
+            .defineInRange("road_construction_tool.max_width", 9, 1, 15);
         
-        ROAD_BUILDER_MAX_SLOPE = BUILDER.comment("Max slope of roads built by the road builder gadget. Default: 4.0")
-            .define("road_builder_gadget.max_slope", 4.0D);
+        ROAD_BUILDER_MAX_SLOPE = BUILDER.comment("Max slope of roads built by the road construction tool. Default: 4.0")
+            .define("road_construction_tool.max_slope", 4.0D);
 
         BUILDER.pop();
         SPEC = BUILDER.build();
