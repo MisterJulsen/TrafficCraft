@@ -157,6 +157,8 @@
     "gui.trafficcraft.trafficlightsettings.variant": "Variant",
     "gui.trafficcraft.trafficlightsettings.direction": "Direction",
 
+    "gui.trafficcraft.paint_brush.title": "Select a Pattern",
+
     "gui.trafficcraft.trafficlight.controltype.static": "Static",
     "gui.trafficcraft.trafficlight.controltype.own_schedule": "Own Schedule",
     "gui.trafficcraft.trafficlight.controltype.remote": "Traffic Light Controller",

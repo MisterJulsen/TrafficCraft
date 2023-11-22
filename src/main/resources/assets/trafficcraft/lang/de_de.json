@@ -150,6 +150,8 @@
     "gui.trafficcraft.trafficlightsettings.variant": "Variante",
     "gui.trafficcraft.trafficlightsettings.direction": "Richtung",
 
+    "gui.trafficcraft.paint_brush.title": "Wähle ein Muster",
+
     "gui.trafficcraft.trafficlight.controltype.static": "Statisch",
     "gui.trafficcraft.trafficlight.controltype.own_schedule": "Eigener Zeitplan",
     "gui.trafficcraft.trafficlight.controltype.remote": "Ampel-Steuerungseinheit",
