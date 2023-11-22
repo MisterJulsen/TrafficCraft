@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
@@ -145,8 +146,8 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
         }        
     }
 
-    private static boolean needsBottomExtension(BlockState belowBlock) {
-        return belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock slab && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM);
+    private static boolean needsBottomExtension(BlockState pState, BlockState belowBlock) {
+        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock slab && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM));
     }
 
     @Override
@@ -157,8 +158,8 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
   
         BlockState belowBlock = pLevel.getBlockState(pCurrentPos.below());
 
-        return pState.setValue(PROPERTY_BY_DIRECTION.get(pFacing), Boolean.valueOf(this.connectsTo(pState, pFacingState, pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()), pFacing.getOpposite())))
-            .setValue(EXTEND_BOTTOM, needsBottomExtension(belowBlock))
+        return pState.setValue(PROPERTY_BY_DIRECTION.get(pFacing), this.connectsTo(pLevel, pCurrentPos, pState, pFacingState, pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()), pFacing.getOpposite()))
+            .setValue(EXTEND_BOTTOM, needsBottomExtension(pState, belowBlock))
         ;
     }
 
@@ -193,13 +194,13 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
             .setValue(AXIS, pContext.getClickedFace().getAxis());
 
         return newState
-            .setValue(NORTH, this.connectsTo(newState, blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH), Direction.SOUTH.getOpposite()))
-            .setValue(EAST, this.connectsTo(newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite()))
-            .setValue(SOUTH, this.connectsTo(newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite()))
-            .setValue(WEST, this.connectsTo(newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite()))
-            .setValue(UP, this.connectsTo(newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.DOWN), Direction.DOWN))
-            .setValue(DOWN, needsBottomExtension(blockstate6) || this.connectsTo(newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.UP), Direction.UP))
-            .setValue(EXTEND_BOTTOM, needsBottomExtension(blockstate6))
+            .setValue(NORTH, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH), Direction.SOUTH.getOpposite()))
+            .setValue(EAST, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite()))
+            .setValue(SOUTH, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite()))
+            .setValue(WEST, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite()))
+            .setValue(UP, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.DOWN), Direction.DOWN))
+            .setValue(DOWN, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.UP), Direction.UP))
+            .setValue(EXTEND_BOTTOM, needsBottomExtension(newState, blockstate6))
         ;
     }
 
@@ -207,14 +208,15 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
         return pState.is(this);
     }
 
-    public boolean connectsTo(BlockState pState, BlockState pTargetState, boolean pIsSideSolid, Direction pDirection) {
+    public boolean connectsTo(LevelAccessor level, BlockPos pos, BlockState pState, BlockState pTargetState, boolean pIsSideSolid, Direction pDirection) {
         boolean flag = this.isSameBlock(pTargetState);
         boolean canConnect = false;
 
         if (pTargetState.getBlock() instanceof ITrafficPostLike postLike) {
             canConnect = postLike.canConnect(pTargetState, pDirection);
         }
-        return !isExceptionForConnection(pTargetState) && (canConnect || (pState.getValue(AXIS).test(pDirection) && pIsSideSolid)) || flag;
+        
+        return !isExceptionForConnection(pTargetState) && (canConnect || (pState.getValue(AXIS).test(pDirection) && pIsSideSolid)) || flag || needsBottomExtension(pState, pTargetState);
     }
 
     @Override
