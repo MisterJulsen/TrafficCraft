@@ -101,6 +101,14 @@
                 "model": "trafficcraft:block/traffic_sign_post_connection",
                 "x": 90
             }
+        },
+        {
+            "when": {
+                "extension_bottom": true
+            },
+            "apply": {
+                "model": "trafficcraft:block/traffic_sign_post_extension_bottom"
+            }
         }
     ]
 }

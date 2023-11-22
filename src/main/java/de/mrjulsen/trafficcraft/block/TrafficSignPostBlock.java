@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
@@ -40,6 +42,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     public static final BooleanProperty WEST = PipeBlock.WEST;
     public static final BooleanProperty UP = PipeBlock.UP;
     public static final BooleanProperty DOWN = PipeBlock.DOWN;
+    public static final BooleanProperty EXTEND_BOTTOM = BooleanProperty.create("extension_bottom");
 
     protected static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().collect(Util.toMap());
     
@@ -50,6 +53,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     private static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
     private static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
     private static final VoxelShape SHAPE_DOWN = Block.box(7, 0, 7, 9, 7, 9);
+    private static final VoxelShape SHAPE_EXTEND_DOWN = Block.box(7, -16, 7, 9, 0, 9);
 
     public TrafficSignPostBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
@@ -66,48 +70,53 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
             .setValue(WEST, false)
             .setValue(EAST, false)
             .setValue(UP, false)
-            .setValue(DOWN, false) 
+            .setValue(DOWN, false)
+            .setValue(EXTEND_BOTTOM, false) 
         ); 
     }
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         
-        if ((pState.getValue(AXIS) == Axis.X) && !pState.getValue(NORTH) && !pState.getValue(SOUTH) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
-            return Shapes.or(SHAPE_BASE, SHAPE_EAST, SHAPE_WEST);
-        } else if ((pState.getValue(AXIS) == Axis.Z) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
-            return Shapes.or(SHAPE_BASE, SHAPE_NORTH, SHAPE_SOUTH);
-        } else if ((pState.getValue(AXIS) == Axis.Y) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(NORTH) && !pState.getValue(SOUTH)) {
-            return Shapes.or(SHAPE_BASE, SHAPE_UP, SHAPE_DOWN);
-        } else {
-            VoxelShape shape = SHAPE_BASE;
+        VoxelShape shape = SHAPE_BASE;
 
-            if (Boolean.TRUE.equals(pState.getValue(NORTH))) {
+        if ((pState.getValue(AXIS) == Axis.X) && !pState.getValue(NORTH) && !pState.getValue(SOUTH) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
+            shape = Shapes.or(shape, SHAPE_EAST, SHAPE_WEST);
+        } else if ((pState.getValue(AXIS) == Axis.Z) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
+            shape =  Shapes.or(shape, SHAPE_NORTH, SHAPE_SOUTH);
+        } else if ((pState.getValue(AXIS) == Axis.Y) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(NORTH) && !pState.getValue(SOUTH)) {
+            shape = Shapes.or(shape, SHAPE_UP, SHAPE_DOWN);
+        } else {
+            if (pState.getValue(NORTH)) {
                 shape = Shapes.or(shape, SHAPE_NORTH);
             }
 
-            if (Boolean.TRUE.equals(pState.getValue(EAST))) {
+            if (pState.getValue(EAST)) {
                 shape = Shapes.or(shape, SHAPE_EAST);
             }
 
-            if (Boolean.TRUE.equals(pState.getValue(SOUTH))) {
+            if (pState.getValue(SOUTH)) {
                 shape = Shapes.or(shape, SHAPE_SOUTH);
             }
 
-            if (Boolean.TRUE.equals(pState.getValue(WEST))) {
+            if (pState.getValue(WEST)) {
                 shape = Shapes.or(shape, SHAPE_WEST);
             }
 
-            if (Boolean.TRUE.equals(pState.getValue(UP))) {
+            if (pState.getValue(UP)) {
                 shape = Shapes.or(shape, SHAPE_UP);
             }
 
-            if (Boolean.TRUE.equals(pState.getValue(DOWN))) {
+            if (pState.getValue(DOWN)) {
                 shape = Shapes.or(shape, SHAPE_DOWN);
             }
-
-            return shape;
         }
+
+        if (pState.getValue(EXTEND_BOTTOM)) {
+            shape = Shapes.or(shape, SHAPE_EXTEND_DOWN);
+        }
+
+        return shape;
     } 
 
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
@@ -121,21 +130,24 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
 
     public static BlockState rotatePillar(BlockState pState, Rotation pRotation) {
         switch(pRotation) {
-        case COUNTERCLOCKWISE_90:
-        case CLOCKWISE_90:
-            switch((Direction.Axis)pState.getValue(AXIS)) {
-            case X:
-                return pState.setValue(AXIS, Direction.Axis.Z);
-            case Z:
-                return pState.setValue(AXIS, Direction.Axis.X);
+            case COUNTERCLOCKWISE_90:
+            case CLOCKWISE_90:
+                switch((Direction.Axis)pState.getValue(AXIS)) {
+                    case X:
+                        return pState.setValue(AXIS, Direction.Axis.Z);
+                    case Z:
+                        return pState.setValue(AXIS, Direction.Axis.X);
+                    default:
+                        return pState;
+                }
             default:
                 return pState;
-            }
-        default:
-            return pState;
         }        
     }
 
+    private static boolean needsBottomExtension(BlockState belowBlock) {
+        return belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock slab && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM);
+    }
 
     @Override
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
@@ -143,7 +155,11 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
   
-        return pState.setValue(PROPERTY_BY_DIRECTION.get(pFacing), Boolean.valueOf(this.connectsTo(pState, pFacingState, pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()), pFacing.getOpposite())));
+        BlockState belowBlock = pLevel.getBlockState(pCurrentPos.below());
+
+        return pState.setValue(PROPERTY_BY_DIRECTION.get(pFacing), Boolean.valueOf(this.connectsTo(pState, pFacingState, pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()), pFacing.getOpposite())))
+            .setValue(EXTEND_BOTTOM, needsBottomExtension(belowBlock))
+        ;
     }
 
     @Override
@@ -173,16 +189,17 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
         BlockState blockstate6 = blockgetter.getBlockState(blockpos6);
 
         BlockState newState = this.defaultBlockState()
-            .setValue(WATERLOGGED, Boolean.valueOf(flag))
+            .setValue(WATERLOGGED, flag)
             .setValue(AXIS, pContext.getClickedFace().getAxis());
 
         return newState
-            .setValue(NORTH, Boolean.valueOf(this.connectsTo(newState, blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH), Direction.SOUTH.getOpposite())))
-            .setValue(EAST, Boolean.valueOf(this.connectsTo(newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite())))
-            .setValue(SOUTH, Boolean.valueOf(this.connectsTo(newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite())))
-            .setValue(WEST, Boolean.valueOf(this.connectsTo(newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite())))
-            .setValue(UP, Boolean.valueOf(this.connectsTo(newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.UP), Direction.UP)))
-            .setValue(DOWN, Boolean.valueOf(this.connectsTo(newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.DOWN), Direction.DOWN)))
+            .setValue(NORTH, this.connectsTo(newState, blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH), Direction.SOUTH.getOpposite()))
+            .setValue(EAST, this.connectsTo(newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite()))
+            .setValue(SOUTH, this.connectsTo(newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite()))
+            .setValue(WEST, this.connectsTo(newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite()))
+            .setValue(UP, this.connectsTo(newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.DOWN), Direction.DOWN))
+            .setValue(DOWN, needsBottomExtension(blockstate6) || this.connectsTo(newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.UP), Direction.UP))
+            .setValue(EXTEND_BOTTOM, needsBottomExtension(blockstate6))
         ;
     }
 
@@ -203,7 +220,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(WATERLOGGED, AXIS, NORTH, SOUTH, WEST, EAST, UP, DOWN);
+        pBuilder.add(WATERLOGGED, AXIS, NORTH, SOUTH, WEST, EAST, UP, DOWN, EXTEND_BOTTOM);
     }
     
     @Override
