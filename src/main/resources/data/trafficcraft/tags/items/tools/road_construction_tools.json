@@ -1,0 +1,11 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:wood_road_construction_tool",
+        "trafficcraft:stone_road_construction_tool",
+        "trafficcraft:iron_road_construction_tool",
+        "trafficcraft:gold_road_construction_tool",
+        "trafficcraft:diamond_road_construction_tool",
+        "trafficcraft:netherite_road_construction_tool"
+    ]
+}
