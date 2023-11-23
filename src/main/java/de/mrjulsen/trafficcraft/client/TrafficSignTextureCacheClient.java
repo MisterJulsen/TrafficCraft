@@ -34,6 +34,7 @@ public class TrafficSignTextureCacheClient {
                 }
                 backgroundTextureCache.put(id.getId(), new DynamicTexture(bg));
             } catch (IOException e) {
+                ModMain.LOGGER.error("Unable to set dynamic texture.", e);
                 e.printStackTrace();
             }            
         }
@@ -44,6 +45,7 @@ public class TrafficSignTextureCacheClient {
         try {
             return setTexture(id, hasBg, new DynamicTexture(NativeImage.fromBase64(base64)));
         } catch (IOException e) {
+            ModMain.LOGGER.error("Unable to generate dynamic texture.", e);
             e.printStackTrace();
         }
         return null;
