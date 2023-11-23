@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "item": "trafficcraft:stone_road_construction_tool"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.road_construction_tool"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.road_construction_tool.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:craft_road",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:using_item",
+      "conditions": {
+        "item": {
+          "tag": "trafficcraft:tools/road_construction_tools"
+        }
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}
