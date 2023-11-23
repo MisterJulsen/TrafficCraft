@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " IN",
+        " RI",
+        "R  "
+    ],
+    "key": {
+        "N": [
+            {
+                "tag": "forge:nuggets/iron"
+            }
+        ],
+        "I": [
+            {
+                "tag": "forge:ingots/iron"
+            }
+        ],
+        "R": [
+            {
+                "tag": "forge:rods/wooden"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:hammer"
+    }
+}
