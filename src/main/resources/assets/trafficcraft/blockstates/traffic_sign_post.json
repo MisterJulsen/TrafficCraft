@@ -104,7 +104,7 @@
         },
         {
             "when": {
-                "extension_bottom": true
+                "bottom_extension": true
             },
             "apply": {
                 "model": "trafficcraft:block/traffic_sign_post_extension_bottom"
