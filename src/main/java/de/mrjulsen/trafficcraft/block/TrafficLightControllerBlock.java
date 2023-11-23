@@ -75,9 +75,8 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
 
         Item item = pPlayer.getInventory().getSelected().getItem();
         if (item != null && (item instanceof WrenchItem && !(item instanceof ILinkerItem && ((ILinkerItem)item).isSourceBlockAccepted(this)))) {
-            if(pLevel.isClientSide)
-            {
-                if(!pPlayer.isShiftKeyDown())
+            if(pLevel.isClientSide) {
+                if (!pPlayer.isShiftKeyDown())
                     ClientWrapper.showTrafficLightControllerScreen(pPos, pLevel);
             }
 

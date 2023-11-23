@@ -89,8 +89,8 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
 
 
     /* GETTERS AND SETTERS */
-    public void linkTo(BlockPos pos, String dimension) {
-        this.linkLocation = new Location(pos.getX(), pos.getY(), pos.getZ(), dimension);
+    public void linkTo(Location loc) {
+        this.linkLocation = loc;
         BlockEntityUtil.sendUpdatePacket(this);
     }    
 

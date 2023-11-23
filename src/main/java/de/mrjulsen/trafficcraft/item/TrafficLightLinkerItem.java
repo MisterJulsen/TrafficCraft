@@ -2,9 +2,12 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
 import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -23,7 +26,7 @@ import net.minecraft.world.level.block.Block;
 
 public class TrafficLightLinkerItem extends Item implements ILinkerItem {
 
-    private static final String NBT_LINK_TARGET = "LinkTargetLocation";
+    public static final String NBT_LINK_TARGET = "LinkTargetLocation";
 
     public TrafficLightLinkerItem(Properties pProperties) {
         super(pProperties);
@@ -39,15 +42,9 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
             if (isSourceBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {            
                 if (!level.isClientSide) {
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
-                    compound.put(getDescriptionId(), new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
-                    /*
-                    compound.putInt("x", clickedPos.getX());
-                    compound.putInt("y", clickedPos.getY());
-                    compound.putInt("z", clickedPos.getZ());
-                    compound.putString("dim", level.dimension().location().toString());
-                    */
-
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()), false);
+                    compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
+                    
+                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 }
                 return InteractionResult.SUCCESS;
             } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {
@@ -57,14 +54,25 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 }
 
                 Location linkLoc = Location.fromNbt(nbt.getCompound(NBT_LINK_TARGET));
-                if (pContext.getLevel().isLoaded(linkLoc.getLocationAsBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationAsBlockPos()).getBlock())) {
-                    if (pContext.getLevel().getBlockEntity(linkLoc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
-                        blockEntity.addTrafficLightLocation(linkLoc);
+                
+                if (!pContext.getLevel().dimension().location().toString().equals(linkLoc.dimension)) {
+                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.wrong_dimension").withStyle(ChatFormatting.RED), true);
+                }
+
+                if (pContext.getLevel().getBlockState(clickedPos).getBlock() instanceof TrafficLightRequestButtonBlock && pContext.getLevel().getBlockEntity(clickedPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity) {
+                    blockEntity.linkTo(linkLoc);
+                } else {
+                    if (pContext.getLevel().isLoaded(linkLoc.getLocationAsBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationAsBlockPos()).getBlock())) {
+                        if (pContext.getLevel().getBlockEntity(linkLoc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                            blockEntity.addTrafficLightLocation(linkLoc);
+                        }
+                    } else {
+                        player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED), true);
                     }
                 }
 
                 return InteractionResult.SUCCESS;
-            }
+            } 
         }
 
         return super.useOn(pContext);
@@ -81,16 +89,6 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     if (tag.contains(NBT_LINK_TARGET)) {
                         tag.remove(NBT_LINK_TARGET);
                     }
-                    /*
-                    if (tag.contains("x"))
-                        tag.remove("x");
-                    if (tag.contains("y"))
-                        tag.remove("y");
-                    if (tag.contains("z"))
-                        tag.remove("z");
-                    if (tag.contains("dim"))
-                        tag.remove("dim");
-                    */
                 }
 
                 
@@ -112,12 +110,6 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 Double.toString(loc.y),
                 Double.toString(loc.z),
                 loc.dimension,
-                /*
-                Integer.toString(tag.getInt("x")),
-                Integer.toString(tag.getInt("y")),
-                Integer.toString(tag.getInt("z")),
-                tag.getString("dim"),
-                */
                 new KeybindComponent("key.sneak"),
                 new KeybindComponent("key.use")
             ));
@@ -134,13 +126,15 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
     public CompoundTag doesContainValidLinkData(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains(NBT_LINK_TARGET) ? tag : null;
-    
-        //return tag != null && tag.contains("x") && tag.contains("y") && tag.contains("z") && tag.contains("dim") ? tag : null;
     }
 
     @Override
     public boolean isTargetBlockAccepted(Block block) {
-        return block == ModBlocks.TRAFFIC_LIGHT.get() || block == ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get();
+        return block == ModBlocks.TRAFFIC_LIGHT.get();
+    }
+
+    public boolean isTargetDedicatedStorageBlockAccepted(Block block) {
+        return block == ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get();
     }
 
     @Override

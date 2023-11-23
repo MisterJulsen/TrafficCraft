@@ -1,5 +1,6 @@
-package de.mrjulsen.trafficcraft.client.widgets.data;
+package de.mrjulsen.trafficcraft.data;
 
+import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -7,14 +8,20 @@ import net.minecraft.util.Mth;
 
 public class TrafficLightAnimationData {
 
-    private static final byte TPS = 20;
-
     public static final int MAX_SECONDS = 999;
-    public static final int MAX_TICKS = MAX_SECONDS * TPS;
+    public static final int MAX_TICKS = MAX_SECONDS * Constants.TPS;
 
     private TrafficLightMode mode = TrafficLightMode.OFF;
     private int ticks = 0;
     private int id = 0;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TrafficLightAnimationData other) {
+            return ticks == other.ticks && id == other.id;
+        }
+        return false;
+    }
 
     public TrafficLightMode getMode() {
         return this.mode;
@@ -25,7 +32,7 @@ public class TrafficLightAnimationData {
     }
 
     public double getDurationSeconds() {
-        return (double)this.ticks / TPS;
+        return (double)this.ticks / Constants.TPS;
     }
 
     public int getPhaseId() {
@@ -50,7 +57,7 @@ public class TrafficLightAnimationData {
     }
 
     public void setDurationSeconds(double seconds) {
-        this.setDurationTicks((int)(seconds * TPS));
+        this.setDurationTicks((int)(seconds * Constants.TPS));
     }
 
     public void addDurationTicks(int amount) {
@@ -58,7 +65,7 @@ public class TrafficLightAnimationData {
     }
 
     public void addDurationSeconds(int amount) {
-        this.addDurationTicks((int)(amount * TPS));
+        this.addDurationTicks((int)(amount * Constants.TPS));
     }
 
     public void subDurationTicks(int amount) {
@@ -66,7 +73,7 @@ public class TrafficLightAnimationData {
     }
 
     public void subDurationSeconds(int amount) {
-        this.subDurationTicks((int)(amount * TPS));
+        this.subDurationTicks((int)(amount * Constants.TPS));
     }
 
     public void setPhaseId(int id) {

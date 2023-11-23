@@ -7,8 +7,10 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.data.Location;
+import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
@@ -131,44 +133,47 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         this.load(pkt.getTag());
     }
 
-    private void instancedTick(Level level, BlockPos pos, BlockState state) {
+    private void instanceTick(Level level, BlockPos pos, BlockState state) {
         if (!level.isClientSide) {
             if (running) {
                 TrafficLightSchedule schedule = this.getFirstOrMainSchedule();
-                List<Integer> i = schedule.shouldChange(ticks);
+                List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticks);
     
-                if (i != null && i.get(0) == -2) {
+                if (stateData == null) {
                     ticks = 0;
                     if (!schedule.isLoop()) {
                         this.running = false; 
                         BlockEntityUtil.sendUpdatePacket(this);
                     }
                     return;
-                } else if (i != null && i.get(0) >= 0) {
-                    for (int x : i) {
-                        TrafficLightMode mode = schedule.getModeForUpdate(x);
-                        int phaseId = schedule.getPhaseId(x);
-                        if (mode != null && phaseId != Integer.MAX_VALUE) {
-                            if (modes.containsKey(phaseId)) {
-                                modes.remove(phaseId);
-                            }                    
-    
-                            modes.put(phaseId, mode);
-                        }
-                    }
+                } else if (stateData.size() >= 0) {
+                    for (TrafficLightAnimationData entry : stateData) {
+                        TrafficLightMode mode = entry.getMode();
+                        int phaseId = entry.getPhaseId();
+
+                        trafficLightLocations.stream().filter(a -> 
+                            level.isLoaded(a.getLocationAsBlockPos()) &&
+                            level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
+                            level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                            blockEntity.getPhaseId() == phaseId
+                        ).forEach(a -> {
+                            BlockState blockState = level.getBlockState(a.getLocationAsBlockPos());
+                            level.setBlockAndUpdate(a.getLocationAsBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
+                        });
+                    }                    
                 }
                 ticks++;
                 totalTicks++;
             }
 
-            if (!level.hasNeighborSignal(pos)) {                
+            if (isPowered() && !level.hasNeighborSignal(pos)) {                
                 this.setPowered(false);
             }
         }
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, TrafficLightControllerBlockEntity blockEntity) {
-        blockEntity.instancedTick(level, pos, state);
+        blockEntity.instanceTick(level, pos, state);
     }
 
 

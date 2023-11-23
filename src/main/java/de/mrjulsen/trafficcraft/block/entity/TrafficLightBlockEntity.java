@@ -4,10 +4,13 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.TrafficLightControllerBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.data.Location;
+import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
@@ -25,7 +28,6 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     // Properties
     private int phaseId = 0;
     private int controlType = 0;
-    private Location linkLocation;
     private boolean powered = false;
 
     private TrafficLightSchedule schedule = new TrafficLightSchedule();
@@ -33,19 +35,20 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private long totalTicks = 0;
     private boolean running = true;
 
-    protected TrafficLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
-    {
+    // backwards compatibility
+    @Deprecated private Location linkLocation = null;
+    private boolean linkMigrated = false;
+
+    protected TrafficLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
 
-    public TrafficLightBlockEntity(BlockPos pos, BlockState state)
-    {
+    public TrafficLightBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), pos, state);
     }
 
     @Override
-    public void load(CompoundTag compound)
-    {
+    public void load(CompoundTag compound) {
         super.load(compound);
 
         this.phaseId = compound.getInt("phaseId");
@@ -56,14 +59,35 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         this.running = compound.getBoolean("running");
         this.schedule = new TrafficLightSchedule();
         this.schedule.fromNbt(compound.getCompound("schedule"));
-        if (compound.contains("linkedTo")) {
-            this.linkLocation = Location.fromNbt(compound.getCompound("linkedTo"));
+
+        // backwards compatibility
+        linkMigration(compound);
+    }
+
+    private void linkMigration(CompoundTag nbt) {
+        if (nbt.contains("linkedTo")) {
+            ModMain.LOGGER.warn("Traffic Light at position " + worldPosition.toShortString() + " contains deprecated link data. Trying to convert it.");            
+            Location loc = linkLocation = Location.fromNbt(nbt.getCompound("linkedTo"));
+            if (loc != null && !linkMigrated) {
+                if (level.isLoaded(loc.getLocationAsBlockPos())) {
+                    if (level.getBlockState(loc.getLocationAsBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
+                        level.getBlockEntity(loc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
+                    ) {
+                        blockEntity.addTrafficLightLocation(loc);
+                    }
+                    linkMigrated = true;
+                    return;
+                }
+                linkLocation = loc;
+                return;
+            }
         }
+        
+        linkMigrated = true;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
-    {
+    protected void saveAdditional(CompoundTag tag) {
         tag.putInt("phaseId", phaseId);
         tag.putBoolean("powered", powered);
         tag.putInt("controlType", controlType);
@@ -71,7 +95,9 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         tag.putLong("totalTicks", ticker);
         tag.putBoolean("running", running);
         tag.put("schedule", schedule.toNbt());
-        if (this.linkLocation != null) {
+        
+        // backwards compatibility
+        if (!linkMigrated && this.linkLocation != null) {
             tag.put("linkedTo", linkLocation.toNbt());
         }
         super.saveAdditional(tag);
@@ -98,50 +124,59 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {
-        
-        if (!level.isClientSide) {
-            if (running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
-                List<Integer> i = schedule.shouldChange(ticker);
-    
-                if (i != null && i.get(0) == -2) {
-                    ticker = 0;
-                    if (!schedule.isLoop()) {
-                        this.running = false;
-                        BlockEntityUtil.sendUpdatePacket(this); 
-                    }
-                    return;
-                } else if (i != null && i.get(0) >= 0) {
-                    for (int x : i) {
-                        TrafficLightMode mode = this.schedule.getModeForUpdate(x);
-                        if (mode != null) {
-                            level.setBlockAndUpdate(pos, state.setValue(TrafficLightBlock.MODE, mode));                    
-                        }
-                    }
-                }
-                ticker++;
-                totalTicks++;
-            } else if (this.getControlType() == TrafficLightControlType.REMOTE) {
-                if (linkLocation != null && level.isLoaded(this.linkLocation.getLocationAsBlockPos())) {
-                    if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity controller) {
-                        if (controller.isRemoved() || !controller.isRunning()) {
-                            return;
-                        }
-    
-                        if (controller.hasSomethingToDo(phaseId, state.getValue(TrafficLightBlock.MODE))) {
-                            TrafficLightMode mode = controller.getModeForPhaseId(phaseId);
-                            if (mode != null) {
-                                level.setBlockAndUpdate(pos, state.setValue(TrafficLightBlock.MODE, mode));                    
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (!level.hasNeighborSignal(pos)) {                
-                this.setPowered(false);
-            }
-
+        if (level.isClientSide) {
+            return;
         }
+        
+        // backwards compatibility       
+        linkMigrationCheck(level, pos, state);
+
+        if (running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
+            List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticker);
+
+            if (stateData == null) {
+                ticker = 0;
+                if (!schedule.isLoop()) {
+                    this.running = false;
+                    BlockEntityUtil.sendUpdatePacket(this); 
+                }
+                return;
+            } else if (stateData.size() >= 0) {
+                for (TrafficLightAnimationData entry : stateData) {
+                    TrafficLightMode mode = entry.getMode();
+                    if (mode != null) {
+                        level.setBlockAndUpdate(pos, state.setValue(TrafficLightBlock.MODE, mode));                    
+                    }
+                }
+            }
+            ticker++;
+            totalTicks++;
+        }
+
+        if (isPowered() && !level.hasNeighborSignal(pos)) {                
+            this.setPowered(false);
+        }
+    }
+
+    private void linkMigrationCheck(Level level, BlockPos pos, BlockState state) {
+        if (linkMigrated) {
+            return;
+        }
+
+        if (linkLocation == null) {
+            linkMigrated = true;
+            return;
+        }
+
+        if (level.isLoaded(linkLocation.getLocationAsBlockPos())) {
+            if (level.getBlockState(linkLocation.getLocationAsBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
+                level.getBlockEntity(linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
+            ) {
+                blockEntity.addTrafficLightLocation(linkLocation);
+            }
+            linkMigrated = true;
+            return;
+        }        
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, TrafficLightBlockEntity blockEntity) {
@@ -192,6 +227,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         return this.schedule;
     }
 
+    /*
     public void linkTo(BlockPos pos, String dimension) {
         this.linkLocation = new Location(pos.getX(), pos.getY(), pos.getZ(), dimension);
         BlockEntityUtil.sendUpdatePacket(this);
@@ -205,6 +241,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     public Location getLinkLocation() {
         return this.linkLocation;
     }
+    */
 
     public boolean isRunning() {
         return this.running;
@@ -230,9 +267,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
+    /*
     public boolean isValidLinked() {
         return this.getLinkLocation() != null && level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity;
     }
+    */
 
     public boolean isFirstIteration() {
         return this.totalTicks == this.ticker;

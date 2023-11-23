@@ -116,8 +116,9 @@ public class TrafficLightConfigScreen extends ParentableScreen
         if (this.level.getBlockEntity(blockPos) instanceof TrafficLightBlockEntity blockEntity) {
             this.controlType = blockEntity.getControlType();
             this.status = blockEntity.isRunning();
-            this.isLinked = blockEntity.isValidLinked();
-            this.linkLocation = blockEntity.getLinkLocation();
+            //TODO: change
+            //this.isLinked = blockEntity.isValidLinked();
+            //this.linkLocation = blockEntity.getLinkLocation();
         }
     }
 

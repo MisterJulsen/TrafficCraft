@@ -5,12 +5,12 @@ import java.util.List;
 
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.client.widgets.data.TrafficLightAnimationData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class TrafficLightSchedule {
+    
     private List<TrafficLightAnimationData> entries = new ArrayList<>();
     private boolean loop = true;
     private TrafficLightTrigger trigger = TrafficLightTrigger.NONE;
@@ -36,29 +36,30 @@ public class TrafficLightSchedule {
     }
 
     public int getTotalDurationTicks() {
-        int d = 0;
-        for (TrafficLightAnimationData entry : entries) {
-            d += entry.getDurationTicks();
-        }
-        return d;
+        return entries.stream().mapToInt(x -> x.getDurationTicks()).sum();
     }
 
-    public List<Integer> shouldChange(int currentTick) {
-        List<Integer> i = new ArrayList<Integer>();
+    /**
+     * Check if there is something to change.
+     * @param currentTick
+     * @return List of phaseIDs.
+     */
+    public List<TrafficLightAnimationData> shouldChange(int currentTick) {
+        List<TrafficLightAnimationData> changeEntries = new ArrayList<>();
         int keyTime = 0;
-        int index = 0;
+
         for (TrafficLightAnimationData entry : entries) {
-            if (currentTick == keyTime) {
-                i.add(index);
+            if (keyTime == currentTick) {
+                changeEntries.add(entry);
             }
-            keyTime += entry.getDurationTicks(); 
-            index++; 
+            keyTime += entry.getDurationTicks();
 
             if (currentTick < keyTime) {
-                return i.size() > 0 ? i : List.of(-1);
+                return changeEntries.stream().distinct().toList();
             }
         }
-        return i.size() > 0 ? i : List.of(-2);
+
+        return changeEntries.size() <= 0 ? null : changeEntries.stream().distinct().toList();
     }
 
     public TrafficLightMode getModeForUpdate(int index) {
