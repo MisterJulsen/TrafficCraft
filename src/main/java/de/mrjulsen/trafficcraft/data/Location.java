@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 public class Location {
@@ -31,6 +32,14 @@ public class Location {
         this.y = y;
         this.z = z;
         this.dimension = dimension;
+        this.generateBlockPos();
+    }
+
+    public Location(BlockPos pos, Level level) {
+        this.x = pos.getX();
+        this.y = pos.getY();
+        this.z = pos.getZ();
+        this.dimension = level.dimension().location().toString();
         this.generateBlockPos();
     }
 
