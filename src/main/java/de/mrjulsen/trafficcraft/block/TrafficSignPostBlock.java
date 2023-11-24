@@ -215,7 +215,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
             canConnect = postLike.canConnect(pTargetState, pDirection);
         }
         
-        return !isExceptionForConnection(pTargetState) && (canConnect || (pState.getValue(AXIS).test(pDirection) && pIsSideSolid)) || flag || needsBottomExtension(pState, pTargetState);
+        return !isExceptionForConnection(pTargetState) && (canConnect || (pState.getValue(AXIS).test(pDirection) && pIsSideSolid)) || flag || (pDirection == Direction.UP && needsBottomExtension(pState, pTargetState));
     }
 
     @Override
