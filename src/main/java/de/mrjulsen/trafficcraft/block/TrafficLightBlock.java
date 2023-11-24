@@ -173,52 +173,15 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
             return InteractionResult.FAIL;
         }
 
-        boolean isValidLinker = (item instanceof ILinkerItem && ((ILinkerItem)item).isTargetBlockAccepted(this));
+        //boolean isValidLinker = (item instanceof ILinkerItem && ((ILinkerItem)item).isTargetBlockAccepted(this));
 
-        if (item == null || !isValidLinker) {    
-            if(pLevel.isClientSide && item instanceof WrenchItem) {
-                if(!pPlayer.isShiftKeyDown())
-                    ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
-                    
-                return InteractionResult.SUCCESS;
-            }
-        } else if (isValidLinker) {
-            /*
-            if (pLevel.isLoaded(pPos)) {
-                if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity && item instanceof TrafficLightLinkerItem linker) {
-                    CompoundTag tag = null;
-                    if ((tag = linker.doesContainValidLinkData(stack)) != null) {
-                        String dim = tag.getString("dim");
-                        int x = tag.getInt("x");
-                        int y = tag.getInt("y");
-                        int z = tag.getInt("z");
-                        if (pLevel.dimension().location().toString().equals(dim)) {
-                            if (pLevel.isClientSide) {                        
-                                pPlayer.sendMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", pPos.toShortString(), dim), pPlayer.getUUID());   
-                            } else { 
-                                blockEntity.linkTo(new BlockPos(x, y, z), dim);    
-                            }
-                        } else {
-                            if (pLevel.isClientSide) {
-                                pPlayer.sendMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.invalid_dim"), pPlayer.getUUID());
-                            }
-                        }
-                    } else {
-                        if (pLevel.isClientSide) {
-                            pPlayer.sendMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.invalid_link"), pPlayer.getUUID());
-                        }
-                        blockEntity.clearLink();
-                    }
-                }
-            } else {
-                if (pLevel.isClientSide) {
-                    pPlayer.sendMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.target_not_loaded"), pPlayer.getUUID());
-                }
-            }
-            */
+        if(pLevel.isClientSide && item instanceof WrenchItem) {
+            if(!pPlayer.isShiftKeyDown())
+                ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
+                
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
         
     }
 
