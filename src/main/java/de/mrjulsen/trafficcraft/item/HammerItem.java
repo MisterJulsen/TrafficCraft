@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -33,8 +35,7 @@ public class HammerItem extends DiggerItem {
         if (pState.hasProperty(BlockStateProperties.LAYERS) && pState.getValue(BlockStateProperties.LAYERS) > 1) {
             level.setBlockAndUpdate(pos, pState.setValue(BlockStateProperties.LAYERS, pState.getValue(BlockStateProperties.LAYERS) - 1));
             if (level.isClientSide) {
-                level.levelEvent(player, 2001, pos, Block.getId(pState));
-                level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), pState.getSoundType().getBreakSound(), SoundSource.BLOCKS, 1.0f, 1.0f, false);
+                level.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(pState));
             } else {
                 if (!(player.isCreative() || player.isSpectator())) {
                     Block.dropResources(pState.getBlock().defaultBlockState(), level, pos);
@@ -54,6 +55,9 @@ public class HammerItem extends DiggerItem {
 
         if (block.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
             level.setBlockAndUpdate(pos, block.setValue(BlockStateProperties.HORIZONTAL_FACING, block.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise(Axis.Y)));
+            level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.5f, 2.0f, false);
+            level.levelEvent(pContext.getPlayer(), LevelEvent.PARTICLES_SCRAPE, pos, Block.getId(pContext.getLevel().getBlockState(pContext.getClickedPos())));
+            pContext.getPlayer().getCooldowns().addCooldown(pContext.getItemInHand().getItem(), 10);
             return InteractionResult.SUCCESS;
         }
 
