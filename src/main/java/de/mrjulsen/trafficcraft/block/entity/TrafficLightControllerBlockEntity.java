@@ -76,7 +76,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
         ListTag trafficLightsList = compound.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
         trafficLightLocations.clear();
-        for (int i = 0; i < modesList.size(); i++) {
+        for (int i = 0; i < trafficLightsList.size(); i++) {
             Location loc = Location.fromNbt(trafficLightsList.getCompound(i));
             trafficLightLocations.add(loc);
         }
@@ -146,7 +146,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                         BlockEntityUtil.sendUpdatePacket(this);
                     }
                     return;
-                } else if (stateData.size() >= 0) {
+                } else if (stateData.size() > 0) {
                     for (TrafficLightAnimationData entry : stateData) {
                         TrafficLightMode mode = entry.getMode();
                         int phaseId = entry.getPhaseId();
