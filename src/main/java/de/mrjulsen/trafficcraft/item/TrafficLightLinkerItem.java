@@ -47,7 +47,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 }
                 return InteractionResult.SUCCESS;
-            } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {
+            } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {                        
                 CompoundTag nbt = doesContainValidLinkData(pContext.getItemInHand());
                 if (nbt == null) {
                     return InteractionResult.FAIL;
@@ -61,10 +61,12 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
 
                 if (pContext.getLevel().getBlockState(clickedPos).getBlock() instanceof TrafficLightRequestButtonBlock && pContext.getLevel().getBlockEntity(clickedPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity) {
                     blockEntity.linkTo(linkLoc);
-                } else {
+                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                } else {                        
                     if (pContext.getLevel().isLoaded(linkLoc.getLocationAsBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationAsBlockPos()).getBlock())) {
                         if (pContext.getLevel().getBlockEntity(linkLoc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
-                            blockEntity.addTrafficLightLocation(linkLoc);
+                            blockEntity.addTrafficLightLocation(new Location(pContext.getClickedPos(), pContext.getLevel()));
+                            player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                         }
                     } else {
                         player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED), true);
@@ -130,11 +132,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
 
     @Override
     public boolean isTargetBlockAccepted(Block block) {
-        return block == ModBlocks.TRAFFIC_LIGHT.get();
-    }
-
-    public boolean isTargetDedicatedStorageBlockAccepted(Block block) {
-        return block == ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get();
+        return block.equals(ModBlocks.TRAFFIC_LIGHT.get()) || block.equals(ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get());
     }
 
     @Override
