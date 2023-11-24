@@ -99,7 +99,7 @@
     "item.trafficcraft.road_construction_tool.status_pos1": "First position: %s -> Select second position",
     "item.trafficcraft.road_construction_tool.status_pos2": "First position: %s, Second position: %s",
     "item.trafficcraft.road_construction_tool.status_too_far": "Too far from first position.",
-    "item.trafficcraft.road_construction_tool.status_slope": "Slope too steep.",
+    "item.trafficcraft.road_construction_tool.status_slope_too_steep": "Slope too steep.",
     "item.trafficcraft.hammer": "Hammer",
     "item.trafficcraft.iron_rod": "Iron Rod",
 
