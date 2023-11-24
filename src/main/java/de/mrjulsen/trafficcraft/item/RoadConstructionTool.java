@@ -372,7 +372,7 @@ public class RoadConstructionTool extends Item {
 
             player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_pos1",
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationAsBlockPos().toShortString()
-            ), false);
+            ), true);
 
         } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
             end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationAsVec3().add(0.5d, 0, 0.5d);
