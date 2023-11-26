@@ -37,6 +37,10 @@ public class ModItems {
     public static final RegistryObject<Item> IRON_ROD = ITEMS.register("iron_rod", () -> new Item(new Item.Properties()
         .tab(ModCreativeModeTab.MOD_TAB)
     ));
+    
+    public static final RegistryObject<Item> IRON_PLATE = ITEMS.register("iron_plate", () -> new Item(new Item.Properties()
+        .tab(ModCreativeModeTab.MOD_TAB)
+    ));
 
     public static final RegistryObject<Item> PAINT_BRUSH = ITEMS.register("paint_brush", () -> new BrushItem(new Item.Properties()
         .tab(ModCreativeModeTab.MOD_TAB),

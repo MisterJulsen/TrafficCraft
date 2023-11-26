@@ -102,6 +102,7 @@
     "item.trafficcraft.road_construction_tool.status_slope_too_steep": "Slope too steep.",
     "item.trafficcraft.hammer": "Hammer",
     "item.trafficcraft.iron_rod": "Iron Rod",
+    "item.trafficcraft.iron_plate": "Iron Plate",
 
     "block.trafficcraft.traffic_sign": "Traffic Sign",
     "block.trafficcraft.traffic_sign_post": "Traffic Sign Post",

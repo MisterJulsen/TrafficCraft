@@ -102,6 +102,7 @@
     "item.trafficcraft.road_construction_tool.status_slope_too_steep": "Steigung zu steil.",
     "item.trafficcraft.hammer": "Hammer",
     "item.trafficcraft.iron_rod": "Eisenstab",
+    "item.trafficcraft.iron_plate": "Eisenplatte",
 
     "block.trafficcraft.traffic_sign": "Verkehrszeichen",
     "block.trafficcraft.traffic_sign_post": "Verkehrszeichenmast",
