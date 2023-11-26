@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.item;
 import javax.annotation.Nonnull;
 
 import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -19,6 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -62,10 +63,11 @@ public class HammerItem extends DiggerItem {
         BlockState block = level.getBlockState(pos);
 
         if (block.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            level.setBlockAndUpdate(pos, block.setValue(BlockStateProperties.HORIZONTAL_FACING, block.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise(Axis.Y)));
-            level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.5f, 2.0f, false);
-            level.levelEvent(pContext.getPlayer(), LevelEvent.PARTICLES_SCRAPE, pos, Block.getId(pContext.getLevel().getBlockState(pContext.getClickedPos())));
-            pContext.getPlayer().getCooldowns().addCooldown(pContext.getItemInHand().getItem(), 10);
+            if (Utils.rotateBlock(level, pos, Rotation.CLOCKWISE_90)) {
+                level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.5f, 2.0f, false);
+                level.levelEvent(pContext.getPlayer(), LevelEvent.PARTICLES_SCRAPE, pos, Block.getId(pContext.getLevel().getBlockState(pContext.getClickedPos())));
+                pContext.getPlayer().getCooldowns().addCooldown(pContext.getItemInHand().getItem(), 10);
+            }
             return InteractionResult.SUCCESS;
         }
 

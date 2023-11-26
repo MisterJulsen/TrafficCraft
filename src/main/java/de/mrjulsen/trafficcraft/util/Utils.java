@@ -22,15 +22,22 @@ import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 
 public class Utils {
     public static void giveAdvancement(ServerPlayer player, String name, String criteriaKey) {
-        Advancement adv = player.getServer().getAdvancements().getAdvancement(new ResourceLocation(ModMain.MOD_ID, name));
+        Advancement adv = player.getServer().getAdvancements()
+                .getAdvancement(new ResourceLocation(ModMain.MOD_ID, name));
         player.getAdvancements().award(adv, criteriaKey);
     }
 
@@ -42,29 +49,30 @@ public class Utils {
     @SuppressWarnings("resource")
     public static <W extends AbstractWidget> void renderTooltip(Screen s, W w, Supplier<List<FormattedCharSequence>> lines, PoseStack stack, int mouseX, int mouseY) {
         if (w.isMouseOver(mouseX, mouseY)) {
-            
+
             s.renderTooltip(stack, lines.get(), mouseX, mouseY, s.getMinecraft().font);
         }
     }
 
     @SuppressWarnings("resource")
-    public static boolean renderTooltip(Screen screen, GuiAreaDefinition area, List<FormattedCharSequence> lines, PoseStack stack, int mouseX, int mouseY) {
+    public static boolean renderTooltip(Screen screen, GuiAreaDefinition area, List<FormattedCharSequence> lines,
+            PoseStack stack, int mouseX, int mouseY) {
         if (area.isInBounds(mouseX, mouseY)) {
             screen.renderTooltip(stack, lines, mouseX, mouseY, screen.getMinecraft().font);
-			return true;
+            return true;
         }
-		return false;
+        return false;
     }
 
     public static int coordsToInt(byte x, byte y) {
         int coords = ((x & 0xFF) << 16) | (y & 0xFF);
         return coords;
     }
-    
+
     public static byte[] intToCoords(int coords) {
         byte x = (byte) ((coords >> 16) & 0xFF);
         byte y = (byte) (coords & 0xFF);
-        return new byte[] {x, y};
+        return new byte[] { x, y };
     }
 
     public static int swapRedBlue(int argbColor) {
@@ -72,9 +80,9 @@ public class Utils {
         int red = (argbColor >> 16) & 0xFF;
         int green = (argbColor >> 8) & 0xFF;
         int blue = argbColor & 0xFF;
-    
+
         int bgrColor = (alpha << 24) | (blue << 16) | (green << 8) | red;
-    
+
         return bgrColor;
     }
 
@@ -105,9 +113,9 @@ public class Utils {
     public static long encodeCoordinates(int x, int y, int z) {
         long encodedValue = 0;
 
-        encodedValue |= ((long)x & 0xFFFFFFFFL) << 32;
-        encodedValue |= ((long)y & 0xFFFFFFFFL) << 16;
-        encodedValue |= ((long)z & 0xFFFFFFFFL);
+        encodedValue |= ((long) x & 0xFFFFFFFFL) << 32;
+        encodedValue |= ((long) y & 0xFFFFFFFFL) << 16;
+        encodedValue |= ((long) z & 0xFFFFFFFFL);
 
         return encodedValue;
     }
@@ -117,7 +125,7 @@ public class Utils {
         int y = (int) ((encodedValue >> 16) & 0xFFFF);
         int z = (int) (encodedValue & 0xFFFF);
 
-        return new int[]{x, y, z};
+        return new int[] { x, y, z };
     }
 
     public static double slopeStrength(Vec3 a, Vec3 b) {
@@ -125,5 +133,41 @@ public class Utils {
         Vec3 vec = b.subtract(a);
         double distance = vec.horizontalDistance();
         return distance / heightDiff;
+    }
+
+    /**
+     * CREDITS: https://github.com/BluSunrize/ImmersiveEngineering/blob/1.19.2/src/main/java/blusunrize/immersiveengineering/common/util/orientation/RotationUtil.java#L28
+     * @see https://github.com/BluSunrize/ImmersiveEngineering/blob/1.19.2/src/main/java/blusunrize/immersiveengineering/common/util/orientation/RotationUtil.java#L28
+     */
+    public static boolean rotateBlock(Level world, BlockPos pos, Rotation rotation) {
+
+        BlockState state = world.getBlockState(pos);
+        BlockState newState = state.rotate(world, pos, rotation);
+        if (newState != state) {
+            world.setBlockAndUpdate(pos, newState);
+            for (Direction d : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues()) {
+                final BlockPos otherPos = pos.relative(d);
+                final BlockState otherState = world.getBlockState(otherPos);
+                final BlockState nextState = newState.updateShape(d, otherState, world, pos, otherPos);
+                if (nextState != newState) {
+                    if (!nextState.isAir()) {
+                        world.setBlockAndUpdate(pos, nextState);
+                        newState = nextState;
+                    } else {
+                        world.setBlockAndUpdate(pos, state);
+                        return false;
+                    }
+                }
+            }
+            for (Direction d : BlockStateProperties.HORIZONTAL_FACING.getPossibleValues()) {
+                final BlockPos otherPos = pos.relative(d);
+                final BlockState otherState = world.getBlockState(otherPos);
+                final BlockState nextOther = otherState.updateShape(d.getOpposite(), newState, world, otherPos, pos);
+                if (nextOther != otherState)
+                    world.setBlockAndUpdate(otherPos, nextOther);
+            }
+            return true;
+        } else
+            return false;
     }
 }
