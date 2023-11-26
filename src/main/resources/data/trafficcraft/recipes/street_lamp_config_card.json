@@ -18,7 +18,7 @@
         ],
         "P": [
             {
-                "item": "minecraft:paper"
+                "tag": "forge:plates/iron"
             }
         ]
     },
