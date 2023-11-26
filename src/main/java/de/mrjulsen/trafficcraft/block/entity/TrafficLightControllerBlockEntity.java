@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
@@ -152,6 +153,13 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                 for (TrafficLightAnimationData entry : stateData) {
                     TrafficLightMode mode = entry.getMode();
                     int phaseId = entry.getPhaseId();
+
+                    trafficLightLocations.removeIf(a -> 
+                        level.isLoaded(a.getLocationAsBlockPos()) &&
+                        level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
+                        level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                        blockEntity.getControlType() != TrafficLightControlType.REMOTE
+                    );
 
                     trafficLightLocations.stream().filter(a -> 
                         level.isLoaded(a.getLocationAsBlockPos()) &&
