@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.block;
 
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,8 +26,13 @@ public class ManholeCoverBlock extends ManholeBlock {
 
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     
-    public static final VoxelShape SHAPE_COVER = Block.box(1, 14, 1, 15, 16, 15);
-    
+    public static final VoxelShape SHAPE_COVER = Block.box(1, 14, 1, 15, 16, 15);    
+
+    protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D);
+    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 13.0D, 16.0D, 16.0D, 16.0D);
+
     public ManholeCoverBlock() {
         super();
         this.registerDefaultState(this.stateDefinition.any()
@@ -35,8 +41,26 @@ public class ManholeCoverBlock extends ManholeBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {        
-        return pState.getValue(OPEN) ? SHAPE_BASE : Shapes.or(SHAPE_BASE, SHAPE_COVER);
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        VoxelShape shape = SHAPE_BASE;
+        
+        switch((Direction)pState.getValue(FACING)) {
+            case NORTH:
+                Shapes.or(shape, NORTH_AABB);
+                break;
+            case SOUTH:
+                Shapes.or(shape, SOUTH_AABB);
+                break;
+            case WEST:
+                Shapes.or(shape, WEST_AABB);
+                break;
+            case EAST:
+            default:
+                Shapes.or(shape, EAST_AABB);
+                break;
+        }
+
+        return pState.getValue(OPEN) ? shape : Shapes.or(shape, SHAPE_COVER);
     }
 
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {    

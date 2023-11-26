@@ -30,6 +30,11 @@ public class ManholeBlock extends WaterloggableBlock {
         Block.box(0, 0, 0, 1, 16, 16),
         Block.box(1, 0, 0, 15, 16, 1)
     );
+
+    protected static final VoxelShape EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 3.0D);
+    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 13.0D, 16.0D, 16.0D, 16.0D);
     
     public ManholeBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
@@ -48,8 +53,18 @@ public class ManholeBlock extends WaterloggableBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {        
-        return SHAPE_BASE;
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        switch((Direction)pState.getValue(FACING)) {
+        case NORTH:
+            return Shapes.or(SHAPE_BASE, NORTH_AABB);
+        case SOUTH:
+            return Shapes.or(SHAPE_BASE, SOUTH_AABB);
+        case WEST:
+            return Shapes.or(SHAPE_BASE, WEST_AABB);
+        case EAST:
+        default:
+            return Shapes.or(SHAPE_BASE, EAST_AABB);
+        }
     }
 
     @Override
