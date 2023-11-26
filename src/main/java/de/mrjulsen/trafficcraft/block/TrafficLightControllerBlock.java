@@ -77,7 +77,11 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     }
 
     public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
-        if (pLevel.dimensionType().ultraWarm() && !pEntity.fireImmune() && pEntity instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)pEntity)) {
+        if (!pLevel.dimensionType().ultraWarm()) {
+            return;
+        } 
+
+        if (!pEntity.fireImmune() && pEntity instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)pEntity) && pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity && blockEntity.isRunning()) {
             pEntity.hurt(DamageSource.HOT_FLOOR, 1.0F);
         }
 
@@ -86,7 +90,11 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
 
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
-        pLevel.addParticle(ParticleTypes.SMOKE, pPos.getX() + 0.5D, pPos.getY() + 0.5D, pPos.getZ() + 0.5D, pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D));
+        if (pLevel.dimensionType().ultraWarm() && pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity && blockEntity.isRunning()) {
+            pLevel.addParticle(ParticleTypes.SMOKE, pPos.getX() + 0.5D, pPos.getY() + 0.5D, pPos.getZ() + 0.5D, pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D));
+        }
+
+        super.animateTick(pState, pLevel, pPos, pRandom);
     }
 
     @Override
