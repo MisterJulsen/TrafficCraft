@@ -1,0 +1,12 @@
+{
+    "type": "mekanism:enriching",
+    "input": {
+        "ingredient": {
+            "tag": "trafficcraft:blocks/bitumen_ores"
+        }
+    },
+    "output": {
+        "item": "trafficcraft:raw_bitumen",
+        "count": 8
+    }
+}
