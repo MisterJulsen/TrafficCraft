@@ -53,7 +53,7 @@ public class ManholeBlock extends WaterloggableBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         switch((Direction)pState.getValue(FACING)) {
         case NORTH:
             return Shapes.or(SHAPE_BASE, NORTH_AABB);
@@ -65,6 +65,11 @@ public class ManholeBlock extends WaterloggableBlock {
         default:
             return Shapes.or(SHAPE_BASE, EAST_AABB);
         }
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        return SHAPE_BASE;
     }
 
     @Override

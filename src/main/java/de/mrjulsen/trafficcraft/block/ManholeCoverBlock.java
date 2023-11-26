@@ -41,25 +41,31 @@ public class ManholeCoverBlock extends ManholeBlock {
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+    public VoxelShape getCollisionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         VoxelShape shape = SHAPE_BASE;
         
         switch((Direction)pState.getValue(FACING)) {
             case NORTH:
-                Shapes.or(shape, NORTH_AABB);
+                shape = Shapes.or(shape, NORTH_AABB);
                 break;
             case SOUTH:
-                Shapes.or(shape, SOUTH_AABB);
+                shape = Shapes.or(shape, SOUTH_AABB);
                 break;
             case WEST:
-                Shapes.or(shape, WEST_AABB);
+                shape = Shapes.or(shape, WEST_AABB);
                 break;
             case EAST:
             default:
-                Shapes.or(shape, EAST_AABB);
+                shape = Shapes.or(shape, EAST_AABB);
                 break;
         }
 
+        return pState.getValue(OPEN) ? shape : Shapes.or(shape, SHAPE_COVER);
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        VoxelShape shape = SHAPE_BASE;
         return pState.getValue(OPEN) ? shape : Shapes.or(shape, SHAPE_COVER);
     }
 
