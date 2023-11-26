@@ -138,6 +138,18 @@ public class RoadConstructionTool extends Item {
         nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, DEFAULT_ROAD_TYPE.getIndex());
     }
 
+    public static void initStackTag(ItemStack stack) {
+        if (!stack.getTag().contains(NBT_ROAD_WIDTH)) {
+            stack.getTag().putByte(NBT_ROAD_WIDTH, DEFAULT_ROAD_WIDTH);
+        }
+        if (!stack.getTag().contains(NBT_ROAD_TYPE)) {
+            stack.getTag().putInt(NBT_ROAD_TYPE, DEFAULT_ROAD_TYPE.getIndex());
+        }
+        if (!stack.getTag().contains(NBT_REPLACE_BLOCKS)) {
+            stack.getTag().putBoolean(NBT_REPLACE_BLOCKS, DEFAULT_REPLACE_BLOCKS);
+        }
+    }
+
     private static StatusResult isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
         boolean flag2 = Utils.slopeStrength(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
@@ -158,7 +170,9 @@ public class RoadConstructionTool extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
+        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);   
+        
+        initStackTag(itemstack);
         
         Location startLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION1));
         Location endLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION2));
@@ -279,7 +293,7 @@ public class RoadConstructionTool extends Item {
     }
 
     private static double setLayer(Level pLevel, double lastY, Vec3 pos, Vec3 normalizedRightVec, Map<BlockPos, Integer> blockList, final byte roadWidth, final boolean replaceBlocks) {
-        final double halfWidth = roadWidth / 2;
+        final double halfWidth = roadWidth / 2.0D - 0.5D;
         final double step = 0.5D;
         final double pixel = 1.0D / 16;
         final double slopeHeight = pixel * 2;
@@ -352,6 +366,8 @@ public class RoadConstructionTool extends Item {
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool ? player.getItemInHand(InteractionHand.MAIN_HAND) : player.getItemInHand(InteractionHand.OFF_HAND);
         CompoundTag nbt = stack.getOrCreateTag();
 
+        initStackTag(stack);
+        
         if (!nbt.contains(NBT_LOCATION1)) {
             return;
         }
