@@ -1,0 +1,27 @@
+{
+    "type": "thermal:centrifuge",
+    "ingredient": {
+        "item": "trafficcraft:bitumen_ore"
+    },
+    "result": [
+        {
+            "item": "minecraft:gravel",
+            "chance": 0.75,
+            "locked": true
+        },
+        {
+            "item": "trafficcraft:raw_bitumen",
+            "amount": 4
+        },
+        {
+            "item": "trafficcraft:raw_bitumen",
+            "amount": 4,
+            "chance": 0.5
+        },
+        {
+            "fluid": "thermal:crude_oil",
+            "amount": 100
+        }
+    ],
+    "energy": 20000
+}
