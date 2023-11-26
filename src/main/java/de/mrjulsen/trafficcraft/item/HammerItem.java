@@ -63,4 +63,19 @@ public class HammerItem extends DiggerItem {
 
         return super.useOn(pContext);
     }
+
+    @Nonnull
+	@Override
+	public ItemStack getContainerItem(@Nonnull ItemStack stack) {
+		ItemStack container = stack.copy();
+		if (container.hurt(1, Constants.RANDOM, null))
+			return ItemStack.EMPTY;
+		else
+			return container;
+	}
+
+	@Override
+	public boolean hasContainerItem(@Nonnull ItemStack stack) {
+		return true;
+	}
 }

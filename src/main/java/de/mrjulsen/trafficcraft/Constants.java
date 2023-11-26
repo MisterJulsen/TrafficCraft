@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft;
 
+import java.util.Random;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -15,4 +17,6 @@ public class Constants {
     public static final int TRAFFIC_CONE_BASE_COLOR = 0xFFD12725;
 
     public static final MutableComponent CREATIVE_MODE_ONLY_TOOLTIP = new TranslatableComponent("core.trafficcraft.creative_only.tooltip").withStyle(ChatFormatting.GOLD);
+
+    public static final Random RANDOM = new Random();
 }
