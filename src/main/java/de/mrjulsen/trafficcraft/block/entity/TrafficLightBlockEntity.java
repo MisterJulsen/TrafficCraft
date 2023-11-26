@@ -67,23 +67,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private void linkMigration(CompoundTag nbt) {
         if (nbt.contains("linkedTo")) {
             ModMain.LOGGER.warn("Traffic Light at position " + worldPosition.toShortString() + " contains deprecated link data. Trying to convert it.");            
-            Location loc = linkLocation = Location.fromNbt(nbt.getCompound("linkedTo"));
-            if (loc != null && !linkMigrated) {
-                if (level.isLoaded(loc.getLocationAsBlockPos())) {
-                    if (level.getBlockState(loc.getLocationAsBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
-                        level.getBlockEntity(loc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
-                    ) {
-                        blockEntity.addTrafficLightLocation(loc);
-                    }
-                    linkMigrated = true;
-                    return;
-                }
-                linkLocation = loc;
-                return;
-            }
+            linkLocation = Location.fromNbt(nbt.getCompound("linkedTo"));
+            linkMigrated = false;
+            return;
         }
-        
-        linkMigrated = true;
+        linkMigrated = true;        
     }
 
     @Override
