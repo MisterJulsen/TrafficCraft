@@ -2,7 +2,7 @@
     "type": "mekanism:enriching",
     "input": {
         "ingredient": {
-            "tag": "trafficcraft:blocks/bitumen_ores"
+            "item": "trafficcraft:bitumen_ore"
         }
     },
     "output": {

@@ -1,0 +1,12 @@
+{
+    "type": "mekanism:enriching",
+    "input": {
+        "ingredient": {
+            "item": "trafficcraft:deepslate_bitumen_ore"
+        }
+    },
+    "output": {
+        "item": "trafficcraft:raw_bitumen",
+        "count": 8
+    }
+}
