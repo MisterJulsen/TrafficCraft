@@ -67,7 +67,7 @@ public class RoadConstructionTool extends Item {
    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public RoadConstructionTool(Tiers tier, Properties properties) {
-        super(properties.stacksTo(1).durability(tier.getUses() * 10));
+        super(properties.stacksTo(1).durability(tier.getUses() * 6));
         float attackDamageModifier = 0.5f;
         this.attackDamage = tier.getAttackDamageBonus() + attackDamageModifier;
         Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
