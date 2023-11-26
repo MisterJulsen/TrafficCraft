@@ -91,6 +91,7 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
     /* GETTERS AND SETTERS */
     public void linkTo(Location loc) {
         this.linkLocation = loc;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }    
 
@@ -121,9 +122,9 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
                 blockEntity.startSchedule(false);
                 return true;
             }
-        } else  if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+        } else if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
             if (blockEntity.getFirstOrMainSchedule().getTrigger() == TrafficLightTrigger.ON_REQUEST) {
-                blockEntity.startSchedule(false);
+                blockEntity.startSchedule(true);
                 return true;
             }
         }

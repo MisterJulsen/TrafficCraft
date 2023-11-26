@@ -137,8 +137,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             if (stateData == null) {
                 ticker = 0;
                 if (!schedule.isLoop()) {
-                    this.running = false;
-                    BlockEntityUtil.sendUpdatePacket(this); 
+                    setRunning(false);
                 }
                 return;
             } else if (stateData.size() >= 0) {
@@ -227,34 +226,18 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         return this.schedule;
     }
 
-    /*
-    public void linkTo(BlockPos pos, String dimension) {
-        this.linkLocation = new Location(pos.getX(), pos.getY(), pos.getZ(), dimension);
-        BlockEntityUtil.sendUpdatePacket(this);
-    }    
-
-    public void clearLink() {
-        this.linkLocation = null;
-        BlockEntityUtil.sendUpdatePacket(this);
-    }
-    
-    public Location getLinkLocation() {
-        return this.linkLocation;
-    }
-    */
-
     public boolean isRunning() {
         return this.running;
     }
 
     public void setRunning(boolean b) {
-        if (b && this.running != true) {
+        if (b && !this.running) {
             this.ticker = 0;
             this.totalTicks = 0;
         }
 
         this.running = b;
-        
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
@@ -267,18 +250,21 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
-    /*
-    public boolean isValidLinked() {
-        return this.getLinkLocation() != null && level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity;
+    public void stopSchedule() {
+        this.running = false;
+        this.totalTicks = 0;
+        this.ticker = 0;
+        setChanged();
+        BlockEntityUtil.sendUpdatePacket(this);
     }
-    */
 
     public boolean isFirstIteration() {
         return this.totalTicks == this.ticker;
     }
 
     public void setPowered(boolean b) {
-        this.powered = b;        
+        this.powered = b;
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 

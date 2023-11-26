@@ -107,20 +107,27 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     }
 
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
-        if (!pLevel.isClientSide) {
+        if (pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity) {
             if (pLevel.hasNeighborSignal(pPos)) {
-                if (pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity) {
-                    if (pLevel.hasNeighborSignal(pPos)) {
-                        if (blockEntity.getFirstOrMainSchedule().getTrigger() == TrafficLightTrigger.REDSTONE && !blockEntity.isPowered()) {
-                            blockEntity.setPowered(true);
-                            blockEntity.startSchedule(false);
-                        }
-                    } else {
-                        blockEntity.setPowered(false);
-                    }                    
+                if (blockEntity.getFirstOrMainSchedule().getTrigger() == TrafficLightTrigger.REDSTONE && !blockEntity.isPowered()) {
+                    blockEntity.setPowered(true);
+                    blockEntity.startSchedule(true);
                 }
-            }
+            } else {
+                blockEntity.setPowered(false);
+                blockEntity.stopSchedule();
+            }                    
         }
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState pState, Level pLevel, BlockPos pPos) {
+        return pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity && blockEntity.isRunning() ? 15 : 0;
     }
 
     /* BLOCK ENTITY */

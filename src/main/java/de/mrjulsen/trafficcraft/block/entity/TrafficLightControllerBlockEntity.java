@@ -134,41 +134,42 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
     }
 
     private void instanceTick(Level level, BlockPos pos, BlockState state) {
-        if (!level.isClientSide) {
-            if (running) {
-                TrafficLightSchedule schedule = this.getFirstOrMainSchedule();
-                List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticks);
-    
-                if (stateData == null) {
-                    ticks = 0;
-                    if (!schedule.isLoop()) {
-                        this.running = false; 
-                        BlockEntityUtil.sendUpdatePacket(this);
-                    }
-                    return;
-                } else if (stateData.size() > 0) {
-                    for (TrafficLightAnimationData entry : stateData) {
-                        TrafficLightMode mode = entry.getMode();
-                        int phaseId = entry.getPhaseId();
+        if (level.isClientSide) {
+            return;
+        }
 
-                        trafficLightLocations.stream().filter(a -> 
-                            level.isLoaded(a.getLocationAsBlockPos()) &&
-                            level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
-                            level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
-                            blockEntity.getPhaseId() == phaseId
-                        ).forEach(a -> {
-                            BlockState blockState = level.getBlockState(a.getLocationAsBlockPos());
-                            level.setBlockAndUpdate(a.getLocationAsBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
-                        });
-                    }                    
+        if (running) {
+            TrafficLightSchedule schedule = this.getFirstOrMainSchedule();
+            List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticks);
+
+            if (stateData == null) {
+                ticks = 0;
+                if (!schedule.isLoop()) {
+                    setRunning(false);
                 }
-                ticks++;
-                totalTicks++;
-            }
+                return;
+            } else if (stateData.size() > 0) {
+                for (TrafficLightAnimationData entry : stateData) {
+                    TrafficLightMode mode = entry.getMode();
+                    int phaseId = entry.getPhaseId();
 
-            if (isPowered() && !level.hasNeighborSignal(pos)) {                
-                this.setPowered(false);
+                    trafficLightLocations.stream().filter(a -> 
+                        level.isLoaded(a.getLocationAsBlockPos()) &&
+                        level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
+                        level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                        blockEntity.getPhaseId() == phaseId
+                    ).forEach(a -> {
+                        BlockState blockState = level.getBlockState(a.getLocationAsBlockPos());
+                        level.setBlockAndUpdate(a.getLocationAsBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
+                    });
+                }                    
             }
+            ticks++;
+            totalTicks++;
+        }
+
+        if (isPowered() && !level.hasNeighborSignal(pos)) {                
+            this.setPowered(false);
         }
     }
 
@@ -239,9 +240,17 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             this.totalTicks = 0;
             this.ticks = 0;
             this.running = true;
+            setChanged();
+            BlockEntityUtil.sendUpdatePacket(this);
+        }
+    }
+
+    public void stopSchedule() {
+        this.running = false;
+        this.totalTicks = 0;
+        this.ticks = 0;
         setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
-        }
     }
 
     public boolean hasSomethingToDo(int phaseId, TrafficLightMode currentMode) {

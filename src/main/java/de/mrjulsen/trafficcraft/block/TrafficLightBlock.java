@@ -11,7 +11,6 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.item.ILinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -173,10 +172,8 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
             return InteractionResult.FAIL;
         }
 
-        //boolean isValidLinker = (item instanceof ILinkerItem && ((ILinkerItem)item).isTargetBlockAccepted(this));
-
-        if(pLevel.isClientSide && item instanceof WrenchItem) {
-            if(!pPlayer.isShiftKeyDown())
+        if (pLevel.isClientSide && item instanceof WrenchItem) {
+            if (!pPlayer.isShiftKeyDown())
                 ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
                 
             return InteractionResult.SUCCESS;
@@ -186,19 +183,28 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     }
 
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
-        if (!pLevel.isClientSide) {
-            if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {
-                if (pLevel.hasNeighborSignal(pPos)) {
-                    if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.REDSTONE && !blockEntity.isPowered()) {
-                        blockEntity.setPowered(true);
-                        blockEntity.startSchedule(false);
-                    }
-                } else {
-                    blockEntity.setPowered(false);
-                }                    
-            }
+        if (pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity) {
+            if (pLevel.hasNeighborSignal(pPos)) {
+                if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.REDSTONE && !blockEntity.isPowered()) {
+                    blockEntity.setPowered(true);
+                    blockEntity.startSchedule(true);
+                }
+            } else {
+                blockEntity.setPowered(false);
+                blockEntity.stopSchedule();
+            }                    
         }
-    }    
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState pState, Level pLevel, BlockPos pPos) {
+        return pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity && blockEntity.isRunning() ? 15 : 0;
+    }
 
     /* BLOCK ENTITY */
     @Override
