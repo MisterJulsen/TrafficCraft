@@ -249,7 +249,7 @@ public class RoadConstructionTool extends Item {
             for (Map<BlockPos, Integer> map : blockList) {
                 for (Entry<BlockPos, Integer> block : map.entrySet()) {
                     
-                    if (!canContinue[0]) {
+                    if (!canContinue[0] || !pPlayer.isAlive()) {
                         return;
                     }
 
@@ -257,8 +257,9 @@ public class RoadConstructionTool extends Item {
                         return;
                     }
 
-                    if (pLevel.getBlockState(block.getKey()).getBlock().defaultDestroyTime() != Block.INDESTRUCTIBLE) {
+                    pPlayer.isRemoved();
 
+                    if (pLevel.getBlockState(block.getKey()).getBlock().defaultDestroyTime() != Block.INDESTRUCTIBLE) {
                         if (block.getValue() > 0 && block.getValue() <= 7 && (isPlayerCreative(pPlayer) || pPlayer.getInventory().countItem(roadType.getSlope().asItem()) > 0)) {                            
                             pLevel.destroyBlock(block.getKey(), !isPlayerCreative(pPlayer));
                             pLevel.setBlockAndUpdate(block.getKey(), roadType.getSlope().defaultBlockState().setValue(AsphaltSlope.LAYERS, Math.min(block.getValue(), isPlayerCreative(pPlayer) ? Integer.MAX_VALUE : pPlayer.getInventory().countItem(roadType.getSlope().asItem()))));
