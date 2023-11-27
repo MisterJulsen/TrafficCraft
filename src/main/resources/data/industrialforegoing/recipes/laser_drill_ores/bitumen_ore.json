@@ -31,7 +31,7 @@
               },
               "depth_min": 55,
               "depth_max": 75,
-              "weight": 10
+              "weight": 8
             },
             {
                 "whitelist": {
@@ -56,7 +56,7 @@
                 },
                 "depth_min": 55,
                 "depth_max": 75,
-                "weight": 20
+                "weight": 15
               }
           ],
           "pointer": 0,
