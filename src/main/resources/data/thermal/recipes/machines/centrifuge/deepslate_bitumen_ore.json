@@ -1,7 +1,7 @@
 {
     "type": "thermal:centrifuge",
     "ingredient": {
-        "item": "trafficcraft:bitumen_ore"
+        "item": "trafficcraft:deepslate_bitumen_ore"
     },
     "result": [
         {
