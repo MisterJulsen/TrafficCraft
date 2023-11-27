@@ -66,19 +66,29 @@ public class Location {
     }
 
     public static Location fromNbt(CompoundTag tag) {
+        return fromNbt(tag, false);
+    }
+
+    public static Location fromNbt(CompoundTag tag, boolean legacy) {
         if (!tag.contains(NBT_X) || !tag.contains(NBT_Y) || !tag.contains(NBT_Z) || !tag.contains(NBT_DIM)) {
             return null;
         }
 
         Location loc = new Location();
-        loc.loadFromNbt(tag);
+        loc.loadFromNbt(tag, legacy);
         return loc;
     }
 
-    public void loadFromNbt(CompoundTag tag) {
-        this.x = tag.getDouble(NBT_X);
-        this.y = tag.getDouble(NBT_Y);
-        this.z = tag.getDouble(NBT_Z);
+    public void loadFromNbt(CompoundTag tag, boolean legacy) {
+        if (legacy) {
+            this.x = tag.getInt(NBT_X);
+            this.y = tag.getInt(NBT_Y);
+            this.z = tag.getInt(NBT_Z);
+        } else {
+            this.x = tag.getDouble(NBT_X);
+            this.y = tag.getDouble(NBT_Y);
+            this.z = tag.getDouble(NBT_Z);
+        }
         this.dimension = tag.getString(NBT_DIM);
         this.generateBlockPos();
     }
