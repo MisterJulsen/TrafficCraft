@@ -226,7 +226,7 @@ public class RoadConstructionTool extends Item {
             double a = d;
             Map<BlockPos, Integer> blockLayer = new HashMap<>();
             Vec3 vecPos = new Vec3(vec.x * a, vec.y * a, vec.z * a).add(start);
-            Vec3 rightVec = i == 0 ? rVec.normalize() : new Vec3((vec.z) * a, 0, -((vec.x) * a)).normalize();
+            Vec3 rightVec = i == 0 ? rVec.normalize() : new Vec3(vec.z * a, 0, -(vec.x * a)).normalize();
 
             lastY = setLayer(level, lastY, vecPos, rightVec, blockLayer, roadWidth, replaceBlocks);
             blockList.forEach(x -> x.entrySet().removeIf(y -> blockLayer.keySet().stream().anyMatch(z -> y.getKey().equals(z))));
@@ -301,7 +301,7 @@ public class RoadConstructionTool extends Item {
         
 
         if (lastY < (int)pos.y + slopeHeight) {
-            for (double i = -halfWidth - step; i < halfWidth + step; i += step) {
+            for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
                 BlockPos bPos = new BlockPos(vec.x, vec.y - 1, vec.z);
 
@@ -317,7 +317,7 @@ public class RoadConstructionTool extends Item {
         }
         
         if (height >= slopeHeight * 8 + pixel) {
-            for (double i = -halfWidth - step; i < halfWidth + step; i += step) {
+            for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
                 BlockPos bPos = new BlockPos(vec);
                 
@@ -331,7 +331,7 @@ public class RoadConstructionTool extends Item {
                 blockList.put(bPos, 8);
             }
         } else if (height >= slopeHeight) {
-            for (double i = -halfWidth - step; i < halfWidth + step; i += step) {
+            for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
                 BlockPos bPos = new BlockPos(vec);
                 
@@ -376,12 +376,14 @@ public class RoadConstructionTool extends Item {
         Vec3 end = null;
 
         if (nbt.contains(NBT_LOCATION1) && !nbt.contains(NBT_LOCATION2)) {
-            HitResult lookingAt = player.pick(player.getReachDistance(), 0, false);
+            HitResult lookingAt = player.pick(player.getReachDistance() - 1, 0, false);
             Vec3 lookAtVec = lookingAt.getLocation();
 
             if (!level.isEmptyBlock(new BlockPos(lookAtVec)) || !level.isEmptyBlock(new BlockPos(lookAtVec.x, lookAtVec.y - 0.5d, lookAtVec.z))) {
                 double blockHeight = level.getBlockFloorHeight(new BlockPos(lookAtVec));
-                end = new Vec3((int)lookAtVec.x() + 0.5f, (int)lookAtVec.y() + (blockHeight <= 0 ? 0 : blockHeight), (int)lookAtVec.z() + 0.5);
+                int vX = lookAtVec.x() > 0 ? 1 : -1;
+                int vZ = lookAtVec.z() > 0 ? 1 : -1;
+                end = new Vec3((int)lookAtVec.x() + (vX * 0.5d), (int)lookAtVec.y() + (blockHeight <= 0 ? 0 : blockHeight), (int)lookAtVec.z() + (vZ * 0.5d));
             } else {
                 end = null;
             }
