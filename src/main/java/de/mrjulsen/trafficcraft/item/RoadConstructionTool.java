@@ -244,7 +244,7 @@ public class RoadConstructionTool extends Item {
         new Thread(() -> {
             final boolean[] canContinue = new boolean[] { true };
             Thread.currentThread().setName("Road Builder");
-            Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+            Thread.currentThread().setPriority(ModCommonConfig.ROAD_BUILDER_THREAD_PRIORITY.get());
 
             for (Map<BlockPos, Integer> map : blockList) {
                 for (Entry<BlockPos, Integer> block : map.entrySet()) {

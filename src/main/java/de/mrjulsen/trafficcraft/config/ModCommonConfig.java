@@ -15,6 +15,7 @@ public class ModCommonConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_ROAD_WIDTH;
     public static final ForgeConfigSpec.ConfigValue<Double> ROAD_BUILDER_MAX_SLOPE;
+    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_THREAD_PRIORITY;
 
     static {
         BUILDER.push(ModMain.MOD_ID + "_common_config");
@@ -40,6 +41,9 @@ public class ModCommonConfig {
         
         ROAD_BUILDER_MAX_SLOPE = BUILDER.comment("Max slope of roads built by the road construction tool. Default: 4.0")
             .define("road_construction_tool.max_slope", 4.0D);
+            
+        ROAD_BUILDER_THREAD_PRIORITY = BUILDER.comment("The priority of the road building thread. Lower values may improve server performance but can also cause unpredictable delays while building the road. Default: 5")
+            .defineInRange("road_construction_tool.max_slope", Thread.NORM_PRIORITY, Thread.MIN_PRIORITY, Thread.MAX_PRIORITY);
 
         BUILDER.pop();
         SPEC = BUILDER.build();
