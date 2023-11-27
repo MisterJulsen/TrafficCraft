@@ -16,12 +16,7 @@
   "parent": "trafficcraft:craft_road",
   "criteria": {
     "req": {
-      "trigger": "minecraft:using_item",
-      "conditions": {
-        "item": {
-          "tag": "trafficcraft:tools/road_construction_tools"
-        }
-      }
+      "trigger": "minecraft:impossible"
     }
   },
   "rewards": {
