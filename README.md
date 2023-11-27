@@ -9,7 +9,7 @@
  
 #### **TrafficCraft is a Minecraft mod that brings roads, traffic signs, traffic lights and much more to your worlds. Build your own cities and roads according to your wishes.**
 
-This mod is heavily inspired by [Mapper's RoadStuff Mod](https://www.curseforge.com/minecraft/mc-mods/road-stuff "MapperBase's RoadStuff Mod"), which unfortunately has been discontinued. However, this mod is not a fork of the official RoadStuff mod, but its own and completely rewritten version, which also includes some additional content, such as traffic lights, traffic signs, street lamps and more.
+This mod is inspired by [Mapper's RoadStuff Mod](https://www.curseforge.com/minecraft/mc-mods/road-stuff "MapperBase's RoadStuff Mod"), which unfortunately has been discontinued. However, this mod is not a copy of the official RoadStuff mod, but its own version, which also includes additional content, such as traffic lights, traffic signs, street lamps and more.
 
 #### **Content**
 _Below is the content currently included in the mod. This list is not final yet, new content can be added at any time._
