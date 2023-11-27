@@ -43,7 +43,7 @@ public class ModCommonConfig {
             .define("road_construction_tool.max_slope", 4.0D);
             
         ROAD_BUILDER_THREAD_PRIORITY = BUILDER.comment("The priority of the road building thread. Lower values may improve server performance but can also cause unpredictable delays while building the road. Default: 5")
-            .defineInRange("road_construction_tool.max_slope", Thread.NORM_PRIORITY, Thread.MIN_PRIORITY, Thread.MAX_PRIORITY);
+            .defineInRange("road_construction_tool.road_construction_thread_priority", Thread.NORM_PRIORITY, Thread.MIN_PRIORITY, Thread.MAX_PRIORITY);
 
         BUILDER.pop();
         SPEC = BUILDER.build();
