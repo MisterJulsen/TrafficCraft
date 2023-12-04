@@ -47,14 +47,12 @@ public class ModItems {
         0
     ));
 
-
-    static {
-        for (Tiers tier : Tiers.values()) {
-            ITEMS.register(tier.name().toLowerCase() + "_road_construction_tool", () -> new RoadConstructionTool(tier, new Item.Properties()
-                .tab(ModCreativeModeTab.MOD_TAB)
-            ));
-        }
-    }
+    public static final RegistryObject<Item> WOOD_ROAD_CONSTRUCTION_TOOL = ITEMS.register("wood_road_construction_tool", () -> new RoadConstructionTool(Tiers.WOOD, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> STONE_ROAD_CONSTRUCTION_TOOL = ITEMS.register("stone_road_construction_tool", () -> new RoadConstructionTool(Tiers.STONE, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> IRON_ROAD_CONSTRUCTION_TOOL = ITEMS.register("iron_road_construction_tool", () -> new RoadConstructionTool(Tiers.IRON, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> GOLD_ROAD_CONSTRUCTION_TOOL = ITEMS.register("gold_road_construction_tool", () -> new RoadConstructionTool(Tiers.GOLD, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> DIAMOND_ROAD_CONSTRUCTION_TOOL = ITEMS.register("diamond_road_construction_tool", () -> new RoadConstructionTool(Tiers.DIAMOND, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
+    public static final RegistryObject<Item> NETHERITE_ROAD_CONSTRUCTION_TOOL = ITEMS.register("netherite_road_construction_tool", () -> new RoadConstructionTool(Tiers.NETHERITE, new Item.Properties().tab(ModCreativeModeTab.MOD_TAB)));
 
     public static final RegistryObject<Item> HAMMER = ITEMS.register("hammer", () -> new HammerItem(new Item.Properties()
         .tab(ModCreativeModeTab.MOD_TAB)
@@ -67,7 +65,7 @@ public class ModItems {
 
 
     public static void register(IEventBus eventBus) {
-        ITEMS.register(eventBus);        
+        ITEMS.register(eventBus); 
     }
 
 }
