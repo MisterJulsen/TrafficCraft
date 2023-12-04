@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
@@ -63,7 +64,11 @@ public class ClientWrapper {
     }
 
     public synchronized static <B extends IIdentifiable> void clearTexture(B id) {
-        TrafficSignTextureCacheClient.clear(id);
+        try {
+            TrafficSignTextureCacheClient.clear(id);
+        } catch (Exception e) {
+            ModMain.LOGGER.warn("Unable to clear texture.", e);
+        }
     }
 
     public static void handleTrafficSignTextureResetPacket(TrafficSignTextureResetPacket packet, Supplier<NetworkEvent.Context> ctx) { 
