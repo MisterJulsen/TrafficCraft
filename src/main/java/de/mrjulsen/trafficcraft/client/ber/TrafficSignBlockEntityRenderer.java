@@ -8,12 +8,12 @@ import com.mojang.math.Vector3f;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.client.AmbientOcclusion;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import net.minecraft.client.AmbientOcclusionStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.chunk.RenderRegionCache;
@@ -28,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<TrafficSignBlockEntity> {
 
     public TrafficSignBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-
     }
 
     @Override
@@ -103,9 +102,9 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             addVert(builder, pPoseStack, x1, y0, z1, u1, v1, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
             addVert(builder, pPoseStack, x1, y1, z1, u1, v0, r, g, b, a, packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF);
         } else {
-             float[] afloat = new float[Direction.values().length * 2];
+            float[] afloat = new float[Direction.values().length * 2];
             BitSet bitset = new BitSet(3);
-            AmbientOcclusion ao = new AmbientOcclusion();
+            ModelBlockRenderer.AmbientOcclusionFace ao = Minecraft.getInstance().getBlockRenderer().getModelRenderer().new AmbientOcclusionFace();
             BlockPos origin = be.getLevel().getChunk(be.getBlockPos()).getPos().getWorldPosition();
             ao.calculate(new RenderRegionCache().createRegion(be.getLevel(), origin.offset(-1, -1, -1), origin.offset(16, 16, 16), 1), state, be.getBlockPos(), direction, afloat, bitset, true);
             
