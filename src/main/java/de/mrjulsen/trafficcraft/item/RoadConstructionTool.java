@@ -5,15 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
@@ -42,7 +38,6 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,9 +58,15 @@ public class RoadConstructionTool extends Item {
     private static final int ERROR_TOO_FAR = 1;
     private static final int ERROR_SLOPE_TOO_STEEP = 2;
 
+    public static final int BUILD_DELAY_TICKS = 4;
+
+    private static byte clientTicks;
+    private static final byte FAST_GRAPHICS_CLIENT_TICK_DELAY = 8;
+    private static final byte FANCY_GRAPHICS_CLIENT_TICK_DELAY = 4;
+
     
-   private final float attackDamage;
-   private final Multimap<Attribute, AttributeModifier> defaultModifiers;
+    private final float attackDamage;
+    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
     public RoadConstructionTool(Tiers tier, Properties properties) {
         super(properties.stacksTo(1).durability(tier.getUses() * 6));
@@ -164,11 +165,6 @@ public class RoadConstructionTool extends Item {
         return new StatusResult(flag1 && flag2, status);
     }
 
-    private static boolean isPlayerCreative(Player pPlayer) {
-        return pPlayer.isCreative() || pPlayer.isSpectator();
-    }
-
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);   
@@ -237,66 +233,17 @@ public class RoadConstructionTool extends Item {
         return blockList;
     }
 
-    public static void buildRoad(Level pLevel, Player pPlayer, InteractionHand pHand, ItemStack pStack, Vec3 start, Vec3 end, byte roadWidth, boolean replaceBlocks, RoadType roadType) { 
+    public static RoadBuildingData prepareRoadBuilding(Level pLevel, Player pPlayer, InteractionHand pHand, ItemStack pStack, Vec3 start, Vec3 end, byte roadWidth, boolean replaceBlocks, RoadType roadType) { 
 
         Collection<Map<BlockPos, Integer>> blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks);    
-        pPlayer.getCooldowns().addCooldown(pStack.getItem(), blockList.size() + 20);
+        pPlayer.getCooldowns().addCooldown(pStack.getItem(), blockList.size() * BUILD_DELAY_TICKS);
 
         if (!pLevel.isClientSide) {
             Utils.giveAdvancement((ServerPlayer)pPlayer, "road_construction_tool", "req");
         }
 
-        new Thread(() -> {
-            final boolean[] canContinue = new boolean[] { true };
-            Thread.currentThread().setName("Road Builder");
-            Thread.currentThread().setPriority(ModCommonConfig.ROAD_BUILDER_THREAD_PRIORITY.get());
-
-            for (Map<BlockPos, Integer> map : blockList) {
-                for (Entry<BlockPos, Integer> block : map.entrySet()) {
-                    
-                    if (!canContinue[0] || !pPlayer.isAlive()) {
-                        return;
-                    }
-
-                    if (!isPlayerCreative(pPlayer) && (pPlayer.getInventory().countItem(roadType.getSlope().asItem()) <= 0 && pPlayer.getInventory().countItem(roadType.getBlock().asItem()) <= 0)) {
-                        return;
-                    }
-
-                    pPlayer.isRemoved();
-
-                    if (pLevel.getBlockState(block.getKey()).getBlock().defaultDestroyTime() != Block.INDESTRUCTIBLE) {
-                        if (block.getValue() > 0 && block.getValue() <= 7 && (isPlayerCreative(pPlayer) || pPlayer.getInventory().countItem(roadType.getSlope().asItem()) > 0)) {                            
-                            pLevel.destroyBlock(block.getKey(), !isPlayerCreative(pPlayer));
-                            pLevel.setBlockAndUpdate(block.getKey(), roadType.getSlope().defaultBlockState().setValue(AsphaltSlope.LAYERS, Math.min(block.getValue(), isPlayerCreative(pPlayer) ? Integer.MAX_VALUE : pPlayer.getInventory().countItem(roadType.getSlope().asItem()))));
-                            if (!isPlayerCreative(pPlayer)) {
-                                pPlayer.getInventory().items.stream().filter(x -> x.is(roadType.getSlope().asItem())).findFirst().get().shrink(block.getValue());
-                                pStack.hurtAndBreak(1, pPlayer, (player) -> {
-                                    player.broadcastBreakEvent(pHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-                                    canContinue[0] = false;
-                                });
-                            }
-                        } else if (block.getValue() > 7 && (isPlayerCreative(pPlayer) || pPlayer.getInventory().countItem(roadType.getBlock().asItem()) > 0)) {
-                            pLevel.destroyBlock(block.getKey(), !isPlayerCreative(pPlayer));
-                            pLevel.setBlockAndUpdate(block.getKey(), roadType.getBlock().defaultBlockState());
-                            if (!isPlayerCreative(pPlayer)) {
-                                pPlayer.getInventory().items.stream().filter(x -> x.is(roadType.getBlock().asItem())).findFirst().get().shrink(1);
-                                pStack.hurtAndBreak(1, pPlayer, (player) -> {
-                                    player.broadcastBreakEvent(pHand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
-                                    canContinue[0] = false;
-                                });                             
-                            }
-                        }
-                    }
-                }
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    ModMain.LOGGER.warn("Error while building road.", e);
-                }
-            }
-        }).start();
-    }
+        return new RoadBuildingData(blockList, pPlayer, pHand, pStack, start, end, roadWidth, replaceBlocks, roadType);
+    }    
 
     private static double setLayer(Level pLevel, double lastY, Vec3 pos, Vec3 normalizedRightVec, Map<BlockPos, Integer> blockList, final byte roadWidth, final boolean replaceBlocks) {
         final double halfWidth = roadWidth / 2.0D - 0.5D;
@@ -357,6 +304,11 @@ public class RoadConstructionTool extends Item {
 	@OnlyIn(Dist.CLIENT)
     @SuppressWarnings("resource")
 	public static void clientTick() {
+        clientTicks++;
+        if (clientTicks > (Minecraft.useFancyGraphics() ? FANCY_GRAPHICS_CLIENT_TICK_DELAY : FAST_GRAPHICS_CLIENT_TICK_DELAY)) {
+            clientTicks = 0;
+        }
+
         Player player = Minecraft.getInstance().player;
 		Level level = Minecraft.getInstance().level;
 
@@ -382,7 +334,7 @@ public class RoadConstructionTool extends Item {
         Vec3 end = null;
 
         if (nbt.contains(NBT_LOCATION1) && !nbt.contains(NBT_LOCATION2)) {
-            HitResult lookingAt = player.pick(player.getReachDistance() - 1, 0, false);
+            HitResult lookingAt = player.pick(player.getReachDistance() - 0.5D, 0, false);
             Vec3 lookAtVec = lookingAt.getLocation();
 
             if (!level.isEmptyBlock(new BlockPos(lookAtVec)) || !level.isEmptyBlock(new BlockPos(lookAtVec.x, lookAtVec.y - 0.5d, lookAtVec.z))) {
@@ -435,15 +387,17 @@ public class RoadConstructionTool extends Item {
                     break;
             }
 
-            for (double d = 0; d < 1; d += mul) {
-                Vec3 vecPos = new Vec3(line.x * d, line.y * d, line.z * d).add(start);
-                level.addParticle(new DustParticleOptions(isLineValid(start, end).result ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
-                
-                Vec3 rightVec = vecPos.add(new Vec3(line.z * d, 0, -line.x * d).normalize().scale(halfWidth));
-                level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), rightVec.x, rightVec.y, rightVec.z, 0, 0, 0);
-                
-                Vec3 leftVec = vecPos.add(new Vec3(-line.z * d, 0, line.x * d).normalize().scale(halfWidth));
-                level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), leftVec.x, leftVec.y, leftVec.z, 0, 0, 0);
+            if (clientTicks == 0) {
+                for (double d = 0; d < 1; d += mul) {
+                    Vec3 vecPos = new Vec3(line.x * d, line.y * d, line.z * d).add(start);
+                    level.addParticle(new DustParticleOptions(isLineValid(start, end).result ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
+                    
+                    Vec3 rightVec = vecPos.add(new Vec3(line.z * d, 0, -line.x * d).normalize().scale(halfWidth));
+                    level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), rightVec.x, rightVec.y, rightVec.z, 0, 0, 0);
+                    
+                    Vec3 leftVec = vecPos.add(new Vec3(-line.z * d, 0, line.x * d).normalize().scale(halfWidth));
+                    level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), leftVec.x, leftVec.y, leftVec.z, 0, 0, 0);
+                }
             }
         }
          
@@ -456,6 +410,30 @@ public class RoadConstructionTool extends Item {
         protected RoadBuilderCountResult(int blocksCount, int slopesCount) {
             this.blocksCount = blocksCount;
             this.slopesCount = slopesCount;
+        }
+    }
+
+    public static class RoadBuildingData {
+        public final List<Map<BlockPos, Integer>> blocks;
+        public final Player player;
+        public final InteractionHand hand;
+        public final ItemStack item;
+        public final Vec3 start;
+        public final Vec3 end;
+        public final byte roadWidth;
+        public final boolean replaceBlocks;
+        public final RoadType roadType;
+
+        public RoadBuildingData(Collection<Map<BlockPos, Integer>> blocks, Player player, InteractionHand hand, ItemStack item, Vec3 start, Vec3 end, byte roadWidth, boolean replaceBlocks, RoadType roadType) {
+            this.blocks = new ArrayList<>(blocks);
+            this.player = player;
+            this.hand = hand;
+            this.item = item;
+            this.start = start;
+            this.end = end;
+            this.roadWidth = roadWidth;
+            this.replaceBlocks = replaceBlocks;
+            this.roadType = roadType;
         }
     }
 }

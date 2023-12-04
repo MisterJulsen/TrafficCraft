@@ -1,15 +1,23 @@
 package de.mrjulsen.trafficcraft.network.packets;
 
+import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.utils.ScheduledTask;
+import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
+import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuildingData;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.network.NetworkEvent;
 
 public class RoadBuilderBuildRoadPacket {
@@ -49,7 +57,7 @@ public class RoadBuilderBuildRoadPacket {
     public static void handle(RoadBuilderBuildRoadPacket packet, Supplier<NetworkEvent.Context> context) {
         context.get().enqueueWork(() -> {
             ServerPlayer sender = context.get().getSender();
-            Level level = sender.getLevel();
+            final Level level = sender.getLevel();
             ItemStack item = null;
             InteractionHand hand = null;
 
@@ -63,7 +71,7 @@ public class RoadBuilderBuildRoadPacket {
                 return;
             }
 
-            RoadConstructionTool.buildRoad(
+            final RoadBuildingData buildingData = RoadConstructionTool.prepareRoadBuilding(
                 level,
                 sender,
                 hand,
@@ -74,7 +82,50 @@ public class RoadBuilderBuildRoadPacket {
                 packet.replaceBlocks,
                 packet.roadType
             );
+
+            ScheduledTask.create(buildingData, level, RoadConstructionTool.BUILD_DELAY_TICKS, buildingData.blocks.size(), (data, lvl, iteration) -> {
+                boolean[] canContinue = new boolean[] { true };
+                for (Entry<BlockPos, Integer> block : data.blocks.get(iteration).entrySet()) {
+                    
+                    if (!canContinue[0] || !data.player.isAlive()) {
+                        return false;
+                    }
+
+                    if (!isPlayerCreative(data.player) && (data.player.getInventory().countItem(data.roadType.getSlope().asItem()) <= 0 && data.player.getInventory().countItem(data.roadType.getBlock().asItem()) <= 0)) {
+                        return false;
+                    }
+
+                    if (level.getBlockState(block.getKey()).getBlock().defaultDestroyTime() != Block.INDESTRUCTIBLE) {
+                        if (block.getValue() > 0 && block.getValue() <= 7 && (isPlayerCreative(data.player) || data.player.getInventory().countItem(data.roadType.getSlope().asItem()) > 0)) {                            
+                            level.destroyBlock(block.getKey(), !isPlayerCreative(data.player));
+                            level.setBlockAndUpdate(block.getKey(), data.roadType.getSlope().defaultBlockState().setValue(AsphaltSlope.LAYERS, Math.min(block.getValue(), isPlayerCreative(data.player) ? Integer.MAX_VALUE : data.player.getInventory().countItem(data.roadType.getSlope().asItem()))));
+                            if (!isPlayerCreative(data.player)) {
+                                data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getSlope().asItem())).findFirst().get().shrink(block.getValue());
+                                data.item.hurtAndBreak(1, data.player, (player) -> {
+                                    player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                                    canContinue[0] = false;
+                                });
+                            }
+                        } else if (block.getValue() > 7 && (isPlayerCreative(data.player) || data.player.getInventory().countItem(data.roadType.getBlock().asItem()) > 0)) {
+                            level.destroyBlock(block.getKey(), !isPlayerCreative(data.player));
+                            level.setBlockAndUpdate(block.getKey(), data.roadType.getBlock().defaultBlockState());
+                            if (!isPlayerCreative(data.player)) {
+                                data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getBlock().asItem())).findFirst().get().shrink(1);
+                                data.item.hurtAndBreak(1, data.player, (player) -> {
+                                    player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                                    canContinue[0] = false;
+                                });                             
+                            }
+                        }
+                    }
+                }
+                return canContinue[0];
+            });
         });
         context.get().setPacketHandled(true);
+    }
+
+    private static boolean isPlayerCreative(Player pPlayer) {
+        return pPlayer.isCreative() || pPlayer.isSpectator();
     }
 }

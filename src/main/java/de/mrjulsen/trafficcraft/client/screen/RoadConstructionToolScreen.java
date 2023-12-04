@@ -255,7 +255,7 @@ public class RoadConstructionToolScreen extends Screen {
         super.render(stack, mouseX, mouseY, partialTicks);
 
         // Tooltips
-        itemButtonCollection.performForEachOfType(ItemButton.class, x -> x.isMouseOver(mouseX, mouseY), x -> this.renderTooltip(stack, x.getItem(), mouseX, mouseY));        
+        itemButtonCollection.performForEachOfType(ItemButton.class, x -> x.isMouseOver(mouseX, mouseY), x -> this.renderTooltip(stack, x.getItem(), mouseX, mouseY));
         Utils.renderTooltip(this, replaceBlockButton, () -> Utils.getTooltipData(this, tooltipReplaceBlocks, width / 4), stack, mouseX, mouseY);
         Utils.renderTooltip(this, resetButton, () -> Utils.getTooltipData(this, tooltipReset, width / 4), stack, mouseX, mouseY);
         Utils.renderTooltip(this, pos1Area, Utils.getTooltipData(this, tooltipPos1, width / 4), stack, mouseX, mouseY);
