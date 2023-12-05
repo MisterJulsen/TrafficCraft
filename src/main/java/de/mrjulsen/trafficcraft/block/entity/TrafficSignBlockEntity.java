@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;

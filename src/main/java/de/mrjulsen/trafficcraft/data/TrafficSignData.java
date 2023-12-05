@@ -7,8 +7,8 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import net.minecraft.client.gui.GuiComponent;

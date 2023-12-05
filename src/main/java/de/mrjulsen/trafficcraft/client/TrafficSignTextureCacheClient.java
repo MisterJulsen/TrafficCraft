@@ -7,7 +7,8 @@ import java.util.function.Consumer;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
+import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
+import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -24,12 +25,12 @@ public class TrafficSignTextureCacheClient {
         if (texture != null && hasBg) {
             try {
                 NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(ModMain.MOD_ID, "textures/block/sign/blank.png")).getInputStream());
-                for (int x = 0; x < 32; x++) {
-                    for (int y = 0; y < 32; y++) {
+                for (int x = 0; x < TrafficSignShape.MAX_WIDTH; x++) {
+                    for (int y = 0; y < TrafficSignShape.MAX_HEIGHT; y++) {
                         if (texture.getPixels().getPixelRGBA(x, y) != 0)
                             continue;
 
-                        bg.setPixelRGBA(31 - x, y, 0);
+                        bg.setPixelRGBA(TrafficSignShape.MAX_WIDTH - 1 - x, y, 0);
                     }
                 }
                 backgroundTextureCache.put(id.getId(), new DynamicTexture(bg));

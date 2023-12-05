@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
-import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
+import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;

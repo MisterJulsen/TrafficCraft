@@ -1,8 +1,8 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
