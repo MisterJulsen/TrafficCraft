@@ -3,11 +3,11 @@ package de.mrjulsen.trafficcraft.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.utils.TimeUtils;
+import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.data.TimeFormat;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
-import de.mrjulsen.trafficcraft.util.TimeUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;

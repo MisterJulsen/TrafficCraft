@@ -4,16 +4,16 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.TrafficLightControllerBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -35,7 +35,9 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private long totalTicks = 0;
     private boolean running = true;
 
-    // backwards compatibility
+    /**
+     * @deprecated Backwards compatibility only!
+     */
     @Deprecated private Location linkLocation = null;
     private boolean linkMigrated = false;
 
@@ -64,10 +66,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         linkMigration(compound);
     }
 
+    @SuppressWarnings("deprecation")
     private void linkMigration(CompoundTag nbt) {
         if (nbt.contains("linkedTo")) {
             ModMain.LOGGER.warn("Traffic Light at position " + worldPosition.toShortString() + " contains deprecated link data. Trying to convert it.");            
-            linkLocation = Location.fromNbt(nbt.getCompound("linkedTo"), true);
+            linkLocation = Location.fromNbtAsInt(nbt.getCompound("linkedTo"));
             linkMigrated = false;
             return;
         }
@@ -155,11 +158,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             return;
         }
 
-        if (level.isLoaded(linkLocation.getLocationAsBlockPos())) {
-            if (level.getBlockState(linkLocation.getLocationAsBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
-                level.getBlockEntity(linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
+        if (level.isLoaded(linkLocation.getLocationBlockPos())) {
+            if (level.getBlockState(linkLocation.getLocationBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
+                level.getBlockEntity(linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
             ) {
-                blockEntity.addTrafficLightLocation(new Location(pos, level));
+                blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), level.dimension().location().toString()));
             }
             linkMigrated = true;
             return;

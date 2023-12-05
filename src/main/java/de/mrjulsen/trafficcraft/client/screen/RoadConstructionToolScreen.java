@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
@@ -11,7 +12,6 @@ import de.mrjulsen.trafficcraft.client.widgets.ItemButton;
 import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
 import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
@@ -157,7 +157,7 @@ public class RoadConstructionToolScreen extends Screen {
             this.replaceExistingBlocks = value;
 
             if (pos1 != null && pos2 != null) {
-                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationAsVec3(), pos2.getLocationAsVec3(), roadWidth, replaceExistingBlocks);
+                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
                 blocksCount = res.blocksCount;
                 slopesCount = res.slopesCount;
             }
@@ -170,7 +170,7 @@ public class RoadConstructionToolScreen extends Screen {
 
                 roadWidth = (byte)this.getValueInt();
                 if (pos1 != null && pos2 != null) {
-                    RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationAsVec3(), pos2.getLocationAsVec3(), roadWidth, replaceExistingBlocks);
+                    RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
                     blocksCount = res.blocksCount;
                     slopesCount = res.slopesCount;
                 }

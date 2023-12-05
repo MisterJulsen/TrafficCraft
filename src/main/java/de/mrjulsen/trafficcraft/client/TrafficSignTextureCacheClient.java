@@ -2,21 +2,31 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 
 public class TrafficSignTextureCacheClient {
-    public static final HashMap<String, DynamicTexture> textureCache = new HashMap<>();
-    public static final HashMap<String, DynamicTexture> backgroundTextureCache = new HashMap<>();
+    public static final HashMap<UUID, DynamicTexture> textureCache = new HashMap<>();
+    public static final HashMap<UUID, DynamicTexture> backgroundTextureCache = new HashMap<>();
+
+    public static UUID generateNewId() {
+        UUID id = UUID.randomUUID();
+        while (textureCache.containsKey(id) || backgroundTextureCache.containsKey(id)) {
+            id = UUID.randomUUID();
+        }
+
+        return id;
+    }
 
     public static <B extends IIdentifiable> DynamicTexture setTexture(B id, boolean hasBg, DynamicTexture texture) {
         clear(id);
@@ -90,7 +100,7 @@ public class TrafficSignTextureCacheClient {
         }
     }
 
-    public static void clear(String id) {
+    public static void clear(UUID id) {
         if (textureCache.containsKey(id)) {
             textureCache.get(id).close();
             textureCache.remove(id);

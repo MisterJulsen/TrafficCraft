@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import de.mrjulsen.mcdragonlib.setup.IProxy;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
 import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
@@ -39,15 +40,15 @@ import net.minecraftforge.registries.RegistryObject;
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy implements IProxy {
 
-	private static final int TRANSPARENCY_COLOR_PRIMARY = 0xFFE9E9E9;
-	private static final int TRANSPARENCY_COLOR_SECONDARY = 0xFFD9D9D9;
+	private static final int CHECKERBOARD_COLOR_A = 0xFFE9E9E9;
+	private static final int CHECKERBOARD_COLOR_B = 0xFFD9D9D9;
 
     public static final DynamicTexture[] SHAPE_TEXTURES = Arrays.stream(TrafficSignShape.values()).map(v -> {
 		NativeImage image = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
 		for (int x = 0; x < image.getWidth(); x++) {
 			for (int y = 0; y < image.getHeight(); y++) {
 				if (v.isPixelValid(x, y)) {
-					image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? TRANSPARENCY_COLOR_PRIMARY : TRANSPARENCY_COLOR_SECONDARY) : (y % 2 == 0 ? TRANSPARENCY_COLOR_SECONDARY : TRANSPARENCY_COLOR_PRIMARY));
+					image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? CHECKERBOARD_COLOR_A : CHECKERBOARD_COLOR_B) : (y % 2 == 0 ? CHECKERBOARD_COLOR_B : CHECKERBOARD_COLOR_A));
 				} else {
                     image.setPixelRGBA(x, y, 0);
                 }

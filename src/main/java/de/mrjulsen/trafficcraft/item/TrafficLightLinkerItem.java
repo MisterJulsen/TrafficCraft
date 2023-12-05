@@ -2,10 +2,10 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -63,9 +63,11 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     blockEntity.linkTo(linkLoc);
                     player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 } else {                        
-                    if (pContext.getLevel().isLoaded(linkLoc.getLocationAsBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationAsBlockPos()).getBlock())) {
-                        if (pContext.getLevel().getBlockEntity(linkLoc.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
-                            blockEntity.addTrafficLightLocation(new Location(pContext.getClickedPos(), pContext.getLevel()));
+                    if (pContext.getLevel().isLoaded(linkLoc.getLocationBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationBlockPos()).getBlock())) {
+                        if (pContext.getLevel().getBlockEntity(linkLoc.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                            BlockPos pos = pContext.getClickedPos();
+                            String dim = pContext.getLevel().dimension().location().toString();
+                            blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
                             player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                         }
                     } else {

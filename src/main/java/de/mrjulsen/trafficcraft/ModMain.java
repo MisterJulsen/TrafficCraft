@@ -2,11 +2,11 @@ package de.mrjulsen.trafficcraft;
 
 import com.mojang.logging.LogUtils;
 
+import de.mrjulsen.mcdragonlib.setup.IProxy;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.proxy.ClientProxy;
-import de.mrjulsen.trafficcraft.proxy.IProxy;
 import de.mrjulsen.trafficcraft.proxy.ServerProxy;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
@@ -47,9 +47,7 @@ public class ModMain {
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        // some preinit code
-        LOGGER.info("Welcome to the TrafficCraft mod.");
-
+        LOGGER.info("Welcome to the TRAFFICCRAFT mod by MRJULSEN.");
         PROXY.setup(event);
     }
 }

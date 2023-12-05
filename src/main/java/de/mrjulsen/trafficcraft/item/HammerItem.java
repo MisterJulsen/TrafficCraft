@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.item;
 
 import javax.annotation.Nonnull;
 
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;

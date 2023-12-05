@@ -2,11 +2,12 @@ package de.mrjulsen.trafficcraft.network.packets;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +57,7 @@ public class TrafficSignPatternPacket
                 menu.patternSlot.setChanged();
                 menu.broadcastChanges();
 
-                Utils.giveAdvancement(sender, "create_traffic_sign_pattern", "requirement");
+                Utils.giveAdvancement(sender, ModMain.MOD_ID, "create_traffic_sign_pattern", "requirement");
 
                 NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignWorkbenchUpdateClientPacket(), context.get().getSender().connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
             }

@@ -1,13 +1,15 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import java.util.UUID;
+
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -23,7 +25,7 @@ import net.minecraftforge.network.NetworkDirection;
 public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable, AutoCloseable {
 
     private static final String TEXTURE_TAG = "texture";
-    private final String ID;
+    private final UUID ID;
 
     private String textureData;
 
@@ -38,7 +40,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
     }
 
     @Override
-    public String getId() {
+    public UUID getId() {
         return ID;
     }
 

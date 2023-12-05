@@ -7,14 +7,14 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -155,20 +155,20 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                     int phaseId = entry.getPhaseId();
 
                     trafficLightLocations.removeIf(a -> 
-                        level.isLoaded(a.getLocationAsBlockPos()) &&
-                        level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
-                        level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                        level.isLoaded(a.getLocationBlockPos()) &&
+                        level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock &&
+                        level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
                         blockEntity.getControlType() != TrafficLightControlType.REMOTE
                     );
 
                     trafficLightLocations.stream().filter(a -> 
-                        level.isLoaded(a.getLocationAsBlockPos()) &&
-                        level.getBlockState(a.getLocationAsBlockPos()).getBlock() instanceof TrafficLightBlock &&
-                        level.getBlockEntity(a.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                        level.isLoaded(a.getLocationBlockPos()) &&
+                        level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock &&
+                        level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
                         blockEntity.getPhaseId() == phaseId
                     ).forEach(a -> {
-                        BlockState blockState = level.getBlockState(a.getLocationAsBlockPos());
-                        level.setBlockAndUpdate(a.getLocationAsBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
+                        BlockState blockState = level.getBlockState(a.getLocationBlockPos());
+                        level.setBlockAndUpdate(a.getLocationBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
                     });
                 }                    
             }

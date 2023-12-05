@@ -2,9 +2,10 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
+import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
-import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;
@@ -16,7 +17,6 @@ import de.mrjulsen.trafficcraft.client.screen.TrafficLightControllerScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen;
-import de.mrjulsen.trafficcraft.data.TimeFormat;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignWorkbenchUpdateClientPacket;
 import net.minecraft.client.Minecraft;

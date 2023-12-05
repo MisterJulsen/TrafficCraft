@@ -3,10 +3,10 @@ package de.mrjulsen.trafficcraft.network.packets;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.mcdragonlib.utils.ScheduledTask;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuildingData;
 import net.minecraft.core.BlockPos;
@@ -76,8 +76,8 @@ public class RoadBuilderBuildRoadPacket {
                 sender,
                 hand,
                 item,
-                packet.pos1.getLocationAsVec3(),
-                packet.pos2.getLocationAsVec3(), 
+                packet.pos1.getLocationVec3(),
+                packet.pos2.getLocationVec3(), 
                 packet.roadWidth,
                 packet.replaceBlocks,
                 packet.roadType

@@ -1,7 +1,10 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -9,19 +12,20 @@ import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer;
-import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
-import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
-import de.mrjulsen.trafficcraft.client.widgets.HScrollBar;
 import de.mrjulsen.trafficcraft.client.widgets.ICustomAreaControl;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.AreaStyle;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
@@ -30,7 +34,6 @@ import de.mrjulsen.trafficcraft.network.packets.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -69,12 +72,12 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
 
     // Groups
-    private final ControlCollection groupDefaultModeButtons = new ControlCollection();
-    private final ControlCollection groupEditor = new ControlCollection();
-    private final ControlCollection groupEditorToolbar1 = new ControlCollection();
-    private final ControlCollection groupShapes = new ControlCollection();
-    private final ControlCollection groupCreatePattern = new ControlCollection();
-    private final ControlCollection groupColors = new ControlCollection();
+    private final WidgetsCollection groupDefaultModeButtons = new WidgetsCollection();
+    private final WidgetsCollection groupEditor = new WidgetsCollection();
+    private final WidgetsCollection groupEditorToolbar1 = new WidgetsCollection();
+    private final WidgetsCollection groupShapes = new WidgetsCollection();
+    private final WidgetsCollection groupCreatePattern = new WidgetsCollection();
+    private final WidgetsCollection groupColors = new WidgetsCollection();
     
     // gui
     private int guiLeft;
@@ -83,6 +86,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private GuiAreaDefinition editorArea, nextButton, prevButton;
     private TrafficSignData preview;
     private EditBox nameBox;
+
+    // tooltips
+    private final Map<TrafficSignWorkbenchMode, List<Tooltip>> tooltips = new HashMap<>();
 
     // data
     private TrafficSignShape shape;
@@ -119,6 +125,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
     public TrafficSignWorkbenchGui(TrafficSignWorkbenchMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
+        Arrays.stream(TrafficSignWorkbenchMode.values()).forEach(x -> this.tooltips.put(x, new ArrayList<>()));
         this.imageWidth = WIDTH;
         this.imageHeight = HEIGHT;
         this.inventoryLabelY = 188;
@@ -151,20 +158,33 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         groupEditor.components.clear();
         groupEditorToolbar1.components.clear();
         groupColors.components.clear();
+        tooltips.clear();
 
-        //#region DEFAULT MODE CONTROLS
+        // DEFAULT MODE CONTROLS
+
         // Add new
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                ButtonIcons.ADD.render(pPoseStack, x, y);
-            }
-        });
+        this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.ADD.getSprite(),
+            groupDefaultModeButtons,
+            guiLeft + 9,
+            guiTop + 36 + 0 * ICON_BUTTON_HEIGHT,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            playerInventoryTitle,
+            (btn) -> {
+                switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
+            })
+        );
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultNew));
         
         // Edit selected
+        this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.EDIT, groupColors, imageHeight, SLOT_ITEM_BLIT_OFFSET, width, height, playerInventoryTitle, null))
+
         this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 1 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
             if (preview == null) {
                 return;
@@ -925,6 +945,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         public void render(PoseStack pPoseStack, int x, int y) {   
             RenderSystem.setShaderTexture(0, OVERLAY);         
             blit(pPoseStack, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        }
+
+        public Sprite getSprite() {
+            return new Sprite(OVERLAY, 256, 256, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE);
         }
     }
 }

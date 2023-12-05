@@ -2,11 +2,11 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -69,9 +69,9 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
         if (this.listening) {
             if (!level.isClientSide) {
                 boolean isRunning = false;
-                if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
+                if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
                     isRunning = blockEntity.isFirstIteration();
-                } else  if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                } else  if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
                     isRunning = blockEntity.isFirstIteration();
                 }
                 
@@ -105,7 +105,7 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
     }
 
     public boolean isValidLinked() {
-        return this.getLinkLocation() != null && level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity;
+        return this.getLinkLocation() != null && level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity;
     }
 
     public boolean isListening() {
@@ -117,12 +117,12 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
         if (!this.isValidLinked()) 
             return false;
 
-        if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
+        if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
             if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.ON_REQUEST) {
                 blockEntity.startSchedule(false);
                 return true;
             }
-        } else if (level.getBlockEntity(this.linkLocation.getLocationAsBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+        } else if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
             if (blockEntity.getFirstOrMainSchedule().getTrigger() == TrafficLightTrigger.ON_REQUEST) {
                 blockEntity.startSchedule(true);
                 return true;

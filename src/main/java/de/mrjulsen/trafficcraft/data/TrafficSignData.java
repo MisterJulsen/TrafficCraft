@@ -2,12 +2,13 @@ package de.mrjulsen.trafficcraft.data;
 
 import java.io.Closeable;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.trafficcraft.block.data.IIdentifiable;
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
@@ -23,7 +24,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class TrafficSignData implements Closeable, IIdentifiable {
 
-    private final String ID;
+    private final UUID ID;
 
     private final int width;
     private final int height;
@@ -38,11 +39,11 @@ public class TrafficSignData implements Closeable, IIdentifiable {
         this.height = height;
         this.shape = shape;
 
-        ID = String.valueOf(System.nanoTime());
+        ID = TrafficSignTextureCacheClient.generateNewId();
     }
 
     @Override
-    public String getId() {
+    public UUID getId() {
         return ID;
     }
 

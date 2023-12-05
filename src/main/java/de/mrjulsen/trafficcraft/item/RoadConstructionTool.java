@@ -10,12 +10,13 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.data.Location;
 import de.mrjulsen.trafficcraft.util.StatusResult;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -92,7 +93,7 @@ public class RoadConstructionTool extends Item {
                 Location location = new Location(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location().toString());
                 
                 if (compound.contains(NBT_LOCATION1)) {
-                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationAsVec3(), location.getLocationAsVec3()).result) {
+                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).result) {
                         compound.put(NBT_LOCATION2, location.toNbt());
                     }
                 } else {
@@ -154,7 +155,7 @@ public class RoadConstructionTool extends Item {
 
     private static StatusResult isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
-        boolean flag2 = Utils.slopeStrength(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
+        boolean flag2 = de.mrjulsen.mcdragonlib.utils.Math.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
         int status = 0;
 
         if (!flag1) {
@@ -176,8 +177,8 @@ public class RoadConstructionTool extends Item {
         Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
 
         if (endLoc != null && startLoc != null) {
-            Vec3 start = startLoc.getLocationAsVec3();
-            Vec3 end = endLoc.getLocationAsVec3();
+            Vec3 start = startLoc.getLocationVec3();
+            Vec3 end = endLoc.getLocationVec3();
             byte roadWidth = itemstack.getTag().getByte(NBT_ROAD_WIDTH);
             boolean replaceBlocks = true;
             blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks); 
@@ -239,7 +240,7 @@ public class RoadConstructionTool extends Item {
         pPlayer.getCooldowns().addCooldown(pStack.getItem(), blockList.size() * BUILD_DELAY_TICKS);
 
         if (!pLevel.isClientSide) {
-            Utils.giveAdvancement((ServerPlayer)pPlayer, "road_construction_tool", "req");
+            Utils.giveAdvancement((ServerPlayer)pPlayer, ModMain.MOD_ID, "road_construction_tool", "req");
         }
 
         return new RoadBuildingData(blockList, pPlayer, pHand, pStack, start, end, roadWidth, replaceBlocks, roadType);
@@ -330,7 +331,7 @@ public class RoadConstructionTool extends Item {
             return;
         }
 
-        Vec3 start = Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationAsVec3().add(0.5d, 0, 0.5d);
+        Vec3 start = Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationVec3().add(0.5d, 0, 0.5d);
         Vec3 end = null;
 
         if (nbt.contains(NBT_LOCATION1) && !nbt.contains(NBT_LOCATION2)) {
@@ -347,14 +348,14 @@ public class RoadConstructionTool extends Item {
             }
 
             player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_pos1",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationAsBlockPos().toShortString()
+                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
             ), true);
 
         } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
-            end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationAsVec3().add(0.5d, 0, 0.5d);
+            end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
             player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_pos2",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationAsBlockPos().toShortString(),
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationAsBlockPos().toShortString()
+                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
+                Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
         }
 
