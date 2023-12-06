@@ -11,6 +11,8 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleScreen;
 import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -30,9 +32,9 @@ public class TrafficLightScheduleEntry {
     
     protected EditBox idInput;
     protected EditBox timeInput;
-    protected ResizableButton timeAddBtn;
-    protected ResizableButton timeRemoveBtn;
-    protected ResizableCycleButton<TrafficLightMode> modeButton;
+    protected Button timeAddBtn;
+    protected Button timeRemoveBtn;
+    protected CycleButton<TrafficLightMode> modeButton;
 
     private boolean idEditable;
 

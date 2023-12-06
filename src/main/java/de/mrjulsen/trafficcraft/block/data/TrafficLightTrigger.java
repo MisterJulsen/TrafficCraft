@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightTrigger implements StringRepresentable {
+public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnum {
     NONE("none", 0),
 	ON_REQUEST("on_request", 1),
 	REDSTONE("redstone", 2);
@@ -40,4 +41,14 @@ public enum TrafficLightTrigger implements StringRepresentable {
     public String getSerializedName() {
         return trigger;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlighttrigger";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getTrigger();
+	}
 }

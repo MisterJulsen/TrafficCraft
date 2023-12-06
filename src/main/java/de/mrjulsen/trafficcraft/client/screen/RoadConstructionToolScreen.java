@@ -1,16 +1,20 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
-import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
-import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
-import de.mrjulsen.trafficcraft.client.widgets.ItemButton;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult;
@@ -18,11 +22,9 @@ import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.RoadBuilderBuildRoadPacket;
 import de.mrjulsen.trafficcraft.network.packets.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.RoadBuilderResetPacket;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -35,7 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
 
 @OnlyIn(Dist.CLIENT)
-public class RoadConstructionToolScreen extends Screen {
+public class RoadConstructionToolScreen extends CommonScreen {
     public static final Component title = new TranslatableComponent("gui.trafficcraft.road_builder.title");
 
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/road_construction_tool.png");
@@ -57,7 +59,7 @@ public class RoadConstructionToolScreen extends Screen {
     private CycleButton<?> replaceBlockButton;
     private Button resetButton;
     private Button buildButton;
-    private final ControlCollection itemButtonCollection = new ControlCollection();
+    private final WidgetsCollection itemButtonCollection = new WidgetsCollection();
     private GuiAreaDefinition pos1Area;
     private GuiAreaDefinition pos2Area;
     private GuiAreaDefinition buildButtonArea;    
@@ -126,12 +128,13 @@ public class RoadConstructionToolScreen extends Screen {
 
         int btnSpace = WORKING_AREA_WIDTH / 3;
         int btnWidth = btnSpace - 2;
-        this.resetButton = this.addRenderableWidget(new Button(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
+
+        this.resetButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
             NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
             this.onCancel();
-        }));
+        }, Tooltip.of(tooltipReset));
 
-        this.buildButton = this.addRenderableWidget(new Button(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
+        this.buildButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
             updateStackData();
             CompoundTag nbt = this.stack.getOrCreateTag();
             Location pos1 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1));
@@ -145,15 +148,15 @@ public class RoadConstructionToolScreen extends Screen {
             RoadConstructionTool.reset(stack);
             NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
             this.onClose();
-        }));
+        }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
         buildButtonArea = new GuiAreaDefinition(buildButton.x, buildButton.y, buildButton.getWidth(), buildButton.getHeight());
 
-        this.addRenderableWidget(new Button(guiLeft + WORKING_AREA_X + (btnSpace * 2) + 4, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, CommonComponents.GUI_DONE, (p) -> {
+        addButton(guiLeft + WORKING_AREA_X + (btnSpace * 2) + 4, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onClose();
-        }));
+        }, null);
 
-        this.replaceBlockButton = this.addRenderableWidget(CycleButton.onOffBuilder(this.replaceExistingBlocks).create(guiLeft + WORKING_AREA_X, guiTop + 38, 114, 20, replaceBlocksText, (btn, value) -> {
+        this.replaceBlockButton = addOnOffButton(guiLeft + WORKING_AREA_X, guiTop + 38, 114, 20, replaceBlocksText, this.replaceExistingBlocks, (btn, value) -> {
             this.replaceExistingBlocks = value;
 
             if (pos1 != null && pos2 != null) {
@@ -161,36 +164,34 @@ public class RoadConstructionToolScreen extends Screen {
                 blocksCount = res.blocksCount;
                 slopesCount = res.slopesCount;
             }
-        }));
+        }, Tooltip.of(tooltipReplaceBlocks));
 
-        this.widthSlider = this.addRenderableWidget(new ForgeSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, new TextComponent(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), this.roadWidth, 1, 1, true) {
-            @Override
-            public void onRelease(double pMouseX, double pMouseY) {
-                super.onRelease(pMouseX, pMouseY);
-
-                roadWidth = (byte)this.getValueInt();
-                if (pos1 != null && pos2 != null) {
-                    RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
-                    blocksCount = res.blocksCount;
-                    slopesCount = res.slopesCount;
-                }
+        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, new TextComponent(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
+        (slider, value) -> {
+            roadWidth = value.byteValue();
+            if (pos1 != null && pos2 != null) {
+                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
+                blocksCount = res.blocksCount;
+                slopesCount = res.slopesCount;
             }
-        });
+        }, null);
         
         int blocksWidth = WORKING_AREA_WIDTH - 2;
         int buttonWidth = blocksWidth / (RoadType.values().length - 1);
 
         for (int i = 1; i < RoadType.values().length; i++) {
             RoadType type = RoadType.values()[i];
+
             ItemButton btn = this.addRenderableWidget(new ItemButton(
                 ButtonType.RADIO_BUTTON,
-                ColorStyle.BROWN,
-                itemButtonCollection,
+                AreaStyle.BROWN,
                 new ItemStack(type.getBlock().asItem()),
+                itemButtonCollection,
                 guiLeft + WORKING_AREA_X + 1 + (buttonWidth * (i - 1)),
                 guiTop + 84,
                 buttonWidth,
-                ItemButton.DEFAULT_BUTTON_HEIGHT, (p) -> {
+                ItemButton.DEFAULT_BUTTON_HEIGHT,
+                (p) -> {
                     this.roadType = type;
                 })
             );
@@ -199,6 +200,9 @@ public class RoadConstructionToolScreen extends Screen {
                 btn.select();
             }
         }
+
+        addTooltip(Tooltip.of(tooltipPos1).assignedTo(pos1Area));
+        addTooltip(Tooltip.of(tooltipPos2).assignedTo(pos2Area));
 
     }
 
@@ -225,8 +229,7 @@ public class RoadConstructionToolScreen extends Screen {
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
         renderBackground(stack, 0);
         
-        RenderSystem.setShaderTexture(0, GUI);
-        blit(stack, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        GuiUtils.blit(GUI, stack, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
         this.font.draw(stack, title, this.width / 2 - font.width(title) / 2, guiTop + 6, 4210752);
         this.font.draw(stack, roadBlocksText, guiLeft + WORKING_AREA_X, guiTop + 73, 4210752);
         this.font.draw(stack, requiredResourcesText, guiLeft + WORKING_AREA_X + 3, guiTop + 107, 0xFFFFFF);
@@ -255,17 +258,13 @@ public class RoadConstructionToolScreen extends Screen {
         super.render(stack, mouseX, mouseY, partialTicks);
 
         // Tooltips
-        itemButtonCollection.performForEachOfType(ItemButton.class, x -> x.isMouseOver(mouseX, mouseY), x -> this.renderTooltip(stack, x.getItem(), mouseX, mouseY));
-        Utils.renderTooltip(this, replaceBlockButton, () -> Utils.getTooltipData(this, tooltipReplaceBlocks, width / 4), stack, mouseX, mouseY);
-        Utils.renderTooltip(this, resetButton, () -> Utils.getTooltipData(this, tooltipReset, width / 4), stack, mouseX, mouseY);
-        Utils.renderTooltip(this, pos1Area, Utils.getTooltipData(this, tooltipPos1, width / 4), stack, mouseX, mouseY);
-        Utils.renderTooltip(this, pos2Area, Utils.getTooltipData(this, tooltipPos2, width / 4), stack, mouseX, mouseY);
+        //itemButtonCollection.performForEachOfType(ItemButton.class, x -> x.isMouseOver(mouseX, mouseY), x -> this.renderTooltip(stack, x.getItem(), mouseX, mouseY));
 
         if (buildButtonArea.isInBounds(mouseX, mouseY)) {
             if (pos1 == null || pos2 == null) {
-                Utils.renderTooltip(this, buildButtonArea, Utils.getTooltipData(this, tooltipBuildMissingPos, width / 4), stack, mouseX, mouseY);
+                GuiUtils.renderTooltip(this, buildButtonArea, List.of(tooltipBuildMissingPos), width / 4, stack, mouseX, mouseY);
             } else {
-                Utils.renderTooltip(this, buildButton, () -> Utils.getTooltipData(this, tooltipBuild, width / 4), stack, mouseX, mouseY);
+                GuiUtils.renderTooltip(this, buildButton, List.of(tooltipBuild), width / 4, stack, mouseX, mouseY);
             }
         }
     }

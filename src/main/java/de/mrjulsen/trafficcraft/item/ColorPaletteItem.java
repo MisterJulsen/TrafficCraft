@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import de.mrjulsen.trafficcraft.client.screen.ColorObject;
+import de.mrjulsen.mcdragonlib.client.ColorObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

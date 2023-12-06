@@ -2,9 +2,9 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.stream.IntStream;
 
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.proxy.ClientProxy;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

@@ -10,25 +10,19 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer;
-import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
-import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
-import de.mrjulsen.trafficcraft.client.widgets.HScrollBar;
-import de.mrjulsen.trafficcraft.client.widgets.ICustomAreaControl;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.AreaStyle;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacket;
 import de.mrjulsen.trafficcraft.network.packets.CreativePatternCataloguePacket;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
@@ -45,8 +39,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TrafficSignPatternSelectionScreen extends Screen
-{
+public class TrafficSignPatternSelectionScreen extends Screen {
+    
     public static final Component title = new TranslatableComponent("gui.trafficcraft.patternselection.title");
     
     private static final int WIDTH = 158;
@@ -75,8 +69,8 @@ public class TrafficSignPatternSelectionScreen extends Screen
     private static final int BOOKMARK_X_LEFT = -33;
     private static final int BOOKMARK_X_RIGHT = WIDTH - 16;
     
-    private final ControlCollection groupPatterns = new ControlCollection();
-    private HScrollBar scrollbar;
+    private final WidgetsCollection groupPatterns = new WidgetsCollection();
+    private VerticalScrollBar scrollbar;
 
     private int guiTop;
     private int guiLeft;
@@ -145,6 +139,7 @@ public class TrafficSignPatternSelectionScreen extends Screen
             final int count = PatternCatalogueItem.getStoredPatternCount(stack);
             for (int i = 0; i < count; i++) {
                 final int j = i;
+                final Sprite sprite = 
                 IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
                     PatternCatalogueItem.setSelectedIndex(stack, j);
                     if (stack.getItem() instanceof CreativePatternCatalogueItem) {
