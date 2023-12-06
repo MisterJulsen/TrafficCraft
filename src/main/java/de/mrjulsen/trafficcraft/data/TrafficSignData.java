@@ -2,7 +2,6 @@ package de.mrjulsen.trafficcraft.data;
 
 import java.io.Closeable;
 import java.nio.charset.StandardCharsets;
-import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -24,7 +23,7 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class TrafficSignData implements Closeable, IIdentifiable {
 
-    private final UUID ID;
+    private final String ID;
 
     private final int width;
     private final int height;
@@ -39,11 +38,11 @@ public class TrafficSignData implements Closeable, IIdentifiable {
         this.height = height;
         this.shape = shape;
 
-        ID = TrafficSignTextureCacheClient.generateNewId();
+        ID = String.valueOf(System.nanoTime());
     }
 
     @Override
-    public UUID getId() {
+    public String getId() {
         return ID;
     }
 

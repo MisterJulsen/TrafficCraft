@@ -3,9 +3,9 @@ package de.mrjulsen.trafficcraft.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleScreen;
@@ -71,23 +71,23 @@ public class TrafficLightScheduleEntry {
     }
 
     public void init() {
-        this.timeAddBtn = new ResizableButton(52, 4, 16, 16, new TextComponent("+"), (p) -> {
+        this.timeAddBtn = GuiUtils.createButton(52, 4, 16, 16, new TextComponent("+"), (p) -> {
             this.data.addDurationSeconds(1);
             this.timeInput.setValue(Integer.toString((int)this.data.getDurationSeconds()));
-        }, (pButton, pPoseStack, pMouseX, pMouseY) -> {
-            this.parent.renderTooltip(pPoseStack, tooltipAdd, pMouseX, pMouseY);
         });
 
-        this.timeRemoveBtn = new ResizableButton(4, 4, 16, 16, new TextComponent("-"), (p) -> {
+        this.timeRemoveBtn = GuiUtils.createButton(4, 4, 16, 16, new TextComponent("-"), (p) -> {
             this.data.subDurationSeconds(1);
             this.timeInput.setValue(Integer.toString((int)this.data.getDurationSeconds()));
-        }, (pButton, pPoseStack, pMouseX, pMouseY) -> {
-            this.parent.renderTooltip(pPoseStack, tooltipRemove, pMouseX, pMouseY);
         });
 
-        this.timeInput = new EditBox(this.parent.getFont(), 21, 5, 30, 14, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.duration"));
+        this.timeInput = GuiUtils.createEditBox(21, 5, 30, 14, this.parent.getFont(), Integer.toString((int)this.data.getDurationSeconds()), true,
+        (text) -> {
+            try {
+                this.data.setDurationSeconds((double)Integer.parseInt(text));
+            } catch (NumberFormatException e) {}
+        }, null);
         this.timeInput.setMaxLength(3);
-        this.timeInput.setValue(Integer.toString((int)this.data.getDurationSeconds()));
         this.timeInput.setFilter(input -> {
                 if (input.isEmpty())
                     return true;
@@ -101,15 +101,14 @@ public class TrafficLightScheduleEntry {
                 }
             }
         );
-        this.timeInput.setResponder(pResponse -> {
-            try {
-                this.data.setDurationSeconds((double)Integer.parseInt(pResponse));
-            } catch (NumberFormatException e) {}
-        });
 
-        this.idInput = new EditBox(this.parent.getFont(), 77, 5, 30, 14, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.id"));
+        this.idInput = GuiUtils.createEditBox(77, 5, 30, 14, this.parent.getFont(), Integer.toString(this.data.getPhaseId()), true,
+        (text) -> {
+            try {
+                this.data.setPhaseId(Integer.parseInt(text));
+            } catch (NumberFormatException e) {}
+        }, null);
         this.idInput.setMaxLength(3);
-        this.idInput.setValue(Integer.toString(this.data.getPhaseId()));
         this.idInput.setEditable(idEditable);
         this.idInput.setFilter(input -> {
                 if (input.isEmpty())
@@ -123,18 +122,10 @@ public class TrafficLightScheduleEntry {
                 }
             }
         );
-        this.idInput.setResponder(pResponse -> {
-            try {
-                this.data.setPhaseId(Integer.parseInt(pResponse));
-            } catch (NumberFormatException e) {}
-        });
 
-        this.modeButton = ResizableCycleButton.<TrafficLightMode>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-        })
-            .withValues(TrafficLightMode.values()).displayOnlyValue().withInitialValue(this.data.getMode())            
-            .create(MODE_BTN_X_OFFSET, MODE_BTN_Y_OFFSET, MODE_BTN_W, MODE_BTN_H, textMode, (pCycleButton, pValue) -> {
-                this.data.setMode(pValue);    
+        this.modeButton = GuiUtils.createCycleButton(ModMain.MOD_ID, TrafficLightMode.class, MODE_BTN_X_OFFSET, MODE_BTN_Y_OFFSET, MODE_BTN_W, MODE_BTN_H, textMode, this.data.getMode(), 
+        (btn, value) -> {
+            this.data.setMode(value);
         });
 
         this.renderableWidgets.clear();
@@ -150,13 +141,11 @@ public class TrafficLightScheduleEntry {
         }
     }
 
-    public void render(int yOffset, PoseStack stack, int mouseX, int mouseY, float partialTicks)
-    {        
+    public void render(int yOffset, PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
         this.y = yOffset;
 
-        RenderSystem.setShaderTexture(0, WIDGETS);
         int y = selected ? 2 * height : 0;
-        this.parent.blit(stack, this.x, this.y, 0, y, width, height);
+        GuiUtils.blit(WIDGETS, stack, this.x, this.y, 0, y, width, height);
 
         for (WidgetData widget : renderableWidgets) {
             widget.renderWithOffset(stack, mouseX, mouseY, partialTicks, this.x, this.y);

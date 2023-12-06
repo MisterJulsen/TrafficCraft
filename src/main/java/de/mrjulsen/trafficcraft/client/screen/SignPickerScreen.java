@@ -14,7 +14,6 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
@@ -27,6 +26,7 @@ import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.Utils;
@@ -34,7 +34,6 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.CommonComponents;
@@ -126,7 +125,7 @@ public class SignPickerScreen extends CommonScreen {
         }));
 
         
-        IconButton btn = new IconButton(ButtonType.DEFAULT, AreaStyle.BROWN, TrafficSignWorkbenchGui.ButtonIcons.IMPORT.getSprite(), groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+        IconButton btn = new IconButton(ButtonType.DEFAULT, AreaStyle.BROWN, TrafficSignWorkbenchGui.ButtonIcons.IMPORT.getSprite(), groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
             groupPatterns.performForEach(x -> ((IconButton)x).deselect());
             PointerBuffer filterPatterns = MemoryUtil.memAllocPointer(5);
             filterPatterns.put(MemoryUtil.memUTF8("*.png"));
@@ -158,14 +157,14 @@ public class SignPickerScreen extends CommonScreen {
                 
             }
             this.minecraft.getSoundManager().resume();
-        });
+        }).withAlignment(Alignment.CENTER);
         addTooltip(Tooltip.of(tooltipImport).assignedTo(btn));
         this.addRenderableWidget(btn);
         
         for (int i = 0; i < count; i++) {
             final int j = i;
             Sprite sprite = new Sprite(resources[j], 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
-            IconButton btnImport = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+            IconButton btnImport = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
                 if (preview != null) {
                     preview.close();
                     preview = null;
@@ -176,7 +175,7 @@ public class SignPickerScreen extends CommonScreen {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            });            
+            }).withAlignment(Alignment.CENTER);            
             this.addRenderableWidget(btnImport);
         }
         
@@ -189,9 +188,8 @@ public class SignPickerScreen extends CommonScreen {
         fillButtons(groupPatterns.components.toArray(IconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
     }
 
-    // TODO: protected
     @Override
-    public void onDone() {
+    protected void onDone() {
         NativeImage img = null;
         if (preview != null) {
             final NativeImage image = preview.getPixels();

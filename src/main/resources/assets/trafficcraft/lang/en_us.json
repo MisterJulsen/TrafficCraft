@@ -151,8 +151,24 @@
     "block.trafficcraft.street_light": "Street Light",
     "block.trafficcraft.fluorescent_tube_lamp": "Fluorescent Tube Lamp",
     "block.trafficcraft.traffic_barrel": "Traffic Barrel",
-    "block.trafficcraft.traffic_sign_workbench": "Traffic Sign Workbench",
+    "block.trafficcraft.traffic_sign_workbench": "Traffic Sign Workbench",    
     
+    "enum.trafficcraft.trafficlightmode.description": "State of the traffic light.",
+    "enum.trafficcraft.trafficlightmode.all": "All On",
+    "enum.trafficcraft.trafficlightmode.off": "Off",
+    "enum.trafficcraft.trafficlightmode.red": "Red",
+    "enum.trafficcraft.trafficlightmode.red_yellow": "Red/Yellow",
+    "enum.trafficcraft.trafficlightmode.yellow": "Yellow",
+    "enum.trafficcraft.trafficlightmode.green": "Green",
+    
+    "enum.trafficcraft.trafficlighttrigger.description": "Determines, how this schedule should be triggered.",
+    "enum.trafficcraft.trafficlighttrigger.none": "None",
+    "enum.trafficcraft.trafficlighttrigger.info.none": "Schedule is controlled automatically by this block and cannt be influenced.",
+    "enum.trafficcraft.trafficlighttrigger.on_request": "On Request",
+    "enum.trafficcraft.trafficlighttrigger.info.on_request": "Schedule can only be triggered by using a Traffic Light Request Button.",
+    "enum.trafficcraft.trafficlighttrigger.redstone": "Redstone",
+    "enum.trafficcraft.trafficlighttrigger.info.redstone": "Schedule can be triggered by redstone.",
+
     "gui.trafficcraft.trafficlightsettings.title": "§lTraffic Light Configuration",
     "gui.trafficcraft.trafficlightsettings.id": "Traffic Light Phase ID",
     "gui.trafficcraft.trafficlightsettings.edit_schedule": "Customize...",
@@ -169,13 +185,6 @@
     "gui.trafficcraft.trafficlight.controltype.static": "Static",
     "gui.trafficcraft.trafficlight.controltype.own_schedule": "Own Schedule",
     "gui.trafficcraft.trafficlight.controltype.remote": "Traffic Light Controller",
-
-    "gui.trafficcraft.trafficlight.mode.all": "All On",
-    "gui.trafficcraft.trafficlight.mode.off": "Off",
-    "gui.trafficcraft.trafficlight.mode.red": "Red",
-    "gui.trafficcraft.trafficlight.mode.red_yellow": "Red/Yellow",
-    "gui.trafficcraft.trafficlight.mode.yellow": "Yellow",
-    "gui.trafficcraft.trafficlight.mode.green": "Green",
     
     "gui.trafficcraft.trafficlight.variant.normal": "Normal",
     "gui.trafficcraft.trafficlight.variant.small": "Small (Red/Yellow)",
@@ -187,11 +196,7 @@
     "gui.trafficcraft.trafficlight.direction.left": "Left",
     "gui.trafficcraft.trafficlight.direction.straight": "Straight ahead",
     "gui.trafficcraft.trafficlight.direction.straight_right": "Straight ahead & right",
-    "gui.trafficcraft.trafficlight.direction.straight_left": "Straight ahead & left",
-    
-    "gui.trafficcraft.trafficlight.trigger.none": "None",
-    "gui.trafficcraft.trafficlight.trigger.on_request": "On Request",
-    "gui.trafficcraft.trafficlight.trigger.redstone": "Redstone",
+    "gui.trafficcraft.trafficlight.direction.straight_left": "Straight ahead & left",    
     
     "gui.trafficcraft.trafficlightschedule.title": "Traffic Light Schedule Editor",
     "gui.trafficcraft.trafficlightschedule.trigger": "Trigger",

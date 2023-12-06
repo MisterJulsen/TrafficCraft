@@ -10,6 +10,7 @@ import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.common.Location;
@@ -24,7 +25,6 @@ import de.mrjulsen.trafficcraft.network.packets.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.RoadBuilderResetPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -56,8 +56,6 @@ public class RoadConstructionToolScreen extends CommonScreen {
 
     // Controls
     private ForgeSlider widthSlider;
-    private CycleButton<?> replaceBlockButton;
-    private Button resetButton;
     private Button buildButton;
     private final WidgetsCollection itemButtonCollection = new WidgetsCollection();
     private GuiAreaDefinition pos1Area;
@@ -129,7 +127,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         int btnSpace = WORKING_AREA_WIDTH / 3;
         int btnWidth = btnSpace - 2;
 
-        this.resetButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
+        addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
             NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
             this.onCancel();
         }, Tooltip.of(tooltipReset));
@@ -156,7 +154,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
             this.onClose();
         }, null);
 
-        this.replaceBlockButton = addOnOffButton(guiLeft + WORKING_AREA_X, guiTop + 38, 114, 20, replaceBlocksText, this.replaceExistingBlocks, (btn, value) -> {
+        addOnOffButton(guiLeft + WORKING_AREA_X, guiTop + 38, 114, 20, replaceBlocksText, this.replaceExistingBlocks, (btn, value) -> {
             this.replaceExistingBlocks = value;
 
             if (pos1 != null && pos2 != null) {
@@ -174,7 +172,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
                 blocksCount = res.blocksCount;
                 slopesCount = res.slopesCount;
             }
-        }, null);
+        }, null, null);
         
         int blocksWidth = WORKING_AREA_WIDTH - 2;
         int buttonWidth = blocksWidth / (RoadType.values().length - 1);
@@ -193,7 +191,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
                 ItemButton.DEFAULT_BUTTON_HEIGHT,
                 (p) -> {
                     this.roadType = type;
-                })
+                }).withAlignment(Alignment.LEFT)
             );
 
             if (type == roadType) {

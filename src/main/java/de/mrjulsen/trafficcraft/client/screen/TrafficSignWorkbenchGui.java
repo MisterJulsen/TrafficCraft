@@ -22,13 +22,13 @@ import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
-import de.mrjulsen.trafficcraft.client.widgets.ICustomAreaControl;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
@@ -40,7 +40,6 @@ import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -51,7 +50,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -128,7 +126,6 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
     public TrafficSignWorkbenchGui(TrafficSignWorkbenchMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
-        Arrays.stream(TrafficSignWorkbenchMode.values()).forEach(x -> this.tooltips.put(x, new ArrayList<>()));
         this.imageWidth = WIDTH;
         this.imageHeight = HEIGHT;
         this.inventoryLabelY = 188;
@@ -162,6 +159,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         groupEditorToolbar1.components.clear();
         groupColors.components.clear();
         tooltips.clear();
+        Arrays.stream(TrafficSignWorkbenchMode.values()).forEach(x -> this.tooltips.put(x, new ArrayList<>()));
 
         //#region DEFAULT MODE CONTROLS
 
@@ -175,11 +173,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 36 + 0 * ICON_BUTTON_HEIGHT,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle,
+            null,
             (btn) -> {
                 switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
             }
-        ));
+        )).withAlignment(Alignment.CENTER);
         this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultNew).assignedTo(btnNew));
         
         // Edit selected
@@ -192,7 +190,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 36 + 1 * ICON_BUTTON_HEIGHT,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle, (btn) -> {
+            null, (btn) -> {
                 if (preview == null) {
                     return;
                 }
@@ -203,7 +201,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 nameBox.setValue(preview.getName());
                 selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
             }
-        ));
+        )).withAlignment(Alignment.CENTER);
         this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultEdit).assignedTo(btnEdit));
 
         // Delete selected
@@ -216,7 +214,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 36 + 2 * ICON_BUTTON_HEIGHT,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle,
+            null,
             (btn) -> {
                 if (preview == null) {
                     return;
@@ -234,7 +232,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 new TranslatableComponent("selectWorld.deleteButton"),
                 CommonComponents.GUI_CANCEL));
             }
-        ));
+        )).withAlignment(Alignment.CENTER);
         this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultDelete).assignedTo(btnDelete));
         //#endregion
 
@@ -254,11 +252,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 y,
                 ICON_BUTTON_WIDTH,
                 ICON_BUTTON_HEIGHT,
-                playerInventoryTitle,
+                null,
                 (btn) -> {
                     this.shape = shape;
                 }
-            );
+            ).withAlignment(Alignment.CENTER);
             if (shape == this.shape) {
                 button.select();
             }
@@ -277,7 +275,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 150,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle,
+            null,
             (btn) -> {
                 switchMode(TrafficSignWorkbenchMode.EDITOR);
             }) {
@@ -285,7 +283,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                     this.active = shape != null;
                 }
-            }
+            }.withAlignment(Alignment.CENTER)
         );
 
         this.addRenderableWidget(new IconButton(
@@ -297,11 +295,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 150,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle,
+            null,
             (btn) -> {
                 switchMode(TrafficSignWorkbenchMode.DEFAULT);
             }
-        ));
+        ).withAlignment(Alignment.CENTER));
         //#endregion
 
         //#region EDITOR SCREEN
@@ -317,7 +315,6 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             (txt) -> {
                 this.name = txt;
             },
-            null,
             null
         );
         nameBox.setTextColor(-1);
@@ -334,7 +331,26 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         for (int i = 0; i < MAX_TOOLBAR1_BUTTONS; i++) {  
             final int j = i;
             Sprite sprite = null;
-            
+            switch (j) {
+                case 0:
+                    sprite = ButtonIcons.EDIT.getSprite();
+                    break;
+                case 1:
+                    sprite = ButtonIcons.ERASER.getSprite();
+                    break;
+                case 2:
+                    sprite = ButtonIcons.PICK_COLOR.getSprite();
+                    break;
+                case 3:
+                    sprite = ButtonIcons.FILL.getSprite();
+                    break;
+                case 4:
+                    sprite = ButtonIcons.TEXT.getSprite();
+                    break;
+                default:
+                    break;
+            }
+
             final IconButton btn = new IconButton(
                 ButtonType.RADIO_BUTTON,
                 AreaStyle.BROWN,
@@ -344,30 +360,25 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 guiTop + 36 + j * ICON_BUTTON_HEIGHT,
                 ICON_BUTTON_WIDTH,
                 ICON_BUTTON_HEIGHT,
-                playerInventoryTitle,
+                null,
                 (b) -> {
                     tool = TrafficSignWorkbenchEditorTool.byIndex(j);
                 }
-            );
+            ).withAlignment(Alignment.CENTER);
             switch (j) {
                 case 0:
-                    sprite = ButtonIcons.EDIT.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarDraw).assignedTo(btn));
                     break;
                 case 1:
-                    sprite = ButtonIcons.ERASER.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarErase).assignedTo(btn));
                     break;
                 case 2:
-                    sprite = ButtonIcons.PICK_COLOR.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarPickColor).assignedTo(btn));
                     break;
                 case 3:
-                    sprite = ButtonIcons.FILL.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarFill).assignedTo(btn));
                     break;
                 case 4:
-                    sprite = ButtonIcons.TEXT.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarText).assignedTo(btn));
                     break;
                 default:
@@ -383,6 +394,16 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         for (int i = 0; i < 2; i++) {
             final int j = i;
             Sprite sprite1 = null;
+            switch (j) {
+                case 0:
+                    sprite1 = ButtonIcons.OPEN.getSprite();
+                    break;
+                case 1:
+                    sprite1 = ButtonIcons.SAVE.getSprite();
+                    break;
+                default:
+                    break;
+            }
             final IconButton btn = new IconButton(
                 ButtonType.DEFAULT,
                 AreaStyle.BROWN,
@@ -392,7 +413,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 guiTop + 148 + j * ICON_BUTTON_HEIGHT,
                 ICON_BUTTON_WIDTH,
                 ICON_BUTTON_HEIGHT,
-                playerInventoryTitle,
+                null,
                 (button) -> {
                     switch (j) {
                         case 0:
@@ -428,14 +449,12 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             break;
                     }
                 }
-            );
+            ).withAlignment(Alignment.CENTER);
             switch (j) {
                 case 0:
-                    sprite1 = ButtonIcons.OPEN.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarLoad).assignedTo(btn));
                     break;
                 case 1:
-                    sprite1 = ButtonIcons.SAVE.getSprite();
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarSave).assignedTo(btn));
                     break;
                 default:
@@ -454,7 +473,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             guiTop + 36,
             ICON_BUTTON_WIDTH,
             ICON_BUTTON_HEIGHT,
-            playerInventoryTitle,
+            null,
             (btn) -> {
                 minecraft.setScreen(new ColorPickerGui(this, selectedColor, (c) -> {
                     this.selectedColor = c.toInt();
@@ -466,7 +485,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
                 fill(pPoseStack, x + 2, y + 2, x + 16, y + 16, selectedColor);
             }
-        });
+        }.withAlignment(Alignment.CENTER));
         
         // Colors
         for (int i = 0; i < 7; i++) { 
@@ -474,13 +493,13 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             this.addRenderableWidget(new IconButton(
                 ButtonType.DEFAULT,
                 AreaStyle.BROWN,
-                new Sprite(BACKGROUND_LOCATION, 0, 0, 0, 0, 0, 0),
+                Sprite.empty(),
                 groupColors,
                 guiLeft + 203,
                 guiTop + 40 + (j + 1) * ICON_BUTTON_HEIGHT,
                 ICON_BUTTON_WIDTH,
                 ICON_BUTTON_HEIGHT,
-                playerInventoryTitle,
+                null,
                 (btn) -> { }
             ) {    
                 @Override
@@ -524,7 +543,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     }
                     return super.mouseClicked(pMouseX, pMouseY, pButton);
                 }
-            });
+            }.withAlignment(Alignment.CENTER));
         }
         //#endregion
 
@@ -810,6 +829,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             default:
                 break;
         }
+
+        this.tooltips.get(this.mode).forEach((x) -> {
+            x.render(this, pPoseStack, pMouseX, pMouseY);
+        });
     }
 
 
@@ -834,6 +857,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+    /*
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         draw(pMouseX, pMouseY, pButton);
@@ -870,6 +894,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         super.mouseReleased(pMouseX, pMouseY, pButton);
         return b[0];
     }
+    */
 
     @SuppressWarnings("unused")
     private boolean isMouseInBounds(int x, int y, int w, int h, int mX, int mY) {

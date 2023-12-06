@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
@@ -175,7 +176,7 @@ public class TrafficLightConfigScreen extends ParentableScreen
         /* STATIC PAGE */
 
         this.modeButton = this.addRenderableWidget(CycleButton.<TrafficLightMode>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
+            return new TranslatableComponent(p.getValueTranslationKey(ModMain.MOD_ID));
             })
                 .withValues(TrafficLightMode.values()).withInitialValue(mode)
                 .create(this.width / 2 - 150, guiTop + SPACING_Y * 4, 300, 20, textMode, (pCycleButton, pValue) -> {

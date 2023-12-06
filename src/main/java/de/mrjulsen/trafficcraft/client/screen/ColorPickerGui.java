@@ -133,7 +133,7 @@ public class ColorPickerGui extends CommonScreen {
         this.vBox.setFilter(this::numberFilter100);
         this.addRenderableWidget(this.vBox);
 
-
+        rgbNoUpdate = true;
         this.rBox = addEditBox(
             guiLeft + 64, guiTop + 115, 32, 16,
             "0", true,
@@ -171,7 +171,7 @@ public class ColorPickerGui extends CommonScreen {
         this.addRenderableWidget(this.gBox);
 
         this.bBox = addEditBox(
-            guiLeft + 64, guiTop + 115, 32, 16,
+            guiLeft + 128, guiTop + 115, 32, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
@@ -190,7 +190,7 @@ public class ColorPickerGui extends CommonScreen {
 
 
         this.colorIntBox = addEditBox(
-            guiLeft + 64, guiTop + 115, 32, 16,
+            guiLeft + 64, guiTop + 132, 96, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
@@ -204,19 +204,35 @@ public class ColorPickerGui extends CommonScreen {
             },
             NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
         );
-        this.colorIntBox.setFilter(GuiUtils::editBoxNumberFilter);
+        this.colorIntBox.setFilter(this::editBoxNumberFilter);
         this.addRenderableWidget(this.colorIntBox);
         
         this.updateInputBoxes();
+        rgbNoUpdate = false;
     }
 
     private String nullCheck(String in) {
-        return in == null || in.isEmpty() ? "0" : in;
+        return in == null || in.isEmpty() || in.equals("-") ? "0" : in;
     }
 
-    // TODO: change to protected
+    private boolean editBoxNumberFilter(String input) {
+        if (input.isEmpty())
+            return true;
+
+        String i = input;
+        if (input.equals("-"))
+            i = "-0";
+
+        try {
+            Integer.parseInt(i);
+			return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     @Override
-    public void onDone() {
+    protected void onDone() {
         this.result.accept(ColorObject.fromHSV(h, s, v));
         this.onClose();
     }

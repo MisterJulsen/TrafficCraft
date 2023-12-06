@@ -233,9 +233,8 @@ public class TrafficLightScheduleScreen extends CommonScreen
         super.addWidget(w);
     }
 
-    // TODO: protected
     @Override
-    public void onDone() {  
+    protected void onDone() {  
         List<TrafficLightSchedule> schedules = new ArrayList<>();
         schedules.add(schedule);
         NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightSchedulePacket(

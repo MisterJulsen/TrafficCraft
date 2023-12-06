@@ -44,7 +44,7 @@ public class ColorPaletteItem extends Item {
                     list.add(new TranslatableComponent("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
                 } else {                
                     ColorObject c = ColorObject.fromInt(i);
-                    list.add(new TextComponent(String.format("\u2B1B  %s, %s, %s", c.getR(), c.getG(), c.getB())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
+                    list.add(new TextComponent(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
                 }
             } 
         }

@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightMode implements StringRepresentable {
+public enum TrafficLightMode implements StringRepresentable, ITranslatableEnum {
     ALL_ON("all", 0),
 	OFF("off", 1),
 	RED("red", 2),
@@ -26,10 +27,6 @@ public enum TrafficLightMode implements StringRepresentable {
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlight.mode.%s", mode);
-	}
-
 	public static TrafficLightMode getModeByIndex(int index) {
 		for (TrafficLightMode shape : TrafficLightMode.values()) {
 			if (shape.getIndex() == index) {
@@ -43,4 +40,14 @@ public enum TrafficLightMode implements StringRepresentable {
     public String getSerializedName() {
         return mode;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightmode";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getMode();
+	}
 }

@@ -110,8 +110,8 @@ public class StreetLampConfigCardItem extends Item
                         player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.error_same_time"), false);                        
                         return InteractionResult.FAIL;
                     }
-                    blockEntity.setOnTime(TimeUtils.shiftTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
-                    blockEntity.setOffTime(TimeUtils.shiftTimeToMinecraftTicks(nbt.getInt("turnOffTime")));
+                    blockEntity.setOnTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
+                    blockEntity.setOffTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOffTime")));
                     player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.set"), true);
                     Utils.giveAdvancement((ServerPlayer)player, ModMain.MOD_ID, "street_lamp_config", "requirement");
                 } else {
