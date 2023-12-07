@@ -2,15 +2,16 @@ package de.mrjulsen.trafficcraft.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -37,7 +38,7 @@ public class StreetLampScheduleScreen extends CommonScreen {
     // Controls
     protected ForgeSlider timeOnSlider;
     protected ForgeSlider timeOffSlider; 
-    protected CycleButton<TimeFormat> timeFormatButton;
+    protected ResizableCycleButton<TimeFormat> timeFormatButton;
 
     private TranslatableComponent textTurnOnTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_on_time");
     private TranslatableComponent textTurnOffTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_off_time");
@@ -72,18 +73,10 @@ public class StreetLampScheduleScreen extends CommonScreen {
             this.onClose();
         }, null);
 
-        this.timeFormatButton = addCycleButton(ModMain.MOD_ID, TimeFormat.class, this.width / 2 - 100, guiTop + (int)(SPACING_Y * 1), 200, 20, textTimeFormat, timeFormat,
+        this.timeFormatButton = addCycleButton(DragonLibConstants.DRAGONLIB_MODID, TimeFormat.class, this.width / 2 - 100, guiTop + (int)(SPACING_Y * 1), 200, 20, textTimeFormat, timeFormat,
         (btn, value) -> {
             this.timeFormat = value;
-        }, null);
-
-        this.timeFormatButton = this.addRenderableWidget(CycleButton.<TimeFormat>builder((p) -> {            
-            return GuiUtils.translate(p.getTranslationKey());
-            })
-                .withValues(TimeFormat.values()).withInitialValue(timeFormat)
-                .create(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 1), 200, 20, textTimeFormat, (pCycleButton, pValue) -> {
-                    this.timeFormat = pValue;
-        }));
+        }, Tooltip.of(GuiUtils.getEnumTooltipData(DragonLibConstants.DRAGONLIB_MODID, this, TimeFormat.class, width / 4)));
 
         this.timeOnSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 2), 200, 20, textTurnOnTime, GuiUtils.text(""), 0, 23750, 250, turnOnTime, true,
         (slider, value) -> {            

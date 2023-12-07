@@ -4,12 +4,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -35,7 +35,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
     private boolean status;
 
     // Controls
-    protected CycleButton<Boolean> statusButton;
+    protected ResizableCycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
     private TranslatableComponent textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
@@ -79,9 +79,9 @@ public class TrafficLightControllerScreen extends CommonScreen {
             this.onClose();
         }, null);
 
-        this.editScheduleButton = new Button(this.width / 2 - 100, guiTop + 30, 200, 20, textEditSchedule, (p) -> {
+        this.editScheduleButton = addButton(this.width / 2 - 100, guiTop + 30, 200, 20, textEditSchedule, (p) -> {
             this.minecraft.setScreen(new TrafficLightScheduleScreen(this, blockPos, level, true));
-        });
+        }, null);
 
         this.statusButton = addOnOffButton(this.width / 2 - 100, guiTop + 55, 200, 20, textStatus, status,
         (btn, value) -> {

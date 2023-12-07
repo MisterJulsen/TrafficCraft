@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
@@ -22,7 +23,6 @@ import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -62,8 +62,8 @@ public class TrafficLightScheduleScreen extends CommonScreen {
     private TrafficLightSchedule schedule;
 
     // Controls    
-    protected CycleButton<TrafficLightTrigger> triggerBtn;
-    protected CycleButton<Boolean> loopBtn;
+    protected ResizableCycleButton<TrafficLightTrigger> triggerBtn;
+    protected ResizableCycleButton<Boolean> loopBtn;
     protected List<TrafficLightScheduleEntry> animationEntries = new ArrayList<TrafficLightScheduleEntry>();
     private TrafficLightScheduleEntry selectedEntry;
     private Button removeBtn;

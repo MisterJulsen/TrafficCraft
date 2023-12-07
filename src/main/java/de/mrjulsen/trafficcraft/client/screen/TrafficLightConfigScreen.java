@@ -3,8 +3,9 @@ package de.mrjulsen.trafficcraft.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
@@ -17,7 +18,6 @@ import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -55,14 +55,14 @@ public class TrafficLightConfigScreen extends CommonScreen
     private Location linkLocation;
 
     // Controls    
-    protected CycleButton<TrafficLightControlType> controlTypeButton;
+    protected ResizableCycleButton<TrafficLightControlType> controlTypeButton;
 
     protected EditBox idInput;
-    protected CycleButton<TrafficLightMode> modeButton;
-    protected CycleButton<TrafficLightVariant> variantButton;
-    protected CycleButton<TrafficLightDirection> directionButton;
+    protected ResizableCycleButton<TrafficLightMode> modeButton;
+    protected ResizableCycleButton<TrafficLightVariant> variantButton;
+    protected ResizableCycleButton<TrafficLightDirection> directionButton;
     protected Button editScheduleButton;
-    protected CycleButton<Boolean> statusButton;
+    protected ResizableCycleButton<Boolean> statusButton;
 
     private TranslatableComponent textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.edit_schedule");
     private TranslatableComponent textId = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.id");

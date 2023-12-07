@@ -6,13 +6,13 @@ import java.util.List;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleScreen;
 import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -33,7 +33,7 @@ public class TrafficLightScheduleEntry {
     protected EditBox timeInput;
     protected Button timeAddBtn;
     protected Button timeRemoveBtn;
-    protected CycleButton<TrafficLightMode> modeButton;
+    protected ResizableCycleButton<TrafficLightMode> modeButton;
 
     private boolean idEditable;
 
@@ -44,9 +44,6 @@ public class TrafficLightScheduleEntry {
     public List<WidgetData> renderableWidgets = new ArrayList<WidgetData>();
 
     private TranslatableComponent textMode = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.mode");
-
-    private TranslatableComponent tooltipAdd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.time_add");
-    private TranslatableComponent tooltipRemove = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.time_remove");
     
     private static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_widgets.png");
 
