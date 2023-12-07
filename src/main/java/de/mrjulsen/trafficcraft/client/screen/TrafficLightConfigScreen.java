@@ -215,7 +215,7 @@ public class TrafficLightConfigScreen extends CommonScreen
         renderBackground(stack, 0);
         
         /* DEFAULT PAGE */
-        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, DragonLibConstants.DEFAULT_UI_FONT_COLOR);        
+        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 0xFFFFFF);        
         
         switch (this.controlType) {
             case REMOTE:
