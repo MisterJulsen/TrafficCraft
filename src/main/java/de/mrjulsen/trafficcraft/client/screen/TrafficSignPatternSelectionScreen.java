@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
@@ -144,21 +145,26 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
             for (int i = 0; i < count; i++) {
                 final int j = i;
 
-                Sprite sprite = null;
-                try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
-                    DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
-                        data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
-                    });
-                    NativeImage img = tex.getPixels();
-                    sprite = new Sprite(tex.getId(), img.getWidth(), img.getHeight(), 0, 0, img.getWidth(), img.getHeight());
+                IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, Sprite.empty(), groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
+                PatternCatalogueItem.setSelectedIndex(stack, j);
+                if (stack.getItem() instanceof CreativePatternCatalogueItem) {
+                    CreativePatternCatalogueItem.clearCustomImage(stack);
                 }
-
-                IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
-                    PatternCatalogueItem.setSelectedIndex(stack, j);
-                    if (stack.getItem() instanceof CreativePatternCatalogueItem) {
-                        CreativePatternCatalogueItem.clearCustomImage(stack);
+                }) {
+                    @Override
+                    protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
+                        super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+                        try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
+                            DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
+                                data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
+                            });
+                            RenderSystem.setShaderTexture(0, tex.getId());
+                            NativeImage img = tex.getPixels();
+                            blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                        }
+                        
                     }
-                }).withAlignment(Alignment.CENTER);
+                }.withAlignment(Alignment.CENTER);
                 addTooltip(Tooltip.of(GuiUtils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
                 this.addRenderableWidget(btn);
             }
