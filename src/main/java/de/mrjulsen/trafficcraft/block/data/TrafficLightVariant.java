@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightVariant implements StringRepresentable {
+public enum TrafficLightVariant implements StringRepresentable, ITranslatableEnum {
     NORMAL("normal", 0),
 	SMALL("small", 1),
 	SPECIAL("special", 2),
@@ -24,10 +25,6 @@ public enum TrafficLightVariant implements StringRepresentable {
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlight.variant.%s", variant);
-	}
-
 	public static TrafficLightVariant getVariantByIndex(int index) {
 		for (TrafficLightVariant shape : TrafficLightVariant.values()) {
 			if (shape.getIndex() == index) {
@@ -41,4 +38,14 @@ public enum TrafficLightVariant implements StringRepresentable {
     public String getSerializedName() {
         return variant;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightvariant";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getVariant();
+	}
 }

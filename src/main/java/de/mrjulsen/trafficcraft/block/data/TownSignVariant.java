@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TownSignVariant implements StringRepresentable {
+public enum TownSignVariant implements StringRepresentable, ITranslatableEnum {
     FRONT("front", 0),
 	BACK("back", 1),
 	BOTH("both", 2);
@@ -23,10 +24,6 @@ public enum TownSignVariant implements StringRepresentable {
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.town_sign.variant.%s", variant);
-	}
-
 	public static TownSignVariant getVariantByIndex(int index) {
 		for (TownSignVariant shape : TownSignVariant.values()) {
 			if (shape.getIndex() == index) {
@@ -40,4 +37,14 @@ public enum TownSignVariant implements StringRepresentable {
     public String getSerializedName() {
         return variant;
     }
+
+	@Override
+	public String getEnumName() {
+		return "townsignvariant";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getVariant();
+	}
 }

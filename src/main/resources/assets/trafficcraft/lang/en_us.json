@@ -169,6 +169,27 @@
     "enum.trafficcraft.trafficlighttrigger.redstone": "Redstone",
     "enum.trafficcraft.trafficlighttrigger.info.redstone": "Schedule can be triggered by redstone.",
 
+    "enum.trafficcraft.trafficlightcontroltype.static": "Static",
+    "enum.trafficcraft.trafficlightcontroltype.own_schedule": "Own Schedule",
+    "enum.trafficcraft.trafficlightcontroltype.remote": "Traffic Light Controller",
+
+    "enum.trafficcraft.trafficlightvariant.normal": "Normal",
+    "enum.trafficcraft.trafficlightvariant.small": "Small (Red/Yellow)",
+    "enum.trafficcraft.trafficlightvariant.special": "Small (Yellow/Green)",
+    "enum.trafficcraft.trafficlightvariant.pedestrian": "Pedestrian",
+    
+    "enum.trafficcraft.trafficlightdirection.normal": "Not specified",
+    "enum.trafficcraft.trafficlightdirection.right": "Right",
+    "enum.trafficcraft.trafficlightdirection.left": "Left",
+    "enum.trafficcraft.trafficlightdirection.straight": "Straight ahead",
+    "enum.trafficcraft.trafficlightdirection.straight_right": "Straight ahead & right",
+    "enum.trafficcraft.trafficlightdirection.straight_left": "Straight ahead & left",
+    
+    "enum.trafficcraft.townsignvariant": "Sides",
+    "enum.trafficcraft.townsignvariant.front": "Front",
+    "enum.trafficcraft.townsignvariant.back": "Back",
+    "enum.trafficcraft.townsignvariant.both": "Both",
+
     "gui.trafficcraft.trafficlightsettings.title": "§lTraffic Light Configuration",
     "gui.trafficcraft.trafficlightsettings.id": "Traffic Light Phase ID",
     "gui.trafficcraft.trafficlightsettings.edit_schedule": "Customize...",
@@ -180,23 +201,7 @@
     "gui.trafficcraft.trafficlightsettings.variant": "Variant",
     "gui.trafficcraft.trafficlightsettings.direction": "Direction",
 
-    "gui.trafficcraft.paint_brush.title": "Select a pattern",
-
-    "gui.trafficcraft.trafficlight.controltype.static": "Static",
-    "gui.trafficcraft.trafficlight.controltype.own_schedule": "Own Schedule",
-    "gui.trafficcraft.trafficlight.controltype.remote": "Traffic Light Controller",
-    
-    "gui.trafficcraft.trafficlight.variant.normal": "Normal",
-    "gui.trafficcraft.trafficlight.variant.small": "Small (Red/Yellow)",
-    "gui.trafficcraft.trafficlight.variant.special": "Small (Yellow/Green)",
-    "gui.trafficcraft.trafficlight.variant.pedestrian": "Pedestrian",
-    
-    "gui.trafficcraft.trafficlight.direction.normal": "Not specified",
-    "gui.trafficcraft.trafficlight.direction.right": "Right",
-    "gui.trafficcraft.trafficlight.direction.left": "Left",
-    "gui.trafficcraft.trafficlight.direction.straight": "Straight ahead",
-    "gui.trafficcraft.trafficlight.direction.straight_right": "Straight ahead & right",
-    "gui.trafficcraft.trafficlight.direction.straight_left": "Straight ahead & left",    
+    "gui.trafficcraft.paint_brush.title": "Select a pattern",    
     
     "gui.trafficcraft.trafficlightschedule.title": "Traffic Light Schedule Editor",
     "gui.trafficcraft.trafficlightschedule.trigger": "Trigger",
@@ -235,11 +240,6 @@
     "gui.trafficcraft.daytime.time_format.ticks": "Minecraft Ticks",
     "gui.trafficcraft.daytime.time_format.hours_24": "24 hours",
     "gui.trafficcraft.daytime.time_format.hours_12": "12 hours",
-    
-    "gui.trafficcraft.town_sign.variant": "Sides",
-    "gui.trafficcraft.town_sign.variant.front": "Front",
-    "gui.trafficcraft.town_sign.variant.back": "Back",
-    "gui.trafficcraft.town_sign.variant.both": "Both",
 
     "gui.trafficcraft.colorpicker.title": "Color Picker",
     "gui.trafficcraft.colorpicker.hsv": "HSV",
@@ -281,7 +281,7 @@
     "gui.trafficcraft.road_builder.reset": "Reset",
     "gui.trafficcraft.road_builder.build": "BUILD",
     "gui.trafficcraft.road_builder.replace_blocks": "Replace Blocks",
-    "gui.trafficcraft.road_builder.road_width": "Road Width: ",
+    "gui.trafficcraft.road_builder.road_width": "Road Width",
     "gui.trafficcraft.road_builder.road_blocks": "Road Building Blocks",
     "gui.trafficcraft.road_builder.required_resources": "Required Resources:",
     "gui.trafficcraft.road_builder.no_pos_defined": "Position undefined",

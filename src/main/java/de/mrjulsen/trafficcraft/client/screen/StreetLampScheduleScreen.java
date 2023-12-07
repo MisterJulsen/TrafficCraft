@@ -13,7 +13,6 @@ import de.mrjulsen.trafficcraft.network.packets.StreetLampConfigPacket;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,7 +21,7 @@ import net.minecraftforge.client.gui.widget.ForgeSlider;
 @OnlyIn(Dist.CLIENT)
 public class StreetLampScheduleScreen extends CommonScreen {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.streetlampconfig.title");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.streetlampconfig.title");
     
     private int guiTop = 50;
     
@@ -40,9 +39,9 @@ public class StreetLampScheduleScreen extends CommonScreen {
     protected ForgeSlider timeOffSlider; 
     protected CycleButton<TimeFormat> timeFormatButton;
 
-    private TranslatableComponent textTurnOnTime = new TranslatableComponent("gui.trafficcraft.streetlampconfig.turn_on_time");
-    private TranslatableComponent textTurnOffTime = new TranslatableComponent("gui.trafficcraft.streetlampconfig.turn_off_time");
-    private TranslatableComponent textTimeFormat = new TranslatableComponent("gui.trafficcraft.streetlampconfig.time_format");
+    private TranslatableComponent textTurnOnTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_on_time");
+    private TranslatableComponent textTurnOffTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_off_time");
+    private TranslatableComponent textTimeFormat = GuiUtils.translate("gui.trafficcraft.streetlampconfig.time_format");
 
     public StreetLampScheduleScreen(int timeOn, int timeOff, TimeFormat format) {
         super(title);
@@ -79,21 +78,21 @@ public class StreetLampScheduleScreen extends CommonScreen {
         }, null);
 
         this.timeFormatButton = this.addRenderableWidget(CycleButton.<TimeFormat>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
+            return GuiUtils.translate(p.getTranslationKey());
             })
                 .withValues(TimeFormat.values()).withInitialValue(timeFormat)
                 .create(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 1), 200, 20, textTimeFormat, (pCycleButton, pValue) -> {
                     this.timeFormat = pValue;
         }));
 
-        this.timeOnSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 2), 200, 20, textTurnOnTime, new TextComponent(""), 0, 23750, 250, turnOnTime, true,
+        this.timeOnSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 2), 200, 20, textTurnOnTime, GuiUtils.text(""), 0, 23750, 250, turnOnTime, true,
         (slider, value) -> {            
             slider.setSuffix(GuiUtils.translate(getTimeSuffix(value.intValue())));
             this.turnOnTime = value.intValue();
         }, null, null);
         this.addRenderableWidget(timeOnSlider); 
 
-        this.timeOffSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 3), 200, 20, textTurnOffTime, new TextComponent(""), 0, 23750, 250, turnOffTime, true,
+        this.timeOffSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 3), 200, 20, textTurnOffTime, GuiUtils.text(""), 0, 23750, 250, turnOffTime, true,
         (slider, value) -> {
             slider.setSuffix(GuiUtils.translate(getTimeSuffix(value.intValue())));
             this.turnOffTime = value.intValue();
@@ -129,10 +128,10 @@ public class StreetLampScheduleScreen extends CommonScreen {
         drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 16777215);
         
         String timeOnSuffix = this.getTimeSuffix(this.timeOnSlider.getValueInt());
-        this.timeOnSlider.setMessage(new TextComponent(new TranslatableComponent("gui.trafficcraft.streetlampconfig.turn_on_time", TimeUtils.parseTime(this.timeOnSlider.getValueInt(), timeFormat)).getString() + (timeOnSuffix == null ? "" :  " (" + new TranslatableComponent(timeOnSuffix).getString() + ")")));
+        this.timeOnSlider.setMessage(GuiUtils.text(GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_on_time", TimeUtils.parseTime(this.timeOnSlider.getValueInt(), timeFormat)).getString() + (timeOnSuffix == null ? "" :  " (" + GuiUtils.translate(timeOnSuffix).getString() + ")")));
 
         String timeOffSuffix = this.getTimeSuffix(this.timeOffSlider.getValueInt());
-        this.timeOffSlider.setMessage(new TextComponent(new TranslatableComponent("gui.trafficcraft.streetlampconfig.turn_off_time", TimeUtils.parseTime(this.timeOffSlider.getValueInt(), timeFormat)).getString() + (timeOffSuffix == null ? "" :  " (" + new TranslatableComponent(timeOffSuffix).getString() + ")")));
+        this.timeOffSlider.setMessage(GuiUtils.text(GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_off_time", TimeUtils.parseTime(this.timeOffSlider.getValueInt(), timeFormat)).getString() + (timeOffSuffix == null ? "" :  " (" + GuiUtils.translate(timeOffSuffix).getString() + ")")));
 
         super.render(stack, mouseX, mouseY, partialTicks);
     }

@@ -58,7 +58,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSignWorkbenchMenu> {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.title");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.title");
 
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
@@ -102,23 +102,23 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private int selectedIndex = -1;
 
     // texts
-    private final TranslatableComponent createPattern = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.createpattern.title");
-    private final TranslatableComponent createPatternInstruction = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
-    private final TranslatableComponent emptyPattern = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
+    private final TranslatableComponent createPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.title");
+    private final TranslatableComponent createPatternInstruction = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
+    private final TranslatableComponent emptyPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
 
-    private final TranslatableComponent tooltipDefaultNew = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add");
-    private final TranslatableComponent tooltipDefaultNewFull1 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
-    private final TranslatableComponent tooltipDefaultNewFull2 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
-    private final TranslatableComponent tooltipDefaultEdit = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.edit");
-    private final TranslatableComponent tooltipDefaultDelete = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.delete");
+    private final TranslatableComponent tooltipDefaultNew = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add");
+    private final TranslatableComponent tooltipDefaultNewFull1 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
+    private final TranslatableComponent tooltipDefaultNewFull2 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
+    private final TranslatableComponent tooltipDefaultEdit = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.edit");
+    private final TranslatableComponent tooltipDefaultDelete = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.delete");
 
-    private final TranslatableComponent tooltipEditorToolbarDraw = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.draw");
-    private final TranslatableComponent tooltipEditorToolbarErase = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.erase");
-    private final TranslatableComponent tooltipEditorToolbarPickColor = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.pick_color");
-    private final TranslatableComponent tooltipEditorToolbarFill = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.fill");
-    private final TranslatableComponent tooltipEditorToolbarText = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.text");
-    private final TranslatableComponent tooltipEditorToolbarLoad = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.load");
-    private final TranslatableComponent tooltipEditorToolbarSave = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.save");
+    private final TranslatableComponent tooltipEditorToolbarDraw = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.draw");
+    private final TranslatableComponent tooltipEditorToolbarErase = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.erase");
+    private final TranslatableComponent tooltipEditorToolbarPickColor = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.pick_color");
+    private final TranslatableComponent tooltipEditorToolbarFill = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.fill");
+    private final TranslatableComponent tooltipEditorToolbarText = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
+    private final TranslatableComponent tooltipEditorToolbarLoad = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
+    private final TranslatableComponent tooltipEditorToolbarSave = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
 
     // gui textures
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_sign_workbench.png");
@@ -227,9 +227,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     }
                     this.minecraft.setScreen(this);
                 },
-                new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.delete.question"),
-                new TranslatableComponent("selectWorld.deleteWarning", preview.getName()),
-                new TranslatableComponent("selectWorld.deleteButton"),
+                GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.delete.question"),
+                GuiUtils.translate("selectWorld.deleteWarning", preview.getName()),
+                GuiUtils.translate("selectWorld.deleteButton"),
                 CommonComponents.GUI_CANCEL));
             }
         )).withAlignment(Alignment.CENTER);
@@ -260,7 +260,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             if (shape == this.shape) {
                 button.select();
             }
-            this.tooltips.get(TrafficSignWorkbenchMode.CREATE_NEW).add(Tooltip.of(new TranslatableComponent(shape.getTranslationKey())).assignedTo(button));
+            this.tooltips.get(TrafficSignWorkbenchMode.CREATE_NEW).add(Tooltip.of(GuiUtils.translate(shape.getTranslationKey())).assignedTo(button));
             return this.addRenderableWidget(button);
         }).toArray(IconButton[]::new);
         
@@ -819,10 +819,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     final int c = color;
 
                     GuiUtils.renderTooltip(this, groupColors.components.get(j), List.of(
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.slot", j + 1).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(c))),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.get").withStyle(ChatFormatting.GRAY),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.set").withStyle(ChatFormatting.GRAY),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.remove").withStyle(ChatFormatting.GRAY)
+                        GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.slot", j + 1).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(c))),
+                        GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.get").withStyle(ChatFormatting.GRAY),
+                        GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.set").withStyle(ChatFormatting.GRAY),
+                        GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.remove").withStyle(ChatFormatting.GRAY)
                     ), width / 4, pPoseStack, pMouseX, pMouseY);
                 }
                 break;
@@ -951,7 +951,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 for (int a = 0; a < pixels.length; a++) {
                     pixels[a] = new int[TrafficSignShape.MAX_HEIGHT];
                 }
-                name = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString();
+                name = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString();
                 nameBox.setValue(name);
                 selectedIndex = -1;
                 break;

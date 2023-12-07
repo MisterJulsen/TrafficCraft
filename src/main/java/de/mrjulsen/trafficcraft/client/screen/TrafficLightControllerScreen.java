@@ -3,14 +3,16 @@ package de.mrjulsen.trafficcraft.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,9 +20,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TrafficLightControllerScreen extends ParentableScreen
-{
-    public static final Component title = new TextComponent("trafficlightsettings");
+public class TrafficLightControllerScreen extends CommonScreen {
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.title");
     
     private int guiTop = 50;
 
@@ -37,15 +38,10 @@ public class TrafficLightControllerScreen extends ParentableScreen
     protected CycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
-    private TranslatableComponent textTitle = new TranslatableComponent("gui.trafficcraft.trafficlightcontroller.title");
-    private TranslatableComponent textStatus = new TranslatableComponent("gui.trafficcraft.trafficlightcontroller.status");
-    private TranslatableComponent textEditSchedule = new TranslatableComponent("gui.trafficcraft.trafficlightcontroller.edit_schedule");
+    private TranslatableComponent textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
+    private TranslatableComponent textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
 
-    private TranslatableComponent btnDoneTxt = new TranslatableComponent("gui.done");
-    private TranslatableComponent btnCancelTxt = new TranslatableComponent("gui.cancel");
-
-    public TrafficLightControllerScreen(BlockPos pos, Level level)
-    {
+    public TrafficLightControllerScreen(BlockPos pos, Level level) {
         super(title);
         this.level = level;
         this.blockPos = pos;
@@ -62,14 +58,12 @@ public class TrafficLightControllerScreen extends ParentableScreen
     }
 
     @Override
-    public boolean isPauseScreen()
-    {
+    public boolean isPauseScreen() {
         return true;
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         super.init();
         
         guiTop = this.height / 2 - HEIGHT / 2;
@@ -77,27 +71,26 @@ public class TrafficLightControllerScreen extends ParentableScreen
 
         /* Default page */
 
-        this.addRenderableWidget(new Button(this.width / 2 - 100, guiTop + 100, 97, 20, btnDoneTxt, (p) -> {
+        addButton(this.width / 2 - 100, guiTop + 100, 97, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onDone();
-        }));
+        }, null);
 
-        this.addRenderableWidget(new Button(this.width / 2 + 3, guiTop + 100, 97, 20, btnCancelTxt, (p) -> {
+        addButton(this.width / 2 + 3, guiTop + 100, 97, 20, CommonComponents.GUI_CANCEL, (p) -> {
             this.onClose();
-        }));
+        }, null);
 
         this.editScheduleButton = new Button(this.width / 2 - 100, guiTop + 30, 200, 20, textEditSchedule, (p) -> {
             this.minecraft.setScreen(new TrafficLightScheduleScreen(this, blockPos, level, true));
         });
-        this.addRenderableWidget(editScheduleButton); 
 
-
-        this.statusButton = this.addRenderableWidget(CycleButton.onOffBuilder(this.status)
-        .create(this.width / 2 - 100, guiTop + 55, 200, 20, textStatus, (pCycleButton, pValue) -> {
-            this.status = pValue;
-        }));
+        this.statusButton = addOnOffButton(this.width / 2 - 100, guiTop + 55, 200, 20, textStatus, status,
+        (btn, value) -> {
+            this.status = value;
+        }, null);
     }
 
-    private void onDone() {
+    @Override
+    protected void onDone() {
         NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightControllerPacket(
             blockPos,
             status
@@ -107,24 +100,20 @@ public class TrafficLightControllerScreen extends ParentableScreen
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks)
-    {        
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
         renderBackground(stack, 0);
         
-        drawCenteredString(stack, this.font, textTitle, this.width / 2, guiTop, 16777215);
+        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 16777215);
         
         super.render(stack, mouseX, mouseY, partialTicks);
     }
 
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
-    {
-        if(this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_)))
-        {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if (this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_))) {
             this.onClose();
             return true;
         }
-        else
-        {
+        else {
             return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }

@@ -7,12 +7,12 @@ import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -51,7 +51,7 @@ public class StreetLampConfigCardItem extends Item
         if (level.isClientSide) {
             if (player.isShiftKeyDown()) {
                 stack.setTag(new CompoundTag());
-                player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.clear"), true);
+                player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.clear"), true);
             } else {
                 int turnOn = 18500;
                 int turnOff = 5500;
@@ -76,10 +76,10 @@ public class StreetLampConfigCardItem extends Item
         
         CompoundTag nbt = null;
         if ((nbt = doesContainValidLinkData(stack)) != null) {
-            list.add(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time", TimeUtils.parseTime(nbt.getInt("turnOnTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));
-            list.add(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time", TimeUtils.parseTime(nbt.getInt("turnOffTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));            
+            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time", TimeUtils.parseTime(nbt.getInt("turnOnTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));
+            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time", TimeUtils.parseTime(nbt.getInt("turnOffTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));            
         } else {
-            list.add(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.tooltip.empty"));
+            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.empty"));
         }        
     }
     
@@ -107,17 +107,17 @@ public class StreetLampConfigCardItem extends Item
             if (!level.isClientSide) {
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
                     if (nbt.getInt("turnOnTime") == nbt.getInt("turnOffTime")) {
-                        player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.error_same_time"), false);                        
+                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.error_same_time"), false);                        
                         return InteractionResult.FAIL;
                     }
                     blockEntity.setOnTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
                     blockEntity.setOffTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOffTime")));
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.set"), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.set"), true);
                     Utils.giveAdvancement((ServerPlayer)player, ModMain.MOD_ID, "street_lamp_config", "requirement");
                 } else {
                     blockEntity.setOnTime(-1);
                     blockEntity.setOffTime(-1);
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.street_lamp_config_card.use.unset"), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.unset"), true);
                 }
             }
             return InteractionResult.SUCCESS;

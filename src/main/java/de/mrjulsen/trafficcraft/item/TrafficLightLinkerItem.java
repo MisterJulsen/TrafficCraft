@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
@@ -12,7 +13,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.KeybindComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -44,7 +44,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
                     compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
                     
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 }
                 return InteractionResult.SUCCESS;
             } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {                        
@@ -56,22 +56,22 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 Location linkLoc = Location.fromNbt(nbt.getCompound(NBT_LINK_TARGET));
                 
                 if (!pContext.getLevel().dimension().location().toString().equals(linkLoc.dimension)) {
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.wrong_dimension").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.wrong_dimension").withStyle(ChatFormatting.RED), true);
                 }
 
                 if (pContext.getLevel().getBlockState(clickedPos).getBlock() instanceof TrafficLightRequestButtonBlock && pContext.getLevel().getBlockEntity(clickedPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity) {
                     blockEntity.linkTo(linkLoc);
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 } else {                        
                     if (pContext.getLevel().isLoaded(linkLoc.getLocationBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationBlockPos()).getBlock())) {
                         if (pContext.getLevel().getBlockEntity(linkLoc.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
                             BlockPos pos = pContext.getClickedPos();
                             String dim = pContext.getLevel().dimension().location().toString();
                             blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                            player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                            player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                         }
                     } else {
-                        player.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED), true);
                     }
                 }
 
@@ -96,7 +96,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 }
 
                 
-                pPlayer.displayClientMessage(new TranslatableComponent("item.trafficcraft.traffic_light_linker.use.clear"), true);
+                pPlayer.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.clear"), true);
             }
             return InteractionResultHolder.success(itemstack);
         } else {
@@ -109,7 +109,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
         CompoundTag tag = null;
         if ((tag = doesContainValidLinkData(pStack)) != null) {
             Location loc = Location.fromNbt(tag.getCompound(NBT_LINK_TARGET));
-            pTooltipComponents.add(new TranslatableComponent("item.trafficcraft.traffic_light_linker.tooltip",
+            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip",
                 Double.toString(loc.x),
                 Double.toString(loc.y),
                 Double.toString(loc.z),
@@ -118,7 +118,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 new KeybindComponent("key.use")
             ));
         } else {
-            pTooltipComponents.add(new TranslatableComponent("item.trafficcraft.traffic_light_linker.tooltip.nolink"));
+            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink"));
         }
     }
 

@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightDirection implements StringRepresentable {
+public enum TrafficLightDirection implements StringRepresentable, ITranslatableEnum {
     NORMAL("normal", 0),
 	RIGHT("right", 1),
 	LEFT("left", 2),
@@ -43,4 +44,14 @@ public enum TrafficLightDirection implements StringRepresentable {
     public String getSerializedName() {
         return directionName;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightdirection";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getDirectionName();
+	}
 }

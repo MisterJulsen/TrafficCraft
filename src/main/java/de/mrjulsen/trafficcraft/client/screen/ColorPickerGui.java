@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ColorPickerGui extends CommonScreen {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.colorpicker.title");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.colorpicker.title");
 
     private static final int WIDTH = 250;
     private static final int HEIGHT = 185;
@@ -54,9 +54,9 @@ public class ColorPickerGui extends CommonScreen {
     // fix
     private boolean rgbNoUpdate = false;
 
-    private TranslatableComponent textHSV = new TranslatableComponent("gui.trafficcraft.colorpicker.hsv");
-    private TranslatableComponent textRGB = new TranslatableComponent("gui.trafficcraft.colorpicker.rgb");
-    private TranslatableComponent textInteger = new TranslatableComponent("gui.trafficcraft.colorpicker.integer");
+    private TranslatableComponent textHSV = GuiUtils.translate("gui.trafficcraft.colorpicker.hsv");
+    private TranslatableComponent textRGB = GuiUtils.translate("gui.trafficcraft.colorpicker.rgb");
+    private TranslatableComponent textInteger = GuiUtils.translate("gui.trafficcraft.colorpicker.integer");
 
     private static final ResourceLocation gui = new ResourceLocation(ModMain.MOD_ID, "textures/gui/color_picker.png");
 

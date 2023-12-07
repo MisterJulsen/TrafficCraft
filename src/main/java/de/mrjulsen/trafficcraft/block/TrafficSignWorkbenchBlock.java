@@ -1,9 +1,9 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -90,6 +90,6 @@ public class TrafficSignWorkbenchBlock extends Block {
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider((containerId, inv, player) -> {
             return new TrafficSignWorkbenchMenu(containerId, inv, ContainerLevelAccess.create(pLevel, pPos));
-        }, new TextComponent(""));
+        }, GuiUtils.text(""));
     }
 }

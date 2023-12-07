@@ -3,6 +3,9 @@ package de.mrjulsen.trafficcraft.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.DragonLibConstants;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
@@ -17,8 +20,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,9 +30,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TrafficLightConfigScreen extends ParentableScreen
+public class TrafficLightConfigScreen extends CommonScreen
 {
-    public static final Component title = new TextComponent("trafficlightsettings");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.title");
     
     private int guiTop = 50;
     private static final int LINES = 5;
@@ -61,20 +64,15 @@ public class TrafficLightConfigScreen extends ParentableScreen
     protected Button editScheduleButton;
     protected CycleButton<Boolean> statusButton;
 
-    private TranslatableComponent textTitle = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.title");
-    private TranslatableComponent textEditSchedule = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.edit_schedule");
-    private TranslatableComponent textId = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.id");
-    private TranslatableComponent textMode = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.mode");
-    private TranslatableComponent textVariant = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.variant");
-    private TranslatableComponent textDirection = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.direction");
-    private TranslatableComponent textControlType = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.controltype");
-    private TranslatableComponent textStatus = new TranslatableComponent("gui.trafficcraft.trafficlightcontroller.status");
+    private TranslatableComponent textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.edit_schedule");
+    private TranslatableComponent textId = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.id");
+    private TranslatableComponent textMode = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.mode");
+    private TranslatableComponent textVariant = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.variant");
+    private TranslatableComponent textDirection = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.direction");
+    private TranslatableComponent textControlType = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.controltype");
+    private TranslatableComponent textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
 
-    private TranslatableComponent btnDoneTxt = new TranslatableComponent("gui.done");
-    private TranslatableComponent btnCancelTxt = new TranslatableComponent("gui.cancel");
-
-    public TrafficLightConfigScreen(BlockPos pos, Level level)
-    {
+    public TrafficLightConfigScreen(BlockPos pos, Level level) {
         super(title);
         this.level = level;
         this.blockPos = pos;
@@ -108,8 +106,7 @@ public class TrafficLightConfigScreen extends ParentableScreen
     }
 
     @Override
-    public boolean isPauseScreen()
-    {
+    public boolean isPauseScreen() {
         return true;
     }
 
@@ -124,8 +121,7 @@ public class TrafficLightConfigScreen extends ParentableScreen
     }
 
     @Override
-    public void init()
-    {
+    public void init() {
         super.init();
         
         guiTop = this.height / 2 - HEIGHT / 2;
@@ -133,91 +129,75 @@ public class TrafficLightConfigScreen extends ParentableScreen
 
         /* Default page */
 
-        this.addRenderableWidget(new Button(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, btnDoneTxt, (p) -> {
+        addButton(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onDone();
-        }));
+        }, null);
 
-        this.addRenderableWidget(new Button(this.width / 2 + SPACING_X, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, btnCancelTxt, (p) -> {
+        addButton(this.width / 2 + SPACING_X, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, CommonComponents.GUI_CANCEL, (p) -> {
             this.onClose();
-        }));        
+        }, null);        
         
-        this.variantButton = this.addRenderableWidget(CycleButton.<TrafficLightVariant>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightVariant.values()).withInitialValue(variant)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 1, 300, 20, textVariant, (pCycleButton, pValue) -> {
-                    this.variant = pValue;
+        this.variantButton = addCycleButton(ModMain.MOD_ID, TrafficLightVariant.class, this.width / 2 - 150, guiTop + SPACING_Y * 1, 300, 20, textVariant, variant,
+        (btn, value) -> {
+            this.variant = value;
 
-                    this.directionButton.active = pValue != TrafficLightVariant.PEDESTRIAN;
-                    if (pValue == TrafficLightVariant.PEDESTRIAN) {
-                        this.direction = TrafficLightDirection.NORMAL;
-                        this.directionButton.setValue(TrafficLightDirection.NORMAL);
-                    }
-        }));
+            this.directionButton.active = value != TrafficLightVariant.PEDESTRIAN;
+            if (value == TrafficLightVariant.PEDESTRIAN) {
+                this.direction = TrafficLightDirection.NORMAL;
+                this.directionButton.setValue(TrafficLightDirection.NORMAL);
+            }
+        }, null);
 
-        this.directionButton = this.addRenderableWidget(CycleButton.<TrafficLightDirection>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightDirection.values()).withInitialValue(direction)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 2, 300, 20, textDirection, (pCycleButton, pValue) -> {
-                    this.direction = pValue;
-        }));
+        this.directionButton = addCycleButton(ModMain.MOD_ID, TrafficLightDirection.class, this.width / 2 - 150, guiTop + SPACING_Y * 2, 300, 20, textDirection, direction,
+        (btn, value) -> {
+            this.direction = value;
+        }, null);
         this.directionButton.active = variant != TrafficLightVariant.PEDESTRIAN;
 
-        this.controlTypeButton = this.addRenderableWidget(CycleButton.<TrafficLightControlType>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightControlType.values()).withInitialValue(controlType)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 3, 300, 20, textControlType, (pCycleButton, pValue) -> {
-                    this.updateControlType(pValue);
-        }));
+        this.controlTypeButton = addCycleButton(ModMain.MOD_ID, TrafficLightControlType.class, this.width / 2 - 150, guiTop + SPACING_Y * 3, 300, 20, textControlType, controlType,
+        (btn, value) -> {
+            this.updateControlType(value);
+        }, null);
 
 
         /* STATIC PAGE */
-
-        this.modeButton = this.addRenderableWidget(CycleButton.<TrafficLightMode>builder((p) -> {            
-            return new TranslatableComponent(p.getValueTranslationKey(ModMain.MOD_ID));
-            })
-                .withValues(TrafficLightMode.values()).withInitialValue(mode)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 4, 300, 20, textMode, (pCycleButton, pValue) -> {
-                    this.mode = pValue;
-        }));
+        this.modeButton = addCycleButton(ModMain.MOD_ID, TrafficLightMode.class, this.width / 2 - 150, guiTop + SPACING_Y * 4, 300, 20, textMode, mode,
+        (btn, value) -> {
+            this.mode = value;
+        }, null);
 
         /* REMOTE PAGE */
-        this.idInput = new EditBox(this.font, this.width / 2 + SPACING_X, guiTop + SPACING_Y * 4, 60, 16, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.id"));
+        this.idInput = addEditBox(this.width / 2 + SPACING_X, guiTop + SPACING_Y * 4, 60, 16, Integer.toString(this.getBlockEntity().getPhaseId()), true,
+        (text) -> { }, NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null);
         this.idInput.setMaxLength(5);
-        this.idInput.setValue(Integer.toString(this.getBlockEntity().getPhaseId()));
         this.idInput.setFilter(input -> {
-                if (input.isEmpty()) {
-                    return true;
-                }
-
-                try {
-                    Integer.parseInt(input);
-                    return true;
-                } catch (NumberFormatException e) {
-                    return false;
-                }
+            if (input.isEmpty()) {
+                return true;
             }
-        );
-        this.addWidget(this.idInput);  
+
+            try {
+                Integer.parseInt(input);
+                return true;
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }); 
 
         /* OWN SCHEDULE PAGE */
-        this.editScheduleButton = new Button(this.width / 2 - 100, guiTop + SPACING_Y * 4, 200, 20, textEditSchedule, (p) -> {
+        this.editScheduleButton = addButton(this.width / 2 - 100, guiTop + SPACING_Y * 4, 200, 20, textEditSchedule, (p) -> {
             this.minecraft.setScreen(new TrafficLightScheduleScreen(this, blockPos, level, false));
-        });
-        this.addRenderableWidget(editScheduleButton); 
+        }, null); 
 
-        this.statusButton = this.addRenderableWidget(CycleButton.onOffBuilder(this.status)
-            .withInitialValue(this.status)
-            .create(this.width / 2 - 100, guiTop + SPACING_Y * 5, 200, 20, textStatus, (pCycleButton, pValue) -> {
-                this.status = pValue;
-        }));
+        this.statusButton = addOnOffButton(this.width / 2 - 100, guiTop + SPACING_Y * 5, 200, 20, textStatus, status,
+        (btn, value) -> {
+            this.status = value;
+        }, null);
         
         this.updatePage();
     }
 
-    private void onDone() {
+    @Override
+    protected void onDone() {
         NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightPacket(
             blockPos,
             Integer.parseInt(idInput.getValue()),
@@ -231,21 +211,20 @@ public class TrafficLightConfigScreen extends ParentableScreen
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks)
-    {        
+    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
         renderBackground(stack, 0);
         
         /* DEFAULT PAGE */
-        drawCenteredString(stack, this.font, textTitle, this.width / 2, guiTop, 16777215);        
+        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, DragonLibConstants.DEFAULT_UI_FONT_COLOR);        
         
         switch (this.controlType) {
             case REMOTE:
                 drawString(stack, this.font, textId, this.width / 2 - this.font.width(textId) - SPACING_X, guiTop + 25 * 4 + 8 - this.font.lineHeight / 2, 16777215);
                 
                 if (isLinked) {
-                    drawCenteredString(stack, this.font, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.linked", this.linkLocation.x, this.linkLocation.y, this.linkLocation.z, this.linkLocation.dimension), this.width / 2, guiTop + SPACING_Y * 5, 0x55FF55);
+                    drawCenteredString(stack, this.font, GuiUtils.translate("gui.trafficcraft.trafficlightsettings.linked", this.linkLocation.x, this.linkLocation.y, this.linkLocation.z, this.linkLocation.dimension), this.width / 2, guiTop + SPACING_Y * 5, 0x55FF55);
                 } else {
-                    drawCenteredString(stack, this.font, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.not_linked"), this.width / 2, guiTop + SPACING_Y * 5, 0xFF5555);
+                    drawCenteredString(stack, this.font, GuiUtils.translate("gui.trafficcraft.trafficlightsettings.not_linked"), this.width / 2, guiTop + SPACING_Y * 5, 0xFF5555);
                 }
 
                 this.idInput.render(stack, mouseX, mouseY, partialTicks);
@@ -281,15 +260,11 @@ public class TrafficLightConfigScreen extends ParentableScreen
         }
     }
 
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
-    {
-        if(this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_)))
-        {
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
+        if(this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_))) {
             this.onClose();
             return true;
-        }
-        else
-        {
+        } else {
             return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
         }
     }

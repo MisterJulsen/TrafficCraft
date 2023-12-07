@@ -14,7 +14,6 @@ import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -44,10 +43,10 @@ public class TrafficLightScheduleEntry {
 
     public List<WidgetData> renderableWidgets = new ArrayList<WidgetData>();
 
-    private TranslatableComponent textMode = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.mode");
+    private TranslatableComponent textMode = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.mode");
 
-    private TranslatableComponent tooltipAdd = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.time_add");
-    private TranslatableComponent tooltipRemove = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.time_remove");
+    private TranslatableComponent tooltipAdd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.time_add");
+    private TranslatableComponent tooltipRemove = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.time_remove");
     
     private static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_widgets.png");
 
@@ -71,12 +70,12 @@ public class TrafficLightScheduleEntry {
     }
 
     public void init() {
-        this.timeAddBtn = GuiUtils.createButton(52, 4, 16, 16, new TextComponent("+"), (p) -> {
+        this.timeAddBtn = GuiUtils.createButton(52, 4, 16, 16, GuiUtils.text("+"), (p) -> {
             this.data.addDurationSeconds(1);
             this.timeInput.setValue(Integer.toString((int)this.data.getDurationSeconds()));
         });
 
-        this.timeRemoveBtn = GuiUtils.createButton(4, 4, 16, 16, new TextComponent("-"), (p) -> {
+        this.timeRemoveBtn = GuiUtils.createButton(4, 4, 16, 16, GuiUtils.text("-"), (p) -> {
             this.data.subDurationSeconds(1);
             this.timeInput.setValue(Integer.toString((int)this.data.getDurationSeconds()));
         });

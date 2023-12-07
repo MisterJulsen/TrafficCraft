@@ -35,8 +35,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -47,7 +45,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TrafficSignPatternSelectionScreen extends CommonScreen {
     
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.patternselection.title");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.patternselection.title");
     
     private static final int WIDTH = 158;
     private static final int HEIGHT = 200;
@@ -161,7 +159,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                         CreativePatternCatalogueItem.clearCustomImage(stack);
                     }
                 }).withAlignment(Alignment.CENTER);
-                addTooltip(Tooltip.of(new TextComponent(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
+                addTooltip(Tooltip.of(GuiUtils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
                 this.addRenderableWidget(btn);
             }
         } else {
@@ -266,7 +264,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
 
                 float scale = 0.75f;
                 pPoseStack.scale(scale, scale, scale);
-                this.font.draw(pPoseStack, new TranslatableComponent("gui.trafficcraft.patternselection.build_in_pattern", new TranslatableComponent(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
+                this.font.draw(pPoseStack, GuiUtils.translate("gui.trafficcraft.patternselection.build_in_pattern", GuiUtils.translate(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
                 pPoseStack.setIdentity();
             }
             

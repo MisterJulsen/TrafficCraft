@@ -2,6 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -11,8 +12,6 @@ import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -68,17 +67,17 @@ public class BrushItem extends Item
         
         if(stack.hasTag())
         {
-            String color = new TranslatableComponent(PaintColor.byId(stack.getTag().getInt("color")).getTranslatableString()).getString();
+            String color = GuiUtils.translate(PaintColor.byId(stack.getTag().getInt("color")).getTranslatableString()).getString();
             char colorCode = PaintColor.byId(stack.getTag().getInt("color")).getColorCode();
 
             if (stack.getTag().getInt("paint") == 0) {                
-                color = new TranslatableComponent("item.trafficcraft.paint_brush.tooltip.color_empty").getString();
+                color = GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty").getString();
                 colorCode = 'r';
             }
 
-            list.add(new TextComponent(new TranslatableComponent("item.trafficcraft.paint_brush.tooltip.pattern").getString() + stack.getTag().getInt("pattern")));
-            list.add(new TextComponent(new TranslatableComponent("item.trafficcraft.paint_brush.tooltip.color").getString() + "§" + colorCode + color));
-            list.add(new TextComponent(new TranslatableComponent("item.trafficcraft.paint_brush.tooltip.paint").getString() + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt("paint")) + " %"));
+            list.add(GuiUtils.text(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern").getString() + stack.getTag().getInt("pattern")));
+            list.add(GuiUtils.text(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color").getString() + "§" + colorCode + color));
+            list.add(GuiUtils.text(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.paint").getString() + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt("paint")) + " %"));
         }
         
     }

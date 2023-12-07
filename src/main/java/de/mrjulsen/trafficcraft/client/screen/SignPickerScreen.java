@@ -38,7 +38,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,10 +45,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SignPickerScreen extends CommonScreen {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.signpicker.title");
-    public static final Component titleOpenFileDialog = new TranslatableComponent("gui.trafficcraft.signpicker.openfiledialog");
-    public static final Component btnDoneText = new TranslatableComponent("gui.trafficcraft.signpicker.load");
-    public static final Component tooltipImport = new TranslatableComponent("gui.trafficcraft.signpicker.tooltip.import");
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.signpicker.title");
+    public static final Component titleOpenFileDialog = GuiUtils.translate("gui.trafficcraft.signpicker.openfiledialog");
+    public static final Component btnDoneText = GuiUtils.translate("gui.trafficcraft.signpicker.load");
+    public static final Component tooltipImport = GuiUtils.translate("gui.trafficcraft.signpicker.tooltip.import");
 
     private static final int WIDTH = 187;
     private static final int HEIGHT = 171;
@@ -116,13 +115,13 @@ public class SignPickerScreen extends CommonScreen {
 
         groupPatterns.components.clear();
         
-        doneButton = this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, btnDoneText, (p) -> {
+        doneButton = addButton(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, btnDoneText, (p) -> {
             this.onDone();
-        }));
+        }, null);
 
-        this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
+        addButton(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
             this.onClose();
-        }));
+        }, null);
 
         
         IconButton btn = new IconButton(ButtonType.DEFAULT, AreaStyle.BROWN, TrafficSignWorkbenchGui.ButtonIcons.IMPORT.getSprite(), groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {

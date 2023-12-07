@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightControlType implements StringRepresentable {
+public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum {
     STATIC("static", 0),
 	OWN_SCHEDULE("own_schedule", 1),
 	REMOTE("remote", 2);
@@ -40,4 +41,14 @@ public enum TrafficLightControlType implements StringRepresentable {
     public String getSerializedName() {
         return controlType;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightcontroltype";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getControlType();
+	}
 }

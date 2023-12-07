@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
@@ -23,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -347,13 +347,13 @@ public class RoadConstructionTool extends Item {
                 end = null;
             }
 
-            player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_pos1",
+            player.displayClientMessage(GuiUtils.translate("item.trafficcraft.road_construction_tool.status_pos1",
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
             ), true);
 
         } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
             end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
-            player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_pos2",
+            player.displayClientMessage(GuiUtils.translate("item.trafficcraft.road_construction_tool.status_pos2",
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
@@ -379,10 +379,10 @@ public class RoadConstructionTool extends Item {
             int lineStatus = isLineValid(start, end).status;
             switch (lineStatus) {
                 case ERROR_TOO_FAR:
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_too_far").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.road_construction_tool.status_too_far").withStyle(ChatFormatting.RED), true);
                     break;
                 case ERROR_SLOPE_TOO_STEEP:
-                    player.displayClientMessage(new TranslatableComponent("item.trafficcraft.road_construction_tool.status_slope_too_steep").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.road_construction_tool.status_slope_too_steep").withStyle(ChatFormatting.RED), true);
                     break;
                 default:
                     break;

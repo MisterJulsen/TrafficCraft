@@ -27,7 +27,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -37,9 +36,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TrafficLightScheduleScreen extends CommonScreen
-{
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.title");
+public class TrafficLightScheduleScreen extends CommonScreen {
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.title");
     
     private int guiTop;    
     private int guiLeft;
@@ -72,20 +70,20 @@ public class TrafficLightScheduleScreen extends CommonScreen
     private Button moveUpBtn;
     private Button moveDownBtn;
 
-    private final TranslatableComponent textTrigger = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.trigger");
-    private final TranslatableComponent textLoop = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.loop");    
-    private final TranslatableComponent columnTime = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.column_time");
-    private final TranslatableComponent columnId = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.column_id");
-    private final TranslatableComponent columnMode = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.column_mode");
-    private final TranslatableComponent tooltipColTime = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.col_time");
-    private final TranslatableComponent tooltipColId = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.col_id");
-    private final TranslatableComponent tooltipColMode = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.col_mode");
-    private final TranslatableComponent tooltipTrigger = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.trigger");
-    private final TranslatableComponent tooltipLoop = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.loop");
-    private final TranslatableComponent tooltipAdd = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.entry_add");
-    private final TranslatableComponent tooltipRemove = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.entry_remove");
-    private final TranslatableComponent tooltipMoveUp = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.move_up");
-    private final TranslatableComponent tooltipMoveDown = new TranslatableComponent("gui.trafficcraft.trafficlightschedule.tooltip.move_down");
+    private final TranslatableComponent textTrigger = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.trigger");
+    private final TranslatableComponent textLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.loop");    
+    private final TranslatableComponent columnTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.column_time");
+    private final TranslatableComponent columnId = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.column_id");
+    private final TranslatableComponent columnMode = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.column_mode");
+    private final TranslatableComponent tooltipColTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_time");
+    private final TranslatableComponent tooltipColId = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_id");
+    private final TranslatableComponent tooltipColMode = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_mode");
+    private final TranslatableComponent tooltipTrigger = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.trigger");
+    private final TranslatableComponent tooltipLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.loop");
+    private final TranslatableComponent tooltipAdd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.entry_add");
+    private final TranslatableComponent tooltipRemove = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.entry_remove");
+    private final TranslatableComponent tooltipMoveUp = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.move_up");
+    private final TranslatableComponent tooltipMoveDown = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.move_down");
 
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule.png");
     private static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_widgets.png");
@@ -178,13 +176,13 @@ public class TrafficLightScheduleScreen extends CommonScreen
         }, null);
 
         /* EDIT BUTTONS */
-        addButton(guiLeft + 8, guiTop + 183, 20, 20, new TextComponent("+"), (p) -> {
+        addButton(guiLeft + 8, guiTop + 183, 20, 20, GuiUtils.text("+"), (p) -> {
             TrafficLightAnimationData data = new TrafficLightAnimationData();
             this.schedule.getEntries().add(data);
             this.reinitEntries(true);
         }, Tooltip.of(tooltipAdd));
 
-        this.removeBtn = addButton(guiLeft + 31, guiTop + 183, 20, 20, new TextComponent("-"), (p) -> {
+        this.removeBtn = addButton(guiLeft + 31, guiTop + 183, 20, 20, GuiUtils.text("-"), (p) -> {
             if (this.selectedEntry != null) {
                 this.schedule.getEntries().remove(selectedEntry.getAnimationData());
                 this.reinitEntries(true);
@@ -192,7 +190,7 @@ public class TrafficLightScheduleScreen extends CommonScreen
         }, Tooltip.of(tooltipRemove));
         this.removeBtn.active = false;
 
-        this.moveUpBtn = addButton(guiLeft + 58, guiTop + 183, 20, 20, new TextComponent("↑"), (p) -> {
+        this.moveUpBtn = addButton(guiLeft + 58, guiTop + 183, 20, 20, GuiUtils.text("↑"), (p) -> {
             if (this.selectedEntry != null) {
                 int i = this.moveUp(this.schedule.getEntries().indexOf(selectedEntry.getAnimationData()));
                 if (i >= 0) {
@@ -203,7 +201,7 @@ public class TrafficLightScheduleScreen extends CommonScreen
         }, Tooltip.of(tooltipMoveUp));
         this.moveUpBtn.active = false;
 
-        this.moveDownBtn = addButton(guiLeft + 81, guiTop + 183, 20, 20, new TextComponent("↓"), (p) -> {
+        this.moveDownBtn = addButton(guiLeft + 81, guiTop + 183, 20, 20, GuiUtils.text("↓"), (p) -> {
             if (this.selectedEntry != null) {
                 int i = this.moveDown(this.schedule.getEntries().indexOf(selectedEntry.getAnimationData()));
                 if (i >= 0) {

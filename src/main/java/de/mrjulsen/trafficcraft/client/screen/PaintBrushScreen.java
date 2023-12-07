@@ -3,16 +3,15 @@ package de.mrjulsen.trafficcraft.client.screen;
 import java.awt.Color;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.DyeColor;
@@ -20,9 +19,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class PaintBrushScreen extends Screen
-{
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.paint_brush.title");
+public class PaintBrushScreen extends CommonScreen {
+    public static final Component title = GuiUtils.translate("gui.trafficcraft.paint_brush.title");
 
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/paint_brush.png");
     
@@ -92,20 +90,18 @@ public class PaintBrushScreen extends Screen
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(stack, 0);
-        RenderSystem.setShaderTexture(0, GUI);
-        blit(stack, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT);
+        GuiUtils.blit(GUI, stack, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT);
 
         // Draws patterns
         int j = 0;
         int row = 0;
         float[] diffuseColor = this.color.getTextureDiffuseColors();
-        RenderSystem.setShaderColor(diffuseColor[0], diffuseColor[1], diffuseColor[2], 1);
+        GuiUtils.setShaderColor(diffuseColor[0], diffuseColor[1], diffuseColor[2], 1);
 
         for (int i = 0; i < 90; i++) {
             if (i + (scroll * 9) < MAX_PATTERNS) {
                 int index = (i + (9 * scroll));
-                RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, index == 0 ? "textures/block/sign_blank.png" : "textures/block/patterns/" + index + ".png"));
-                blit(stack, guiLeft + 16 * j + 9 + j * 2, guiTop + 18 + row, 0, 0, 16, 16, 16, 16);
+                GuiUtils.blit(new ResourceLocation(ModMain.MOD_ID, index == 0 ? "textures/block/sign_blank.png" : "textures/block/patterns/" + index + ".png"), stack, guiLeft + 16 * j + 9 + j * 2, guiTop + 18 + row, 0, 0, 16, 16, 16, 16);
 
                 j++;
                 if (j >= 9) {
@@ -117,15 +113,13 @@ public class PaintBrushScreen extends Screen
 
 
         // Draws current selected pattern
-        RenderSystem.setShaderTexture(0, new ResourceLocation(ModMain.MOD_ID, pattern == 0 ? "textures/block/sign_blank.png" : "textures/block/patterns/" + pattern + ".png"));
-        blit(stack, guiLeft + 193, guiTop + 18, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(new ResourceLocation(ModMain.MOD_ID, pattern == 0 ? "textures/block/sign_blank.png" : "textures/block/patterns/" + pattern + ".png"), stack, guiLeft + 193, guiTop + 18, 0, 0, 32, 32, 32, 32);
 
         // Paint amount
-        RenderSystem.setShaderTexture(0, GUI);
         int p = (int)(100.0f * (this.calcPaintPercentage() / 100.0f));
-        blit(stack, guiLeft + WIDTH - 41, guiTop + 196 - p, WIDTH, 200 - p, 12, p + 1);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        blit(stack, guiLeft + WIDTH - 41, guiTop + 96, WIDTH, 0, 12, 100);
+        GuiUtils.blit(GUI, stack, guiLeft + WIDTH - 41, guiTop + 196 - p, WIDTH, 200 - p, 12, p + 1);
+        GuiUtils.setShaderColor(1, 1, 1, 1);
+        GuiUtils.blit(GUI, stack, guiLeft + WIDTH - 41, guiTop + 96, WIDTH, 0, 12, 100);
 
         // Draws hover square above slots
         if (mouseX > guiLeft + 7 && mouseX < guiLeft + 171 && mouseY > guiTop + 16 && mouseY < guiTop + 196) {
@@ -138,14 +132,14 @@ public class PaintBrushScreen extends Screen
         int boxY = selectY - (scroll * 18);
 
         if (boxY > guiTop && boxY < guiTop + HEIGHT - 27) {
-            blit(stack, selectX, boxY, 256 - 22, 256 - 22, 22, 22);
+            GuiUtils.blit(GUI, stack, selectX, boxY, 256 - 22, 256 - 22, 22, 22);
         }
 
         // Scrollbar
         if (ROWS > 0) {
-            blit(stack, guiLeft + WIDTH - 59, (int)(guiTop + 18 + 163 * this.currentScroll), 0, HEIGHT, 12, 15);
+            GuiUtils.blit(GUI, stack, guiLeft + WIDTH - 59, (int)(guiTop + 18 + 163 * this.currentScroll), 0, HEIGHT, 12, 15);
         } else {
-            blit(stack, guiLeft + WIDTH - 59, (int)(guiTop + 18 + 163 * this.currentScroll), 12, HEIGHT, 12, 15);
+            GuiUtils.blit(GUI, stack, guiLeft + WIDTH - 59, (int)(guiTop + 18 + 163 * this.currentScroll), 12, HEIGHT, 12, 15);
         }
 
         this.font.draw(stack, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752);
