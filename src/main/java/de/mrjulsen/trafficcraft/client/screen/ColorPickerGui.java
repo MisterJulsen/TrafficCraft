@@ -190,7 +190,7 @@ public class ColorPickerGui extends CommonScreen {
 
 
         this.colorIntBox = addEditBox(
-            guiLeft + 64, guiTop + 132, 96, 16,
+            guiLeft + 64, guiTop + 135, 96, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
