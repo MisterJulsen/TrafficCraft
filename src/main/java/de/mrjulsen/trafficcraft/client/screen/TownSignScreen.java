@@ -53,7 +53,7 @@ public class TownSignScreen extends CommonScreen {
     protected final SignRenderingConfig config;
 
     
-    private TranslatableComponent textVariant = GuiUtils.translate("gui.trafficcraft.town_sign.variant");
+    private TranslatableComponent textVariant = GuiUtils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
     private final TownSignBlock.ETownSignSide side;
 
