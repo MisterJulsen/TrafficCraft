@@ -162,10 +162,10 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    jarJar("curse.maven:dragonlib-946163:4933062") {
-        jarJar.ranged(it, '[0.1.2-1.18.2,)')
+    jarJar("curse.maven:dragonlib-946163:4936624") {
+        jarJar.ranged(it, '[0.1.5-1.18.2,)')
     }
-    implementation fg.deobf("curse.maven:dragonlib-946163:4933062")
+    implementation fg.deobf("curse.maven:dragonlib-946163:4936624")
     //implementation fg.deobf("com.github.MisterJulsen:MC-DragonLib:1.18.2-SNAPSHOT")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
