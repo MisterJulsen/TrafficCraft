@@ -107,8 +107,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private final TranslatableComponent emptyPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
 
     private final TranslatableComponent tooltipDefaultNew = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add");
-    private final TranslatableComponent tooltipDefaultNewFull1 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
-    private final TranslatableComponent tooltipDefaultNewFull2 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
+    //private final TranslatableComponent tooltipDefaultNewFull1 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
+    //private final TranslatableComponent tooltipDefaultNewFull2 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
     private final TranslatableComponent tooltipDefaultEdit = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.edit");
     private final TranslatableComponent tooltipDefaultDelete = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.delete");
 
@@ -857,20 +857,14 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    /*
+    
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         draw(pMouseX, pMouseY, pButton);
-
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof GuiEventListener).forEach(x -> {
-            if (((GuiEventListener)x).mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY) && !b[0])
-                b[0] = true;
-        });
-        super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
-        return b[0];
+        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
-
+    
+    /*
     @Override
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
         boolean[] b = new boolean[] { false };
