@@ -128,7 +128,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
             NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
             this.onCancel();
-        }, Tooltip.of(tooltipReset));
+        }, Tooltip.of(tooltipReset).withMaxWidth(width / 4));
 
         this.buildButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
             updateStackData();
@@ -160,7 +160,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
                 blocksCount = res.blocksCount;
                 slopesCount = res.slopesCount;
             }
-        }, Tooltip.of(tooltipReplaceBlocks));
+        }, Tooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
 
         this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, GuiUtils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
         (slider, value) -> {

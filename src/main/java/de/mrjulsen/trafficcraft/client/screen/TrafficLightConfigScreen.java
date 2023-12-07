@@ -157,7 +157,7 @@ public class TrafficLightConfigScreen extends CommonScreen
         this.controlTypeButton = addCycleButton(ModMain.MOD_ID, TrafficLightControlType.class, this.width / 2 - 150, guiTop + SPACING_Y * 3, 300, 20, textControlType, controlType,
         (btn, value) -> {
             this.updateControlType(value);
-        }, null);
+        }, Tooltip.of(GuiUtils.getEnumTooltipData(ModMain.MOD_ID, this, TrafficLightControlType.class, width / 4)));
 
 
         /* STATIC PAGE */

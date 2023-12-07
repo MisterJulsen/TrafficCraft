@@ -215,7 +215,7 @@ public class TrafficLightScheduleScreen extends CommonScreen {
         this.triggerBtn = addCycleButton(ModMain.MOD_ID, TrafficLightTrigger.class, guiLeft + 8, guiTop + 20, 109, 16, textTrigger, this.schedule.getTrigger(),
         (btn, value) -> {
             this.schedule.setTrigger(value);
-        }, Tooltip.of(tooltipTrigger).withMaxWidth(width / 4));
+        }, Tooltip.of(GuiUtils.getEnumTooltipData(ModMain.MOD_ID, this, TrafficLightTrigger.class, width / 4)).withMaxWidth(width / 4));
 
         this.loopBtn = addOnOffButton(guiLeft + 8 + 113, guiTop + 20, 109, 16, textLoop, this.schedule.isLoop(),
         (btn, value) -> {

@@ -157,7 +157,7 @@ public class SignPickerScreen extends CommonScreen {
             }
             this.minecraft.getSoundManager().resume();
         }).withAlignment(Alignment.CENTER);
-        addTooltip(Tooltip.of(tooltipImport).assignedTo(btn));
+        addTooltip(Tooltip.of(tooltipImport).assignedTo(btn)).withMaxWidth(width / 4);
         this.addRenderableWidget(btn);
         
         for (int i = 0; i < count; i++) {
