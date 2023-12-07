@@ -118,7 +118,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 new KeybindComponent("key.use")
             ));
         } else {
-            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink"));
+            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink").withStyle(ChatFormatting.GRAY));
         }
     }
 

@@ -10,6 +10,7 @@ import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
 import de.mrjulsen.mcdragonlib.utils.Utils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -79,7 +80,7 @@ public class StreetLampConfigCardItem extends Item
             list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time", TimeUtils.parseTime(nbt.getInt("turnOnTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));
             list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time", TimeUtils.parseTime(nbt.getInt("turnOffTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));            
         } else {
-            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.empty"));
+            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.empty").withStyle(ChatFormatting.GRAY));
         }        
     }
     
@@ -107,7 +108,7 @@ public class StreetLampConfigCardItem extends Item
             if (!level.isClientSide) {
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
                     if (nbt.getInt("turnOnTime") == nbt.getInt("turnOffTime")) {
-                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.error_same_time"), false);                        
+                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.error_same_time").withStyle(ChatFormatting.RED), false);                        
                         return InteractionResult.FAIL;
                     }
                     blockEntity.setOnTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
