@@ -169,9 +169,13 @@
     "enum.trafficcraft.trafficlighttrigger.redstone": "Redstone",
     "enum.trafficcraft.trafficlighttrigger.info.redstone": "Schedule can be triggered by redstone.",
 
+    "enum.trafficcraft.trafficlightcontroltype.description": "Controltype of this traffic light.",
     "enum.trafficcraft.trafficlightcontroltype.static": "Static",
+    "enum.trafficcraft.trafficlightcontroltype.info.static": "This Traffic Light will only display one fixed color.",
     "enum.trafficcraft.trafficlightcontroltype.own_schedule": "Own Schedule",
+    "enum.trafficcraft.trafficlightcontroltype.info.own_schedule": "This Traffic Light is controlled by its own schedule.",
     "enum.trafficcraft.trafficlightcontroltype.remote": "Traffic Light Controller",
+    "enum.trafficcraft.trafficlightcontroltype.info.remote": "This Traffic Light is controlled by a Traffic Light Controller and can be used synchrone to other traffic lights.",
 
     "enum.trafficcraft.trafficlightvariant.normal": "Normal",
     "enum.trafficcraft.trafficlightvariant.small": "Small (Red/Yellow)",
@@ -274,7 +278,7 @@
     "gui.trafficcraft.signpicker.load": "Load",
     "gui.trafficcraft.signpicker.tooltip.import": "Import custom texture from computer",
     
-    "gui.trafficcraft.road_builder.title": "Road Builder Gadget Settings",
+    "gui.trafficcraft.road_builder.title": "Road Construction Tool Settings",
     "gui.trafficcraft.road_builder.reset": "Reset",
     "gui.trafficcraft.road_builder.build": "BUILD",
     "gui.trafficcraft.road_builder.replace_blocks": "Replace Blocks",
