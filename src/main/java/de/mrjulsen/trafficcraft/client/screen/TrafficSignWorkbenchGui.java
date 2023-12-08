@@ -89,6 +89,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private GuiAreaDefinition editorArea, nextButton, prevButton;
     private TrafficSignData preview;
     private EditBox nameBox;
+    private IconButton createNewAcceptBtn;
 
     // tooltips
     private final Map<TrafficSignWorkbenchMode, List<Tooltip>> tooltips = new HashMap<>();
@@ -119,6 +120,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private final TranslatableComponent tooltipEditorToolbarText = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
     private final TranslatableComponent tooltipEditorToolbarLoad = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
     private final TranslatableComponent tooltipEditorToolbarSave = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
+
 
     // gui textures
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_sign_workbench.png");
@@ -266,7 +268,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         
         fillButtons(shapeButtons, 0, x, y, null);
 
-        this.addRenderableWidget(new IconButton(
+        createNewAcceptBtn = this.addRenderableWidget(new IconButton(
             ButtonType.DEFAULT,
             AreaStyle.GRAY,
             new Sprite(OVERLAY, 256, 256, 46, 174, 16, 16),
@@ -278,12 +280,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             null,
             (btn) -> {
                 switchMode(TrafficSignWorkbenchMode.EDITOR);
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    this.active = shape != null;
-                }
-            }.withAlignment(Alignment.CENTER)
+            }).withAlignment(Alignment.CENTER)
         );
 
         this.addRenderableWidget(new IconButton(
@@ -597,6 +594,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 break;
             default:
                 break;
+        }
+
+        if (createNewAcceptBtn.visible) {
+            createNewAcceptBtn.active = shape != null;
         }
     }
 
@@ -938,7 +939,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 break;
             case CREATE_NEW:
                 this.shape = null;
-                groupCreatePattern.performForEach(x -> x instanceof IconButton, w -> ((IconButton)w).deselect());
+                groupShapes.performForEachOfType(IconButton.class, w -> w.deselect());
                 break;
             case EDITOR:
                 pixels = new int[TrafficSignShape.MAX_WIDTH][];
