@@ -2,15 +2,11 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
 
-import javax.lang.model.type.ErrorType;
-
-import com.google.common.collect.BiMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
@@ -24,11 +20,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 
 public class TrafficLightTextureManager {
-    private static final Map<TrafficLightTextureKey, Model> models = new HashMap<>();
+    private static final Model FALLBACK_MODEL = Model.create(null);
+    private static final List<Model> models = new ArrayList<>();
 
     static {
         Arrays.stream(TrafficLightIcon.values())
@@ -37,7 +35,7 @@ public class TrafficLightTextureManager {
                     .filter(y -> x == TrafficLightIcon.NONE || y != TrafficLightColor.NONE)
                     .forEach(y -> {
                         TrafficLightTextureKey key = new TrafficLightTextureKey(x, y);
-                        models.put(key, Model.create(key));
+                        models.add(Model.create(key));
                     })                    
             );
     }
@@ -55,6 +53,10 @@ public class TrafficLightTextureManager {
         return new ResourceLocation(ModMain.MOD_ID, String.format("%s/%s_%s", TEXTURE_PATH, key.getIcon().getName(), key.getColor().getName()));
     }
 
+    public static Collection<ResourceLocation> getAllTextureLocations() {
+        return models.stream().map(x -> x.getKey().getTextureLocation()).toList();
+    }
+
     public static TextureAtlasSprite getSprite(TrafficLightIcon icon, TrafficLightColor color) {
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(getTextureLocation(icon, color));
     }
@@ -64,7 +66,7 @@ public class TrafficLightTextureManager {
     }
 
     public static void render(PoseStack poseStack, VertexConsumer consumer, TrafficLightTextureKey key) {
-        models.get(key).render(poseStack, consumer);
+        models.stream().filter(x -> x.getKey().equals(key)).findFirst().orElse(FALLBACK_MODEL).render(poseStack, consumer);
     }
 
     public static class TrafficLightTextureKey {
@@ -87,9 +89,14 @@ public class TrafficLightTextureManager {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TrafficLightTextureKey other) {
-                return getIcon() == other.getIcon() && getColor() == other.getColor();
+                return getIcon().equals(other.getIcon()) && getColor().equals(other.getColor());
             }
             return false;
+        }
+
+        @Override
+        public String toString() {
+            return icon.getName() + " - " + color.getName();
         }
 
         public ResourceLocation getTextureLocation() {
@@ -109,7 +116,7 @@ public class TrafficLightTextureManager {
         }
     }
 
-    public static class Model {
+    private static class Model {
         private static final float pixel = 1.0F / 16.0F;
 
         private final List<BakedQuad> quads = new ArrayList<>();
@@ -121,7 +128,7 @@ public class TrafficLightTextureManager {
         }
 
         protected static final Model create(TrafficLightTextureKey key) {
-            TextureAtlasSprite sprite = key.getSprite();
+            TextureAtlasSprite sprite = key == null ? Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TextureManager.INTENTIONAL_MISSING_TEXTURE) : key.getSprite();
             List<BakedQuad> quads = new ArrayList<>();
             quads.add(ClientTools.createQuad(new Vector3f(0, pixel * 4, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, pixel * 4), new Vector3f(0, pixel * 4, pixel * 4), 16, 16, Transformation.identity(), sprite));
             quads.add(ClientTools.createQuad(new Vector3f(0, pixel * 4, 0), new Vector3f(pixel * 1, pixel * 4, 0), new Vector3f(pixel * 1, 0, 0), new Vector3f(0, 0, 0), 16, 1, Transformation.identity(), sprite));
@@ -133,7 +140,11 @@ public class TrafficLightTextureManager {
         }
 
         private void render(PoseStack poseStack, VertexConsumer consumer) {
-            quads.forEach(x -> consumer.putBulkData(poseStack.last(), x, 1, 1, 1, key.isOffState() ? LightTexture.FULL_BLOCK : LightTexture.FULL_BRIGHT, 0));        
+            quads.forEach(x -> consumer.putBulkData(poseStack.last(), x, 1, 1, 1, key == null || key.isOffState() ? LightTexture.FULL_BLOCK : LightTexture.FULL_BRIGHT, 0));        
+        }
+
+        private TrafficLightTextureKey getKey() {
+            return key;
         }
     }
 }

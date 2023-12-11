@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.client;
 
-import java.util.Arrays;
-
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
@@ -24,6 +22,6 @@ public class ClientEvents {
             return;
         }
 
-        Arrays.stream(TrafficLightTexture.values()).forEach(x -> event.addSprite(x.getTextureLocation()));
+        TrafficLightTextureManager.getAllTextureLocations().forEach(x -> event.addSprite(x));
     }
 }

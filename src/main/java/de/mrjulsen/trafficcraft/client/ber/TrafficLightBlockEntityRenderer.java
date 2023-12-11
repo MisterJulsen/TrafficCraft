@@ -5,8 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.client.TrafficLightTexture;
+import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -35,19 +37,11 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
 
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.solid());
         final float pixel = 1.0F / 16.0F;
-        TrafficLightTexture.GREEN.render(pPoseStack, vertexconsumer);
+        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.RED).render(pPoseStack, vertexconsumer);
         pPoseStack.translate(0, pixel * 6, 0);
-        TrafficLightTexture.YELLOW.render(pPoseStack, vertexconsumer);
+        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.YELLOW).render(pPoseStack, vertexconsumer);
         pPoseStack.translate(0, pixel * 6, 0);
-        TrafficLightTexture.RED.render(pPoseStack, vertexconsumer);
-
-        //final float pixel = 1.0f / 16.0f;
-        //TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ETrafficLightTexture.STRAIGHT_RIGHT_RED.getTextureLocation());
-        //vertexconsumer.putBulkData(pPoseStack.last(), ClientTools.createQuad(new Vector3f(0, pixel * 4, 0), new Vector3f(0, 0, 0), new Vector3f(0, 0, pixel * 4), new Vector3f(0, pixel * 4, pixel * 4), 16, 16, Transformation.identity(), sprite), 1, 1, 1, LightTexture.FULL_BRIGHT, 0);
-        //vertexconsumer.putBulkData(pPoseStack.last(), ClientTools.createQuad(new Vector3f(0, pixel * 4, 0), new Vector3f(pixel * 1, pixel * 4, 0), new Vector3f(pixel * 1, 0, 0), new Vector3f(0, 0, 0), 16, 1, Transformation.identity(), sprite), 1, 1, 1, LightTexture.FULL_BRIGHT, 0);
-        //vertexconsumer.putBulkData(pPoseStack.last(), ClientTools.createQuad(new Vector3f(0, 0, pixel * 4), new Vector3f(pixel * 1, 0, pixel * 4), new Vector3f(pixel * 1, pixel * 4, pixel * 4), new Vector3f(0, pixel * 4, pixel * 4), 16, 1, Transformation.identity(), sprite), 1, 1, 1, LightTexture.FULL_BRIGHT, 0);
-        //vertexconsumer.putBulkData(pPoseStack.last(), ClientTools.createQuad(new Vector3f(0, 0, 0), new Vector3f(pixel * 1, 0, 0), new Vector3f(pixel * 1, 0, pixel * 4), new Vector3f(0, 0, pixel * 4), 16, 1, Transformation.identity(), sprite), 1, 1, 1, LightTexture.FULL_BRIGHT, 0);
-        //vertexconsumer.putBulkData(pPoseStack.last(), ClientTools.createQuad(new Vector3f(0, pixel * 4, pixel * 4), new Vector3f(pixel * 1, pixel * 4, pixel * 4), new Vector3f(pixel * 1, pixel * 4, 0), new Vector3f(0, pixel * 4, 0), 16, 1, Transformation.identity(), sprite), 1, 1, 1, LightTexture.FULL_BRIGHT, 0);
+        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.GREEN).render(pPoseStack, vertexconsumer);
         
         pPoseStack.popPose();
     }

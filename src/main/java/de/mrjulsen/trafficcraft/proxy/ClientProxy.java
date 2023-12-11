@@ -5,9 +5,7 @@ import java.util.Arrays;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.mcdragonlib.setup.IProxy;
-import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.client.RenderTypes;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
 import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.StreetSignBlockEntityRenderer;
