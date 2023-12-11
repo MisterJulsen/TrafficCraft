@@ -58,7 +58,7 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
         pPoseStack.translate(0.5f, 0.5f, 0.5f);
 
         float f4 = blockstate.getValue(TrafficSignBlock.FACING) == Direction.EAST || blockstate.getValue(TrafficSignBlock.FACING) == Direction.WEST ? blockstate.getValue(TrafficSignBlock.FACING).getOpposite().toYRot() : blockstate.getValue(TrafficSignBlock.FACING).toYRot();
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));         
+        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
         pPoseStack.translate(-0.5d, -0.5d, z + 0.002d);
           
         
