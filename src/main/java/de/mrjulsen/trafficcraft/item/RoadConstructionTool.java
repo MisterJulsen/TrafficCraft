@@ -185,7 +185,7 @@ public class RoadConstructionTool extends Item {
         }
 
         if (pLevel.isClientSide) {
-            ClientWrapper.showRoadBuilderGadgetScreen(
+            ClientWrapper.showRoadConstructionToolScreen(
                 itemstack,
                 (int)blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v <= 0 || v >= 8).count(),
                 blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v > 0 && v < 8).mapToInt(x -> x).sum()

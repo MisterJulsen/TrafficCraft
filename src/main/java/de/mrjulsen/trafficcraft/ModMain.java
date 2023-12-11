@@ -55,7 +55,6 @@ public class ModMain {
     }
 
     private void setupClient(final FMLClientSetupEvent event) {
-        LOGGER.info("Welcome to the TRAFFICCRAFT mod by MRJULSEN.");
         ((ClientProxy)PROXY).setupClient(event);
     }
 }

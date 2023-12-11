@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.util;
 
+import java.util.List;
+
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -14,9 +16,9 @@ public class ClientTools {
     private static void putVertex(BakedQuadBuilder builder, Vector3f normal, Vector4f vector,
                                   float u, float v, TextureAtlasSprite sprite) {
 
-        var elements = builder.getVertexFormat().getElements().asList();
+        List<VertexFormatElement> elements = builder.getVertexFormat().getElements().asList();
         for (int j = 0 ; j < elements.size() ; j++) {
-            var e = elements.get(j);
+            VertexFormatElement e = elements.get(j);
             switch (e.getUsage()) {
                 case POSITION -> builder.put(j, vector.x(), vector.y(), vector.z(), 1.0f);
                 case COLOR    -> builder.put(j, 1.0f, 1.0f, 1.0f, 1.0f);
@@ -43,13 +45,13 @@ public class ClientTools {
         normal.cross(temp);
         normal.normalize();
 
-        //rotation = rotation.blockCenterToCorner();
-        //rotation.transformNormal(normal);
+        rotation = rotation.blockCenterToCorner();
+        rotation.transformNormal(normal);
 
-        Vector4f vv1 = new Vector4f(v1); //rotation.transformPosition(vv1);
-        Vector4f vv2 = new Vector4f(v2); //rotation.transformPosition(vv2);
-        Vector4f vv3 = new Vector4f(v3); //rotation.transformPosition(vv3);
-        Vector4f vv4 = new Vector4f(v4); //rotation.transformPosition(vv4);
+        Vector4f vv1 = new Vector4f(v1); rotation.transformPosition(vv1);
+        Vector4f vv2 = new Vector4f(v2); rotation.transformPosition(vv2);
+        Vector4f vv3 = new Vector4f(v3); rotation.transformPosition(vv3);
+        Vector4f vv4 = new Vector4f(v4); rotation.transformPosition(vv4);
 
         var builder = new BakedQuadBuilder(sprite);
         builder.setQuadOrientation(Direction.getNearest(normal.x(), normal.y(), normal.z()));

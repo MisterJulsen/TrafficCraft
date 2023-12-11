@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.block.data;
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
+@Deprecated
 public enum TrafficLightDirection implements StringRepresentable, ITranslatableEnum {
     NORMAL("normal", 0),
 	RIGHT("right", 1),

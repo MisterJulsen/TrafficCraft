@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.block.data;
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
+@Deprecated
 public enum TrafficLightMode implements StringRepresentable, ITranslatableEnum {
     ALL_ON("all", 0),
 	OFF("off", 1),

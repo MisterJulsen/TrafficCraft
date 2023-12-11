@@ -24,6 +24,6 @@ public class ClientEvents {
             return;
         }
 
-        Arrays.stream(ETrafficLightTexture.values()).forEach(x -> event.addSprite(x.getTextureLocation()));
+        Arrays.stream(TrafficLightTexture.values()).forEach(x -> event.addSprite(x.getTextureLocation()));
     }
 }

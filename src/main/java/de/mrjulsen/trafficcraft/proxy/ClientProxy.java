@@ -37,8 +37,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
@@ -64,7 +62,7 @@ public class ClientProxy implements IProxy {
 	}).toArray(DynamicTexture[]::new);
 
     public void setupClient(FMLClientSetupEvent event) {
-        System.out.println("fjgbfkgsfjglsdjgkdslkgdhsjgjsglsdngljsngsldgjskglsgnsldgnsöojsdgnslgnsögnslgnskgnlsdngjadglgsHLJGSDLHDSjkheourNMSDJOHSJG");
+        
     }
 
     @Override

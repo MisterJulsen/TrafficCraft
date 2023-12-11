@@ -75,7 +75,7 @@ public class ClientWrapper {
         TrafficSignTextureCacheClient.clear(packet.id);
     }
 
-    public static void showRoadBuilderGadgetScreen(ItemStack itemstack, int blocksCount, int slopesCount) {
+    public static void showRoadConstructionToolScreen(ItemStack itemstack, int blocksCount, int slopesCount) {
         Minecraft.getInstance().setScreen(new RoadConstructionToolScreen(itemstack, blocksCount, slopesCount));
     }
 }
