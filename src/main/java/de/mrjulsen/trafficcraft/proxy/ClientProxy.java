@@ -5,11 +5,14 @@ import java.util.Arrays;
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.mcdragonlib.setup.IProxy;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.RenderTypes;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
 import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.StreetSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TownSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.ber.TrafficLightBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TrafficSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
@@ -34,6 +37,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -57,6 +63,10 @@ public class ClientProxy implements IProxy {
 		return new DynamicTexture(image);
 	}).toArray(DynamicTexture[]::new);
 
+    public void setupClient(FMLClientSetupEvent event) {
+        System.out.println("fjgbfkgsfjglsdjgkdslkgdhsjgjsglsdngljsngsldgjskglsgnsldgnsöojsdgnslgnsögnslgnskgnlsdngjadglgsHLJGSDLHDSjkheourNMSDJOHSJG");
+    }
+
     @Override
     public void setup(FMLCommonSetupEvent event) {
         
@@ -66,10 +76,13 @@ public class ClientProxy implements IProxy {
         ItemModelGenerator.LAYERS.add("layer8");
         
         /* RENDER LAYERS */
+        /*
+        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_LIGHT.get(), RenderTypes.getGlowingSolid());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_SIGN_WORKBENCH.get(), RenderType.cutout());
+        */
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {
             if (block.getId().toString().contains("pattern")) {
@@ -105,6 +118,7 @@ public class ClientProxy implements IProxy {
         BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntityRenderer::new);
 
         MinecraftForgeClient.registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
             return new ClientTrafficSignTooltipStack(tooltip);
