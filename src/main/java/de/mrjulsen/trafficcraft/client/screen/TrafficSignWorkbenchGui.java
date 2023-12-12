@@ -32,7 +32,7 @@ import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
@@ -225,7 +225,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 this.minecraft.setScreen(new ConfirmScreen((b) -> {
                     if (b) {
                         int idx = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
-                        NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueDeletePacket(idx));
+                        NewNetworkManager.getInstance().send(new PatternCatalogueDeletePacket(idx), null);
                     }
                     this.minecraft.setScreen(this);
                 },
@@ -438,7 +438,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
                             tsd.setName(name);
                             img.close();
-                            NetworkManager.MOD_CHANNEL.sendToServer(new TrafficSignPatternPacket(tsd, selectedIndex));
+                            NewNetworkManager.getInstance().send(new TrafficSignPatternPacket(tsd, selectedIndex), null);
                             switchMode(TrafficSignWorkbenchMode.DEFAULT);
                             initPreview();
                             break;
@@ -530,10 +530,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             selectedColor = color == 0 ? selectedColor : color;
                             break;
                         case 1:
-                            NetworkManager.MOD_CHANNEL.sendToServer(new ColorPaletteItemPacket(selectedColor, j));
+                            NewNetworkManager.getInstance().send(new ColorPaletteItemPacket(selectedColor, j), null);
                             break;
                         case 2:
-                            NetworkManager.MOD_CHANNEL.sendToServer(new ColorPaletteItemPacket(0, j));
+                            NewNetworkManager.getInstance().send(new ColorPaletteItemPacket(0, j), null);
                             break;
                         default:
                             break;
@@ -769,7 +769,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
     private void switchPreview(int index) {
         PatternCatalogueItem.setSelectedIndex(this.getMenu().patternSlot.getItem(), index);
-        NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueIndexPacketGui(index));
+        NewNetworkManager.getInstance().send(new PatternCatalogueIndexPacketGui(index), null);
         initPreview();
     }
 

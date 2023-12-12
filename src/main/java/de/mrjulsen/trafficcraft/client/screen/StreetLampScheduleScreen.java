@@ -9,8 +9,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
-import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -95,12 +94,12 @@ public class StreetLampScheduleScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat));
+        NewNetworkManager.getInstance().send(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat), null);
         this.onClose();
     }
 
     private String getTimeSuffix(int value) {        
-        value = value % Constants.TICKS_PER_DAY;
+        value = value % DragonLibConstants.TICKS_PER_DAY;
         switch (value) {
             case 0:
                 return "gui.trafficcraft.daytime.midnight";                

@@ -17,7 +17,7 @@ import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
 
 import java.util.stream.IntStream;
@@ -82,7 +82,7 @@ public class WritableSignScreen extends CommonScreen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NetworkManager.MOD_CHANNEL.sendToServer(new WritableSignPacket(this.sign.getBlockPos(), messages)); 
+        NewNetworkManager.getInstance().send(new WritableSignPacket(this.sign.getBlockPos(), messages), null); 
     }
 
     public void tick() {
@@ -95,7 +95,7 @@ public class WritableSignScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new WritableSignPacket(this.sign.getBlockPos(), messages)); 
+        NewNetworkManager.getInstance().send(new WritableSignPacket(this.sign.getBlockPos(), messages), null); 
         this.minecraft.setScreen(null);
     }
 

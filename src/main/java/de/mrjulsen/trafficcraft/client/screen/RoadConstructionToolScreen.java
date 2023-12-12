@@ -19,7 +19,7 @@ import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderResetPacket;
@@ -126,7 +126,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         int btnWidth = btnSpace - 2;
 
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
-            NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
+            NewNetworkManager.getInstance().send(new RoadBuilderResetPacket(), null);
             this.onCancel();
         }, Tooltip.of(tooltipReset).withMaxWidth(width / 4));
 
@@ -139,10 +139,10 @@ public class RoadConstructionToolScreen extends CommonScreen {
             boolean replaceBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
             RoadType roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
 
-            NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
+            NewNetworkManager.getInstance().send(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType), null);
 
             RoadConstructionTool.reset(stack);
-            NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderResetPacket());
+            NewNetworkManager.getInstance().send(new RoadBuilderResetPacket(), null);
             this.onClose();
         }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
@@ -208,7 +208,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, roadWidth);
         nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, replaceExistingBlocks);
         nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, roadType.getIndex());
-        NetworkManager.MOD_CHANNEL.sendToServer(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
+        NewNetworkManager.getInstance().send(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType), null);
     }
 
     public void onCancel() {

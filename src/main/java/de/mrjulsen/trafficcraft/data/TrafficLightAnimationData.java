@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import net.minecraft.nbt.CompoundTag;
@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 public class TrafficLightAnimationData {
 
     public static final int MAX_SECONDS = 999;
-    public static final int MAX_TICKS = MAX_SECONDS * Constants.TPS;
+    public static final int MAX_TICKS = MAX_SECONDS * DragonLibConstants.TPS;
 
     private List<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private int ticks = 0;
@@ -35,7 +35,7 @@ public class TrafficLightAnimationData {
     }
 
     public double getDurationSeconds() {
-        return (double)this.ticks / Constants.TPS;
+        return (double)this.ticks / DragonLibConstants.TPS;
     }
 
     public int getPhaseId() {
@@ -71,7 +71,7 @@ public class TrafficLightAnimationData {
     }
 
     public void setDurationSeconds(double seconds) {
-        this.setDurationTicks((int)(seconds * Constants.TPS));
+        this.setDurationTicks((int)(seconds * DragonLibConstants.TPS));
     }
 
     public void addDurationTicks(int amount) {
@@ -79,7 +79,7 @@ public class TrafficLightAnimationData {
     }
 
     public void addDurationSeconds(int amount) {
-        this.addDurationTicks((int)(amount * Constants.TPS));
+        this.addDurationTicks((int)(amount * DragonLibConstants.TPS));
     }
 
     public void subDurationTicks(int amount) {
@@ -87,7 +87,7 @@ public class TrafficLightAnimationData {
     }
 
     public void subDurationSeconds(int amount) {
-        this.subDurationTicks((int)(amount * Constants.TPS));
+        this.subDurationTicks((int)(amount * DragonLibConstants.TPS));
     }
 
     public void setPhaseId(int id) {

@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
-import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -71,7 +71,7 @@ public class StreetLampBlockEntity extends BlockEntity {
             return;
         }
 
-        if (TimeUtils.isInRange((int)(level.getDayTime() % Constants.TICKS_PER_DAY), onTimeTicks, offTimeTicks)) {
+        if (TimeUtils.isInRange((int)(level.getDayTime() % DragonLibConstants.TICKS_PER_DAY), onTimeTicks, offTimeTicks)) {
             if (!state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, true));
             }
@@ -95,10 +95,10 @@ public class StreetLampBlockEntity extends BlockEntity {
     }
 
     public void setOnTime(int time) {
-        this.onTimeTicks = Mth.clamp(time, 0, Constants.TICKS_PER_DAY - 1);
+        this.onTimeTicks = Mth.clamp(time, 0, DragonLibConstants.TICKS_PER_DAY - 1);
     }
 
     public void setOffTime(int time) {
-        this.offTimeTicks = Mth.clamp(time, 0, Constants.TICKS_PER_DAY - 1);
+        this.offTimeTicks = Mth.clamp(time, 0, DragonLibConstants.TICKS_PER_DAY - 1);
     }
 }

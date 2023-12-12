@@ -15,7 +15,7 @@ import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection;
 import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -198,7 +198,7 @@ public class TrafficLightConfigScreen extends CommonScreen
 
     @Override
     protected void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightPacket(
+        NewNetworkManager.getInstance().send(new TrafficLightPacket(
             blockPos,
             Integer.parseInt(idInput.getValue()),
             mode.getIndex(),
@@ -206,7 +206,7 @@ public class TrafficLightConfigScreen extends CommonScreen
             direction.getIndex(),
             controlType.getIndex(),
             this.status
-        ));
+        ), null);
         this.onClose();
     }
 

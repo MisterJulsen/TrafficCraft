@@ -18,7 +18,7 @@ import de.mrjulsen.trafficcraft.client.widgets.TrafficLightScheduleEntry;
 import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -235,10 +235,10 @@ public class TrafficLightScheduleScreen extends CommonScreen {
     protected void onDone() {  
         List<TrafficLightSchedule> schedules = new ArrayList<>();
         schedules.add(schedule);
-        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightSchedulePacket(
+        NewNetworkManager.getInstance().send(new TrafficLightSchedulePacket(
             blockPos,
             schedules
-        ));
+        ), null);
         this.onClose();
     }
 
