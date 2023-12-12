@@ -1,12 +1,10 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum {
+public enum TrafficLightColor implements StringRepresentable {
     NONE("none", 0),
 	RED("red", 1),
 	YELLOW("yellow", 2),
@@ -33,7 +31,7 @@ public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum 
 	}
 
 	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.TrafficLightColor.%s", name);
+		return String.format("gui.trafficcraft.trafficlightcolor.%s", name);
 	}
 
 	public static TrafficLightColor getDirectionByIndex(int index) {
@@ -49,14 +47,4 @@ public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum 
     public String getSerializedName() {
         return name;
     }
-
-	@Override
-	public String getEnumName() {
-		return "TrafficLightColor";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getName();
-	}
 }

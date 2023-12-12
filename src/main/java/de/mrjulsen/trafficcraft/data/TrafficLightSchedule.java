@@ -1,9 +1,11 @@
 package de.mrjulsen.trafficcraft.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -42,7 +44,7 @@ public class TrafficLightSchedule {
     /**
      * Check if there is something to change.
      * @param currentTick
-     * @return List of phaseIDs.
+     * @return List of phaseIDs. Returns {@code null} if {@code currentTick} is out of bounds. Returns an empty list, if thee is nothing to change. Returns a list containing the indices of states to change, if there is something to change.
      */
     public List<TrafficLightAnimationData> shouldChange(int currentTick) {
         List<TrafficLightAnimationData> changeEntries = new ArrayList<>();
@@ -61,12 +63,12 @@ public class TrafficLightSchedule {
 
         return changeEntries.size() <= 0 ? null : changeEntries.stream().distinct().toList();
     }
-
-    public TrafficLightMode getModeForUpdate(int index) {
+    
+    public Collection<TrafficLightColor> getColorsForUpdate(int index) {
         if (index < 0 || index >= entries.size())
-            return null;
+            return Collections.emptyList();
 
-        return entries.get(index).getMode();
+        return entries.get(index).getEnabledColors();
     }
 
     public int getPhaseId(int index) {

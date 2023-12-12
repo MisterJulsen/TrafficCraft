@@ -3,10 +3,7 @@ package de.mrjulsen.trafficcraft.client;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
@@ -92,11 +89,6 @@ public class TrafficLightTextureManager {
                 return getIcon().equals(other.getIcon()) && getColor().equals(other.getColor());
             }
             return false;
-        }
-
-        @Override
-        public String toString() {
-            return icon.getName() + " - " + color.getName();
         }
 
         public ResourceLocation getTextureLocation() {

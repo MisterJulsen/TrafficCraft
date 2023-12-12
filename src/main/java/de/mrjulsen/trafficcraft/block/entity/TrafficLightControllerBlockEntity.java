@@ -1,16 +1,14 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -39,7 +37,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
     private List<Location> trafficLightLocations = new ArrayList<>();
 
     // ticking
-    private Map<Integer, TrafficLightMode> modes = new HashMap<>();
+    //private Map<Integer, TrafficLightMode> modes = new HashMap<>();
 
     protected TrafficLightControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -66,6 +64,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             schedules.add(data);
         }
 
+        /*
         ListTag modesList = compound.getList("modes", Tag.TAG_COMPOUND);
         modes.clear();
         for (int i = 0; i < modesList.size(); i++) {
@@ -74,6 +73,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             int value = compound.getInt("value");
             modes.put(key, TrafficLightMode.getModeByIndex(value));
         }
+        */
 
         ListTag trafficLightsList = compound.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
         trafficLightLocations.clear();
@@ -92,6 +92,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             listTag.add(data.toNbt());
         }
 
+        /*
         ListTag modesTag = new ListTag();        
         for (Map.Entry<Integer, TrafficLightMode> entry : modes.entrySet()) {
             CompoundTag c = new CompoundTag();
@@ -99,6 +100,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             c.putInt("value", entry.getValue().getIndex());
             modesTag.add(c);
         }
+        */
 
         ListTag trafficLightsList = new ListTag();
         for (Location loc : trafficLightLocations) {
@@ -110,7 +112,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         tag.putBoolean("powered", powered);
         tag.putBoolean("running", running);
         tag.put("schedules", listTag);
-        tag.put("modes", modesTag);
+        //tag.put("modes", modesTag);
         tag.put(NBT_TRAFFIC_LIGHT_LOCATIONS, trafficLightsList);
         super.saveAdditional(tag);
     }
@@ -151,24 +153,22 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                 return;
             } else if (stateData.size() > 0) {
                 for (TrafficLightAnimationData entry : stateData) {
-                    TrafficLightMode mode = entry.getMode();
+                    Collection<TrafficLightColor> colors = entry.getEnabledColors();
                     int phaseId = entry.getPhaseId();
 
                     trafficLightLocations.removeIf(a -> 
                         level.isLoaded(a.getLocationBlockPos()) &&
                         level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock &&
                         level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
-                        blockEntity.getControlType() != TrafficLightControlType.REMOTE
+                        blockEntity.getControlType() != TrafficLightControlType.REMOTE &&
+                        blockEntity.getPhaseId() != phaseId
                     );
 
-                    trafficLightLocations.stream().filter(a -> 
-                        level.isLoaded(a.getLocationBlockPos()) &&
-                        level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock &&
-                        level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
-                        blockEntity.getPhaseId() == phaseId
-                    ).forEach(a -> {
-                        BlockState blockState = level.getBlockState(a.getLocationBlockPos());
-                        level.setBlockAndUpdate(a.getLocationBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
+                    trafficLightLocations.forEach(a -> {
+                        ((TrafficLightBlockEntity)level.getBlockEntity(a.getLocationBlockPos())).enableOnlyColors(colors);
+                        //BlockState blockState = level.getBlockState(a.getLocationBlockPos());
+                        //level.setBlockAndUpdate(a.getLocationBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
+
                     });
                 }                    
             }
@@ -236,12 +236,14 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
+    /*
     public TrafficLightMode getModeForPhaseId(int phaseId) {
         if (!modes.containsKey(phaseId))
             return null;
 
         return modes.get(phaseId);
     }
+    */
 
     public void startSchedule(boolean forceRestart) {
         if (forceRestart || !this.isFirstIteration()) {
@@ -261,9 +263,11 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
+    /*
     public boolean hasSomethingToDo(int phaseId, TrafficLightMode currentMode) {
         return modes.containsKey(phaseId) && modes.get(phaseId) != currentMode;
     }
+    */
 
     public boolean isFirstIteration() {
         return this.totalTicks == this.ticks;

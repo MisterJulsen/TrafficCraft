@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import java.util.Arrays;
+
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
@@ -47,4 +49,8 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 	public String getEnumValueName() {
 		return getName();
 	}
+
+    public static int maxRequiredSlots() {
+        return Arrays.stream(TrafficLightModel.values()).mapToInt(x -> x.getLightsCount()).max().getAsInt();
+    }
 }

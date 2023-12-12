@@ -4,10 +4,11 @@ import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
+import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection;
+import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -55,9 +57,11 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final EnumProperty<TrafficLightVariant> VARIANT = EnumProperty.create("variant", TrafficLightVariant.class);
-    public static final EnumProperty<TrafficLightDirection> DIRECTION = EnumProperty.create("direction", TrafficLightDirection.class);
-    public static final EnumProperty<TrafficLightMode> MODE = EnumProperty.create("mode", TrafficLightMode.class);
+    public static final EnumProperty<TrafficLightModel> MODEL = EnumProperty.create("model", TrafficLightModel.class);
+
+    @Deprecated public static final EnumProperty<TrafficLightVariant> VARIANT = EnumProperty.create("variant", TrafficLightVariant.class);
+    @Deprecated public static final EnumProperty<TrafficLightDirection> DIRECTION = EnumProperty.create("direction", TrafficLightDirection.class);
+    @Deprecated public static final EnumProperty<TrafficLightMode> MODE = EnumProperty.create("mode", TrafficLightMode.class);
 
     public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
@@ -81,17 +85,36 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
             .strength(5f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.ANVIL)
-            .lightLevel((state) -> {
-                return state.getValue(MODE) == TrafficLightMode.OFF ? 0 : 1;
-            })
         );
         this.registerDefaultState(this.stateDefinition.any()
-            .setValue(FACING, Direction.NORTH)            
-            .setValue(VARIANT, TrafficLightVariant.NORMAL)
-            .setValue(DIRECTION, TrafficLightDirection.NORMAL)
-            .setValue(MODE, TrafficLightMode.OFF)
+            .setValue(FACING, Direction.NORTH)
+            .setValue(MODEL, TrafficLightModel.THREE_LIGHTS)
+            //.setValue(VARIANT, TrafficLightVariant.NORMAL)
+            //.setValue(DIRECTION, TrafficLightDirection.NORMAL)
+            //.setValue(MODE, TrafficLightMode.OFF)
         );
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(VARIANT, TrafficLightVariant.NORMAL).setValue(DIRECTION, TrafficLightDirection.NORMAL).setValue(MODE, TrafficLightMode.OFF));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(MODEL, TrafficLightModel.THREE_LIGHTS));
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState, BlockState newState) {
+
+        // TODO: Don't know if this works...
+        if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
+            boolean isPedestrian = false;
+            if (oldState.getOptionalValue(MODE).isPresent()) {
+                blockEntity.enableOnlyColors(oldState.getValue(MODE).convertToColorList());
+            }
+            if (oldState.getOptionalValue(VARIANT).isPresent()) {
+                newState = newState.setValue(MODEL, oldState.getValue(VARIANT).convertToModel());
+                isPedestrian = oldState.getValue(VARIANT) == TrafficLightVariant.PEDESTRIAN;
+            }
+            if (oldState.getOptionalValue(DIRECTION).isPresent()) {
+                blockEntity.setIcon(oldState.getValue(DIRECTION).convertToIcon(isPedestrian));
+            }
+        }
+        super.onBlockStateChange(level, pos, oldState, newState);
     }
 
     @Override
@@ -101,16 +124,16 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        TrafficLightVariant variant = pState.getValue(VARIANT);
+        TrafficLightModel model = pState.getValue(MODEL);
         switch((Direction)pState.getValue(FACING)) {
             case NORTH:
-               return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_NORTH, SHAPE_EXTRA_PART_NORTH) : SHAPE_NORTH;
+               return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_NORTH, SHAPE_EXTRA_PART_NORTH) : SHAPE_NORTH;
             case SOUTH:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_SOUTH, SHAPE_EXTRA_PART_SOUTH) : SHAPE_SOUTH;
+                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_SOUTH, SHAPE_EXTRA_PART_SOUTH) : SHAPE_SOUTH;
             case EAST:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_EAST, SHAPE_EXTRA_PART_EAST) : SHAPE_EAST;
+                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_EAST, SHAPE_EXTRA_PART_EAST) : SHAPE_EAST;
             case WEST:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_WEST, SHAPE_EXTRA_PART_WEST) : SHAPE_WEST;
+                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_WEST, SHAPE_EXTRA_PART_WEST) : SHAPE_WEST;
             default:
                return SHAPE_COMMON;
         }
@@ -154,7 +177,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(WATERLOGGED, FACING, VARIANT, DIRECTION, MODE);
+        pBuilder.add(WATERLOGGED, FACING, MODEL);
     }
 
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {

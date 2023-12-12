@@ -1,10 +1,13 @@
-package de.mrjulsen.trafficcraft.block.data;
+package de.mrjulsen.trafficcraft.block.data.compat;
 
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import net.minecraft.util.StringRepresentable;
 
+/**
+ * @deprecated Only for compatibility purposes! 
+ */
 @Deprecated
-public enum TrafficLightDirection implements StringRepresentable, ITranslatableEnum {
+public enum TrafficLightDirection implements StringRepresentable {
     NORMAL("normal", 0),
 	RIGHT("right", 1),
 	LEFT("left", 2),
@@ -45,14 +48,26 @@ public enum TrafficLightDirection implements StringRepresentable, ITranslatableE
     public String getSerializedName() {
         return directionName;
     }
+	
+	public TrafficLightIcon convertToIcon(boolean isPedestrianKnown) {
+		if (isPedestrianKnown) {
+			return TrafficLightIcon.PEDESTRIAN;
+		}
 
-	@Override
-	public String getEnumName() {
-		return "trafficlightdirection";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getDirectionName();
+		switch (this) {
+			case LEFT:
+				return TrafficLightIcon.LEFT;
+			case RIGHT:
+				return TrafficLightIcon.RIGHT;
+			case STRAIGHT:
+				return TrafficLightIcon.STRAIGHT;
+			case STRAIGHT_LEFT:
+				return TrafficLightIcon.STRAIGHT_LEFT;
+			case STRAIGHT_RIGHT:
+				return TrafficLightIcon.STRAIGHT_RIGHT;
+			case NORMAL:
+			default:
+				return TrafficLightIcon.NONE;
+		}
 	}
 }

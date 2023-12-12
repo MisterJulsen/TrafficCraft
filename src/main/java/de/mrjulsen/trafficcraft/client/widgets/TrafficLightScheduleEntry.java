@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleScreen;
 import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;

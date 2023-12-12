@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
@@ -37,12 +38,14 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
 
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.solid());
         final float pixel = 1.0F / 16.0F;
-        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.RED).render(pPoseStack, vertexconsumer);
-        pPoseStack.translate(0, pixel * 6, 0);
-        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.YELLOW).render(pPoseStack, vertexconsumer);
-        pPoseStack.translate(0, pixel * 6, 0);
-        new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.GREEN).render(pPoseStack, vertexconsumer);
-        
+        for (int i = 0; i < pBlockEntity.getColorSlotCount() && i < blockstate.getValue(TrafficLightBlock.MODEL).getLightsCount(); i++) {
+            if (pBlockEntity.getEnabledColors().contains(pBlockEntity.getColorOfSlot(i))) {
+                new TrafficLightTextureManager.TrafficLightTextureKey(pBlockEntity.getIcon(), pBlockEntity.getColorOfSlot(i)).render(pPoseStack, vertexconsumer);
+            } else {
+                new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE).render(pPoseStack, vertexconsumer);
+            }
+            pPoseStack.translate(0, pixel * 5, 0);
+        }
         pPoseStack.popPose();
     }
 }

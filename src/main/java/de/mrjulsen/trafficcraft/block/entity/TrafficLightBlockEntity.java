@@ -1,15 +1,18 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.TrafficLightControllerBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -28,6 +31,9 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     // Properties
     private int phaseId = 0;
     private int controlType = 0;
+    private TrafficLightIcon icon;
+    private final TrafficLightColor[] colorSlots = new TrafficLightColor[TrafficLightModel.maxRequiredSlots()];
+    private Collection<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private boolean powered = false;
 
     private TrafficLightSchedule schedule = new TrafficLightSchedule();
@@ -35,18 +41,17 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private long totalTicks = 0;
     private boolean running = true;
 
-    /**
-     * @deprecated Backwards compatibility only!
-     */
-    @Deprecated private Location linkLocation = null;
+    /** @deprecated Backwards compatibility only! */ @Deprecated private Location linkLocation = null;
     private boolean linkMigrated = false;
 
     protected TrafficLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        Arrays.fill(colorSlots, TrafficLightColor.NONE);
     }
 
     public TrafficLightBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), pos, state);
+        Arrays.fill(colorSlots, TrafficLightColor.NONE);
     }
 
     @Override
@@ -61,6 +66,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         this.running = compound.getBoolean("running");
         this.schedule = new TrafficLightSchedule();
         this.schedule.fromNbt(compound.getCompound("schedule"));
+        this.icon = TrafficLightIcon.getIconByIndex(compound.getInt("icon"));
+        int[] colorSlots = compound.getIntArray("colorSlots");
+        for (int i = 0; i < colorSlots.length && i < this.colorSlots.length; i++) {
+            this.colorSlots[i] = TrafficLightColor.getDirectionByIndex(colorSlots[i]);
+        }
 
         // backwards compatibility
         linkMigration(compound);
@@ -86,6 +96,8 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         tag.putLong("totalTicks", ticker);
         tag.putBoolean("running", running);
         tag.put("schedule", schedule.toNbt());
+        tag.putIntArray("colorSlots", Arrays.stream(colorSlots).mapToInt(x -> x.getIndex()).toArray());
+        tag.putInt("icon", icon.getIndex());
         
         // backwards compatibility
         if (!linkMigrated && this.linkLocation != null) {
@@ -96,20 +108,17 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     @Nullable
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket()
-    {
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this, BlockEntity::getUpdateTag);
     }
 
     @Override
-    public CompoundTag getUpdateTag()
-    {
+    public CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
-    {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         this.load(pkt.getTag());
         this.level.markAndNotifyBlock(this.worldPosition, this.level.getChunkAt(this.worldPosition), this.getBlockState(), this.getBlockState(), 3, 512);
     }
@@ -125,7 +134,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         if (running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
             List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticker);
 
-            if (stateData == null) {
+            if (stateData == null) { // OOB: End of schedule reached.
                 ticker = 0;
                 if (!schedule.isLoop()) {
                     setRunning(false);
@@ -133,9 +142,10 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
                 return;
             } else if (stateData.size() >= 0) {
                 for (TrafficLightAnimationData entry : stateData) {
-                    TrafficLightMode mode = entry.getMode();
-                    if (mode != null) {
-                        level.setBlockAndUpdate(pos, state.setValue(TrafficLightBlock.MODE, mode));                    
+                    Collection<TrafficLightColor> colors = entry.getEnabledColors();
+                    if (colors != null && !colors.isEmpty()) {
+                        //level.setBlockAndUpdate(pos, state.setValue(TrafficLightBlock.MODE, mode));
+                        enableOnlyColors(colors);
                     }
                 }
             }
@@ -176,8 +186,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     /* GETTERS AND SETTERS */
 
-    public void setPhaseId(int id)
-    {
+    public void setPhaseId(int id) {
         this.phaseId = id;
         BlockEntityUtil.sendUpdatePacket(this);
     }
@@ -200,6 +209,57 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         this.schedule = schedule;
         BlockEntityUtil.sendUpdatePacket(this);
     }
+
+    public void setIcon(TrafficLightIcon icon) {
+        this.icon = icon;
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+    public boolean setColorToSlot(int index, TrafficLightColor color) {
+        if (index < 0 || index >= colorSlots.length) {
+            return false;
+        }
+        this.colorSlots[index] = color;
+        BlockEntityUtil.sendUpdatePacket(this);
+        return true;
+    }
+
+    public void setColorSlots(TrafficLightColor[] colorSlots) {
+        for (int i = 0; i < colorSlots.length && i < getColorSlotCount(); i++) {
+            this.colorSlots[i] = colorSlots[i];
+        }
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+    public void enableColors(Collection<TrafficLightColor> colors) {
+        this.enabledColors.addAll(colors);
+        this.enabledColors.stream().distinct().toList();
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+    public void enableOnlyColors(Collection<TrafficLightColor> colors) {
+        this.enabledColors.clear();
+        this.enabledColors.addAll(colors);
+        this.enabledColors.stream().distinct().toList();
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+    public void disableColors(Collection<TrafficLightColor> colors) {
+        colors.forEach(x -> enabledColors.removeIf(y -> x == y));
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+    public void disableAll(Collection<TrafficLightColor> colors) {
+        enabledColors.clear();
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
+
+    
+
+    public Collection<TrafficLightColor> getEnabledColors() {
+        return this.enabledColors;
+    }
     
     public int getPhaseId() {
         return this.phaseId;
@@ -207,6 +267,18 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     public int getControlTypeAsInt() {
         return this.controlType;
+    }
+
+    public TrafficLightIcon getIcon() {
+        return this.icon;
+    }
+
+    public TrafficLightColor getColorOfSlot(int index) {
+        return index >= 0 && index < colorSlots.length ? colorSlots[index] : TrafficLightColor.NONE;
+    }
+
+    public int getColorSlotCount() {
+        return colorSlots.length;
     }
 
     public TrafficLightControlType getControlType() {

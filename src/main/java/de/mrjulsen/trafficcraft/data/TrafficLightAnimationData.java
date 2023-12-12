@@ -1,30 +1,33 @@
 package de.mrjulsen.trafficcraft.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
+import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
+@SuppressWarnings("deprecation")
 public class TrafficLightAnimationData {
 
     public static final int MAX_SECONDS = 999;
     public static final int MAX_TICKS = MAX_SECONDS * Constants.TPS;
 
-    private TrafficLightMode mode = TrafficLightMode.OFF;
+    private List<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private int ticks = 0;
     private int id = 0;
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TrafficLightAnimationData other) {
-            return ticks == other.ticks && id == other.id;
+            return ticks == other.ticks && id == other.id && enabledColors.size() == other.enabledColors.size() && enabledColors.stream().allMatch(x -> other.enabledColors.stream().anyMatch(y -> x == y));
         }
         return false;
-    }
-
-    public TrafficLightMode getMode() {
-        return this.mode;
     }
 
     public int getDurationTicks() {
@@ -40,16 +43,27 @@ public class TrafficLightAnimationData {
     }
 
 
-    public void setMode(TrafficLightMode mode) {
-        this.mode = mode;
+    public List<TrafficLightColor> getEnabledColors() {
+        return this.enabledColors;
     }
 
-    public boolean setTrafficLightMode(int index) {
-        if (index >= TrafficLightMode.values().length)
-            return false;
+    public void enableColors(Collection<TrafficLightColor> colors) {
+        this.enabledColors.addAll(colors);
+        this.enabledColors.stream().distinct().toList();
+    }
 
-        this.mode = TrafficLightMode.getModeByIndex(index);
-        return true;
+    public void enableOnlyColors(Collection<TrafficLightColor> colors) {
+        this.enabledColors.clear();
+        this.enabledColors.addAll(colors);
+        this.enabledColors.stream().distinct().toList();
+    }
+
+    public void disableColors(Collection<TrafficLightColor> colors) {
+        colors.forEach(x -> enabledColors.removeIf(y -> x == y));
+    }
+
+    public void disableAll(Collection<TrafficLightColor> colors) {
+        enabledColors.clear();
     }
 
     public void setDurationTicks(int ticks) {
@@ -85,27 +99,32 @@ public class TrafficLightAnimationData {
         CompoundTag tag = new CompoundTag();
         tag.putInt("id", this.getPhaseId());
         tag.putInt("ticks", this.getDurationTicks());
-        tag.putInt("mode", this.getMode().getIndex());
+        tag.putIntArray("colors", this.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray());
         return tag;
     }
 
     public void fromNbt(CompoundTag tag) {
         id = tag.getInt("id");
         ticks = tag.getInt("ticks");
-        mode = TrafficLightMode.getModeByIndex(tag.getInt("mode"));
+        enabledColors = Arrays.stream(tag.getIntArray("colors")).mapToObj(x -> TrafficLightColor.getDirectionByIndex(x)).toList();
+
+        // Backwards compatibility
+        if (tag.contains("mode")) {
+            enableOnlyColors(TrafficLightMode.getModeByIndex(tag.getInt("mode")).convertToColorList());
+        }
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(id);
         buf.writeInt(ticks);
-        buf.writeInt(mode.getIndex());
+        buf.writeVarIntArray(this.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray());
     }
 
     public static TrafficLightAnimationData fromBytes(FriendlyByteBuf buf) {
         TrafficLightAnimationData data = new TrafficLightAnimationData();
         data.setPhaseId(buf.readInt());
         data.setDurationTicks(buf.readInt());
-        data.setMode(TrafficLightMode.getModeByIndex(buf.readInt()));
+        data.enableColors(Arrays.stream(buf.readVarIntArray()).mapToObj(x -> TrafficLightColor.getDirectionByIndex(x)).toList());
         return data;
     }
 }

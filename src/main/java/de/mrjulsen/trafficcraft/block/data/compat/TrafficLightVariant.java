@@ -1,10 +1,13 @@
-package de.mrjulsen.trafficcraft.block.data;
+package de.mrjulsen.trafficcraft.block.data.compat;
 
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import net.minecraft.util.StringRepresentable;
 
+/**
+ * @deprecated Only for compatibility purposes! 
+ */
 @Deprecated
-public enum TrafficLightVariant implements StringRepresentable, ITranslatableEnum {
+public enum TrafficLightVariant implements StringRepresentable {
     NORMAL("normal", 0),
 	SMALL("small", 1),
 	SPECIAL("special", 2),
@@ -39,14 +42,16 @@ public enum TrafficLightVariant implements StringRepresentable, ITranslatableEnu
     public String getSerializedName() {
         return variant;
     }
-
-	@Override
-	public String getEnumName() {
-		return "trafficlightvariant";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getVariant();
+	
+	public TrafficLightModel convertToModel() {
+		switch (this) {
+			case SMALL:
+			case SPECIAL:
+			case PEDESTRIAN:
+				return TrafficLightModel.TWO_LIGHTS;
+			case NORMAL:
+			default:
+				return TrafficLightModel.THREE_LIGHTS;
+		}
 	}
 }
