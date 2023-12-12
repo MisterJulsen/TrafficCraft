@@ -24,7 +24,7 @@ import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;

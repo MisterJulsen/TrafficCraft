@@ -18,7 +18,7 @@ import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
 
 import java.util.stream.IntStream;
 

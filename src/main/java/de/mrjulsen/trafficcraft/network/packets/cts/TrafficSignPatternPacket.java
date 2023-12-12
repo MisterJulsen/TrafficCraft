@@ -1,23 +1,28 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class TrafficSignPatternPacket
-{
+public class TrafficSignPatternPacket implements IPacketBase<TrafficSignPatternPacket> {
+    
     private TrafficSignData data;
     private int index;
+
+    public TrafficSignPatternPacket() {}
 
     /**
      * @param data TrafficSign data.
@@ -28,20 +33,23 @@ public class TrafficSignPatternPacket
         this.data = data;
     }
 
-    public static void encode(TrafficSignPatternPacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(TrafficSignPatternPacket packet, FriendlyByteBuf buffer) {
         buffer.writeInt(packet.index);
         packet.data.toBytes(buffer);
     }
 
-    public static TrafficSignPatternPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public TrafficSignPatternPacket decode(FriendlyByteBuf buffer) {
         int index = buffer.readInt();
         TrafficSignData data = TrafficSignData.fromBytes(buffer);
 
         return new TrafficSignPatternPacket(data, index);
     }
 
-    public static void handle(TrafficSignPatternPacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
+    @Override
+    public void handle(TrafficSignPatternPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
             if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
                 final ItemStack stack = menu.patternSlot.getItem();
@@ -59,9 +67,13 @@ public class TrafficSignPatternPacket
 
                 Utils.giveAdvancement(sender, ModMain.MOD_ID, "create_traffic_sign_pattern", "requirement");
 
-                NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignWorkbenchUpdateClientPacket(), context.get().getSender().connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+                NewNetworkManager.getInstance().send(new TrafficSignWorkbenchUpdateClientPacket(), sender);
             }
         });
-        context.get().setPacketHandled(true);
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

@@ -8,7 +8,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TrafficLightControllerPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightControllerPacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;

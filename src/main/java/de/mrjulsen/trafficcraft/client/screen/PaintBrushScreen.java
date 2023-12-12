@@ -10,7 +10,7 @@ import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.PaintBrushPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;

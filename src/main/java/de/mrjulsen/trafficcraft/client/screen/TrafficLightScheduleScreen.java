@@ -19,7 +19,7 @@ import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TrafficLightSchedulePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;

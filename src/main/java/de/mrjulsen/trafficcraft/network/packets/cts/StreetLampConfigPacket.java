@@ -1,19 +1,24 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class StreetLampConfigPacket
-{
+public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacket> {
+
     private int turnOnTime;
     private int turnOffTime;
     private TimeFormat timeFormat;
+
+    public StreetLampConfigPacket() {}
 
     public StreetLampConfigPacket(int turnOnTime, int turnOffTime, TimeFormat timeFormat) {
         this.turnOnTime = turnOnTime;
@@ -21,13 +26,15 @@ public class StreetLampConfigPacket
         this.timeFormat = timeFormat;
     }
 
-    public static void encode(StreetLampConfigPacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(StreetLampConfigPacket packet, FriendlyByteBuf buffer) {
         buffer.writeInt(packet.turnOnTime);
         buffer.writeInt(packet.turnOffTime);
         buffer.writeInt(packet.timeFormat.getIndex());
     }
 
-    public static StreetLampConfigPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public StreetLampConfigPacket decode(FriendlyByteBuf buffer) {
         int turnOnTime = buffer.readInt();
         int turnOffTime = buffer.readInt();
         int timeFormat = buffer.readInt();
@@ -35,8 +42,9 @@ public class StreetLampConfigPacket
         return new StreetLampConfigPacket(turnOnTime, turnOffTime, TimeFormat.getFormatByIndex(timeFormat));
     }
 
-    public static void handle(StreetLampConfigPacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
+    @Override
+    public void handle(StreetLampConfigPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
 
             if (sender.getMainHandItem().getItem() instanceof StreetLampConfigCardItem) {
@@ -51,6 +59,10 @@ public class StreetLampConfigPacket
                 nbt.putInt("timeFormat", packet.timeFormat.getIndex());
             }
         });
-        context.get().setPacketHandled(true);
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

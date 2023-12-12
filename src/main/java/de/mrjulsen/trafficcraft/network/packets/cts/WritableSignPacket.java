@@ -1,26 +1,30 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class WritableSignPacket {
+public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     private String[] messages;
     private BlockPos pos;
 
-    public WritableSignPacket(BlockPos pos, String[] messages)
-    {
+    public WritableSignPacket() {}
+
+    public WritableSignPacket(BlockPos pos, String[] messages) {
         this.pos = pos;
         this.messages = messages;
     }
 
-    public static void encode(WritableSignPacket packet, FriendlyByteBuf buffer)
-    {
+    @Override
+    public void encode(WritableSignPacket packet, FriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.messages.length);
         for (int i = 0; i < packet.messages.length; i++) {
@@ -31,8 +35,8 @@ public class WritableSignPacket {
         }
     }
 
-    public static WritableSignPacket decode(FriendlyByteBuf buffer)
-    {
+    @Override
+    public WritableSignPacket decode(FriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         int messagesCount = buffer.readInt();
         String[] messages = new String[messagesCount];
@@ -45,16 +49,18 @@ public class WritableSignPacket {
         return instance;
     }
 
-    public static void handle(WritableSignPacket packet, Supplier<NetworkEvent.Context> context)
-    {
-        context.get().enqueueWork(() ->
-        {
+    @Override
+    public void handle(WritableSignPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
             if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
                 blockEntity.setTexts(packet.messages);
             }
-            
         });
-        context.get().setPacketHandled(true);
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

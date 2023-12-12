@@ -1,9 +1,11 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.mcdragonlib.utils.ScheduledTask;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
@@ -18,15 +20,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class RoadBuilderBuildRoadPacket {
+public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildRoadPacket> {
 
     private Location pos1;
     private Location pos2;
     private byte roadWidth;
     private boolean replaceBlocks;
     private RoadType roadType;
+
+    public RoadBuilderBuildRoadPacket() {}
     
     public RoadBuilderBuildRoadPacket(Location pos1, Location pos2, byte roadWidth, boolean replaceBlocks, RoadType roadType) {
         this.pos1 = pos1;
@@ -36,7 +41,8 @@ public class RoadBuilderBuildRoadPacket {
         this.roadType = roadType;
     }
 
-    public static void encode(RoadBuilderBuildRoadPacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(RoadBuilderBuildRoadPacket packet, FriendlyByteBuf buffer) {
         buffer.writeNbt(packet.pos1.toNbt());
         buffer.writeNbt(packet.pos2.toNbt());
         buffer.writeByte(packet.roadWidth);
@@ -44,7 +50,8 @@ public class RoadBuilderBuildRoadPacket {
         buffer.writeEnum(packet.roadType);
     }
 
-    public static RoadBuilderBuildRoadPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public RoadBuilderBuildRoadPacket decode(FriendlyByteBuf buffer) {
         Location pos1 = Location.fromNbt(buffer.readNbt());
         Location pos2 = Location.fromNbt(buffer.readNbt());
         byte roadWidth = buffer.readByte();
@@ -54,8 +61,9 @@ public class RoadBuilderBuildRoadPacket {
         return new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType);
     }
 
-    public static void handle(RoadBuilderBuildRoadPacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
+    @Override
+    public void handle(RoadBuilderBuildRoadPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
             final Level level = sender.getLevel();
             ItemStack item = null;
@@ -122,10 +130,14 @@ public class RoadBuilderBuildRoadPacket {
                 return canContinue[0];
             });
         });
-        context.get().setPacketHandled(true);
     }
 
     private static boolean isPlayerCreative(Player pPlayer) {
         return pPlayer.isCreative() || pPlayer.isSpectator();
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

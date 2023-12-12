@@ -1,8 +1,10 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
@@ -14,9 +16,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class TrafficLightPacket {
+public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
 
     private BlockPos pos;
     private int phaseId;
@@ -26,6 +29,7 @@ public class TrafficLightPacket {
     private TrafficLightColor[] colorSlots;
     private boolean running;
 
+    public TrafficLightPacket() {}
 
     public TrafficLightPacket(BlockPos pos, int phaseId, TrafficLightModel model, TrafficLightIcon icon, TrafficLightControlType controlType, TrafficLightColor[] colorSlots, boolean running) {
         this.pos = pos;
@@ -37,7 +41,8 @@ public class TrafficLightPacket {
         this.running = running;
     }
 
-    public static void encode(TrafficLightPacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(TrafficLightPacket packet, FriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.phaseId);
         buffer.writeEnum(packet.model);
@@ -47,7 +52,8 @@ public class TrafficLightPacket {
         buffer.writeBoolean(packet.running);
     }
 
-    public static TrafficLightPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public TrafficLightPacket decode(FriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         int phaseId = buffer.readInt();
         TrafficLightModel model = buffer.readEnum(TrafficLightModel.class);
@@ -59,24 +65,31 @@ public class TrafficLightPacket {
         return new TrafficLightPacket(pos, phaseId, model, icon, controlType, colors, running);
     }
 
-    public static void handle(TrafficLightPacket message, Supplier<NetworkEvent.Context> context) {
-        ServerPlayer player = context.get().getSender();
-        if (player != null) {
-            Level level = player.getLevel();
-            if (level.isLoaded(message.pos)) {
-                if (level.getBlockEntity(message.pos) instanceof TrafficLightBlockEntity blockEntity) {
-                    blockEntity.setRunning(message.running);
-                    blockEntity.setPhaseId(message.phaseId);
-                    blockEntity.setControlType(message.controlType);
-                    blockEntity.setIcon(message.icon);
-                    blockEntity.setColorSlots(message.colorSlots);                    
+    @Override
+    public void handle(TrafficLightPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
+            ServerPlayer player = context.get().getSender();
+            if (player != null) {
+                Level level = player.getLevel();
+                if (level.isLoaded(packet.pos)) {
+                    if (level.getBlockEntity(packet.pos) instanceof TrafficLightBlockEntity blockEntity) {
+                        blockEntity.setRunning(packet.running);
+                        blockEntity.setPhaseId(packet.phaseId);
+                        blockEntity.setControlType(packet.controlType);
+                        blockEntity.setIcon(packet.icon);
+                        blockEntity.setColorSlots(packet.colorSlots);                    
+                    }
+                    BlockState state = level.getBlockState(packet.pos);
+                    level.setBlockAndUpdate(packet.pos, state
+                        .setValue(TrafficLightBlock.MODEL, packet.model)
+                    );
                 }
-                BlockState state = level.getBlockState(message.pos);
-                level.setBlockAndUpdate(message.pos, state
-                    .setValue(TrafficLightBlock.MODEL, message.model)
-                );
-            }
-        }
-        context.get().setPacketHandled(true);
+            };
+        });
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

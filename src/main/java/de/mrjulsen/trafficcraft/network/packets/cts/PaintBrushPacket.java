@@ -1,15 +1,18 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class PaintBrushPacket
-{
+public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
+
     private int pattern;
     private float scroll;
 
@@ -18,20 +21,23 @@ public class PaintBrushPacket
         this.scroll = scroll;
     }
 
-    public static void encode(PaintBrushPacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(PaintBrushPacket packet, FriendlyByteBuf buffer) {
         buffer.writeInt(packet.pattern);
         buffer.writeFloat(packet.scroll);
     }
 
-    public static PaintBrushPacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public PaintBrushPacket decode(FriendlyByteBuf buffer) {
         int pattern = buffer.readInt();
         float scroll = buffer.readFloat();
 
         return new PaintBrushPacket(pattern, scroll);
     }
 
-    public static void handle(PaintBrushPacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
+    @Override
+    public void handle(PaintBrushPacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
 
             if(sender.getMainHandItem().getItem() instanceof BrushItem) {
@@ -45,6 +51,10 @@ public class PaintBrushPacket
                 nbt.putFloat("scroll", packet.scroll);
             }
         });
-        context.get().setPacketHandled(true);
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

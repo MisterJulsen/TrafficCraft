@@ -16,7 +16,7 @@ import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;

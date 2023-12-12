@@ -1,36 +1,43 @@
-package de.mrjulsen.trafficcraft.network.packets;
+package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
+import de.mrjulsen.mcdragonlib.network.IPacketBase;
+import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
-public class PatternCatalogueDeletePacket
-{
+public class PatternCatalogueDeletePacket implements IPacketBase<PatternCatalogueDeletePacket>{
     private int index;
+
+    public PatternCatalogueDeletePacket() {}
 
     public PatternCatalogueDeletePacket(int index) {
         this.index = index;
     }
 
-    public static void encode(PatternCatalogueDeletePacket packet, FriendlyByteBuf buffer) {
+    @Override
+    public void encode(PatternCatalogueDeletePacket packet, FriendlyByteBuf buffer) {
         buffer.writeInt(packet.index);
     }
 
-    public static PatternCatalogueDeletePacket decode(FriendlyByteBuf buffer) {
+    @Override
+    public PatternCatalogueDeletePacket decode(FriendlyByteBuf buffer) {
         int index = buffer.readInt();
 
         return new PatternCatalogueDeletePacket(index);
     }
 
-    public static void handle(PatternCatalogueDeletePacket packet, Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(() -> {
+    @Override
+    public void handle(PatternCatalogueDeletePacket packet, Supplier<NetworkEvent.Context> context) {
+        NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
             if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
                 final ItemStack stack = menu.patternSlot.getItem();
@@ -42,9 +49,13 @@ public class PatternCatalogueDeletePacket
                 menu.patternSlot.setChanged();
                 menu.broadcastChanges();
                 
-                NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignWorkbenchUpdateClientPacket(), context.get().getSender().connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+                NewNetworkManager.getInstance().send(new TrafficSignWorkbenchUpdateClientPacket(), sender);
             }
         });
-        context.get().setPacketHandled(true);
+    }
+
+    @Override
+    public NetworkDirection getDirection() {
+        return NetworkDirection.PLAY_TO_SERVER;
     }
 }
