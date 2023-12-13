@@ -1,5 +1,9 @@
 package de.mrjulsen.trafficcraft.block;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
@@ -65,20 +69,17 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
     public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
-    public static final VoxelShape SHAPE_PART_NORTH = Block.box(4, 4.5d, 1, 12, 16, 6);
-    public static final VoxelShape SHAPE_PART_SOUTH = Block.box(4, 4.5d, 10, 12, 16, 15);
-    public static final VoxelShape SHAPE_PART_EAST = Block.box(10, 4.5d, 4, 15, 16, 12);
-    public static final VoxelShape SHAPE_PART_WEST = Block.box(1, 4.5d, 4, 6, 16, 12);
-    
-    public static final VoxelShape SHAPE_EXTRA_PART_NORTH = Block.box(4, -0.5d, 1, 12, 5, 6);
-    public static final VoxelShape SHAPE_EXTRA_PART_SOUTH = Block.box(4, -0.5d, 10, 12, 5, 15);
-    public static final VoxelShape SHAPE_EXTRA_PART_EAST = Block.box(10, -0.5d, 4, 15, 5, 12);
-    public static final VoxelShape SHAPE_EXTRA_PART_WEST = Block.box(1, -0.5d, 4, 6, 5, 12);
-
-    public static final VoxelShape SHAPE_NORTH = Shapes.or(SHAPE_COMMON, SHAPE_PART_NORTH);
-    public static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, SHAPE_PART_SOUTH);
-    public static final VoxelShape SHAPE_EAST = Shapes.or(SHAPE_COMMON, SHAPE_PART_EAST);
-    public static final VoxelShape SHAPE_WEST = Shapes.or(SHAPE_COMMON, SHAPE_PART_WEST);
+    private static final Map<TrafficLightModel, Map<Direction, VoxelShape>> shapes = new HashMap<>();
+    static {
+        Arrays.stream(TrafficLightModel.values()).forEach(x -> {
+            Map<Direction, VoxelShape> voxelShapes = new HashMap<>();
+            voxelShapes.put(Direction.NORTH, Block.box(4, x.getHitboxBottom(), 1, 12, x.getHitboxTop(), 6));
+            voxelShapes.put(Direction.SOUTH, Block.box(4, x.getHitboxBottom(), 10, 12, x.getHitboxTop(), 15));
+            voxelShapes.put(Direction.EAST, Block.box(10, x.getHitboxBottom(), 4, 15, x.getHitboxTop(), 12));
+            voxelShapes.put(Direction.WEST, Block.box(1, x.getHitboxBottom(), 4, 6, x.getHitboxTop(), 12));        
+            shapes.put(x, voxelShapes);
+        });
+    }
 
     public TrafficLightBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
@@ -126,19 +127,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        TrafficLightModel model = pState.getValue(MODEL);
-        switch((Direction)pState.getValue(FACING)) {
-            case NORTH:
-               return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_NORTH, SHAPE_EXTRA_PART_NORTH) : SHAPE_NORTH;
-            case SOUTH:
-                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_SOUTH, SHAPE_EXTRA_PART_SOUTH) : SHAPE_SOUTH;
-            case EAST:
-                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_EAST, SHAPE_EXTRA_PART_EAST) : SHAPE_EAST;
-            case WEST:
-                return model == TrafficLightModel.THREE_LIGHTS ? Shapes.or(SHAPE_WEST, SHAPE_EXTRA_PART_WEST) : SHAPE_WEST;
-            default:
-               return SHAPE_COMMON;
-        }
+        return Shapes.or(SHAPE_COMMON, shapes.get(pState.getValue(MODEL)).get((Direction)pState.getValue(FACING)));
     }
 
     @Override
