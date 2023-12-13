@@ -38,7 +38,7 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
 
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.solid());
         final float pixel = 1.0F / 16.0F;
-        pPoseStack.translate(pixel * 2.5f, 1 - pixel * 1.5f, pixel * 6);
+        pPoseStack.translate(pixel * 2.5f, 1 - pixel * 5.5f, pixel * 6);
         for (int i = 0; i < pBlockEntity.getColorSlotCount() && i < blockstate.getValue(TrafficLightBlock.MODEL).getLightsCount(); i++) {
             if (pBlockEntity.getColorOfSlot(i) != null && pBlockEntity.getEnabledColors().contains(pBlockEntity.getColorOfSlot(i))) {
                 new TrafficLightTextureManager.TrafficLightTextureKey(pBlockEntity.getIcon(), pBlockEntity.getColorOfSlot(i)).render(pPoseStack, vertexconsumer);

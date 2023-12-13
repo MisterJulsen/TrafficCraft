@@ -6,7 +6,7 @@ import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
 public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum {
-    ONE_LIGHT("single", 1, 7, 16),
+    ONE_LIGHT("single", 1, 9, 16),
 	TWO_LIGHTS("double", 2, 4.5f, 16),
 	THREE_LIGHTS("tripple", 3, -0.5f, 16);
 	
