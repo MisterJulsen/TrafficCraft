@@ -9,6 +9,8 @@ import net.minecraft.network.chat.MutableComponent;
 public class Constants {
     public static final int MAX_ASPHALT_PATTERNS = 323;
     public static final int MAX_PAINT = 128;
+    
+	public static final float PIXEL = 1.0F / 16.0F;
 
     public static final int METAL_COLOR = 0xFF828282;
     public static final int TRAFFIC_CONE_BASE_COLOR = 0xFFD12725;
