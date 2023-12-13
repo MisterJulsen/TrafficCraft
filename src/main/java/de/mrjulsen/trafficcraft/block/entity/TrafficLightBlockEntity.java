@@ -12,7 +12,6 @@ import de.mrjulsen.trafficcraft.block.TrafficLightControllerBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -35,7 +34,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private int phaseId = 0;
     private int controlType = 0;
     private TrafficLightIcon icon = TrafficLightIcon.NONE;
-    private final TrafficLightColor[] colorSlots = new TrafficLightColor[TrafficLightModel.maxRequiredSlots()];
+    private final TrafficLightColor[] colorSlots = new TrafficLightColor[] {
+        TrafficLightColor.RED,
+        TrafficLightColor.YELLOW,
+        TrafficLightColor.GREEN
+    };
     private Collection<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private boolean powered = false;
 
