@@ -16,6 +16,8 @@ public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
     private int pattern;
     private float scroll;
 
+    public PaintBrushPacket() {}
+
     public PaintBrushPacket(int pattern, float scroll) {
         this.pattern = pattern;
         this.scroll = scroll;

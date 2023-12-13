@@ -23,6 +23,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class TrafficLightTextureManager {
     private static final Model FALLBACK_MODEL = Model.create(null);
+    private static final String TEXTURE_PATH = "block/traffic_light";
     private static final List<Model> models = new ArrayList<>();
 
     static {
@@ -33,11 +34,9 @@ public class TrafficLightTextureManager {
                     .forEach(y -> {
                         TrafficLightTextureKey key = new TrafficLightTextureKey(x, y);
                         models.add(Model.create(key));
-                    })                    
-            );
+                    }));
     }
 
-    private static final String TEXTURE_PATH = "block/traffic_light";
 
     public static ResourceLocation getTextureLocation(TrafficLightIcon icon, TrafficLightColor color) {
         return getTextureLocation(new TrafficLightTextureKey(icon, color));
@@ -86,7 +85,7 @@ public class TrafficLightTextureManager {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TrafficLightTextureKey other) {
-                return getIcon().equals(other.getIcon()) && getColor().equals(other.getColor());
+                return getIcon() == other.getIcon() && getColor() == other.getColor();
             }
             return false;
         }

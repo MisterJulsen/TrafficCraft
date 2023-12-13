@@ -137,6 +137,7 @@ public class TrafficLightConfigScreen extends CommonScreen
             this.onClose();
         }, null);        
         
+        /*
         this.variantButton = addCycleButton(ModMain.MOD_ID, TrafficLightVariant.class, this.width / 2 - 150, guiTop + SPACING_Y * 1, 300, 20, textVariant, variant,
         (btn, value) -> {
             this.variant = value;
@@ -147,12 +148,15 @@ public class TrafficLightConfigScreen extends CommonScreen
                 this.directionButton.setValue(TrafficLightDirection.NORMAL);
             }
         }, null);
+        */
 
+        /*
         this.directionButton = addCycleButton(ModMain.MOD_ID, TrafficLightDirection.class, this.width / 2 - 150, guiTop + SPACING_Y * 2, 300, 20, textDirection, direction,
         (btn, value) -> {
             this.direction = value;
         }, null);
         this.directionButton.active = variant != TrafficLightVariant.PEDESTRIAN;
+        */
 
         this.controlTypeButton = addCycleButton(ModMain.MOD_ID, TrafficLightControlType.class, this.width / 2 - 150, guiTop + SPACING_Y * 3, 300, 20, textControlType, controlType,
         (btn, value) -> {
@@ -161,10 +165,12 @@ public class TrafficLightConfigScreen extends CommonScreen
 
 
         /* STATIC PAGE */
+        /*
         this.modeButton = addCycleButton(ModMain.MOD_ID, TrafficLightMode.class, this.width / 2 - 150, guiTop + SPACING_Y * 4, 300, 20, textMode, mode,
         (btn, value) -> {
             this.mode = value;
         }, null);
+        */
 
         /* REMOTE PAGE */
         this.idInput = addEditBox(this.width / 2 + SPACING_X, guiTop + SPACING_Y * 4, 60, 16, Integer.toString(this.getBlockEntity().getPhaseId()), true,
@@ -198,6 +204,7 @@ public class TrafficLightConfigScreen extends CommonScreen
 
     @Override
     protected void onDone() {
+        /*
         NewNetworkManager.getInstance().send(new TrafficLightPacket(
             blockPos,
             Integer.parseInt(idInput.getValue()),
@@ -207,6 +214,7 @@ public class TrafficLightConfigScreen extends CommonScreen
             controlType.getIndex(),
             this.status
         ), null);
+        */
         this.onClose();
     }
 

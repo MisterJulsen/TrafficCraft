@@ -19,6 +19,9 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -31,7 +34,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     // Properties
     private int phaseId = 0;
     private int controlType = 0;
-    private TrafficLightIcon icon;
+    private TrafficLightIcon icon = TrafficLightIcon.NONE;
     private final TrafficLightColor[] colorSlots = new TrafficLightColor[TrafficLightModel.maxRequiredSlots()];
     private Collection<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private boolean powered = false;
@@ -72,6 +75,8 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             this.colorSlots[i] = TrafficLightColor.getDirectionByIndex(colorSlots[i]);
         }
 
+        this.enabledColors = compound.getList("enabledColors", Tag.TAG_INT).stream().map(x -> TrafficLightColor.getDirectionByIndex(((IntTag)x).getAsInt())).toList();
+
         // backwards compatibility
         linkMigration(compound);
     }
@@ -103,6 +108,9 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         if (!linkMigrated && this.linkLocation != null) {
             tag.put("linkedTo", linkLocation.toNbt());
         }
+        ListTag enabledColorsTag = new ListTag();
+        enabledColorsTag.addAll(enabledColors.stream().map(x -> IntTag.valueOf(x.getIndex())).toList());
+        tag.put("enabledColors", enabledColorsTag);
         super.saveAdditional(tag);
     }
 

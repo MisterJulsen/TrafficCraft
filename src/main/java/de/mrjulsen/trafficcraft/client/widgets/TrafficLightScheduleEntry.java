@@ -119,10 +119,12 @@ public class TrafficLightScheduleEntry {
             }
         );
 
+        /*
         this.modeButton = GuiUtils.createCycleButton(ModMain.MOD_ID, TrafficLightMode.class, MODE_BTN_X_OFFSET, MODE_BTN_Y_OFFSET, MODE_BTN_W, MODE_BTN_H, textMode, this.data.getMode(), 
         (btn, value) -> {
             this.data.setMode(value);
         });
+        */
 
         this.renderableWidgets.clear();
 

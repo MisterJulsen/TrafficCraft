@@ -29,12 +29,12 @@ public class NewNetworkManager extends NetworkManagerBase<NewNetworkManager> {
 
     private static NewNetworkManager instance;
 
-    protected NewNetworkManager(String modid, String channelName, String protocolVersion) {
-        super(modid, channelName, protocolVersion);
+    public NewNetworkManager(String channelName, String protocolVersion) {
+        super(ModMain.MOD_ID, channelName, protocolVersion);
     }
 
     public static void create() {
-        NetworkManagerBase.create(NewNetworkManager.class, ModMain.MOD_ID, "trafficcraft_network", "2");
+        instance = NetworkManagerBase.create(NewNetworkManager.class, ModMain.MOD_ID, "trafficcraft_network", "2");
     }
 
     public static NewNetworkManager getInstance() {

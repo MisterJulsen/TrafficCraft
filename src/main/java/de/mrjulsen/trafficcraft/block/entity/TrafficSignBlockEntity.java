@@ -110,7 +110,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
 
     @Override
     public void close() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
     }
 
     @Override

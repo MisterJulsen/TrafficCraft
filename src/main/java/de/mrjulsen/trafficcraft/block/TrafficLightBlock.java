@@ -101,6 +101,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState, BlockState newState) {
 
         // TODO: Don't know if this works...
+        
         if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
             boolean isPedestrian = false;
             if (oldState.getOptionalValue(MODE).isPresent()) {
@@ -114,6 +115,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
                 blockEntity.setIcon(oldState.getValue(DIRECTION).convertToIcon(isPedestrian));
             }
         }
+        
         super.onBlockStateChange(level, pos, oldState, newState);
     }
 
