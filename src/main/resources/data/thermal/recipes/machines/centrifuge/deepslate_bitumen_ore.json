@@ -1,27 +1,40 @@
 {
-    "type": "thermal:centrifuge",
-    "ingredient": {
-        "item": "trafficcraft:deepslate_bitumen_ore"
-    },
-    "result": [
+    "type": "forge:conditional",
+    "recipes": [
         {
-            "item": "minecraft:cobbled_deepslate",
-            "chance": 0.75,
-            "locked": true
-        },
-        {
-            "item": "trafficcraft:raw_bitumen",
-            "amount": 4
-        },
-        {
-            "item": "trafficcraft:raw_bitumen",
-            "amount": 4,
-            "chance": 0.5
-        },
-        {
-            "fluid": "thermal:crude_oil",
-            "amount": 100
+            "conditions": [
+                {
+                    "type": "forge:mod_loaded",
+                    "modid": "mekanism"
+                }
+            ],
+            "recipe": {
+                "type": "thermal:centrifuge",
+                "ingredient": {
+                    "item": "trafficcraft:deepslate_bitumen_ore"
+                },
+                "result": [
+                    {
+                        "item": "minecraft:cobbled_deepslate",
+                        "chance": 0.75,
+                        "locked": true
+                    },
+                    {
+                        "item": "trafficcraft:raw_bitumen",
+                        "amount": 4
+                    },
+                    {
+                        "item": "trafficcraft:raw_bitumen",
+                        "amount": 4,
+                        "chance": 0.5
+                    },
+                    {
+                        "fluid": "thermal:crude_oil",
+                        "amount": 100
+                    }
+                ],
+                "energy": 20000
+            }
         }
-    ],
-    "energy": 20000
+    ]
 }
