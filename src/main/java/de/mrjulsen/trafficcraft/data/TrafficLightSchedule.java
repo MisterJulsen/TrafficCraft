@@ -9,9 +9,14 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class TrafficLightSchedule {
+
+    private static final String NBT_LOOP = "loop";
+    private static final String NBT_ENTRIES = "entries";
+    private static final String NBT_TRIGGER = "trigger";
     
     private List<TrafficLightAnimationData> entries = new ArrayList<>();
     private boolean loop = true;
@@ -87,16 +92,16 @@ public class TrafficLightSchedule {
             listTag.add(data.toNbt());
         }
 
-        tag.putBoolean("loop", loop);
-        tag.putInt("trigger", trigger.getIndex());
-        tag.put("entries", listTag);
+        tag.putBoolean(NBT_LOOP, loop);
+        tag.putByte(NBT_TRIGGER, trigger.getIndex());
+        tag.put(NBT_ENTRIES, listTag);
         return tag;
     }
 
     public void fromNbt(CompoundTag tag) {
-        loop = tag.getBoolean("loop");
-        trigger = TrafficLightTrigger.getTriggerByIndex(tag.getInt("trigger"));
-        ListTag listTag = tag.getList("entries", 10); // 10 ist der ID-Typ für CompoundTags
+        loop = tag.getBoolean(NBT_LOOP);
+        trigger = TrafficLightTrigger.getTriggerByIndex(tag.getTagType(NBT_TRIGGER) == Tag.TAG_INT ? (byte)tag.getInt(NBT_TRIGGER) : tag.getByte(NBT_TRIGGER));
+        ListTag listTag = tag.getList(NBT_ENTRIES, Tag.TAG_COMPOUND);
 
         for (int i = 0; i < listTag.size(); i++) {
             TrafficLightAnimationData data = new TrafficLightAnimationData();
@@ -107,7 +112,7 @@ public class TrafficLightSchedule {
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(loop);
-        buf.writeInt(trigger.getIndex());
+        buf.writeByte(trigger.getIndex());
         buf.writeInt(entries.size());
         for (TrafficLightAnimationData data : entries) {
             data.toBytes(buf);
@@ -117,7 +122,7 @@ public class TrafficLightSchedule {
     public static TrafficLightSchedule fromBytes(FriendlyByteBuf buf) {
         TrafficLightSchedule schedule = new TrafficLightSchedule();
         schedule.setLoop(buf.readBoolean());
-        schedule.setTrigger(TrafficLightTrigger.getTriggerByIndex(buf.readInt()));
+        schedule.setTrigger(TrafficLightTrigger.getTriggerByIndex(buf.readByte()));
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
             schedule.entries.add(TrafficLightAnimationData.fromBytes(buf));

@@ -10,9 +10,6 @@ import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
-import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
@@ -63,9 +60,9 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<TrafficLightModel> MODEL = EnumProperty.create("model", TrafficLightModel.class);
 
-    @Deprecated public static final EnumProperty<TrafficLightVariant> VARIANT = EnumProperty.create("variant", TrafficLightVariant.class);
-    @Deprecated public static final EnumProperty<TrafficLightDirection> DIRECTION = EnumProperty.create("direction", TrafficLightDirection.class);
-    @Deprecated public static final EnumProperty<TrafficLightMode> MODE = EnumProperty.create("mode", TrafficLightMode.class);
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant> VARIANT = EnumProperty.create("variant", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant.class);
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection> DIRECTION = EnumProperty.create("direction", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection.class);
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode> MODE = EnumProperty.create("mode", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode.class);
 
     public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
@@ -110,7 +107,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
             }
             if (oldState.getOptionalValue(VARIANT).isPresent()) {
                 newState = newState.setValue(MODEL, oldState.getValue(VARIANT).convertToModel());
-                isPedestrian = oldState.getValue(VARIANT) == TrafficLightVariant.PEDESTRIAN;
+                isPedestrian = oldState.getValue(VARIANT) == de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant.PEDESTRIAN;
             }
             if (oldState.getOptionalValue(DIRECTION).isPresent()) {
                 blockEntity.setIcon(oldState.getValue(DIRECTION).convertToIcon(isPedestrian));

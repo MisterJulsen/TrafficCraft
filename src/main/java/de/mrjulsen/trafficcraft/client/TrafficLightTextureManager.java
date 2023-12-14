@@ -30,7 +30,7 @@ public class TrafficLightTextureManager {
         Arrays.stream(TrafficLightIcon.values())
             .forEach(
                 x -> Arrays.stream(TrafficLightColor.values())
-                    .filter(y -> x == TrafficLightIcon.NONE || y != TrafficLightColor.NONE)
+                    .filter(y -> x.isApplicableToColor(y))
                     .forEach(y -> {
                         TrafficLightTextureKey key = new TrafficLightTextureKey(x, y);
                         models.add(Model.create(key));
@@ -46,7 +46,11 @@ public class TrafficLightTextureManager {
         if (key.isOffState()) {
             return new ResourceLocation(ModMain.MOD_ID, String.format("%s/off", TEXTURE_PATH));
         }
-        return new ResourceLocation(ModMain.MOD_ID, String.format("%s/%s_%s", TEXTURE_PATH, key.getIcon().getName(), key.getColor().getName()));
+        return new ResourceLocation(ModMain.MOD_ID, String.format("%s/%s_%s",
+            TEXTURE_PATH,
+            (key.getIcon().isApplicableToColor(key.getColor()) ? key.getIcon() : TrafficLightIcon.NONE).getName(),
+            key.getColor().getName()
+        ));
     }
 
     public static Collection<ResourceLocation> getAllTextureLocations() {
@@ -85,7 +89,7 @@ public class TrafficLightTextureManager {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TrafficLightTextureKey other) {
-                return getIcon() == other.getIcon() && getColor() == other.getColor();
+                return getIcon() == other.getIcon() && getIcon().isApplicableToColor(getColor()) ? getColor() == other.getColor() : other.getColor() == TrafficLightColor.NONE;
             }
             return false;
         }

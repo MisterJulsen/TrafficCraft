@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import java.util.Arrays;
+
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
@@ -9,18 +11,18 @@ public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnu
 	REDSTONE("redstone", 2);
 	
 	private String trigger;
-	private int index;
+	private byte index;
 	
 	private TrafficLightTrigger(String shape, int index) {
 		this.trigger = shape;
-		this.index = index;
+		this.index = (byte)index;
 	}
 	
 	public String getTrigger() {
 		return this.trigger;
 	}
 
-	public int getIndex() {
+	public byte getIndex() {
 		return this.index;
 	}
 
@@ -28,13 +30,8 @@ public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnu
 		return String.format("gui.trafficcraft.trafficlight.trigger.%s", trigger);
 	}
 
-	public static TrafficLightTrigger getTriggerByIndex(int index) {
-		for (TrafficLightTrigger shape : TrafficLightTrigger.values()) {
-			if (shape.getIndex() == index) {
-				return shape;
-			}
-		}
-		return TrafficLightTrigger.NONE;
+	public static TrafficLightTrigger getTriggerByIndex(byte index) {
+		return Arrays.stream(TrafficLightTrigger.values()).filter(x -> x.getIndex() == index).findFirst().orElse(TrafficLightTrigger.NONE);
 	}
 
     @Override

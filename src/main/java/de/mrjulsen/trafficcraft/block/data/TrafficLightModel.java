@@ -11,13 +11,13 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 	THREE_LIGHTS("tripple", 3, -0.5f, 16);
 	
 	private String name;
-	private int lightsCount;
+	private byte lightsCount;
 	private float hitboxBottom;
 	private float hitboxTop;
 	
 	private TrafficLightModel(String name, int lightsCount, float hitboxBottom, float hitboxTop) {
 		this.name = name;
-		this.lightsCount = lightsCount;
+		this.lightsCount = (byte)lightsCount;
 		this.hitboxBottom = hitboxBottom;
 		this.hitboxTop = hitboxTop;
 	}
@@ -26,7 +26,7 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 		return this.name;
 	}
 
-	public int getLightsCount() {
+	public byte getLightsCount() {
 		return this.lightsCount;
 	}
 
@@ -38,13 +38,8 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 		return hitboxTop;
 	}
 
-	public static TrafficLightModel getModelByLightsCount(int lightsCount) {
-		for (TrafficLightModel shape : TrafficLightModel.values()) {
-			if (shape.getLightsCount() == lightsCount) {
-				return shape;
-			}
-		}
-		return TrafficLightModel.THREE_LIGHTS;
+	public static TrafficLightModel getModelByLightsCount(byte lightsCount) {
+		return Arrays.stream(TrafficLightModel.values()).filter(x -> x.getLightsCount() == lightsCount).findFirst().orElse(TrafficLightModel.THREE_LIGHTS);
 	}
 
     @Override
@@ -62,7 +57,7 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 		return getName();
 	}
 
-    public static int maxRequiredSlots() {
-        return Arrays.stream(TrafficLightModel.values()).mapToInt(x -> x.getLightsCount()).max().getAsInt();
+    public static byte maxRequiredSlots() {
+        return (byte)Arrays.stream(TrafficLightModel.values()).mapToInt(x -> x.getLightsCount()).max().getAsInt();
     }
 }

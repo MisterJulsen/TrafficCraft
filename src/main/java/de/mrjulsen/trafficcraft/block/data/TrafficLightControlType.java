@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import java.util.Arrays;
+
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
@@ -9,18 +11,18 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
 	REMOTE("remote", 2);
 	
 	private String controlType;
-	private int index;
+	private byte index;
 	
 	private TrafficLightControlType(String controlType, int index) {
 		this.controlType = controlType;
-		this.index = index;
+		this.index = (byte)index;
 	}
 	
 	public String getControlType() {
 		return this.controlType;
 	}
 
-	public int getIndex() {
+	public byte getIndex() {
 		return this.index;
 	}
 
@@ -28,13 +30,8 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
 		return String.format("gui.trafficcraft.trafficlight.controltype.%s", controlType);
 	}
 
-	public static TrafficLightControlType getControlTypeByIndex(int index) {
-		for (TrafficLightControlType controlType : TrafficLightControlType.values()) {
-			if (controlType.getIndex() == index) {
-				return controlType;
-			}
-		}
-		return TrafficLightControlType.STATIC;
+	public static TrafficLightControlType getControlTypeByIndex(byte index) {
+		return Arrays.stream(TrafficLightControlType.values()).filter(x -> x.getIndex() == index).findFirst().orElse(TrafficLightControlType.STATIC);
 	}
 
     @Override

@@ -26,7 +26,7 @@ public class ClientSetup {
         Arrays.stream(TrafficLightIcon.values())
             .forEach(
                 x -> Arrays.stream(TrafficLightColor.values())
-                    .filter(y -> x == TrafficLightIcon.NONE || y != TrafficLightColor.NONE)
+                    .filter(y -> x.isApplicableToColor(y))
                     .forEach(y -> {
                         ResourceLocation loc = null;
                         if (x == TrafficLightIcon.NONE && y == TrafficLightColor.NONE) {

@@ -27,6 +27,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TrafficLightControllerBlockEntity extends BlockEntity {
 
     private static final String NBT_TRAFFIC_LIGHT_LOCATIONS = "LinkedTrafficLights";
+    private static final String NBT_TICKS = "ticks";
+    private static final String NBT_TOTAL_TICKS = "totalTicks";
+    private static final String NBT_POWERED = "powered";
+    private static final String NBT_SCHEDULES = "schedules";
+    private static final String NBT_RUNNING = "running";
 
     // Properties
     private List<TrafficLightSchedule> schedules = new ArrayList<>();
@@ -51,12 +56,12 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
     public void load(CompoundTag compound) {
         super.load(compound);
 
-        this.ticks = compound.getInt("ticks");
-        this.running = compound.getBoolean("running");
-        this.totalTicks = compound.getLong("totalTicks");
-        this.powered = compound.getBoolean("powered");
+        this.ticks = compound.getInt(NBT_TICKS);
+        this.running = compound.getBoolean(NBT_RUNNING);
+        this.totalTicks = compound.getLong(NBT_TOTAL_TICKS);
+        this.powered = compound.getBoolean(NBT_POWERED);
 
-        ListTag listTag = compound.getList("schedules", Tag.TAG_COMPOUND);
+        ListTag listTag = compound.getList(NBT_SCHEDULES, Tag.TAG_COMPOUND);
         schedules.clear();
         for (int i = 0; i < listTag.size(); i++) {
             TrafficLightSchedule data = new TrafficLightSchedule();
@@ -107,11 +112,11 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             trafficLightsList.add(loc.toNbt());
         }
 
-        tag.putInt("ticks", ticks);
-        tag.putLong("totalTicks", totalTicks);
-        tag.putBoolean("powered", powered);
-        tag.putBoolean("running", running);
-        tag.put("schedules", listTag);
+        tag.putInt(NBT_TICKS, ticks);
+        tag.putLong(NBT_TOTAL_TICKS, totalTicks);
+        tag.putBoolean(NBT_POWERED, powered);
+        tag.putBoolean(NBT_RUNNING, running);
+        tag.put(NBT_SCHEDULES, listTag);
         //tag.put("modes", modesTag);
         tag.put(NBT_TRAFFIC_LIGHT_LOCATIONS, trafficLightsList);
         super.saveAdditional(tag);

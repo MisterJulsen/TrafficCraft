@@ -31,10 +31,6 @@ public enum TrafficLightDirection implements StringRepresentable {
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlight.direction.%s", directionName);
-	}
-
 	public static TrafficLightDirection getDirectionByIndex(int index) {
 		for (TrafficLightDirection shape : TrafficLightDirection.values()) {
 			if (shape.getIndex() == index) {

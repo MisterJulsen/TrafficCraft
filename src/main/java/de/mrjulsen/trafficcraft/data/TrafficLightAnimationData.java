@@ -1,19 +1,21 @@
 package de.mrjulsen.trafficcraft.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
-import de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
-@SuppressWarnings("deprecation")
 public class TrafficLightAnimationData {
+
+    private static final String NBT_ID = "id";
+    private static final String NBT_TICKS = "ticks";
+    private static final String NBT_COLOR = "color";
+    @Deprecated private static final String NBT_MODE = "mode";
 
     public static final int MAX_SECONDS = 999;
     public static final int MAX_TICKS = MAX_SECONDS * DragonLibConstants.TPS;
@@ -97,34 +99,54 @@ public class TrafficLightAnimationData {
 
     public CompoundTag toNbt() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("id", this.getPhaseId());
-        tag.putInt("ticks", this.getDurationTicks());
-        tag.putIntArray("colors", this.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray());
+        tag.putInt(NBT_ID, this.getPhaseId());
+        tag.putInt(NBT_TICKS, this.getDurationTicks());
+        tag.putIntArray(NBT_COLOR, this.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray());
         return tag;
     }
 
     public void fromNbt(CompoundTag tag) {
-        id = tag.getInt("id");
-        ticks = tag.getInt("ticks");
-        enabledColors = Arrays.stream(tag.getIntArray("colors")).mapToObj(x -> TrafficLightColor.getDirectionByIndex(x)).toList();
+        id = tag.getInt(NBT_ID);
+        ticks = tag.getInt(NBT_TICKS);
+        byte[] bArr = tag.getByteArray(NBT_COLOR);
+        List<TrafficLightColor> colors = new ArrayList<>(bArr.length);
+        for (int i = 0; i < bArr.length; i++) {
+            colors.add(TrafficLightColor.getDirectionByIndex(bArr[i]));
+        }
+        enabledColors = colors;
 
         // Backwards compatibility
-        if (tag.contains("mode")) {
-            enableOnlyColors(TrafficLightMode.getModeByIndex(tag.getInt("mode")).convertToColorList());
+        migrateData(tag);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void migrateData(CompoundTag nbt) {
+        if (nbt.contains(NBT_MODE)) {
+            enableOnlyColors(de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode.getModeByIndex(nbt.getInt(NBT_MODE)).convertToColorList());
         }
     }
 
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(id);
         buf.writeInt(ticks);
-        buf.writeVarIntArray(this.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray());
+        TrafficLightColor[] cArr = this.getEnabledColors().toArray(TrafficLightColor[]::new);
+        byte[] bArr = new byte[cArr.length];
+        for (int i = 0; i < bArr.length; i++) {
+            bArr[i] = cArr[i].getIndex();
+        }
+        buf.writeByteArray(bArr);
     }
 
     public static TrafficLightAnimationData fromBytes(FriendlyByteBuf buf) {
         TrafficLightAnimationData data = new TrafficLightAnimationData();
         data.setPhaseId(buf.readInt());
         data.setDurationTicks(buf.readInt());
-        data.enableColors(Arrays.stream(buf.readVarIntArray()).mapToObj(x -> TrafficLightColor.getDirectionByIndex(x)).toList());
+        byte[] bArr = buf.readByteArray();
+        Collection<TrafficLightColor> colors = new ArrayList<>(bArr.length);
+        for (int i = 0; i < bArr.length; i++) {
+            colors.add(TrafficLightColor.getDirectionByIndex(bArr[i]));
+        }
+        data.enableColors(colors);
         return data;
     }
 }
