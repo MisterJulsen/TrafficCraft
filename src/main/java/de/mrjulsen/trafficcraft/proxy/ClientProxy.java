@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.setup.IProxy;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TintedTextures;

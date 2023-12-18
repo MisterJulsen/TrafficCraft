@@ -6,12 +6,10 @@ import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Blocks;
 
-public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IIteratableEnum<TrafficLightControlType> {
-    STATIC("static", 0, Blocks.BARRIER),
+public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IItemIcon, IIteratableEnum<TrafficLightControlType> {
+    STATIC("static", 0, ModBlocks.TRAFFIC_LIGHT.get()),
 	OWN_SCHEDULE("own_schedule", 1, ModItems.PATTERN_CATALOGUE.get()),
 	REMOTE("remote", 2, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get());
 	
@@ -33,12 +31,9 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
 		return this.index;
 	}
 
-	public ItemLike getIconItem() {
+	@Override
+	public ItemLike getItemIcon() {
 		return icon;
-	}
-
-	public ItemStack getIconStack() {
-		return new ItemStack(icon);
 	}
 
 	public String getValueShortTranslationKey() {

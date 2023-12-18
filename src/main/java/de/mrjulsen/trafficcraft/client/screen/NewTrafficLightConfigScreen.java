@@ -459,7 +459,14 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
                         enabledColors.removeIf(x -> x == color);
                     }
                 }
-            ));
+            ) {
+                @Override
+                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                    GuiUtils.setShaderColor(1, 1, 1, 0.5f);
+                    super.renderImage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                    GuiUtils.setShaderColor(1, 1, 1, 1);
+                }
+            });
             
             if (color == TrafficLightColor.F1_F2_F3_F5) {
                 String signalName = "h-1";
@@ -514,7 +521,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
             IconButton.DEFAULT_BUTTON_HEIGHT,
             textCustomizeSchedule,
             (btn) -> {
-                
+                Minecraft.getInstance().setScreen(new NewTrafficLightScheduleEditor(this));
             }
         ));
         addRenderableWidget(new IconButton(
