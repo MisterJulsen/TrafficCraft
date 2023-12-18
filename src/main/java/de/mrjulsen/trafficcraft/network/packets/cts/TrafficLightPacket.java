@@ -117,7 +117,6 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
                         blockEntity.setPhaseId(packet.phaseId);
                         blockEntity.setControlType(packet.controlType);
                         blockEntity.setIcon(packet.icon);
-                        System.out.println(packet.enabledColors.size());
                         blockEntity.setColorSlots(packet.colors);
                         blockEntity.enableOnlyColors(packet.enabledColors);
                         blockEntity.setType(packet.type);

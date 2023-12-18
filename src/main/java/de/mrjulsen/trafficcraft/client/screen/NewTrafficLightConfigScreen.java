@@ -453,10 +453,10 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
                 null,
                 (btn) -> {
                     IconButton ibtn = (IconButton)btn;
-                    if (ibtn.isSelected()) {                        
-                        enabledColors.removeIf(x -> x == color);
-                    } else {
+                    if (ibtn.isSelected()) {
                         enabledColors.add(color);
+                    } else { 
+                        enabledColors.removeIf(x -> x == color);
                     }
                 }
             ));
