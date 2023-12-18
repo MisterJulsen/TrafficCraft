@@ -634,8 +634,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
         // render lights
         for (int i = 0; i < colors.length && i < model.getLightsCount(); i++) {
             GuiUtils.blit(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, colors[i])), pPoseStack, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
-        }
-        
+        }        
 
         // render settings pannels
         if (selectedPart == GLOBAL_SETTINGS_INDEX) {
@@ -684,7 +683,6 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
 
     public void renderEmptyWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         emptyLabel.renderCentered(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
-        //drawCenteredString(pPoseStack, font, textEmpty, guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2, 0xDBDBDB);
     }   
 
     public void renderGlobalWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
