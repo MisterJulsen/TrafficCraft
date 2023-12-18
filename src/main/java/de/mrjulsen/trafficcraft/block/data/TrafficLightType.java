@@ -5,16 +5,20 @@ import java.util.Arrays;
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightType implements StringRepresentable, ITranslatableEnum {
-    CAR("car", 0),
-	TRAM("tram", 1);
+public enum TrafficLightType implements StringRepresentable, ITranslatableEnum, IIconEnum {
+    CAR("car", 0, 0, 0),
+	TRAM("tram", 1, 1, 0);
 	
 	private String name;
 	private byte index;
+	private int uMul;
+	private int vMul;
 	
-	private TrafficLightType(String name, int index) {
+	private TrafficLightType(String name, int index, int u, int v) {
 		this.name = name;
 		this.index = (byte)index;
+		this.uMul = u;
+		this.vMul = v;
 	}
 	
 	public String getName() {
@@ -26,7 +30,17 @@ public enum TrafficLightType implements StringRepresentable, ITranslatableEnum {
 	}
 
 	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlighttype.%s", name);
+		return String.format("enum.trafficcraft.trafficlighttype.%s", name);
+	}
+
+	@Override
+	public int getUMultiplier() {
+		return uMul;
+	}
+
+	@Override
+	public int getVMultiplier() {
+		return vMul;
 	}
 
 	public static TrafficLightType getTypeByIndex(byte index) {

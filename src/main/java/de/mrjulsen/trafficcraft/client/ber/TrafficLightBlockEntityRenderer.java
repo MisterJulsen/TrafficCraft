@@ -41,9 +41,9 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
         pPoseStack.translate(pixel * 2.5f, 1 - pixel * 5.5f, pixel * 6);
         for (int i = 0; i < pBlockEntity.getColorSlotCount() && i < blockstate.getValue(TrafficLightBlock.MODEL).getLightsCount(); i++) {
             if (pBlockEntity.getColorOfSlot(i) != null && pBlockEntity.getEnabledColors().contains(pBlockEntity.getColorOfSlot(i))) {
-                new TrafficLightTextureManager.TrafficLightTextureKey(pBlockEntity.getIcon(), pBlockEntity.getColorOfSlot(i)).render(pPoseStack, vertexconsumer);
+                new TrafficLightTextureManager.TrafficLightTextureKey(pBlockEntity.getIcon(), pBlockEntity.getColorOfSlot(i)).render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
             } else {
-                new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE).render(pPoseStack, vertexconsumer);
+                new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE).render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
             }
             pPoseStack.translate(0, -pixel * 5, 0);
         }

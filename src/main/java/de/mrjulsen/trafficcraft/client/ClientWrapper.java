@@ -8,11 +8,11 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
+import de.mrjulsen.trafficcraft.client.screen.NewTrafficLightConfigScreen;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;
 import de.mrjulsen.trafficcraft.client.screen.RoadConstructionToolScreen;
 import de.mrjulsen.trafficcraft.client.screen.StreetLampScheduleScreen;
 import de.mrjulsen.trafficcraft.client.screen.TownSignScreen;
-import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightControllerScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
@@ -39,8 +39,8 @@ public class ClientWrapper {
         Minecraft.getInstance().setScreen(new StreetLampScheduleScreen(turnOnTime, turnOfftime, format));
     }
 
-    public static void showTrafficLightConfigScreen(BlockPos pos, Level level) {
-        Minecraft.getInstance().setScreen(new TrafficLightConfigScreen(pos, level));
+    public static void showTrafficLightConfigScreen(Level level, BlockPos pos) {
+        Minecraft.getInstance().setScreen(new NewTrafficLightConfigScreen(level, pos));
     }
 
     public static void showTrafficLightControllerScreen(BlockPos pos, Level level) {

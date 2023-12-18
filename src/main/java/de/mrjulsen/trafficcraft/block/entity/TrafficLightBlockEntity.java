@@ -54,7 +54,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         TrafficLightColor.YELLOW,
         TrafficLightColor.GREEN
     };
-    private Collection<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
+    private final Collection<TrafficLightColor> enabledColors = new ArrayList<>();
     private boolean powered = false;
 
     private TrafficLightSchedule schedule = new TrafficLightSchedule();
@@ -67,12 +67,10 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     protected TrafficLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        Arrays.fill(colorSlots, TrafficLightColor.NONE);
     }
 
     public TrafficLightBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), pos, state);
-        Arrays.fill(colorSlots, TrafficLightColor.NONE);
     }
 
     @Override
@@ -93,7 +91,8 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         for (int i = 0; i < colorSlots.length && i < this.colorSlots.length; i++) {
             this.colorSlots[i] = TrafficLightColor.getDirectionByIndex((byte)colorSlots[i]);
         }
-        this.enabledColors = compound.getList(NBT_ENABLED_COLORS, Tag.TAG_INT).stream().map(x -> TrafficLightColor.getDirectionByIndex(((ByteTag)x).getAsByte())).toList();
+        this.enabledColors.clear();
+        this.enabledColors.addAll(compound.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getDirectionByIndex(((ByteTag)x).getAsByte())).toList());
 
         // backwards compatibility
         linkMigration(compound);
@@ -271,6 +270,11 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
+    public void setType(TrafficLightType type) {
+        this.type = type;
+        BlockEntityUtil.sendUpdatePacket(this);
+    }
+
 
     
 
@@ -286,8 +290,16 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         return this.controlType;
     }
 
+    public TrafficLightColor[] getColorSlots() {
+        return this.colorSlots;
+    }
+
     public TrafficLightIcon getIcon() {
         return this.icon;
+    }
+
+    public TrafficLightType getTLType() {
+        return this.type;
     }
 
     public TrafficLightColor getColorOfSlot(int index) {

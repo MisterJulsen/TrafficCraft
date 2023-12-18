@@ -3,16 +3,17 @@ package de.mrjulsen.trafficcraft.block.data;
 import java.util.Arrays;
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightColor implements StringRepresentable {
+public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum {
     NONE("none", 0, TrafficLightType.values(), 0),
 	RED("red", 1, new TrafficLightType[] { TrafficLightType.CAR }, 1),
 	YELLOW("yellow", 2, new TrafficLightType[] { TrafficLightType.CAR }, 2),
 	GREEN("green", 3, new TrafficLightType[] { TrafficLightType.CAR }, 3),	
-	H0("h0", 4, new TrafficLightType[] { TrafficLightType.TRAM }, 1),
-	H1_H2_H3_H5("h1_h2_h3_h5", 5, new TrafficLightType[] { TrafficLightType.TRAM }, 3),
-	H4("h4", 6, new TrafficLightType[] { TrafficLightType.TRAM }, 2);
+	F0("f0", 4, new TrafficLightType[] { TrafficLightType.TRAM }, 1),
+	F4("f4", 5, new TrafficLightType[] { TrafficLightType.TRAM }, 2),
+	F1_F2_F3_F5("f1_f2_f3_f5", 6, new TrafficLightType[] { TrafficLightType.TRAM }, 3);
 	
 	private String name;
 	private byte index;
@@ -38,8 +39,8 @@ public enum TrafficLightColor implements StringRepresentable {
 		return List.of(TrafficLightColor.NONE);
 	}
 
-	public static TrafficLightColor[] getAllowedForType(TrafficLightType type) {
-		return Arrays.stream(TrafficLightColor.values()).filter(x -> Arrays.stream(x.allowedInTypes).anyMatch(y -> y == type)).toArray(TrafficLightColor[]::new);
+	public static TrafficLightColor[] getAllowedForType(TrafficLightType type, boolean offStatusAllowed) {
+		return Arrays.stream(TrafficLightColor.values()).filter(x -> Arrays.stream(x.allowedInTypes).anyMatch(y -> y == type) && (offStatusAllowed || x != NONE)).toArray(TrafficLightColor[]::new);
 	}
 
 	public boolean isAllowedFor(TrafficLightType type) {
@@ -73,4 +74,14 @@ public enum TrafficLightColor implements StringRepresentable {
     public String getSerializedName() {
         return name;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightcolor";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getName();
+	}
 }

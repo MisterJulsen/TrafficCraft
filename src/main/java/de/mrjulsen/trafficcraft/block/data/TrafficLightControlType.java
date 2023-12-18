@@ -3,19 +3,26 @@ package de.mrjulsen.trafficcraft.block.data;
 import java.util.Arrays;
 
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
-public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum {
-    STATIC("static", 0),
-	OWN_SCHEDULE("own_schedule", 1),
-	REMOTE("remote", 2);
+public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IIteratableEnum<TrafficLightControlType> {
+    STATIC("static", 0, Blocks.BARRIER),
+	OWN_SCHEDULE("own_schedule", 1, ModItems.PATTERN_CATALOGUE.get()),
+	REMOTE("remote", 2, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get());
 	
 	private String controlType;
 	private byte index;
+	private ItemLike icon;
 	
-	private TrafficLightControlType(String controlType, int index) {
+	private TrafficLightControlType(String controlType, int index, ItemLike icon) {
 		this.controlType = controlType;
 		this.index = (byte)index;
+		this.icon = icon;
 	}
 	
 	public String getControlType() {
@@ -26,8 +33,16 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlight.controltype.%s", controlType);
+	public ItemLike getIconItem() {
+		return icon;
+	}
+
+	public ItemStack getIconStack() {
+		return new ItemStack(icon);
+	}
+
+	public String getValueShortTranslationKey() {
+		return String.format("enum.trafficcraft.trafficlightcontroltype.short.%s", controlType);
 	}
 
 	public static TrafficLightControlType getControlTypeByIndex(byte index) {
@@ -47,5 +62,10 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
 	@Override
 	public String getEnumValueName() {
 		return getControlType();
+	}
+
+	@Override
+	public TrafficLightControlType[] getValues() {
+		return values();
 	}
 }

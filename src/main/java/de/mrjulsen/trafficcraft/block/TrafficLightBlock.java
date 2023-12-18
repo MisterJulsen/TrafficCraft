@@ -185,7 +185,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
         if (pLevel.isClientSide && item instanceof WrenchItem) {
             if (!pPlayer.isShiftKeyDown())
-                ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
+                ClientWrapper.showTrafficLightConfigScreen(pLevel, pPos);
                 
             return InteractionResult.SUCCESS;
         }

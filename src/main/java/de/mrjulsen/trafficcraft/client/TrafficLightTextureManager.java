@@ -9,10 +9,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
-import de.mrjulsen.trafficcraft.util.ClientTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -34,19 +34,31 @@ public class TrafficLightTextureManager {
                     .forEach(y -> {
                         TrafficLightTextureKey key = new TrafficLightTextureKey(x, y);
                         models.add(Model.create(key));
+                        System.out.println(key.getIcon() + " - " + key.getColor());
                     }));
     }
 
 
-    public static ResourceLocation getTextureLocation(TrafficLightIcon icon, TrafficLightColor color) {
-        return getTextureLocation(new TrafficLightTextureKey(icon, color));
+    public static ResourceLocation getResourceLocation(TrafficLightIcon icon, TrafficLightColor color) {
+        return getResourceLocation(new TrafficLightTextureKey(icon, color));
     }
 
-    public static ResourceLocation getTextureLocation(TrafficLightTextureKey key) {
+    public static ResourceLocation getResourceLocation(TrafficLightTextureKey key) {
         if (key.isOffState()) {
             return new ResourceLocation(ModMain.MOD_ID, String.format("%s/off", TEXTURE_PATH));
         }
         return new ResourceLocation(ModMain.MOD_ID, String.format("%s/%s_%s",
+            TEXTURE_PATH,
+            (key.getIcon().isApplicableToColor(key.getColor()) ? key.getIcon() : TrafficLightIcon.NONE).getName(),
+            key.getColor().getName()
+        ));
+    }
+
+    public static ResourceLocation getTextureLocation(TrafficLightTextureKey key) {
+        if (key.isOffState()) {
+            return new ResourceLocation(ModMain.MOD_ID, String.format("textures/%s/off.png", TEXTURE_PATH));
+        }
+        return new ResourceLocation(ModMain.MOD_ID, String.format("textures/%s/%s_%s.png",
             TEXTURE_PATH,
             (key.getIcon().isApplicableToColor(key.getColor()) ? key.getIcon() : TrafficLightIcon.NONE).getName(),
             key.getColor().getName()
@@ -58,15 +70,15 @@ public class TrafficLightTextureManager {
     }
 
     public static TextureAtlasSprite getSprite(TrafficLightIcon icon, TrafficLightColor color) {
-        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(getTextureLocation(icon, color));
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(getResourceLocation(icon, color));
     }
 
-    public static void render(PoseStack poseStack, VertexConsumer consumer, TrafficLightIcon icon, TrafficLightColor color) {
-        render(poseStack, consumer, new TrafficLightTextureKey(icon, color));
+    public static void render(PoseStack poseStack, VertexConsumer consumer, TrafficLightIcon icon, TrafficLightColor color, int packedLight, int packedOverlay) {
+        render(poseStack, consumer, new TrafficLightTextureKey(icon, color), packedLight, packedOverlay);
     }
 
-    public static void render(PoseStack poseStack, VertexConsumer consumer, TrafficLightTextureKey key) {
-        models.stream().filter(x -> x.getKey().equals(key)).findFirst().orElse(FALLBACK_MODEL).render(poseStack, consumer);
+    public static void render(PoseStack poseStack, VertexConsumer consumer, TrafficLightTextureKey key, int packedLight, int packedOverlay) {
+        models.stream().filter(x -> x.getKey().equals(key)).findFirst().orElse(FALLBACK_MODEL).render(poseStack, consumer, packedLight, packedOverlay);
     }
 
     public static class TrafficLightTextureKey {
@@ -74,8 +86,8 @@ public class TrafficLightTextureManager {
         private final TrafficLightColor color;
 
         public TrafficLightTextureKey(TrafficLightIcon icon, TrafficLightColor color) {
-            this.icon = icon;
             this.color = color;
+            this.icon = icon.isApplicableToColor(color) ? icon : TrafficLightIcon.NONE;
         }
 
         public TrafficLightIcon getIcon() {
@@ -89,21 +101,21 @@ public class TrafficLightTextureManager {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof TrafficLightTextureKey other) {
-                return getIcon() == other.getIcon() && getIcon().isApplicableToColor(getColor()) ? getColor() == other.getColor() : other.getColor() == TrafficLightColor.NONE;
+                return getColor() == other.getColor() && getIcon() == other.getIcon();
             }
             return false;
         }
 
         public ResourceLocation getTextureLocation() {
-            return TrafficLightTextureManager.getTextureLocation(getIcon(), getColor());
+            return TrafficLightTextureManager.getResourceLocation(getIcon(), getColor());
         }
 
         public TextureAtlasSprite getSprite() {
             return TrafficLightTextureManager.getSprite(getIcon(), getColor());
         }
 
-        public void render(PoseStack poseStack, VertexConsumer consumer) {
-            TrafficLightTextureManager.render(poseStack, consumer, this);
+        public void render(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay) {
+            TrafficLightTextureManager.render(poseStack, consumer, this, packedLight, packedOverlay);
         }
 
         public boolean isOffState() {
@@ -134,8 +146,8 @@ public class TrafficLightTextureManager {
             return new Model(quads, key);
         }
 
-        private void render(PoseStack poseStack, VertexConsumer consumer) {
-            quads.forEach(x -> consumer.putBulkData(poseStack.last(), x, 1, 1, 1, key == null || key.isOffState() ? LightTexture.FULL_BLOCK : LightTexture.FULL_BRIGHT, 0));        
+        private void render(PoseStack poseStack, VertexConsumer consumer, int packedLight, int packedOverlay) {
+            quads.forEach(x -> consumer.putBulkData(poseStack.last(), x, 1, 1, 1, key == null || key.isOffState() ? packedLight : LightTexture.FULL_BRIGHT, packedOverlay));        
         }
 
         private TrafficLightTextureKey getKey() {

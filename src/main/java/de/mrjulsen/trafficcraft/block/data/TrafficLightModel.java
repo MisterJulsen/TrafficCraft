@@ -5,21 +5,25 @@ import java.util.Arrays;
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
-public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum {
-    ONE_LIGHT("single", 1, 9, 16),
-	TWO_LIGHTS("double", 2, 4.5f, 16),
-	THREE_LIGHTS("tripple", 3, -0.5f, 16);
+public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum, IIconEnum {
+    ONE_LIGHT("single", 1, 9, 16, 2, 0),
+	TWO_LIGHTS("double", 2, 4.5f, 16, 3, 0),
+	THREE_LIGHTS("tripple", 3, -0.5f, 16, 4, 0);
 	
 	private String name;
 	private byte lightsCount;
 	private float hitboxBottom;
 	private float hitboxTop;
+	private int uMul;
+	private int vMul;
 	
-	private TrafficLightModel(String name, int lightsCount, float hitboxBottom, float hitboxTop) {
+	private TrafficLightModel(String name, int lightsCount, float hitboxBottom, float hitboxTop, int u, int v) {
 		this.name = name;
 		this.lightsCount = (byte)lightsCount;
 		this.hitboxBottom = hitboxBottom;
 		this.hitboxTop = hitboxTop;
+		this.uMul = u;
+		this.vMul = v;
 	}
 	
 	public String getName() {
@@ -36,6 +40,20 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum 
 
 	public float getHitboxTop() {
 		return hitboxTop;
+	}
+
+	public float getTotalHitboxHeight() {
+		return Math.abs(getHitboxTop() - getHitboxBottom());
+	}
+
+	@Override
+	public int getUMultiplier() {
+		return uMul;
+	}
+
+	@Override
+	public int getVMultiplier() {
+		return vMul;
 	}
 
 	public static TrafficLightModel getModelByLightsCount(byte lightsCount) {
