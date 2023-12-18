@@ -491,6 +491,10 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
                     .assignedTo(b)
                 ));
             }
+
+            if (this.enabledColors.contains(color)) {
+                b.select();
+            }
         }
         controlTypeTabGroups.get(TrafficLightControlType.STATIC).setVisible(controlType == TrafficLightControlType.STATIC);
     }
