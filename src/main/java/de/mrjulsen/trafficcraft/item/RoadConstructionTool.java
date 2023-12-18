@@ -12,12 +12,12 @@ import com.mojang.math.Vector3f;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.mcdragonlib.utils.StatusResult;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.util.StatusResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -93,7 +93,7 @@ public class RoadConstructionTool extends Item {
                 Location location = new Location(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location().toString());
                 
                 if (compound.contains(NBT_LOCATION1)) {
-                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).result) {
+                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).result()) {
                         compound.put(NBT_LOCATION2, location.toNbt());
                     }
                 } else {
@@ -163,7 +163,7 @@ public class RoadConstructionTool extends Item {
         } else if (!flag2) {
             status = ERROR_SLOPE_TOO_STEEP;
         }
-        return new StatusResult(flag1 && flag2, status);
+        return new StatusResult(flag1 && flag2, status, null);
     }
 
     @Override
@@ -376,7 +376,7 @@ public class RoadConstructionTool extends Item {
         if (line.length() < 256) {
             double mul = 1.0D / Math.min(line.length(), 256) * spacing;
 
-            int lineStatus = isLineValid(start, end).status;
+            int lineStatus = isLineValid(start, end).code();
             switch (lineStatus) {
                 case ERROR_TOO_FAR:
                     player.displayClientMessage(GuiUtils.translate("item.trafficcraft.road_construction_tool.status_too_far").withStyle(ChatFormatting.RED), true);
@@ -391,7 +391,7 @@ public class RoadConstructionTool extends Item {
             if (clientTicks == 0) {
                 for (double d = 0; d < 1; d += mul) {
                     Vec3 vecPos = new Vec3(line.x * d, line.y * d, line.z * d).add(start);
-                    level.addParticle(new DustParticleOptions(isLineValid(start, end).result ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
+                    level.addParticle(new DustParticleOptions(isLineValid(start, end).result() ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
                     
                     Vec3 rightVec = vecPos.add(new Vec3(line.z * d, 0, -line.x * d).normalize().scale(halfWidth));
                     level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), rightVec.x, rightVec.y, rightVec.z, 0, 0, 0);

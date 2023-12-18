@@ -187,6 +187,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
                 guiTop + 84,
                 buttonWidth,
                 ItemButton.DEFAULT_BUTTON_HEIGHT,
+                null,
                 (p) -> {
                     this.roadType = type;
                 }).withAlignment(Alignment.LEFT)
