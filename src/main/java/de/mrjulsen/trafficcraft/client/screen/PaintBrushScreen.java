@@ -9,7 +9,7 @@ import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -173,7 +173,7 @@ public class PaintBrushScreen extends CommonScreen {
 
     public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
         if (this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_))) {
-            NewNetworkManager.getInstance().send(new PaintBrushPacket(pattern, currentScroll), null);
+            NetworkManager.getInstance().send(new PaintBrushPacket(pattern, currentScroll), null);
             
             this.onClose();
             return true;

@@ -25,19 +25,19 @@ import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
 
-public class NewNetworkManager extends NetworkManagerBase<NewNetworkManager> {
+public class NetworkManager extends NetworkManagerBase<NetworkManager> {
 
-    private static NewNetworkManager instance;
+    private static NetworkManager instance;
 
-    public NewNetworkManager(String channelName, String protocolVersion) {
+    public NetworkManager(String channelName, String protocolVersion) {
         super(ModMain.MOD_ID, channelName, protocolVersion);
     }
 
     public static void create() {
-        instance = NetworkManagerBase.create(NewNetworkManager.class, ModMain.MOD_ID, "trafficcraft_network", "2");
+        instance = NetworkManagerBase.create(NetworkManager.class, ModMain.MOD_ID, "trafficcraft_network", "2");
     }
 
-    public static NewNetworkManager getInstance() {
+    public static NetworkManager getInstance() {
         return instance;
     }
 

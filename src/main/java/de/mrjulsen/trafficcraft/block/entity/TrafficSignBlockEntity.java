@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.block.entity;
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
@@ -83,7 +83,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
         setBase64Texture(base64);
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NewNetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
+                NetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }
@@ -103,7 +103,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
     private void clear() {
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NewNetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
+                NetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }

@@ -6,7 +6,7 @@ import de.mrjulsen.mcdragonlib.setup.IProxy;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.config.ModClientConfig;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.proxy.ClientProxy;
 import de.mrjulsen.trafficcraft.proxy.ServerProxy;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -45,7 +45,7 @@ public class ModMain {
         ModMenuTypes.register(eventBus);        
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ModClientConfig.SPEC, MOD_ID + "-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
-        NewNetworkManager.create();       
+        NetworkManager.create();       
         MinecraftForge.EVENT_BUS.register(this);
     }
 

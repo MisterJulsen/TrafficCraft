@@ -29,7 +29,7 @@ import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacket;
 import net.minecraft.client.Minecraft;
@@ -119,11 +119,11 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
     @Override
     public void onClose() {
         if (selectedBookmark >= bookmarks.length) {
-            NewNetworkManager.getInstance().send(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)), null);
+            NetworkManager.getInstance().send(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)), null);
         } else {
             TrafficSignData data = CreativePatternCatalogueItem.getCustomImage(stack);
             if (data != null) {                
-                NewNetworkManager.getInstance().send(new CreativePatternCataloguePacket(data), null);
+                NetworkManager.getInstance().send(new CreativePatternCataloguePacket(data), null);
                 data.close();
             }
         }

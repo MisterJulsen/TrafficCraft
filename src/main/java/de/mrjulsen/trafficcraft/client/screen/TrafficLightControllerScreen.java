@@ -7,7 +7,7 @@ import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightControllerPacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
@@ -91,7 +91,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NewNetworkManager.getInstance().send(new TrafficLightControllerPacket(
+        NetworkManager.getInstance().send(new TrafficLightControllerPacket(
             blockPos,
             status
         ), null);

@@ -23,7 +23,7 @@ import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -120,7 +120,7 @@ public class TownSignScreen extends CommonScreen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NewNetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
+        NetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
     }
 
     public void tick() {
@@ -133,7 +133,7 @@ public class TownSignScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NewNetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
+        NetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
         this.minecraft.setScreen(null);
     }
 

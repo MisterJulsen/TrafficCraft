@@ -37,7 +37,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager.TrafficLightTextureKey;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
@@ -150,7 +150,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
 
     @Override
     public void onClose() {
-        NewNetworkManager.getInstance().send(new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled), minecraft.player);
+        NetworkManager.getInstance().send(new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled), minecraft.player);
         super.onClose();
     }
 

@@ -9,7 +9,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
-import de.mrjulsen.trafficcraft.network.NewNetworkManager;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -94,7 +94,7 @@ public class StreetLampScheduleScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NewNetworkManager.getInstance().send(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat), null);
+        NetworkManager.getInstance().send(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat), null);
         this.onClose();
     }
 
