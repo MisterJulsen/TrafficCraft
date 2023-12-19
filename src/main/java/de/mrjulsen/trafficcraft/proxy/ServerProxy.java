@@ -1,13 +1,12 @@
 package de.mrjulsen.trafficcraft.proxy;
 
-import de.mrjulsen.mcdragonlib.setup.IProxy;
+import de.mrjulsen.trafficcraft.ModMain;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-public class ServerProxy implements IProxy {
+public class ServerProxy {
 
-    @Override
-    public void setup(FMLCommonSetupEvent event) {
-        
+    public static void setup(FMLCommonSetupEvent event) {            
+        ModMain.LOGGER.info("Welcome to the TRAFFICCRAFT mod by MRJULSEN.");
     }
     
 }

@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,8 +37,8 @@ public class TrafficLightControllerScreen extends CommonScreen {
     protected ResizableCycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
-    private TranslatableComponent textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
-    private TranslatableComponent textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
+    private Component textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
+    private Component textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
 
     public TrafficLightControllerScreen(BlockPos pos, Level level) {
         super(title);

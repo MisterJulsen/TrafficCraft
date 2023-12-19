@@ -4,8 +4,6 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.setup.IProxy;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
 import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
@@ -37,11 +35,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientProxy implements IProxy {
+public class ClientProxy {
 
 	private static final int CHECKERBOARD_COLOR_A = 0xFFE9E9E9;
 	private static final int CHECKERBOARD_COLOR_B = 0xFFD9D9D9;
@@ -60,12 +57,7 @@ public class ClientProxy implements IProxy {
 		return new DynamicTexture(image);
 	}).toArray(DynamicTexture[]::new);
 
-    public void setupClient(FMLClientSetupEvent event) {
-        
-    }
-
-    @Override
-    public void setup(FMLCommonSetupEvent event) {
+    public static void setup(final FMLClientSetupEvent event) {
         
         ItemModelGenerator.LAYERS.add("layer5");
         ItemModelGenerator.LAYERS.add("layer6");

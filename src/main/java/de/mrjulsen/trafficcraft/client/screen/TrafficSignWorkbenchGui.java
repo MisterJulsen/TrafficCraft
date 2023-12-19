@@ -47,7 +47,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
@@ -103,23 +102,23 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private int selectedIndex = -1;
 
     // texts
-    private final TranslatableComponent createPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.title");
-    private final TranslatableComponent createPatternInstruction = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
-    private final TranslatableComponent emptyPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
+    private final Component createPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.title");
+    private final Component createPatternInstruction = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
+    private final Component emptyPattern = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
 
-    private final TranslatableComponent tooltipDefaultNew = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add");
-    //private final TranslatableComponent tooltipDefaultNewFull1 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
-    //private final TranslatableComponent tooltipDefaultNewFull2 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
-    private final TranslatableComponent tooltipDefaultEdit = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.edit");
-    private final TranslatableComponent tooltipDefaultDelete = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.delete");
+    private final Component tooltipDefaultNew = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add");
+    //private final Component tooltipDefaultNewFull1 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
+    //private final Component tooltipDefaultNewFull2 = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
+    private final Component tooltipDefaultEdit = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.edit");
+    private final Component tooltipDefaultDelete = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.delete");
 
-    private final TranslatableComponent tooltipEditorToolbarDraw = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.draw");
-    private final TranslatableComponent tooltipEditorToolbarErase = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.erase");
-    private final TranslatableComponent tooltipEditorToolbarPickColor = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.pick_color");
-    private final TranslatableComponent tooltipEditorToolbarFill = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.fill");
-    private final TranslatableComponent tooltipEditorToolbarText = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
-    private final TranslatableComponent tooltipEditorToolbarLoad = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
-    private final TranslatableComponent tooltipEditorToolbarSave = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
+    private final Component tooltipEditorToolbarDraw = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.draw");
+    private final Component tooltipEditorToolbarErase = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.erase");
+    private final Component tooltipEditorToolbarPickColor = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.pick_color");
+    private final Component tooltipEditorToolbarFill = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.fill");
+    private final Component tooltipEditorToolbarText = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
+    private final Component tooltipEditorToolbarLoad = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
+    private final Component tooltipEditorToolbarSave = GuiUtils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
 
 
     // gui textures

@@ -32,7 +32,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,7 +53,7 @@ public class TownSignScreen extends CommonScreen {
     protected final SignRenderingConfig config;
 
     
-    private TranslatableComponent textVariant = GuiUtils.translate("gui.trafficcraft.townsignvariant");
+    private Component textVariant = GuiUtils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
     private final TownSignBlock.ETownSignSide side;
 

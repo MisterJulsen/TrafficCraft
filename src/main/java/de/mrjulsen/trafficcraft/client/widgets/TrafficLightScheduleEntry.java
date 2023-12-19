@@ -14,7 +14,7 @@ import de.mrjulsen.trafficcraft.client.widgets.data.WidgetData;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -43,7 +43,7 @@ public class TrafficLightScheduleEntry {
 
     public List<WidgetData> renderableWidgets = new ArrayList<WidgetData>();
 
-    private TranslatableComponent textMode = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.mode");
+    private Component textMode = GuiUtils.translate("gui.trafficcraft.trafficlightsettings.mode");
     
     private static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_widgets.png");
 

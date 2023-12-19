@@ -146,9 +146,9 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         VerticalScrollBar scrollBar = addRenderableWidget(new VerticalScrollBar(areaWorkspace.getRight(), areaWorkspace.getTop(), areaWorkspace.getHeight(), areaWorkspace));
         scrollBar.setWidth(8);
 
-        entries.add(addRenderableWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
-        entries.add(addRenderableWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
-        entries.add(addRenderableWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
+        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
+        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
+        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
     }
 
     @Override
@@ -170,6 +170,7 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         for (NewTrafficLightScheduleEntry entry : entries) {
             entry.setY(y);
             y += NewTrafficLightScheduleEntry.HEIGHT;
+            entry.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         }
         
         y = renderInfo(pPoseStack, y, textEnd);

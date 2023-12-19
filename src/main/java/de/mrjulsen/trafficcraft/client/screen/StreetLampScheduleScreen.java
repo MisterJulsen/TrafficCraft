@@ -13,7 +13,6 @@ import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
@@ -39,9 +38,9 @@ public class StreetLampScheduleScreen extends CommonScreen {
     protected ForgeSlider timeOffSlider; 
     protected ResizableCycleButton<TimeFormat> timeFormatButton;
 
-    private TranslatableComponent textTurnOnTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_on_time");
-    private TranslatableComponent textTurnOffTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_off_time");
-    private TranslatableComponent textTimeFormat = GuiUtils.translate("gui.trafficcraft.streetlampconfig.time_format");
+    private Component textTurnOnTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_on_time");
+    private Component textTurnOffTime = GuiUtils.translate("gui.trafficcraft.streetlampconfig.turn_off_time");
+    private Component textTimeFormat = GuiUtils.translate("gui.trafficcraft.streetlampconfig.time_format");
 
     public StreetLampScheduleScreen(int timeOn, int timeOff, TimeFormat format) {
         super(title);

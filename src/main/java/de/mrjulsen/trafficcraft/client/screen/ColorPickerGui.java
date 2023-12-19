@@ -12,7 +12,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,9 +53,9 @@ public class ColorPickerGui extends CommonScreen {
     // fix
     private boolean rgbNoUpdate = false;
 
-    private TranslatableComponent textHSV = GuiUtils.translate("gui.trafficcraft.colorpicker.hsv");
-    private TranslatableComponent textRGB = GuiUtils.translate("gui.trafficcraft.colorpicker.rgb");
-    private TranslatableComponent textInteger = GuiUtils.translate("gui.trafficcraft.colorpicker.integer");
+    private Component textHSV = GuiUtils.translate("gui.trafficcraft.colorpicker.hsv");
+    private Component textRGB = GuiUtils.translate("gui.trafficcraft.colorpicker.rgb");
+    private Component textInteger = GuiUtils.translate("gui.trafficcraft.colorpicker.integer");
 
     private static final ResourceLocation gui = new ResourceLocation(ModMain.MOD_ID, "textures/gui/color_picker.png");
 
