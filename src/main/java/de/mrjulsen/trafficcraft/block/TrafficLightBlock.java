@@ -202,7 +202,9 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
                 }
             } else {
                 blockEntity.setPowered(false);
-                blockEntity.stopSchedule();
+                if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.REDSTONE) {
+                    blockEntity.stopSchedule();
+                }
             }                    
         }
     }
