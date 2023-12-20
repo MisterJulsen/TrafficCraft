@@ -52,9 +52,9 @@ public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSched
     public void handle(TrafficLightSchedulePacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer player = context.get().getSender();
-            if(player != null) {
+            if (player != null) {
                 Level level = player.getLevel();
-                if(level.isLoaded(packet.pos)) {
+                if (level.isLoaded(packet.pos)) {
                     if (level.getBlockEntity(packet.pos) instanceof TrafficLightControllerBlockEntity blockEntity) {
                         blockEntity.setSchedules(packet.schedules);
                     } else if (level.getBlockEntity(packet.pos) instanceof TrafficLightBlockEntity blockEntity) {

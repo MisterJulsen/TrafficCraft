@@ -1,24 +1,30 @@
 package de.mrjulsen.trafficcraft.client.widgets;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableButton;
+import de.mrjulsen.mcdragonlib.utils.Math;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
+import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.client.screen.NewTrafficLightScheduleEditor;
 import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -45,17 +51,40 @@ public class NewTrafficLightScheduleEntry extends Button {
     private GuiAreaDefinition signalSelectionArea = GuiAreaDefinition.empty();
     private GuiAreaDefinition[] signalAreas = new GuiAreaDefinition[0];
 
-    private final TrafficLightType type = TrafficLightType.TRAM;
+    private final TrafficLightType type = TrafficLightType.CAR;
     private final TrafficLightColor[] signals;
 
+    private final Screen parent;
     private final EditBox phaseIdBox;
 
-    private TrafficLightAnimationData entry = new TrafficLightAnimationData();
+    private final Consumer<TrafficLightAnimationData> removeAction; 
+    private final BiConsumer<TrafficLightAnimationData, Integer> reorderAction; 
 
-    public NewTrafficLightScheduleEntry(int pX, int pY, int pWidth) {
+    // texts
+    private static final Component textDelay = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.delay");
+    private static final Component textAddTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_time");
+    private static final Component textRemoveTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.remove_time");
+    private static final Component textPhaseId = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.phase_id");
+    private static final Component textMoveUp = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.move_up");
+    private static final Component textMoveDown = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.move_down");
+    private static final Component textDelete = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.delete");
+
+    private final List<Tooltip> widgetTooltips = new ArrayList<>();
+    private final List<Tooltip> areaTooltips = new ArrayList<>();
+
+    // data
+    private final TrafficLightAnimationData entry;
+    private final boolean hidePhaseId;
+
+    public NewTrafficLightScheduleEntry(Screen parent, boolean hidePhaseId, TrafficLightAnimationData entry, int pX, int pY, int pWidth, Consumer<TrafficLightAnimationData> removeAction, BiConsumer<TrafficLightAnimationData, Integer> reorderAction) {
         super(pX, pY, pWidth, HEIGHT, TextComponent.EMPTY, null);
+        this.hidePhaseId = hidePhaseId;
 
         Minecraft minecraft = Minecraft.getInstance();
+        this.parent = parent;
+        this.entry = entry;
+        this.removeAction = removeAction;
+        this.reorderAction = reorderAction;
 
         delayBox = GuiUtils.createEditBox(
             pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 1,
@@ -63,16 +92,18 @@ public class NewTrafficLightScheduleEntry extends Button {
             38,
             DEFAULT_EDIT_BOX_HEIGHT - 2,
             minecraft.font,
-            String.valueOf(entry.getDurationTicks()),
+            String.valueOf((int)entry.getDurationSeconds()),
             true,
             (text) -> {
                 try {
-                    entry.setDurationSeconds(Integer.parseInt(text));
+                    entry.setDurationSeconds(Math.clamp(Integer.parseInt(text), 0, TrafficLightAnimationData.MAX_SECONDS));
                 } catch (Exception e) {}
             },
             (box, focus) -> {}
         );
-        delayBox.setFilter(GuiUtils::editBoxNumberFilter);
+        delayBox.setFilter(ModGuiUtils::editBoxNonNegativeNumberFilter);
+        delayBox.setMaxLength(String.valueOf(TrafficLightAnimationData.MAX_SECONDS).length());
+        widgetTooltips.add(Tooltip.of(textDelay).assignedTo(delayBox));
 
         removeTimeButton = GuiUtils.createButton(
             pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
@@ -81,11 +112,15 @@ public class NewTrafficLightScheduleEntry extends Button {
             DEFAULT_EDIT_BOX_HEIGHT,
             GuiUtils.text("-"),
             (btn) -> {
+                if (entry.getDurationSeconds() <= 0) {
+                    return;
+                }
                 int val = (int)entry.getDurationSeconds() - 1;
                 delayBox.setValue(String.valueOf(val));
                 entry.setDurationSeconds(val);
             }
         );
+        widgetTooltips.add(Tooltip.of(textRemoveTime).assignedTo(removeTimeButton));
 
         addTimeButton = GuiUtils.createButton(
             pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 40,
@@ -94,51 +129,75 @@ public class NewTrafficLightScheduleEntry extends Button {
             DEFAULT_EDIT_BOX_HEIGHT,
             GuiUtils.text("+"),
             (btn) -> {
+                if (entry.getDurationSeconds() >= TrafficLightAnimationData.MAX_SECONDS) {
+                    return;
+                }
                 int val = (int)entry.getDurationSeconds() + 1;
                 delayBox.setValue(String.valueOf(val));
                 entry.setDurationSeconds(val);
             }
         );
-
-        phaseIdBox = GuiUtils.createEditBox(
-            pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
-            (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2),
-            38,
-            DEFAULT_EDIT_BOX_HEIGHT - 2,
-            minecraft.font,
-            String.valueOf(entry.getDurationTicks()),
-            true,
-            (text) -> {
-                try {
-                    entry.setDurationSeconds(Integer.parseInt(text));
-                } catch (Exception e) {}
-            },
-            (box, focus) -> {}
-        );
-        phaseIdBox.setFilter(GuiUtils::editBoxNumberFilter);
+        widgetTooltips.add(Tooltip.of(textAddTime).assignedTo(addTimeButton));
 
         widgets.add(delayBox);
         widgets.add(addTimeButton);
         widgets.add(removeTimeButton);
-        widgets.add(phaseIdBox);
 
+        if (!hidePhaseId) {
+            phaseIdBox = GuiUtils.createEditBox(
+                pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
+                (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2),
+                38,
+                DEFAULT_EDIT_BOX_HEIGHT - 2,
+                minecraft.font,
+                String.valueOf(entry.getPhaseId()),
+                true,
+                (text) -> {
+                    try {
+                        entry.setPhaseId(Integer.parseInt(text));
+                    } catch (Exception e) {}
+                },
+                (box, focus) -> {}
+            );
+            phaseIdBox.setFilter(GuiUtils::editBoxNumberFilter);
+            phaseIdBox.setMaxLength(4);
+            widgetTooltips.add(Tooltip.of(textPhaseId).assignedTo(phaseIdBox)); 
+            widgets.add(phaseIdBox);
+        } else {
+            phaseIdBox = null;
+        }
         
         signals = TrafficLightColor.getAllowedForType(type, false);
     }
 
     public void setY(int y) {
+        if (this.y == y) {
+            return;
+        }
+
+        areaTooltips.clear();
+
         delayBox.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1;
         addTimeButton.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
         removeTimeButton.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
 
-        phaseIdBox.y = y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
+        int phaseIdBoxY = y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
+        int signalSelectionX = x + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH;
+        if (!hidePhaseId) {
+            phaseIdBox.y = phaseIdBoxY;
+            signalSelectionX += phaseIdBox.getWidth() + 6;
+        }
 
         this.y = y;
 
         moveUpButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
         moveDownButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + 4 + CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
         deleteButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + height - CONTROL_BUTTON_SIZE - 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
-        signalSelectionArea = new GuiAreaDefinition(phaseIdBox.x + phaseIdBox.getWidth() + 6, phaseIdBox.y - 1, signalAreas.length * (SIGNAL_ICON_SIZE + 4) + 4, DEFAULT_EDIT_BOX_HEIGHT);
+        signalSelectionArea = new GuiAreaDefinition(signalSelectionX, phaseIdBoxY - 1, signals.length * (SIGNAL_ICON_SIZE + 4) + 4, DEFAULT_EDIT_BOX_HEIGHT);
+        
+        areaTooltips.add(Tooltip.of(textMoveUp).assignedTo(moveUpButton));
+        areaTooltips.add(Tooltip.of(textMoveDown).assignedTo(moveDownButton));
+        areaTooltips.add(Tooltip.of(textDelete).assignedTo(deleteButton));
 
         this.signalAreas = new GuiAreaDefinition[signals.length];
         for (int i = 0; i < signals.length; i++) {
@@ -166,7 +225,7 @@ public class NewTrafficLightScheduleEntry extends Button {
             pPoseStack,
             x + NewTrafficLightScheduleEditor.ENTRY_PADDING,
             y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
-            NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + phaseIdBox.getWidth() + 6 + signalSelectionArea.getWidth() + 8,
+            NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
             DEFAULT_ENTRY_HEIGHT,
             AreaStyle.GRAY,
             ButtonState.BUTTON
@@ -260,6 +319,12 @@ public class NewTrafficLightScheduleEntry extends Button {
         widgets.performForEach(x -> x.visible, x -> x.render(pPoseStack, pMouseX, pMouseY, pPartialTick));
     }
 
+    public void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int offset) {
+        // TODO: manuell bounding box checken, damit nur beim checken der offset verrechnet wird, aber nicht beim rendern.
+        widgetTooltips.forEach(x -> x.render(parent, pPoseStack, pMouseX, pMouseY));
+        areaTooltips.forEach(x -> x.render(parent, pPoseStack, pMouseX, pMouseY));
+    }
+
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         widgets.performForEach(x -> x.visible, x -> x.mouseClicked(pMouseX, pMouseY, pButton));
@@ -272,8 +337,21 @@ public class NewTrafficLightScheduleEntry extends Button {
                 } else {
                     entry.enableColors(List.of(signals[i]));
                 }
+                return true;
             }
         }
+
+        if (moveUpButton.isInBounds(pMouseX, pMouseY)) {
+            reorderAction.accept(entry, -1);
+            return true;
+        } else if (moveDownButton.isInBounds(pMouseX, pMouseY)) {
+            reorderAction.accept(entry, 1);
+            return true;
+        } else if (deleteButton.isInBounds(pMouseX, pMouseY)) {
+            removeAction.accept(entry);
+            return true;
+        }
+
         return false;
     }
 

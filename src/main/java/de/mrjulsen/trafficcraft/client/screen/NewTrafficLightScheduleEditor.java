@@ -21,13 +21,21 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.widgets.NewTrafficLightScheduleEntry;
+import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 public class NewTrafficLightScheduleEditor extends CommonScreen {
 
@@ -61,8 +69,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     private final List<NewTrafficLightScheduleEntry> entries = new ArrayList<>();
 
     // settings
-    private TrafficLightTrigger trigger = TrafficLightTrigger.NONE;
-    private boolean loop = true;
+    private final BlockPos pos;
+    private final Level level;
+    private final boolean isController;
+    private final TrafficLightSchedule schedule;
 
     //texts
     private static final Component textStart = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.start");
@@ -70,9 +80,27 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     private static final Component textAddEntry = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
     private static final String textLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
 
-    protected NewTrafficLightScheduleEditor(Screen last) {
+    protected NewTrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
         super(GuiUtils.translate("gui.trafficcraft.trafficlightschedule.title"));
         this.last = last;
+        this.pos = pos;
+        this.level = level;
+        this.isController = isController();
+        schedule = getSchedule().copy();
+    }
+
+    private boolean isController() {
+        return level.getBlockEntity(pos) instanceof TrafficLightControllerBlockEntity;
+    }
+
+    private TrafficLightSchedule getSchedule() {
+        if (isController && level.getBlockEntity(pos) instanceof TrafficLightControllerBlockEntity blockEntity) {
+            return blockEntity.getFirstOrMainSchedule();
+        } else if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
+            return blockEntity.getSchedule();
+        }
+
+        return new TrafficLightSchedule();
     }
 
     @Override
@@ -87,6 +115,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     @Override
     protected void onDone() {
         super.onDone();
+        NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
+            pos,
+            List.of(schedule)
+        ), null);
         onClose();
     }
 
@@ -113,17 +145,17 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         final ItemButton bt = addRenderableWidget(new ItemButton(
             ButtonType.DEFAULT,
             AreaStyle.BROWN,
-            trigger.getIconStack(),
+            schedule.getTrigger().getIconStack(),
             areaHeader.getLeft() + 1,
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            GuiUtils.translate(trigger.getValueTranslationKey(ModMain.MOD_ID)),
+            GuiUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)),
             (btn) -> {
                 ItemButton ibtn = (ItemButton)btn;
-                trigger = trigger.next();
-                ibtn.withItem(trigger.getIconStack());
-                btn.setMessage(GuiUtils.translate(trigger.getValueTranslationKey(ModMain.MOD_ID)));
+                schedule.setTrigger(schedule.getTrigger().next());
+                ibtn.withItem(schedule.getTrigger().getIconStack());
+                btn.setMessage(GuiUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)));
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
@@ -143,10 +175,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            GuiUtils.text(textLoop + ": " + (loop ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
+            GuiUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
             (btn) -> {
-                loop = !loop;
-                btn.setMessage(GuiUtils.text(textLoop + ": " + (loop ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
+                schedule.setLoop(!schedule.isLoop());
+                btn.setMessage(GuiUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
             }
         ));
 
@@ -158,7 +190,7 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
             20,
             GuiUtils.text("+"),
             (btn) -> {
-                entries.add(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2));
+                createNewEntry();
             },
             Tooltip.of(textAddEntry)
         );
@@ -193,12 +225,54 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         scrollBar.setStepSize(12);
         scrollBar.setAutoScrollerHeight(true);
 
-        updateScrollBar();
+        initEntryWidgets();
     }
 
     private void updateScrollBar() {
         scrollBar.setMaxRowsOnPage(areaWorkspace.getHeight() - 2);
         scrollBar.updateMaxScroll(entries.stream().mapToInt(x -> x.getHeight()).sum() + 2 * (DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING));
+    }
+
+    private void removeEntry(TrafficLightAnimationData entry) {
+        schedule.getEntries().removeIf(x -> x == entry);
+
+        initEntryWidgets();
+    }
+
+    private void move(TrafficLightAnimationData entry, int offset) {
+        int index = schedule.getEntries().indexOf(entry);
+        int newIndex = index + offset;
+
+        if (newIndex < 0 || newIndex >= schedule.getEntries().size()) {
+            return;
+        }
+
+        TrafficLightAnimationData data = schedule.getEntries().remove(index);
+        this.schedule.getEntries().add(newIndex, data);
+
+        initEntryWidgets();
+    }
+
+    private void createNewEntry() {
+        schedule.getEntries().add(new TrafficLightAnimationData());
+        initEntryWidgets();
+    }
+
+    private void initEntryWidgets() {
+        entries.clear();
+
+        schedule.getEntries().forEach(x -> {
+            entries.add(new NewTrafficLightScheduleEntry(this, !isController, x, areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2,
+                (entry) -> {
+                    removeEntry(entry);
+                },
+                (entry, offset) -> {
+                    move(entry, offset);
+                }
+            ));
+        });
+        
+        updateScrollBar();
     }
 
     @Override
@@ -237,6 +311,16 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         GuiUtils.swapAndBlitColor(GuiUtils.getFramebuffer(), minecraft.getMainRenderTarget());        
 
         super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    }
+
+    @Override
+    public void renderFg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        int offset = scrollBar.getScrollValue();
+        
+        for (NewTrafficLightScheduleEntry entry : entries) {
+            entry.renderTooltips(pPoseStack, pMouseX, pMouseY, offset);
+        }
     }
 
     public int renderInfo(PoseStack pPoseStack, int y, Component text) {

@@ -21,6 +21,14 @@ public class TrafficLightSchedule {
     private List<TrafficLightAnimationData> entries = new ArrayList<>();
     private boolean loop = true;
     private TrafficLightTrigger trigger = TrafficLightTrigger.NONE;
+
+    public TrafficLightSchedule copy() {
+        TrafficLightSchedule schedule = new TrafficLightSchedule();
+        schedule.entries.addAll(entries.stream().map(x -> x.copy()).toList());
+        schedule.loop = loop;
+        schedule.trigger = trigger;
+        return schedule;
+    }
     
     public List<TrafficLightAnimationData> getEntries() {
         return this.entries;

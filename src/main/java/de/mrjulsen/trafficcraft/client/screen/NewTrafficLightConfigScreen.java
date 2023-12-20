@@ -92,6 +92,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
 
 
     // mem
+    private final Level level;
     private final BlockPos blockPos;
     private int selectedPart = -2;
     private int guiLeft;
@@ -122,6 +123,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
 
     public NewTrafficLightConfigScreen(Level level, BlockPos pos) {
         super(GuiUtils.translate("gui.trafficcraft.trafficlight.title"));
+        this.level = level;
         this.blockPos = pos;
 
         Arrays.fill(colors, TrafficLightColor.NONE);
@@ -523,7 +525,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
             IconButton.DEFAULT_BUTTON_HEIGHT,
             textCustomizeSchedule,
             (btn) -> {
-                Minecraft.getInstance().setScreen(new NewTrafficLightScheduleEditor(this));
+                Minecraft.getInstance().setScreen(new NewTrafficLightScheduleEditor(this, level, blockPos));
             }
         ));
         // copy

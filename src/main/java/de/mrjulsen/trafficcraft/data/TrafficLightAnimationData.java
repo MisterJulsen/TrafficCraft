@@ -24,6 +24,14 @@ public class TrafficLightAnimationData {
     private int ticks = 0;
     private int id = 0;
 
+    public TrafficLightAnimationData copy() {
+        TrafficLightAnimationData data = new TrafficLightAnimationData();
+        data.enabledColors = new ArrayList<>(enabledColors);
+        data.ticks = ticks;
+        data.id = id;
+        return data;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TrafficLightAnimationData other) {

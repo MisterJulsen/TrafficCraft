@@ -77,7 +77,6 @@ public class TrafficLightScheduleScreen extends CommonScreen {
     private final Component tooltipColTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_time");
     private final Component tooltipColId = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_id");
     private final Component tooltipColMode = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.col_mode");
-    private final Component tooltipTrigger = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.trigger");
     private final Component tooltipLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.loop");
     private final Component tooltipAdd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.entry_add");
     private final Component tooltipRemove = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.tooltip.entry_remove");
