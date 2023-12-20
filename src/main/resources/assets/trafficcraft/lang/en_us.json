@@ -237,6 +237,9 @@
     "gui.trafficcraft.trafficlightschedule.trigger": "Trigger",
     "gui.trafficcraft.trafficlightschedule.loop": "Loop",
     
+    "gui.trafficcraft.trafficlightschedule.start": "Start",
+    "gui.trafficcraft.trafficlightschedule.end": "End",
+
     "gui.trafficcraft.trafficlightschedule.tooltip.time_add": "+1 second",
     "gui.trafficcraft.trafficlightschedule.tooltip.time_remove": "-1 second",
     "gui.trafficcraft.trafficlightschedule.tooltip.trigger": "Determines, how this schedule should be triggered.",

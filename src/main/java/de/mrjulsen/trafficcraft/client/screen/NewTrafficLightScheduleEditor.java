@@ -23,17 +23,17 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.client.widgets.NewTrafficLightScheduleEntry;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class NewTrafficLightScheduleEditor extends CommonScreen {
 
     public static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
-    public static final int TEXTURE_WIDTH = 32;
-    public static final int TEXTURE_HEIGHT = 32;
+    public static final int TEXTURE_WIDTH = 64;
+    public static final int TEXTURE_HEIGHT = 64;
 
     public static final int WINDOW_WIDTH = 240;
     public static final int WINDOW_HEIGHT = 230;
@@ -54,6 +54,7 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
 
     private GuiAreaDefinition areaHeader;
     private GuiAreaDefinition areaWorkspace;
+    private VerticalScrollBar scrollBar;
 
     private final Screen last;
 
@@ -66,6 +67,7 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     //texts
     private static final Component textStart = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.start");
     private static final Component textEnd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.end");
+    private static final Component textAddEntry = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
     private static final String textLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
 
     protected NewTrafficLightScheduleEditor(Screen last) {
@@ -80,6 +82,12 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
             return;
         }   
         super.onClose();
+    }
+
+    @Override
+    protected void onDone() {
+        super.onDone();
+        onClose();
     }
 
     @Override
@@ -142,13 +150,55 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
             }
         ));
 
-        // scrollbar
-        VerticalScrollBar scrollBar = addRenderableWidget(new VerticalScrollBar(areaWorkspace.getRight(), areaWorkspace.getTop(), areaWorkspace.getHeight(), areaWorkspace));
-        scrollBar.setWidth(8);
+        // add entry btn
+        addButton(
+            guiLeft + PADDING,
+            guiTop + WINDOW_HEIGHT - PADDING - 20,
+            20,
+            20,
+            GuiUtils.text("+"),
+            (btn) -> {
+                entries.add(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2));
+            },
+            Tooltip.of(textAddEntry)
+        );
 
-        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
-        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
-        entries.add(addWidget(new NewTrafficLightScheduleEntry(areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2, new TextComponent("textLoop"), null)));
+        addButton(
+            guiLeft + WINDOW_WIDTH - PADDING - 90,
+            guiTop + WINDOW_HEIGHT - PADDING - 20,
+            90,
+            20,
+            CommonComponents.GUI_CANCEL,
+            (btn) -> {
+                onClose();
+            },
+            null
+        );
+
+        addButton(
+            guiLeft + WINDOW_WIDTH - PADDING - 180 - 4,
+            guiTop + WINDOW_HEIGHT - PADDING - 20,
+            90,
+            20,
+            CommonComponents.GUI_DONE,
+            (btn) -> {
+                onDone();
+            },
+            null
+        );
+
+        // scrollbar
+        scrollBar = addRenderableWidget(new VerticalScrollBar(areaWorkspace.getRight(), areaWorkspace.getTop(), areaWorkspace.getHeight(), areaWorkspace));
+        scrollBar.setWidth(8);
+        scrollBar.setStepSize(12);
+        scrollBar.setAutoScrollerHeight(true);
+
+        updateScrollBar();
+    }
+
+    private void updateScrollBar() {
+        scrollBar.setMaxRowsOnPage(areaWorkspace.getHeight() - 2);
+        scrollBar.updateMaxScroll(entries.stream().mapToInt(x -> x.getHeight()).sum() + 2 * (DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING));
     }
 
     @Override
@@ -158,19 +208,24 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         DynamicGuiRenderer.renderArea(pPoseStack, areaHeader, AreaStyle.GRAY, ButtonState.SUNKEN);
         DynamicGuiRenderer.renderContainerBackground(pPoseStack, areaWorkspace);
         font.draw(pPoseStack, title, width / 2 - font.width(title) / 2, guiTop + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
-
+    
+        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, areaWorkspace.getTop() + 1, TIMELINE_UW, areaWorkspace.getHeight() - 2, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        
         GuiUtils.swapAndBlitColor(minecraft.getMainRenderTarget(), GuiUtils.getFramebuffer());
-        GuiUtils.startStencil(pPoseStack, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getWidth() - 2, areaWorkspace.getHeight() - 1);
+        GuiUtils.startStencil(pPoseStack, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getWidth() - 2, areaWorkspace.getHeight() - 2);
         pPoseStack.pushPose();
-        pPoseStack.translate(0, 0, 0);
+        pPoseStack.translate(0, -scrollBar.getScrollValue(), 0);
 
         int y = areaWorkspace.getTop() + 1;
         y = renderInfo(pPoseStack, y, textStart);
 
+        int offset = scrollBar.getScrollValue();
         for (NewTrafficLightScheduleEntry entry : entries) {
             entry.setY(y);
             y += NewTrafficLightScheduleEntry.HEIGHT;
-            entry.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            if (y > areaWorkspace.getTop() + offset && y - NewTrafficLightScheduleEntry.HEIGHT < areaWorkspace.getTop() + areaWorkspace.getHeight() + offset) {                
+                entry.render(pPoseStack, pMouseX, pMouseY + scrollBar.getScrollValue(), pPartialTick);
+            }
         }
         
         y = renderInfo(pPoseStack, y, textEnd);
@@ -185,10 +240,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     }
 
     public int renderInfo(PoseStack pPoseStack, int y, Component text) {
-        DynamicGuiRenderer.renderArea(pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING, y + ENTRY_PADDING / 2, Math.min(ENTRY_TIMELINE_COLUMN_WIDTH + font.width(textStart), areaWorkspace.getWidth() - ENTRY_PADDING * 2), DEFAULT_ENTRY_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
+        DynamicGuiRenderer.renderArea(pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING, y + ENTRY_PADDING / 2, Math.min(ENTRY_TIMELINE_COLUMN_WIDTH + font.width(text) + 8, areaWorkspace.getWidth() - ENTRY_PADDING * 2), DEFAULT_ENTRY_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
         font.draw(pPoseStack, text, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - font.lineHeight / 2, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
-        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y, TIMELINE_UW, DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING, 9, 9, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TIMELINE_VH / 2, TIMELINE_UW, TIMELINE_VH, 0, 0, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y, TIMELINE_UW, DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TIMELINE_VH / 2, TIMELINE_UW, TIMELINE_VH, 0, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         
         return y + DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING;
     }
@@ -203,6 +258,32 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     public boolean charTyped(char pCodePoint, int pModifiers) {
         entries.forEach(x -> x.charTyped(pCodePoint, pModifiers));
         return super.charTyped(pCodePoint, pModifiers);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+		float scrollOffset = scrollBar.getScrollValue();
+
+        if (areaWorkspace.isInBounds(pMouseX, pMouseY)) {
+            for (AbstractWidget w : entries) {
+                if (w.mouseClicked(pMouseX, pMouseY + scrollOffset, pButton)) {
+                    return true;
+                }
+            }
+        }
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    @Override
+    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
+		float scrollOffset = scrollBar.getScrollValue();
+
+        if (entries.stream().anyMatch(x -> x.mouseScrolled(pMouseX, pMouseY + scrollOffset, pDelta))) {
+            return true;
+        }
+
+		return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
     
 }

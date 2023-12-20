@@ -35,6 +35,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
+import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager.TrafficLightTextureKey;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
@@ -510,6 +511,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
         removeTooltips(y -> controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).contains(y));
         controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).clear();
         controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE).clear(y -> removeWidget(y));
+        // editor
         addRenderableWidget(new IconButton(
             ButtonType.DEFAULT, 
             AreaStyle.GRAY, 
@@ -517,13 +519,28 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
             controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
             ctrlSettingsArea.getLeft() + 1,
             ctrlSettingsArea.getTop() + 1,
-            ctrlSettingsArea.getWidth() - 2,
+            ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
             IconButton.DEFAULT_BUTTON_HEIGHT,
             textCustomizeSchedule,
             (btn) -> {
                 Minecraft.getInstance().setScreen(new NewTrafficLightScheduleEditor(this));
             }
         ));
+        // copy
+        addRenderableWidget(ModGuiUtils.createCopyButton(
+            ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
+            ctrlSettingsArea.getTop() + 1,
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            AreaStyle.GRAY)
+        );
+        // paste
+        addRenderableWidget(ModGuiUtils.createPasteButton(
+            ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT,
+            ctrlSettingsArea.getTop() + 1,
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            AreaStyle.GRAY)
+        );
+        // status
         addRenderableWidget(new IconButton(
             ButtonType.DEFAULT, 
             AreaStyle.GRAY, 

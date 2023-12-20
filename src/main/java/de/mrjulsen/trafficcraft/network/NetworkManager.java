@@ -29,8 +29,8 @@ public class NetworkManager extends NetworkManagerBase<NetworkManager> {
 
     private static NetworkManager instance;
 
-    public NetworkManager(String channelName, String protocolVersion) {
-        super(ModMain.MOD_ID, channelName, protocolVersion);
+    public NetworkManager(String modid, String channelName, String protocolVersion) {
+        super(modid, channelName, protocolVersion);
     }
 
     public static void create() {
