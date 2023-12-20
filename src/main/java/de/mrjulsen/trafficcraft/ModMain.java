@@ -5,9 +5,9 @@ import com.mojang.logging.LogUtils;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.config.ModClientConfig;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import de.mrjulsen.trafficcraft.init.ClientInit;
+import de.mrjulsen.trafficcraft.init.ServerInit;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.proxy.ClientProxy;
-import de.mrjulsen.trafficcraft.proxy.ServerProxy;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
@@ -31,8 +31,8 @@ public class ModMain {
     public ModMain() {
 
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.addListener(ServerProxy::setup);
-        eventBus.addListener(ClientProxy::setup);
+        eventBus.addListener(ServerInit::setup);
+        eventBus.addListener(ClientInit::setup);
 
         ModBlocks.register(eventBus);
         ModItems.register(eventBus);

@@ -1,4 +1,4 @@
-package de.mrjulsen.trafficcraft.proxy;
+package de.mrjulsen.trafficcraft.init;
 
 import java.util.Arrays;
 
@@ -38,7 +38,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 @OnlyIn(Dist.CLIENT)
-public class ClientProxy {
+public class ClientInit {
 
 	private static final int CHECKERBOARD_COLOR_A = 0xFFE9E9E9;
 	private static final int CHECKERBOARD_COLOR_B = 0xFFD9D9D9;
