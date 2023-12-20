@@ -169,7 +169,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             } else if (stateData.size() >= 0) {
                 for (TrafficLightAnimationData entry : stateData) {
                     Collection<TrafficLightColor> colors = entry.getEnabledColors();
-                    if (colors != null && !colors.isEmpty()) {
+                    if (colors != null) {
                         enableOnlyColors(colors);
                     }
                 }

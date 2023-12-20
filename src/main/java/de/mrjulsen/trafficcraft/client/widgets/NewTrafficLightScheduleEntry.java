@@ -311,7 +311,7 @@ public class NewTrafficLightScheduleEntry extends Button {
                 NewTrafficLightScheduleEditor.TEXTURE_HEIGHT
             );
 
-            if (entry.getEnabledColors().contains(signals[i])) {
+            if (!entry.getEnabledColors().contains(signals[i])) {
                 fill(pPoseStack, signalAreas[i].getLeft() + 1, signalAreas[i].getTop() + 1, signalAreas[i].getRight() - 1, signalAreas[i].getBottom() - 1, 0xAA000000);
             }
         }
@@ -337,6 +337,11 @@ public class NewTrafficLightScheduleEntry extends Button {
                 } else {
                     entry.enableColors(List.of(signals[i]));
                 }
+                int[] a = entry.getEnabledColors().stream().mapToInt(x -> x.getIndex()).toArray();
+                for (int x : a) {
+                    System.out.print(x + ", ");
+                }
+                System.out.println();
                 return true;
             }
         }

@@ -116,10 +116,10 @@ public class TrafficLightAnimationData {
     public void fromNbt(CompoundTag tag) {
         id = tag.getInt(NBT_ID);
         ticks = tag.getInt(NBT_TICKS);
-        byte[] bArr = tag.getByteArray(NBT_COLOR);
+        int[] bArr = tag.getIntArray(NBT_COLOR);
         List<TrafficLightColor> colors = new ArrayList<>(bArr.length);
         for (int i = 0; i < bArr.length; i++) {
-            colors.add(TrafficLightColor.getDirectionByIndex(bArr[i]));
+            colors.add(TrafficLightColor.getDirectionByIndex((byte)bArr[i]));
         }
         enabledColors = colors;
 

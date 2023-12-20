@@ -64,10 +64,10 @@ public class TrafficLightSchedule {
         int keyTime = 0;
 
         for (TrafficLightAnimationData entry : entries) {
+            keyTime += entry.getDurationTicks();
             if (keyTime == currentTick) {
                 changeEntries.add(entry);
             }
-            keyTime += entry.getDurationTicks();
 
             if (currentTick < keyTime) {
                 return changeEntries.stream().distinct().toList();

@@ -79,7 +79,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
         }, null);
 
         this.editScheduleButton = addButton(this.width / 2 - 100, guiTop + 30, 200, 20, textEditSchedule, (p) -> {
-            this.minecraft.setScreen(new TrafficLightScheduleScreen(this, blockPos, level, true));
+            this.minecraft.setScreen(new NewTrafficLightScheduleEditor(this, level, blockPos));
         }, null);
 
         this.statusButton = addOnOffButton(this.width / 2 - 100, guiTop + 55, 200, 20, textStatus, status,

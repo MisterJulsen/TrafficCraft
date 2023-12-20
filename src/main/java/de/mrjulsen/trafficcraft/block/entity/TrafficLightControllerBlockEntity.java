@@ -171,9 +171,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
                     trafficLightLocations.forEach(a -> {
                         ((TrafficLightBlockEntity)level.getBlockEntity(a.getLocationBlockPos())).enableOnlyColors(colors);
-                        //BlockState blockState = level.getBlockState(a.getLocationBlockPos());
-                        //level.setBlockAndUpdate(a.getLocationBlockPos(), blockState.setValue(TrafficLightBlock.MODE, mode));
-
                     });
                 }                    
             }
