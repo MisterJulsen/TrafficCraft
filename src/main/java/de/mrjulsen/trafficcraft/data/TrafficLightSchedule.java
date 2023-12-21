@@ -12,13 +12,13 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class TrafficLightSchedule {
+public class TrafficLightSchedule implements IClipboardData {
 
     private static final String NBT_LOOP = "loop";
     private static final String NBT_ENTRIES = "entries";
     private static final String NBT_TRIGGER = "trigger";
     
-    private List<TrafficLightAnimationData> entries = new ArrayList<>();
+    private List<TrafficLightScheduleEntryData> entries = new ArrayList<>();
     private boolean loop = true;
     private TrafficLightTrigger trigger = TrafficLightTrigger.NONE;
 
@@ -30,7 +30,7 @@ public class TrafficLightSchedule {
         return schedule;
     }
     
-    public List<TrafficLightAnimationData> getEntries() {
+    public List<TrafficLightScheduleEntryData> getEntries() {
         return this.entries;
     }
 
@@ -59,11 +59,11 @@ public class TrafficLightSchedule {
      * @param currentTick
      * @return List of phaseIDs. Returns {@code null} if {@code currentTick} is out of bounds. Returns an empty list, if thee is nothing to change. Returns a list containing the indices of states to change, if there is something to change.
      */
-    public List<TrafficLightAnimationData> shouldChange(int currentTick) {
-        List<TrafficLightAnimationData> changeEntries = new ArrayList<>();
+    public List<TrafficLightScheduleEntryData> shouldChange(int currentTick) {
+        List<TrafficLightScheduleEntryData> changeEntries = new ArrayList<>();
         int keyTime = 0;
 
-        for (TrafficLightAnimationData entry : entries) {
+        for (TrafficLightScheduleEntryData entry : entries) {
             keyTime += entry.getDurationTicks();
             if (keyTime == currentTick) {
                 changeEntries.add(entry);
@@ -96,7 +96,7 @@ public class TrafficLightSchedule {
         
         ListTag listTag = new ListTag();
 
-        for (TrafficLightAnimationData data : entries) {
+        for (TrafficLightScheduleEntryData data : entries) {
             listTag.add(data.toNbt());
         }
 
@@ -112,7 +112,7 @@ public class TrafficLightSchedule {
         ListTag listTag = tag.getList(NBT_ENTRIES, Tag.TAG_COMPOUND);
 
         for (int i = 0; i < listTag.size(); i++) {
-            TrafficLightAnimationData data = new TrafficLightAnimationData();
+            TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();
             data.fromNbt(listTag.getCompound(i));
             entries.add(data);
         }
@@ -122,7 +122,7 @@ public class TrafficLightSchedule {
         buf.writeBoolean(loop);
         buf.writeByte(trigger.getIndex());
         buf.writeInt(entries.size());
-        for (TrafficLightAnimationData data : entries) {
+        for (TrafficLightScheduleEntryData data : entries) {
             data.toBytes(buf);
         }
     }
@@ -133,8 +133,18 @@ public class TrafficLightSchedule {
         schedule.setTrigger(TrafficLightTrigger.getTriggerByIndex(buf.readByte()));
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
-            schedule.entries.add(TrafficLightAnimationData.fromBytes(buf));
+            schedule.entries.add(TrafficLightScheduleEntryData.fromBytes(buf));
         }
         return schedule;
+    }
+
+    @Override
+    public CompoundTag serializeNbt() {
+        return toNbt();
+    }
+
+    @Override
+    public void deserializeNbt(CompoundTag nbt) {
+        fromNbt(nbt);
     }
 }

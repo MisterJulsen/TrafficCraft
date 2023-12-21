@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
-public class TrafficLightAnimationData {
+public class TrafficLightScheduleEntryData implements IClipboardData {
 
     private static final String NBT_ID = "id";
     private static final String NBT_TICKS = "ticks";
@@ -24,8 +24,8 @@ public class TrafficLightAnimationData {
     private int ticks = 0;
     private int id = 0;
 
-    public TrafficLightAnimationData copy() {
-        TrafficLightAnimationData data = new TrafficLightAnimationData();
+    public TrafficLightScheduleEntryData copy() {
+        TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();
         data.enabledColors = new ArrayList<>(enabledColors);
         data.ticks = ticks;
         data.id = id;
@@ -34,7 +34,7 @@ public class TrafficLightAnimationData {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TrafficLightAnimationData other) {
+        if (obj instanceof TrafficLightScheduleEntryData other) {
             return ticks == other.ticks && id == other.id && enabledColors.size() == other.enabledColors.size() && enabledColors.stream().allMatch(x -> other.enabledColors.stream().anyMatch(y -> x == y));
         }
         return false;
@@ -145,8 +145,8 @@ public class TrafficLightAnimationData {
         buf.writeByteArray(bArr);
     }
 
-    public static TrafficLightAnimationData fromBytes(FriendlyByteBuf buf) {
-        TrafficLightAnimationData data = new TrafficLightAnimationData();
+    public static TrafficLightScheduleEntryData fromBytes(FriendlyByteBuf buf) {
+        TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();
         data.setPhaseId(buf.readInt());
         data.setDurationTicks(buf.readInt());
         byte[] bArr = buf.readByteArray();
@@ -156,5 +156,15 @@ public class TrafficLightAnimationData {
         }
         data.enableColors(colors);
         return data;
+    }
+
+    @Override
+    public CompoundTag serializeNbt() {
+        return toNbt();
+    }
+
+    @Override
+    public void deserializeNbt(CompoundTag nbt) {
+        fromNbt(nbt);
     }
 }

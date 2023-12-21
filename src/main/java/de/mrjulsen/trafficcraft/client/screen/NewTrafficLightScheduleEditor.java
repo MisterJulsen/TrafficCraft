@@ -24,7 +24,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.widgets.NewTrafficLightScheduleEntry;
-import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
+import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
@@ -233,13 +233,13 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         scrollBar.updateMaxScroll(entries.stream().mapToInt(x -> x.getHeight()).sum() + 2 * (DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING));
     }
 
-    private void removeEntry(TrafficLightAnimationData entry) {
+    private void removeEntry(TrafficLightScheduleEntryData entry) {
         schedule.getEntries().removeIf(x -> x == entry);
 
         initEntryWidgets();
     }
 
-    private void move(TrafficLightAnimationData entry, int offset) {
+    private void move(TrafficLightScheduleEntryData entry, int offset) {
         int index = schedule.getEntries().indexOf(entry);
         int newIndex = index + offset;
 
@@ -247,14 +247,14 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
             return;
         }
 
-        TrafficLightAnimationData data = schedule.getEntries().remove(index);
+        TrafficLightScheduleEntryData data = schedule.getEntries().remove(index);
         this.schedule.getEntries().add(newIndex, data);
 
         initEntryWidgets();
     }
 
     private void createNewEntry() {
-        schedule.getEntries().add(new TrafficLightAnimationData());
+        schedule.getEntries().add(new TrafficLightScheduleEntryData());
         initEntryWidgets();
     }
 

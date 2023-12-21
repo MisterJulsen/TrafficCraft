@@ -38,8 +38,11 @@ import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager.TrafficLightTextureKey;
+import de.mrjulsen.trafficcraft.data.Clipboard;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -533,14 +536,28 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
             ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
             ctrlSettingsArea.getTop() + 1,
             controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
-            AreaStyle.GRAY)
+            AreaStyle.GRAY,
+            (btn) -> {
+                if (level.getBlockEntity(blockPos) instanceof TrafficLightBlockEntity blockEntity) {
+                    Clipboard.setToClipboard(TrafficLightSchedule.class, blockEntity.getSchedule());
+                }
+            })
         );
         // paste
         addRenderableWidget(ModGuiUtils.createPasteButton(
             ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT,
             ctrlSettingsArea.getTop() + 1,
             controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
-            AreaStyle.GRAY)
+            AreaStyle.GRAY,
+            (btn) ->  {
+                TrafficLightSchedule schedule = Clipboard.getFromClipboard(TrafficLightSchedule.class);
+                if (schedule != null) {
+                    NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
+                        blockPos,
+                        List.of(schedule)
+                    ), null);
+                }
+            })
         );
         // status
         addRenderableWidget(new IconButton(

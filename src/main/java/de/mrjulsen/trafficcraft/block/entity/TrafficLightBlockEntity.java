@@ -13,7 +13,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
-import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
+import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
@@ -158,7 +158,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         linkMigrationCheck(level, pos, state);
 
         if (running && this.getControlType() == TrafficLightControlType.OWN_SCHEDULE) {
-            List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticker);
+            List<TrafficLightScheduleEntryData> stateData = schedule.shouldChange(ticker);
 
             if (stateData == null) { // OOB: End of schedule reached.
                 ticker = 0;
@@ -167,7 +167,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
                 }
                 return;
             } else if (stateData.size() >= 0) {
-                for (TrafficLightAnimationData entry : stateData) {
+                for (TrafficLightScheduleEntryData entry : stateData) {
                     Collection<TrafficLightColor> colors = entry.getEnabledColors();
                     if (colors != null) {
                         enableOnlyColors(colors);

@@ -9,7 +9,7 @@ import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
-import de.mrjulsen.trafficcraft.data.TrafficLightAnimationData;
+import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
@@ -148,7 +148,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
 
         if (running) {
             TrafficLightSchedule schedule = this.getFirstOrMainSchedule();
-            List<TrafficLightAnimationData> stateData = schedule.shouldChange(ticks);
+            List<TrafficLightScheduleEntryData> stateData = schedule.shouldChange(ticks);
 
             if (stateData == null) {
                 ticks = 0;
@@ -157,7 +157,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                 }
                 return;
             } else if (stateData.size() > 0) {
-                for (TrafficLightAnimationData entry : stateData) {
+                for (TrafficLightScheduleEntryData entry : stateData) {
                     Collection<TrafficLightColor> colors = entry.getEnabledColors();
                     int phaseId = entry.getPhaseId();
 

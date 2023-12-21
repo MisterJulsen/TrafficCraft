@@ -1,15 +1,19 @@
 package de.mrjulsen.trafficcraft.client;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+
+import java.util.function.Consumer;
+
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.trafficcraft.block.data.IIconEnum;
+import net.minecraft.client.gui.components.Button;
 
 public class ModGuiUtils {
 
-    public static IconButton createCopyButton(int x, int y, WidgetsCollection collection, AreaStyle style) {
+    public static IconButton createCopyButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
         return new IconButton(
                 ButtonType.DEFAULT,
                 AreaStyle.GRAY,
@@ -22,11 +26,11 @@ public class ModGuiUtils {
                 IconButton.DEFAULT_BUTTON_HEIGHT,
                 IconButton.DEFAULT_BUTTON_HEIGHT,
                 null,
-                (btn) -> {
-                });
+                onClick
+        );
     }
 
-    public static IconButton createPasteButton(int x, int y, WidgetsCollection collection, AreaStyle style) {
+    public static IconButton createPasteButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
         return new IconButton(
                 ButtonType.DEFAULT,
                 AreaStyle.GRAY,
@@ -39,8 +43,8 @@ public class ModGuiUtils {
                 IconButton.DEFAULT_BUTTON_HEIGHT,
                 IconButton.DEFAULT_BUTTON_HEIGHT,
                 null,
-                (btn) -> {
-                });
+                onClick
+            );
     }
 
     public static boolean editBoxPositiveNumberFilter(String input) {
@@ -69,4 +73,3 @@ public class ModGuiUtils {
         }
     }
 }
-
