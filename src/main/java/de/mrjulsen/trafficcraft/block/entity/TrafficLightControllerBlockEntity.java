@@ -162,14 +162,15 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                     int phaseId = entry.getPhaseId();
 
                     trafficLightLocations.removeIf(a -> 
-                        level.isLoaded(a.getLocationBlockPos()) &&
-                        level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock &&
-                        level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
-                        blockEntity.getControlType() != TrafficLightControlType.REMOTE &&
-                        blockEntity.getPhaseId() != phaseId
+                        !level.isLoaded(a.getLocationBlockPos()) &&
+                        !(level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock) ||
+                        !(level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity)
                     );
 
-                    trafficLightLocations.forEach(a -> {
+                    trafficLightLocations.stream().filter(x -> 
+                        level.getBlockEntity(x.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity &&
+                        blockEntity.getControlType() == TrafficLightControlType.REMOTE &&
+                        blockEntity.getPhaseId() == phaseId).forEach(a -> {
                         ((TrafficLightBlockEntity)level.getBlockEntity(a.getLocationBlockPos())).enableOnlyColors(colors);
                     });
                 }                    

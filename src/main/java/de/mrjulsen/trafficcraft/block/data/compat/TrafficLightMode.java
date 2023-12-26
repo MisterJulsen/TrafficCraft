@@ -58,7 +58,9 @@ public enum TrafficLightMode implements StringRepresentable {
             case RED:
                 return List.of(TrafficLightColor.RED);
             case RED_YELLOW:
-                return List.of(TrafficLightColor.YELLOW, TrafficLightColor.RED);
+                return List.of(TrafficLightColor.YELLOW, TrafficLightColor.RED);				
+            case YELLOW:
+                return List.of(TrafficLightColor.YELLOW);
             default:
                 return Collections.emptyList();
         }

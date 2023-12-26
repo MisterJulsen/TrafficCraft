@@ -89,10 +89,10 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         this.type = TrafficLightType.getTypeByIndex(compound.getByte(NBT_TYPE));
         int[] colorSlots = compound.getIntArray(NBT_COLOR_SLOTS);
         for (int i = 0; i < colorSlots.length && i < this.colorSlots.length; i++) {
-            this.colorSlots[i] = TrafficLightColor.getDirectionByIndex((byte)colorSlots[i]);
+            this.colorSlots[i] = TrafficLightColor.getColorByIndex((byte)colorSlots[i]);
         }
         this.enabledColors.clear();
-        this.enabledColors.addAll(compound.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getDirectionByIndex(((ByteTag)x).getAsByte())).toList());
+        this.enabledColors.addAll(compound.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getColorByIndex(((ByteTag)x).getAsByte())).toList());
 
         // backwards compatibility
         linkMigration(compound);
@@ -280,6 +280,10 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
 
     public Collection<TrafficLightColor> getEnabledColors() {
         return this.enabledColors;
+    }
+
+    public boolean isColorEnabled(TrafficLightColor color, boolean allowSimilar) {
+        return this.enabledColors.stream().anyMatch(x -> (allowSimilar && x.isSimilar(color)) || x == color);
     }
     
     public int getPhaseId() {

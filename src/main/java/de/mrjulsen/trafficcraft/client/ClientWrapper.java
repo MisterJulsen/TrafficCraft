@@ -8,7 +8,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.client.screen.NewTrafficLightConfigScreen;
+import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;
 import de.mrjulsen.trafficcraft.client.screen.RoadConstructionToolScreen;
 import de.mrjulsen.trafficcraft.client.screen.StreetLampScheduleScreen;
@@ -40,7 +40,7 @@ public class ClientWrapper {
     }
 
     public static void showTrafficLightConfigScreen(Level level, BlockPos pos) {
-        Minecraft.getInstance().setScreen(new NewTrafficLightConfigScreen(level, pos));
+        Minecraft.getInstance().setScreen(new TrafficLightConfigScreen(level, pos));
     }
 
     public static void showTrafficLightControllerScreen(BlockPos pos, Level level) {

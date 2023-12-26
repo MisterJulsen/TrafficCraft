@@ -34,7 +34,6 @@ public class TrafficLightTextureManager {
                     .forEach(y -> {
                         TrafficLightTextureKey key = new TrafficLightTextureKey(x, y);
                         models.add(Model.create(key));
-                        System.out.println(key.getIcon() + " - " + key.getColor());
                     }));
     }
 

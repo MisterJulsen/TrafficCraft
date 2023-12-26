@@ -8,7 +8,7 @@ import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ItemLike;
 
-public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IItemIcon, IIteratableEnum<TrafficLightControlType> {
+public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightControlType> {
     STATIC("static", 0, ModBlocks.TRAFFIC_LIGHT.get()),
 	OWN_SCHEDULE("own_schedule", 1, ModItems.PATTERN_CATALOGUE.get()),
 	REMOTE("remote", 2, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get());

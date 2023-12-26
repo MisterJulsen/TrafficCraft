@@ -6,9 +6,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -27,6 +30,9 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.Clipboard;
+import de.mrjulsen.mcdragonlib.utils.Wikipedia;
+import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
@@ -37,8 +43,8 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
+import de.mrjulsen.trafficcraft.client.ModGuiUtils.HelpButtonComponents;
 import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager.TrafficLightTextureKey;
-import de.mrjulsen.trafficcraft.data.Clipboard;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
@@ -54,12 +60,13 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class NewTrafficLightConfigScreen extends CommonScreen {
+public class TrafficLightConfigScreen extends CommonScreen {
 
     private static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(ModMain.MOD_ID, "textures/gui/window_arrow.png");
     private static final int WINDOW_WIDTH = 241;
@@ -100,6 +107,7 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
     private int selectedPart = -2;
     private int guiLeft;
     private int guiTop;
+    private IconButton pasteButton;
 
 
     // User settings
@@ -123,8 +131,13 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
     private static final Component textPhaseIdDescription = GuiUtils.translate("gui.trafficcraft.trafficlight.set_phase_id.description");
     private static final String textStatus = GuiUtils.translate("gui.trafficcraft.trafficlight.schedule_status").getString();
     private static final String keyAreaTrafficLightSignal = "gui.trafficcraft.trafficlight.edit_signal_";
+    
+    private static final String keyhelpTrafficLight = "gui.trafficcraft.trafficlight.help.traffic_light";
+    private static final String keyhelpTrafficLightDescription = "gui.trafficcraft.trafficlight.helpdesc.traffic_light";    
+    private static final String keyhelpTramTrafficLight = "gui.trafficcraft.trafficlight.help.traffic_light_tram";
+    private static final String keyhelpTramTrafficLightDescription = "gui.trafficcraft.trafficlight.helpdesc.traffic_light_tram";
 
-    public NewTrafficLightConfigScreen(Level level, BlockPos pos) {
+    public TrafficLightConfigScreen(Level level, BlockPos pos) {
         super(GuiUtils.translate("gui.trafficcraft.trafficlight.title"));
         this.level = level;
         this.blockPos = pos;
@@ -158,6 +171,15 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
     public void onClose() {
         NetworkManager.getInstance().send(new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled), minecraft.player);
         super.onClose();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (pasteButton != null) {
+            pasteButton.active = Clipboard.contains(TrafficLightSchedule.class);
+        }
     }
 
     @Override
@@ -302,6 +324,35 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
                 b.select();
             }
         }
+
+        String url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
+        Component helpTitle = TextComponent.EMPTY;
+        Collection<Component> helpDescription = new ArrayList<>();
+
+        if (type == TrafficLightType.TRAM && Locale.getDefault().getLanguage().equals(Constants.GERMAN_LOCAL_CODE)) { // For german players only because that article only exists in germany
+            url = Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID;
+            helpTitle = GuiUtils.translate(keyhelpTramTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(GuiUtils.translate(keyhelpTramTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+        } else {    
+            url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
+            helpTitle = GuiUtils.translate(keyhelpTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(GuiUtils.translate(keyhelpTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+        }
+
+        HelpButtonComponents data = ModGuiUtils.createHelpButton(
+            this,
+            guiLeft + WINDOW_WIDTH + 4,
+            guiTop + 20,
+            IconButton.DEFAULT_BUTTON_WIDTH,
+            IconButton.DEFAULT_BUTTON_HEIGHT,
+            iconGroup,
+            AreaStyle.NATIVE,
+            Wikipedia.getArticle(url).getArticleUrl(Locale.getDefault().getLanguage()),
+            helpTitle,
+            helpDescription
+        );
+        addRenderableWidget(data.helpButton());
+        iconTooltips.add(addTooltip(data.tooltip()));
 
         iconGroup.setVisible(selectedPart == GLOBAL_SETTINGS_INDEX);
     }
@@ -528,37 +579,42 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
             IconButton.DEFAULT_BUTTON_HEIGHT,
             textCustomizeSchedule,
             (btn) -> {
-                Minecraft.getInstance().setScreen(new NewTrafficLightScheduleEditor(this, level, blockPos));
+                Minecraft.getInstance().setScreen(new TrafficLightScheduleEditor(this, level, blockPos));
             }
         ));
         // copy
-        addRenderableWidget(ModGuiUtils.createCopyButton(
+        IconButton copyBtn = addRenderableWidget(ModGuiUtils.createCopyButton(
             ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
             ctrlSettingsArea.getTop() + 1,
             controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
             AreaStyle.GRAY,
             (btn) -> {
                 if (level.getBlockEntity(blockPos) instanceof TrafficLightBlockEntity blockEntity) {
-                    Clipboard.setToClipboard(TrafficLightSchedule.class, blockEntity.getSchedule());
+                    Clipboard.put(TrafficLightSchedule.class, blockEntity.getSchedule());
                 }
             })
         );
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textCopy).assignedTo(copyBtn)));
         // paste
-        addRenderableWidget(ModGuiUtils.createPasteButton(
+        pasteButton = addRenderableWidget(ModGuiUtils.createPasteButton(
             ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT,
             ctrlSettingsArea.getTop() + 1,
             controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
             AreaStyle.GRAY,
             (btn) ->  {
-                TrafficLightSchedule schedule = Clipboard.getFromClipboard(TrafficLightSchedule.class);
-                if (schedule != null) {
-                    NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
-                        blockPos,
-                        List.of(schedule)
-                    ), null);
+                Optional<TrafficLightSchedule> schedule = Clipboard.get(TrafficLightSchedule.class);
+                if (schedule.isPresent()) {
+                    if (schedule.get() != null) {
+                        NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
+                            blockPos,
+                            List.of(schedule.get())
+                        ), null);
+                    }
                 }
             })
         );
+        pasteButton.active = false;
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textPaste).assignedTo(pasteButton)));
         // status
         addRenderableWidget(new IconButton(
             ButtonType.DEFAULT, 
@@ -766,5 +822,14 @@ public class NewTrafficLightConfigScreen extends CommonScreen {
         pPoseStack.scale(scale, scale, scale);
         phaseIdDescriptionLabel.renderLeftAlignedNoShadow(pPoseStack, (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xCBCBCB);
         pPoseStack.setIdentity();
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+       if ((this.shouldCloseOnEsc() && pKeyCode == InputConstants.KEY_ESCAPE) || (!(getFocused() instanceof EditBox) && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))) {
+            this.onClose();
+            return true;
+        }
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 }

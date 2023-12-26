@@ -9,7 +9,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
-public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnum, IItemIcon, IIteratableEnum<TrafficLightTrigger> {
+public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightTrigger> {
     NONE("none", 0, Blocks.BARRIER),
 	ON_REQUEST("on_request", 1, ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get()),
 	REDSTONE("redstone", 2, Items.REDSTONE);

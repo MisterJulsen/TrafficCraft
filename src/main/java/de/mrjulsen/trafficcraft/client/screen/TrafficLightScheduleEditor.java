@@ -1,8 +1,11 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
@@ -21,15 +24,17 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.client.widgets.NewTrafficLightScheduleEntry;
+import de.mrjulsen.trafficcraft.client.widgets.TrafficLightScheduleEntry;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -37,7 +42,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-public class NewTrafficLightScheduleEditor extends CommonScreen {
+public class TrafficLightScheduleEditor extends CommonScreen {
 
     public static final ResourceLocation WIDGETS = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
     public static final int TEXTURE_WIDTH = 64;
@@ -66,7 +71,8 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
 
     private final Screen last;
 
-    private final List<NewTrafficLightScheduleEntry> entries = new ArrayList<>();
+    private final List<TrafficLightScheduleEntry> entries = new ArrayList<>();
+    private final Map<Integer, TrafficLightType> phaseIdTypes = new HashMap<>();
 
     // settings
     private final BlockPos pos;
@@ -80,13 +86,38 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     private static final Component textAddEntry = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
     private static final String textLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
 
-    protected NewTrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
+    protected TrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
         super(GuiUtils.translate("gui.trafficcraft.trafficlightschedule.title"));
         this.last = last;
         this.pos = pos;
         this.level = level;
         this.isController = isController();
         schedule = getSchedule().copy();
+
+        if (isController()) {
+            if (level.getBlockEntity(pos) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                blockEntity.getTrafficLightLocations().stream().filter(x -> 
+                    level.isLoaded(x.getLocationBlockPos()) &&
+                    level.getBlockEntity(x.getLocationBlockPos()) instanceof TrafficLightBlockEntity
+                ).map(x -> (TrafficLightBlockEntity)level.getBlockEntity(x.getLocationBlockPos())).forEach(x -> {
+                    int phaseId = x.getPhaseId();
+                    TrafficLightType type = x.getTLType();
+                    if (phaseIdTypes.containsKey(phaseId)) {
+                        TrafficLightType savedType = phaseIdTypes.get(phaseId);
+                        if (savedType != null && savedType != type) {
+                            phaseIdTypes.remove(phaseId);
+                            phaseIdTypes.put(phaseId, null);
+                        }
+                    } else {
+                        phaseIdTypes.put(phaseId, type);
+                    }
+                });
+            }
+        } else {
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
+                phaseIdTypes.put(0, blockEntity.getTLType());
+            }
+        }
     }
 
     private boolean isController() {
@@ -101,6 +132,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         }
 
         return new TrafficLightSchedule();
+    }
+
+    public Map<Integer, TrafficLightType> getPhaseTypes() {
+        return phaseIdTypes;
     }
 
     @Override
@@ -262,7 +297,7 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         entries.clear();
 
         schedule.getEntries().forEach(x -> {
-            entries.add(new NewTrafficLightScheduleEntry(this, !isController, x, areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2,
+            entries.add(new TrafficLightScheduleEntry(this, !isController, x, areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2,
                 (entry) -> {
                     removeEntry(entry);
                 },
@@ -294,11 +329,11 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         y = renderInfo(pPoseStack, y, textStart);
 
         int offset = scrollBar.getScrollValue();
-        for (NewTrafficLightScheduleEntry entry : entries) {
+        for (TrafficLightScheduleEntry entry : entries) {
             entry.setY(y);
-            y += NewTrafficLightScheduleEntry.HEIGHT;
-            if (y > areaWorkspace.getTop() + offset && y - NewTrafficLightScheduleEntry.HEIGHT < areaWorkspace.getTop() + areaWorkspace.getHeight() + offset) {                
-                entry.render(pPoseStack, pMouseX, pMouseY + scrollBar.getScrollValue(), pPartialTick);
+            y += TrafficLightScheduleEntry.HEIGHT;
+            if (y > areaWorkspace.getTop() + offset && y - TrafficLightScheduleEntry.HEIGHT < areaWorkspace.getTop() + areaWorkspace.getHeight() + offset) {                
+                entry.render(pPoseStack, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseX : -1, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseY + scrollBar.getScrollValue() : -1, pPartialTick);
             }
         }
         
@@ -318,8 +353,10 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
         super.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
         int offset = scrollBar.getScrollValue();
         
-        for (NewTrafficLightScheduleEntry entry : entries) {
-            entry.renderTooltips(pPoseStack, pMouseX, pMouseY, offset);
+        if (areaWorkspace.isInBounds(pMouseX, pMouseY)) {
+            for (TrafficLightScheduleEntry entry : entries) {
+                entry.renderTooltips(pPoseStack, pMouseX, pMouseY, offset);
+            }
         }
     }
 
@@ -333,8 +370,26 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
     }
 
     @Override
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        entries.forEach(x -> x.keyPressed(pKeyCode, pScanCode, pModifiers));
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {        
+        
+        if ((this.shouldCloseOnEsc() && pKeyCode == InputConstants.KEY_ESCAPE) || (!(getFocused() instanceof EditBox) && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))) {
+            this.onClose();
+            return true;
+        }
+
+        boolean[] b = new boolean[] { false };
+        entries.forEach(x -> {
+            if (b[0]) return;
+            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
+                b[0] = true;
+                return;
+            }
+        });
+
+        if (b[0]) {
+            return true;
+        }
+
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
@@ -369,5 +424,4 @@ public class NewTrafficLightScheduleEditor extends CommonScreen {
 
 		return super.mouseScrolled(pMouseX, pMouseY, pDelta);
     }
-    
 }

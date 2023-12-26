@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.utils.IClipboardData;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import net.minecraft.nbt.CompoundTag;
@@ -95,7 +96,6 @@ public class TrafficLightSchedule implements IClipboardData {
         CompoundTag tag = new CompoundTag();
         
         ListTag listTag = new ListTag();
-
         for (TrafficLightScheduleEntryData data : entries) {
             listTag.add(data.toNbt());
         }
@@ -110,12 +110,35 @@ public class TrafficLightSchedule implements IClipboardData {
         loop = tag.getBoolean(NBT_LOOP);
         trigger = TrafficLightTrigger.getTriggerByIndex(tag.getTagType(NBT_TRIGGER) == Tag.TAG_INT ? (byte)tag.getInt(NBT_TRIGGER) : tag.getByte(NBT_TRIGGER));
         ListTag listTag = tag.getList(NBT_ENTRIES, Tag.TAG_COMPOUND);
+        
+        // START Backward compatibility
+        double lastTime = -1;
+        boolean migration = false;
+        // END Backward compatibility
 
         for (int i = 0; i < listTag.size(); i++) {
-            TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();
+            TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();            
             data.fromNbt(listTag.getCompound(i));
+
+            // START Backward compatibility
+            if (migration = data.shouldMigrate(listTag.getCompound(i))) {                
+                double lTime = data.getDurationSeconds();
+                if (lastTime >= 0) {
+                    data.setDurationSeconds(lastTime);
+                }
+                lastTime = lTime;
+            }            
+            // END Backward compatibility
+
             entries.add(data);
         }
+        
+        // START Backward compatibility
+        if (migration && entries.size() > 0) {
+            entries.get(0).setDurationSeconds(lastTime);
+        }
+        // END Backward compatibility
+        
     }
 
     public void toBytes(FriendlyByteBuf buf) {

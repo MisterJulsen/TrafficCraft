@@ -40,7 +40,7 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
         final float pixel = 1.0F / 16.0F;
         pPoseStack.translate(pixel * 2.5f, 1 - pixel * 5.5f, pixel * 6);
         for (int i = 0; i < pBlockEntity.getColorSlotCount() && i < blockstate.getValue(TrafficLightBlock.MODEL).getLightsCount(); i++) {
-            if (pBlockEntity.getColorOfSlot(i) != null && pBlockEntity.getEnabledColors().contains(pBlockEntity.getColorOfSlot(i))) {
+            if (pBlockEntity.getColorOfSlot(i) != null && pBlockEntity.isColorEnabled(pBlockEntity.getColorOfSlot(i), true)) {
                 new TrafficLightTextureManager.TrafficLightTextureKey(pBlockEntity.getIcon(), pBlockEntity.getColorOfSlot(i)).render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);
             } else {
                 new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE).render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay);

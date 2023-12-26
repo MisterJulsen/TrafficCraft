@@ -67,7 +67,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
         if (packet.colors.length > 0) {
             byte[] colSlBArr = new byte[packet.colors.length];
             for (int i = 0; i < packet.colors.length; i++) {
-                colSlBArr[i] = packet.colors[i].getIndex();
+                colSlBArr[i] = packet.colors[i].getGroupIndex();
             }
             buffer.writeByteArray(colSlBArr);
         }
@@ -81,14 +81,15 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
         
         BlockPos pos = buffer.readBlockPos();
         Collection<TrafficLightColor> enabledColors = new ArrayList<>();
+        byte[] enColBArr = new byte[0];
         if (buffer.readBoolean()) {
-            byte[] enColBArr = buffer.readByteArray();
-            for (byte b : enColBArr) {
-                enabledColors.add(TrafficLightColor.getDirectionByIndex(b));
-            }
+            enColBArr = buffer.readByteArray();
         }
         
-        TrafficLightType type = TrafficLightType.getTypeByIndex(buffer.readByte());
+        TrafficLightType type = TrafficLightType.getTypeByIndex(buffer.readByte());        
+        for (byte b : enColBArr) {
+            enabledColors.add(TrafficLightColor.getColorByGroupIndex(b, type));
+        }
         TrafficLightModel model = TrafficLightModel.getModelByLightsCount(buffer.readByte());
         TrafficLightIcon icon = TrafficLightIcon.getIconByIndex(buffer.readByte());
         TrafficLightControlType controlType = TrafficLightControlType.getControlTypeByIndex(buffer.readByte());
@@ -96,7 +97,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
         if (buffer.readBoolean()) {
             byte[] colSlBArr = buffer.readByteArray();
             for (int i = 0; i < colSlBArr.length && i < colorSlots.length; i++) {
-                colorSlots[i] = TrafficLightColor.getDirectionByIndex(colSlBArr[i]);
+                colorSlots[i] = TrafficLightColor.getColorByGroupIndex(colSlBArr[i], type);
             }
         }        
         int phaseId = buffer.readInt();

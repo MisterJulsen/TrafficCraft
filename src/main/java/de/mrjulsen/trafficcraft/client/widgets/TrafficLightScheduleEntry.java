@@ -19,25 +19,24 @@ import de.mrjulsen.mcdragonlib.utils.Math;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
-import de.mrjulsen.trafficcraft.client.screen.NewTrafficLightScheduleEditor;
+import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleEditor;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 
-public class NewTrafficLightScheduleEntry extends Button {
+public class TrafficLightScheduleEntry extends Button {
 
     private static final int DEFAULT_EDIT_BOX_HEIGHT = 16;
     private static final int DEFAULT_ENTRY_HEIGHT = 22;
     private static final int CONTROL_BUTTON_SIZE = 16;
     private static final int CONTROL_BUTTON_IMAGE_SIZE = 12;
     private static final int SIGNAL_ICON_SIZE = 10;
-    public static final int HEIGHT = NewTrafficLightScheduleEditor.ENTRY_PADDING * 2 + DEFAULT_ENTRY_HEIGHT * 2;
+    public static final int HEIGHT = TrafficLightScheduleEditor.ENTRY_PADDING * 2 + DEFAULT_ENTRY_HEIGHT * 2;
 
     private final WidgetsCollection widgets = new WidgetsCollection();
 
@@ -51,10 +50,16 @@ public class NewTrafficLightScheduleEntry extends Button {
     private GuiAreaDefinition signalSelectionArea = GuiAreaDefinition.empty();
     private GuiAreaDefinition[] signalAreas = new GuiAreaDefinition[0];
 
-    private final TrafficLightType type = TrafficLightType.CAR;
+    //private final TrafficLightType type = TrafficLightType.CAR;
+    // Animation
+    private static final int FRAME_DURATION_TICKS = 20;
+    private int ticks;
+    private int frame;
+    private TrafficLightType typeFrame = TrafficLightType.CAR;
+
     private final TrafficLightColor[] signals;
 
-    private final Screen parent;
+    private final TrafficLightScheduleEditor parent;
     private final EditBox phaseIdBox;
 
     private final Consumer<TrafficLightScheduleEntryData> removeAction; 
@@ -76,8 +81,8 @@ public class NewTrafficLightScheduleEntry extends Button {
     private final TrafficLightScheduleEntryData entry;
     private final boolean hidePhaseId;
 
-    public NewTrafficLightScheduleEntry(Screen parent, boolean hidePhaseId, TrafficLightScheduleEntryData entry, int pX, int pY, int pWidth, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
-        super(pX, pY, pWidth, HEIGHT, TextComponent.EMPTY, null);
+    public TrafficLightScheduleEntry(TrafficLightScheduleEditor parent, boolean hidePhaseId, TrafficLightScheduleEntryData entry, int pX, int pY, int pWidth, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
+        super(pX, pY, pWidth, HEIGHT, TextComponent.EMPTY, (btn) -> {});
         this.hidePhaseId = hidePhaseId;
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -87,8 +92,8 @@ public class NewTrafficLightScheduleEntry extends Button {
         this.reorderAction = reorderAction;
 
         delayBox = GuiUtils.createEditBox(
-            pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 1,
-            NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1,
+            pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 1,
+            TrafficLightScheduleEditor.ENTRY_PADDING / 2 + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1,
             38,
             DEFAULT_EDIT_BOX_HEIGHT - 2,
             minecraft.font,
@@ -106,8 +111,8 @@ public class NewTrafficLightScheduleEntry extends Button {
         widgetTooltips.add(Tooltip.of(textDelay).assignedTo(delayBox));
 
         removeTimeButton = GuiUtils.createButton(
-            pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
-            NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
+            pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
+            TrafficLightScheduleEditor.ENTRY_PADDING / 2 + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
             DEFAULT_EDIT_BOX_HEIGHT,
             DEFAULT_EDIT_BOX_HEIGHT,
             GuiUtils.text("-"),
@@ -123,8 +128,8 @@ public class NewTrafficLightScheduleEntry extends Button {
         widgetTooltips.add(Tooltip.of(textRemoveTime).assignedTo(removeTimeButton));
 
         addTimeButton = GuiUtils.createButton(
-            pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 40,
-            NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
+            pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 40,
+            TrafficLightScheduleEditor.ENTRY_PADDING / 2 + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
             DEFAULT_EDIT_BOX_HEIGHT,
             DEFAULT_EDIT_BOX_HEIGHT,
             GuiUtils.text("+"),
@@ -145,8 +150,8 @@ public class NewTrafficLightScheduleEntry extends Button {
 
         if (!hidePhaseId) {
             phaseIdBox = GuiUtils.createEditBox(
-                pX + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
-                (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + NewTrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2),
+                pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
+                (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2),
                 38,
                 DEFAULT_EDIT_BOX_HEIGHT - 2,
                 minecraft.font,
@@ -167,7 +172,7 @@ public class NewTrafficLightScheduleEntry extends Button {
             phaseIdBox = null;
         }
         
-        signals = TrafficLightColor.getAllowedForType(type, false);
+        signals = TrafficLightColor.getAllowedForType(TrafficLightType.CAR, false);
     }
 
     public void setY(int y) {
@@ -177,12 +182,12 @@ public class NewTrafficLightScheduleEntry extends Button {
 
         areaTooltips.clear();
 
-        delayBox.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1;
-        addTimeButton.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
-        removeTimeButton.y = y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
+        delayBox.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1;
+        addTimeButton.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
+        removeTimeButton.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
 
-        int phaseIdBoxY = y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
-        int signalSelectionX = x + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH;
+        int phaseIdBoxY = y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
+        int signalSelectionX = x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH;
         if (!hidePhaseId) {
             phaseIdBox.y = phaseIdBoxY;
             signalSelectionX += phaseIdBox.getWidth() + 6;
@@ -207,15 +212,22 @@ public class NewTrafficLightScheduleEntry extends Button {
 
     public void tick() {
         widgets.performForEachOfType(EditBox.class, x -> x.visible, x -> x.tick());
+
+        // Animation
+        ticks++;
+        if (ticks % FRAME_DURATION_TICKS == 0) {
+            frame++;
+            typeFrame = TrafficLightType.getTypeByIndex((byte)(frame % TrafficLightType.values().length));
+        }
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {        
         DynamicGuiRenderer.renderArea(
             pPoseStack,
-            x + NewTrafficLightScheduleEditor.ENTRY_PADDING,
-            y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2,
-            NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + removeTimeButton.getWidth() + delayBox.getWidth() + 2 + addTimeButton.getWidth() + 8,
+            x + TrafficLightScheduleEditor.ENTRY_PADDING,
+            y + TrafficLightScheduleEditor.ENTRY_PADDING / 2,
+            TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + removeTimeButton.getWidth() + delayBox.getWidth() + 2 + addTimeButton.getWidth() + 8,
             DEFAULT_ENTRY_HEIGHT,
             AreaStyle.GRAY,
             ButtonState.BUTTON
@@ -223,64 +235,64 @@ public class NewTrafficLightScheduleEntry extends Button {
 
         DynamicGuiRenderer.renderArea(
             pPoseStack,
-            x + NewTrafficLightScheduleEditor.ENTRY_PADDING,
-            y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
-            NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
+            x + TrafficLightScheduleEditor.ENTRY_PADDING,
+            y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
+            TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
             DEFAULT_ENTRY_HEIGHT,
             AreaStyle.GRAY,
             ButtonState.BUTTON
         );
 
         GuiUtils.blit(
-            NewTrafficLightScheduleEditor.WIDGETS,
-            pPoseStack, x + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - NewTrafficLightScheduleEditor.TIMELINE_UW / 2,
+            TrafficLightScheduleEditor.WIDGETS,
+            pPoseStack, x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
             y,
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_UW,
             HEIGHT,
             27,
             20,
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
-            NewTrafficLightScheduleEditor.TIMELINE_VH,
-            NewTrafficLightScheduleEditor.TEXTURE_WIDTH,
-            NewTrafficLightScheduleEditor.TEXTURE_HEIGHT
+            TrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_VH,
+            TrafficLightScheduleEditor.TEXTURE_WIDTH,
+            TrafficLightScheduleEditor.TEXTURE_HEIGHT
         );
 
         GuiUtils.blit(
-            NewTrafficLightScheduleEditor.WIDGETS,
+            TrafficLightScheduleEditor.WIDGETS,
             pPoseStack,
-            x + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - NewTrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + NewTrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - NewTrafficLightScheduleEditor.TIMELINE_VH / 2,
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
-            NewTrafficLightScheduleEditor.TIMELINE_VH,
+            x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TrafficLightScheduleEditor.TIMELINE_VH / 2,
+            TrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_VH,
             18,
             20,
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
-            NewTrafficLightScheduleEditor.TIMELINE_VH,
-            NewTrafficLightScheduleEditor.TEXTURE_WIDTH,
-            NewTrafficLightScheduleEditor.TEXTURE_HEIGHT
+            TrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_VH,
+            TrafficLightScheduleEditor.TEXTURE_WIDTH,
+            TrafficLightScheduleEditor.TEXTURE_HEIGHT
         );
 
         GuiUtils.blit(
-            NewTrafficLightScheduleEditor.WIDGETS,
+            TrafficLightScheduleEditor.WIDGETS,
             pPoseStack,
-            x + NewTrafficLightScheduleEditor.ENTRY_PADDING + NewTrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - NewTrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + (int)(NewTrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - NewTrafficLightScheduleEditor.TIMELINE_VH / 2),
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
-            NewTrafficLightScheduleEditor.TIMELINE_VH,
+            x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - TrafficLightScheduleEditor.TIMELINE_VH / 2),
+            TrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_VH,
             9,
             20,
-            NewTrafficLightScheduleEditor.TIMELINE_UW,
-            NewTrafficLightScheduleEditor.TIMELINE_VH,
-            NewTrafficLightScheduleEditor.TEXTURE_WIDTH,
-            NewTrafficLightScheduleEditor.TEXTURE_HEIGHT
+            TrafficLightScheduleEditor.TIMELINE_UW,
+            TrafficLightScheduleEditor.TIMELINE_VH,
+            TrafficLightScheduleEditor.TEXTURE_WIDTH,
+            TrafficLightScheduleEditor.TEXTURE_HEIGHT
         );
 
         if (isMouseOver(pMouseX, pMouseY)) {
             fill(pPoseStack, x + 1, y, x + 1 + width, y + height, 0x22FFFFFF);
 
-            GuiUtils.blit(NewTrafficLightScheduleEditor.WIDGETS, pPoseStack, moveUpButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveUpButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE * 2, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, NewTrafficLightScheduleEditor.TEXTURE_WIDTH, NewTrafficLightScheduleEditor.TEXTURE_HEIGHT);
-            GuiUtils.blit(NewTrafficLightScheduleEditor.WIDGETS, pPoseStack, moveDownButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveDownButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, NewTrafficLightScheduleEditor.TEXTURE_WIDTH, NewTrafficLightScheduleEditor.TEXTURE_HEIGHT);
-            GuiUtils.blit(NewTrafficLightScheduleEditor.WIDGETS, pPoseStack, deleteButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, deleteButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 0, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, NewTrafficLightScheduleEditor.TEXTURE_WIDTH, NewTrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveUpButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveUpButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE * 2, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveDownButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveDownButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, deleteButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, deleteButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 0, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
 
             if (moveUpButton.isInBounds(pMouseX, pMouseY)) {
                 fill(pPoseStack, moveUpButton.getLeft(), moveUpButton.getTop(), moveUpButton.getRight(), moveUpButton.getBottom(), 0x22FFFFFF);
@@ -297,18 +309,18 @@ public class NewTrafficLightScheduleEntry extends Button {
         for (int i = 0; i < signalAreas.length; i++) {
             fill(pPoseStack, signalAreas[i].getLeft(), signalAreas[i].getTop(), signalAreas[i].getRight(), signalAreas[i].getBottom(), signalAreas[i].isInBounds(pMouseX, pMouseY) ? 0xFFFFFFFF : 0xFFA7A7A7);
             GuiUtils.blit(
-                NewTrafficLightScheduleEditor.WIDGETS,
+                TrafficLightScheduleEditor.WIDGETS,
                 pPoseStack,
                 signalAreas[i].getLeft() + 1,
                 signalAreas[i].getTop() + 1,
                 SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
                 i * SIGNAL_ICON_SIZE,
-                type.getIndex() * SIGNAL_ICON_SIZE,
+                (parent.getPhaseTypes().containsKey(entry.getPhaseId()) ? parent.getPhaseTypes().get(entry.getPhaseId()).getIndex() : typeFrame.getIndex()) * SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
-                NewTrafficLightScheduleEditor.TEXTURE_WIDTH,
-                NewTrafficLightScheduleEditor.TEXTURE_HEIGHT
+                TrafficLightScheduleEditor.TEXTURE_WIDTH,
+                TrafficLightScheduleEditor.TEXTURE_HEIGHT
             );
 
             if (!entry.getEnabledColors().contains(signals[i])) {
@@ -361,8 +373,15 @@ public class NewTrafficLightScheduleEntry extends Button {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        widgets.performForEach(x -> x.visible, x -> x.keyPressed(pKeyCode, pScanCode, pModifiers));
-        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+        boolean[] b = new boolean[] { false };
+        widgets.performForEach(x -> x.visible, x -> {            
+            if (b[0]) return;
+            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
+                b[0] = true;
+                return;
+            }
+        });
+        return b[0];
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
+import de.mrjulsen.mcdragonlib.utils.IClipboardData;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -119,7 +120,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
         int[] bArr = tag.getIntArray(NBT_COLOR);
         List<TrafficLightColor> colors = new ArrayList<>(bArr.length);
         for (int i = 0; i < bArr.length; i++) {
-            colors.add(TrafficLightColor.getDirectionByIndex((byte)bArr[i]));
+            colors.add(TrafficLightColor.getColorByIndex((byte)bArr[i]));
         }
         enabledColors = colors;
 
@@ -129,9 +130,19 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
 
     @SuppressWarnings("deprecation")
     private void migrateData(CompoundTag nbt) {
-        if (nbt.contains(NBT_MODE)) {
+        if (shouldMigrate(nbt)) {
             enableOnlyColors(de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode.getModeByIndex(nbt.getInt(NBT_MODE)).convertToColorList());
         }
+    }
+
+    public double migrateTime(TrafficLightScheduleEntryData last) {
+        double lastTime = last.getDurationSeconds();
+        last.setDurationSeconds(getDurationSeconds());
+        return lastTime;
+    }
+
+    public boolean shouldMigrate(CompoundTag nbt) {
+        return nbt.contains(NBT_MODE);
     }
 
     public void toBytes(FriendlyByteBuf buf) {
@@ -152,9 +163,9 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
         byte[] bArr = buf.readByteArray();
         Collection<TrafficLightColor> colors = new ArrayList<>(bArr.length);
         for (int i = 0; i < bArr.length; i++) {
-            colors.add(TrafficLightColor.getDirectionByIndex(bArr[i]));
+            colors.add(TrafficLightColor.getColorByIndex(bArr[i]));
         }
-        data.enableColors(colors);
+        data.enableOnlyColors(colors);
         return data;
     }
 

@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
-import java.util.List;
 
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
@@ -35,10 +34,6 @@ public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum 
 		return this.index;
 	}
 
-	public static List<TrafficLightColor> unrenderableColors() {
-		return List.of(TrafficLightColor.NONE);
-	}
-
 	public static TrafficLightColor[] getAllowedForType(TrafficLightType type, boolean offStatusAllowed) {
 		return Arrays.stream(TrafficLightColor.values()).filter(x -> Arrays.stream(x.allowedInTypes).anyMatch(y -> y == type) && (offStatusAllowed || x != NONE)).toArray(TrafficLightColor[]::new);
 	}
@@ -66,8 +61,12 @@ public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum 
 		return String.format("gui.trafficcraft.trafficlightcolor.%s", name);
 	}
 
-	public static TrafficLightColor getDirectionByIndex(byte index) {
+	public static TrafficLightColor getColorByIndex(byte index) {
 		return Arrays.stream(TrafficLightColor.values()).filter(x -> x.getIndex() == index).findFirst().orElse(TrafficLightColor.NONE);
+	}
+
+	public static TrafficLightColor getColorByGroupIndex(byte index, TrafficLightType type) {
+		return Arrays.stream(TrafficLightColor.values()).filter(x -> x.getGroupIndex() == index && x.isAllowedFor(type)).findFirst().orElse(TrafficLightColor.NONE);
 	}
 
     @Override
