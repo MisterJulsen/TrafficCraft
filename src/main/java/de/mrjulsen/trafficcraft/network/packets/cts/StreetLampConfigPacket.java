@@ -58,6 +58,8 @@ public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacke
                 nbt.putInt("turnOffTime", packet.turnOffTime);
                 nbt.putInt("timeFormat", packet.timeFormat.getIndex());
             }
+            
+            sender.getInventory().setChanged();
         });
     }
 

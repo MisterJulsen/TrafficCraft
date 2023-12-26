@@ -2,6 +2,8 @@
     "itemGroup.trafficcrafttab": "TrafficCraft",
 
     "core.trafficcraft.creative_only.tooltip": "Nur im Kreativmodus!",
+    "core.trafficcraft.common.copy": "Kopieren",
+    "core.trafficcraft.common.paste": "Einfügen",
 
     "advancement.trafficcraft.craft_road": "Straßenarbeiter",
     "advancement.trafficcraft.craft_road.description": "Stelle Asphalt, Beton oder entsprechend Schichten davon her.",
@@ -146,6 +148,9 @@
     "block.trafficcraft.fluorescent_tube_lamp": "Leuchtstoffröhrenlampe",
     "block.trafficcraft.traffic_barrel": "Großer Verkehrspoller",
     "block.trafficcraft.traffic_sign_workbench": "Verkehrszeichen-Werkbank",
+    
+    "enum.trafficcraft.countryregions.german": "Deutsch",
+    "enum.trafficcraft.countryregions.other": "Andere",
 
     "enum.trafficcraft.trafficlighttrigger": "Ampel-Schaltplan Auslöser",
     "enum.trafficcraft.trafficlighttrigger.description": "Gibt an, wodurch der Ampel-Schaltplan ausgelöst wird.",

@@ -1,18 +1,25 @@
 package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
+import java.util.Arrays;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
+import de.mrjulsen.trafficcraft.block.data.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
+import de.mrjulsen.trafficcraft.network.NetworkManager;
+import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.KeybindComponent;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -24,9 +31,22 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-public class TrafficLightLinkerItem extends Item implements ILinkerItem {
+public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScrollEventItem {
 
     public static final String NBT_LINK_TARGET = "LinkTargetLocation";
+    public static final String NBT_MODE = "Mode";
+
+    private static final Component textNoLink = GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink").withStyle(ChatFormatting.GRAY);
+    private static final Component textNotLoaded = GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED);
+    private static final Component textClear = GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.clear");
+    private static final Component textTooltipInstruction = GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip_instruction").withStyle(ChatFormatting.ITALIC);
+    private static final String keySet = "item.trafficcraft.traffic_light_linker.use.set";
+    private static final String keyWrongDim = "item.trafficcraft.traffic_light_linker.use.wrong_dimension";
+    private static final String keySetLink = "item.trafficcraft.traffic_light_linker.use.link";
+    private static final String keyRemoveLink = "item.trafficcraft.traffic_light_linker.use.unlink";
+    private static final String keyTooltipLocation = "item.trafficcraft.traffic_light_linker.tooltip_location";
+    private static final String keyTooltipBlock = "item.trafficcraft.traffic_light_linker.tooltip_block";
+    private static final String keyTooltipMode = "item.trafficcraft.traffic_light_linker.tooltip_mode";
 
     public TrafficLightLinkerItem(Properties pProperties) {
         super(pProperties);
@@ -44,7 +64,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
                     compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
                     
-                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.set", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                    player.displayClientMessage(GuiUtils.translate(keySet, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.AQUA), true);
                 }
                 return InteractionResult.SUCCESS;
             } else if (isTargetBlockAccepted(pContext.getLevel().getBlockState(clickedPos).getBlock())) {                        
@@ -54,24 +74,35 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                 }
 
                 Location linkLoc = Location.fromNbt(nbt.getCompound(NBT_LINK_TARGET));
+                LinkerMode mode = LinkerMode.getByIndex(nbt.getInt(NBT_MODE));
                 
                 if (!pContext.getLevel().dimension().location().toString().equals(linkLoc.dimension)) {
-                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.wrong_dimension").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(GuiUtils.translate(keyWrongDim).withStyle(ChatFormatting.RED), true);
                 }
 
                 if (pContext.getLevel().getBlockState(clickedPos).getBlock() instanceof TrafficLightRequestButtonBlock && pContext.getLevel().getBlockEntity(clickedPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity) {
                     blockEntity.linkTo(linkLoc);
-                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                    player.displayClientMessage(GuiUtils.translate(keySetLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                 } else {                        
                     if (pContext.getLevel().isLoaded(linkLoc.getLocationBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.getLocationBlockPos()).getBlock())) {
                         if (pContext.getLevel().getBlockEntity(linkLoc.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
                             BlockPos pos = pContext.getClickedPos();
                             String dim = pContext.getLevel().dimension().location().toString();
-                            blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                            player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.link", clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+
+                            switch (mode) {
+                                case UNLINK:                                
+                                    blockEntity.removeTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
+                                    player.displayClientMessage(GuiUtils.translate(keyRemoveLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
+                                    break;
+                                case LINK:
+                                default:
+                                    blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
+                                    player.displayClientMessage(GuiUtils.translate(keySetLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                                    break;
+                            }
                         }
                     } else {
-                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED), true);
+                        player.displayClientMessage(textNotLoaded, true);
                     }
                 }
 
@@ -93,10 +124,8 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
                     if (tag.contains(NBT_LINK_TARGET)) {
                         tag.remove(NBT_LINK_TARGET);
                     }
-                }
-
-                
-                pPlayer.displayClientMessage(GuiUtils.translate("item.trafficcraft.traffic_light_linker.use.clear"), true);
+                }                
+                pPlayer.displayClientMessage(textClear, true);
             }
             return InteractionResultHolder.success(itemstack);
         } else {
@@ -109,17 +138,15 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
         CompoundTag tag = null;
         if ((tag = doesContainValidLinkData(pStack)) != null) {
             Location loc = Location.fromNbt(tag.getCompound(NBT_LINK_TARGET));
-            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip",
-                Double.toString(loc.x),
-                Double.toString(loc.y),
-                Double.toString(loc.z),
-                loc.dimension,
-                new KeybindComponent("key.sneak"),
-                new KeybindComponent("key.use")
-            ));
+            pTooltipComponents.add(GuiUtils.translate(keyTooltipLocation, Integer.toString((int)loc.x), Integer.toString((int)loc.y), Integer.toString((int)loc.z), loc.dimension));            
         } else {
-            pTooltipComponents.add(GuiUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink").withStyle(ChatFormatting.GRAY));
+            pTooltipComponents.add(textNoLink);
         }
+        
+        CompoundTag nbt = pStack.getOrCreateTag();
+        LinkerMode mode = LinkerMode.getByIndex(nbt.getInt(NBT_MODE));
+        pTooltipComponents.add(GuiUtils.translate(keyTooltipMode, GuiUtils.translate(mode.getValueTranslationKey(ModMain.MOD_ID)), GuiUtils.translate(mode.getValueTranslationKey(ModMain.MOD_ID))));
+        pTooltipComponents.add(textTooltipInstruction);
     }
 
     @Override
@@ -138,8 +165,82 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem {
     }
 
     @Override
+    public String getNameForValidSourceBlock(Block block) {
+        return "";
+    }
+
+    @Override
     public boolean isSourceBlockAccepted(Block block) {
         return block == ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get();
+    }
+
+    @Override
+    public boolean mouseScroll(LocalPlayer player, ItemStack itemStack, double scrollDelta, double mouseX, double mouseY, boolean mouseRightDown, boolean mouseLeftDown, boolean mouseMiddleDown) {
+        if (player.isCrouching()) {
+            CompoundTag compound = itemStack.getOrCreateTag();
+            LinkerMode mode = LinkerMode.LINK;
+            if (scrollDelta > 0) {
+                mode = LinkerMode.getByIndex(compound.getInt(NBT_MODE)).next();
+            } else if (scrollDelta < 0) {
+                mode = LinkerMode.getByIndex(compound.getInt(NBT_MODE)).previous();
+            }
+            setMode(itemStack, mode);
+            NetworkManager.getInstance().send(new LinkerModePacket(mode), player);
+            player.displayClientMessage(GuiUtils.translate(keyTooltipMode, GuiUtils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID)), GuiUtils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID))), true);
+            return true;
+        }
+        return false;
+    }
+
+    public static void setMode(ItemStack item, LinkerMode mode) {
+        CompoundTag compound = item.getOrCreateTag();
+        compound.putInt(NBT_MODE, mode.getIndex());
+    }
+    
+
+    public static enum LinkerMode implements StringRepresentable, ITranslatableEnum, IIterableEnum<LinkerMode> {
+        LINK(0, "link"),
+        UNLINK(1, "unlink");
+
+        private int index;
+        private String name;
+
+        LinkerMode(int index, String name) {
+            this.index = index;
+            this.name = name;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static LinkerMode getByIndex(int index) {
+            return Arrays.stream(LinkerMode.values()).filter(x -> x.getIndex() == index).findFirst().orElse(LinkerMode.LINK);
+        }
+
+        @Override
+        public LinkerMode[] getValues() {
+            return values();
+        }
+
+        @Override
+        public String getEnumName() {
+            return "linkermode";
+        }
+
+        @Override
+        public String getEnumValueName() {
+            return getName();
+        }
+
+        @Override
+        public String getSerializedName() {
+            return getName();
+        }
     }
 
 }

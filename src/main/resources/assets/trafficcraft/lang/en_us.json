@@ -2,6 +2,8 @@
     "itemGroup.trafficcrafttab": "TrafficCraft",
     
     "core.trafficcraft.creative_only.tooltip": "Creative Mode only!",
+    "core.trafficcraft.common.copy": "Copy",
+    "core.trafficcraft.common.paste": "Paste",
 
     "advancement.trafficcraft.craft_road": "Road Worker",
     "advancement.trafficcraft.craft_road.description": "Craft asphalt, concrete or slopes of them.",
@@ -62,10 +64,14 @@
     "item.trafficcraft.traffic_light_linker.use.set": "Saved location %s in dimension %s.",
     "item.trafficcraft.traffic_light_linker.use.clear": "Link deleted.",
     "item.trafficcraft.traffic_light_linker.use.link": "Linked to %s in dimension %s",
+    "item.trafficcraft.traffic_light_linker.use.unlink": "No longer linked to %s in dimension %s",
     "item.trafficcraft.traffic_light_linker.use.target_not_loaded": "Failed to link! The controller is currently not loaded or doesn't exist.",
     "item.trafficcraft.traffic_light_linker.use.invalid_link": "Cleared link in target block.",
     "item.trafficcraft.traffic_light_linker.use.wrong_dimension": "Failed to link! The controller you are trying to link to is in another dimension.",
-    "item.trafficcraft.traffic_light_linker.tooltip": "§7Linked to: §b%s, %s, %s (%s)\n§7Use §b%s + %s §7to unlink.",
+    "item.trafficcraft.traffic_light_linker.tooltip_location": "§7Linked to: §b%s, %s, %s (%s)",
+    "item.trafficcraft.traffic_light_linker.tooltip_block": "§7Block: §b%s",
+    "item.trafficcraft.traffic_light_linker.tooltip_mode": "§7Mode: §b%s",
+    "item.trafficcraft.traffic_light_linker.tooltip_instruction": "Sneak + Scroll §7to change mode.",
     "item.trafficcraft.traffic_light_linker.tooltip.nolink": "Not linked",
     "item.trafficcraft.paint_brush": "Paint Brush",
     "item.trafficcraft.paint_brush.tooltip.pattern": "§7Pattern: §r",
@@ -75,7 +81,7 @@
     "item.trafficcraft.street_lamp_config_card": "Street Lamp Configuration Card",
     "item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time": "§7Turn on at: §b%s",
     "item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time": "§7Turn off at: §b%s",
-    "item.trafficcraft.street_lamp_config_card.tooltip.empty": "Empty",
+    "item.trafficcraft.street_lamp_config_card.tooltip.empty": "Undefined",
     "item.trafficcraft.street_lamp_config_card.use.set": "Applied configured time to street lamp.",
     "item.trafficcraft.street_lamp_config_card.use.unset": "Removed configured time from street lamp.",
     "item.trafficcraft.street_lamp_config_card.use.error_same_time": "The schedule cannot be applied because the turn on time and turn off time are equal.",
@@ -147,6 +153,9 @@
     "block.trafficcraft.traffic_barrel": "Traffic Barrel",
     "block.trafficcraft.traffic_sign_workbench": "Traffic Sign Workbench",
     
+    "enum.trafficcraft.countryregions.german": "German",
+    "enum.trafficcraft.countryregions.other": "Other",
+    
     "enum.trafficcraft.trafficlighttrigger": "Traffic Light Trigger",
     "enum.trafficcraft.trafficlighttrigger.description": "Determines, how this schedule should be triggered.",
     "enum.trafficcraft.trafficlighttrigger.none": "None",
@@ -168,6 +177,7 @@
     "enum.trafficcraft.trafficlightmodel.single": "Single Light",
     "enum.trafficcraft.trafficlightmodel.double": "Two Lights",
     "enum.trafficcraft.trafficlightmodel.tripple": "Three Lights",
+    "enum.trafficcraft.trafficlightmodel.quadruple": "Four Lights",
     
     "enum.trafficcraft.trafficlighticon.none": "No icon",
     "enum.trafficcraft.trafficlighticon.right": "Right",
@@ -180,8 +190,8 @@
     
     "enum.trafficcraft.trafficlighttype": "Signal Type",
     "enum.trafficcraft.trafficlighttype.description": "Signal type of the traffic light.",
-    "enum.trafficcraft.trafficlighttype.car": "Default",
-    "enum.trafficcraft.trafficlighttype.info.car": "The default type, most common and used by cars, pedestrians and non-rail traffic.",    
+    "enum.trafficcraft.trafficlighttype.car": "Vehicular",
+    "enum.trafficcraft.trafficlighttype.info.car": "The vehicular signals type is most common and used by cars, pedestrians but not by public transport traffic.",    
     "enum.trafficcraft.trafficlighttype.tram": "Tram",
     "enum.trafficcraft.trafficlighttype.info.tram": "These traffic lights are used by trams or other public transport vehicles.",
     
@@ -214,10 +224,13 @@
     "enum.trafficcraft.townsignvariant.back": "Back",
     "enum.trafficcraft.townsignvariant.both": "Both",
     
+    "enum.trafficcraft.linkermode.link": "§aLink§r",
+    "enum.trafficcraft.linkermode.unlink": "§cUnlink§r",
+    
     "gui.trafficcraft.townsignvariant": "Sides",
 
     "gui.trafficcraft.trafficlight.title": "Traffic Light Configuration",
-    "gui.trafficcraft.trafficlight.empty": "Select a part of the Traffic Light on the left and click on it to edit.",
+    "gui.trafficcraft.trafficlight.empty": "Select a part of the Traffic Light on the left you want to edit.",
     "gui.trafficcraft.trafficlight.general_settings": "General Traffic Light Settings",
     "gui.trafficcraft.trafficlight.set_signal": "Set Signal",
     "gui.trafficcraft.trafficlight.edit_traffic_light": "Edit general traffic light settings",
@@ -230,6 +243,10 @@
     "gui.trafficcraft.trafficlight.set_enabled_colors": "Enabled signals",
     "gui.trafficcraft.trafficlight.set_phase_id": "Traffic Light Phase ID",
     "gui.trafficcraft.trafficlight.set_phase_id.description": "Phase IDs are used to group one or more traffic lights with the same ID in the Traffic Light Controller and then control them.",
+    "gui.trafficcraft.trafficlight.help.traffic_light": "Learn more about Traffic Lights",
+    "gui.trafficcraft.trafficlight.helpdesc.traffic_light": "If you want to know how traffic lights work and how to set and use them correctly, then this Wikipedia article might help you.",
+    "gui.trafficcraft.trafficlight.help.traffic_light_tram": "Learn more about Tram Traffic Lights",
+    "gui.trafficcraft.trafficlight.helpdesc.traffic_light_tram": "If you wan to know how public transport (tram) traffic lights work and how to set and use them correctly, this Wikipedia article might help you.",
 
     "gui.trafficcraft.paint_brush.title": "Select a pattern",
     

@@ -52,6 +52,7 @@ public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
                 nbt.putInt("pattern", packet.pattern);
                 nbt.putFloat("scroll", packet.scroll);
             }
+            sender.getInventory().setChanged();
         });
     }
 

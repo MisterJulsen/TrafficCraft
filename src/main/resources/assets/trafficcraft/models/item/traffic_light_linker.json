@@ -2,5 +2,8 @@
     "parent": "item/generated",
     "textures": {
         "layer0": "trafficcraft:item/traffic_light_linker"
-    }
+    },
+    "overrides": [
+        {"predicate": { "mode": 1 }, "model": "trafficcraft:item/traffic_light_linker_unlink" }
+    ]
 }

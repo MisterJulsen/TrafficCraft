@@ -44,6 +44,7 @@ public class CreativePatternCataloguePacket implements IPacketBase<CreativePatte
                 CreativePatternCatalogueItem.setCustomImage(sender.getOffhandItem(), packet.data);
                 CreativePatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), -1);
             }
+            sender.getInventory().setChanged();
         });
     }
 

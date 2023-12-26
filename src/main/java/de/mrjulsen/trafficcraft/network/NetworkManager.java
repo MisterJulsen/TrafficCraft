@@ -8,6 +8,7 @@ import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacket;
@@ -61,6 +62,7 @@ public class NetworkManager extends NetworkManagerBase<NetworkManager> {
             TrafficLightSchedulePacket.class,
             TrafficSignPatternPacket.class,
             WritableSignPacket.class,
+            LinkerModePacket.class,
 
             // stc
             TrafficSignTextureResetPacket.class,

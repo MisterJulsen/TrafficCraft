@@ -32,6 +32,7 @@ public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacke
             } else if (sender.getOffhandItem().getItem() instanceof RoadConstructionTool) {
                 RoadConstructionTool.reset(sender.getOffhandItem());
             }
+            sender.getInventory().setChanged();
         });
     }
 

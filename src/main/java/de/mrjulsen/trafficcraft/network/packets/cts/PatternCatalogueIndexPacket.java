@@ -48,6 +48,7 @@ public class PatternCatalogueIndexPacket implements IPacketBase<PatternCatalogue
                     CreativePatternCatalogueItem.clearCustomImage(sender.getOffhandItem());
                 }
             }
+            sender.getInventory().setChanged();
         });
     }
     @Override

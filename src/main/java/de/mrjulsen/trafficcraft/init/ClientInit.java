@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
+import de.mrjulsen.mcdragonlib.utils.Wikipedia;
+import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
 import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
@@ -59,6 +61,8 @@ public class ClientInit {
 
     public static void setup(final FMLClientSetupEvent event) {
         
+        Wikipedia.addArticle(Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID, Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID);
+
         ItemModelGenerator.LAYERS.add("layer5");
         ItemModelGenerator.LAYERS.add("layer6");
         ItemModelGenerator.LAYERS.add("layer7");
@@ -121,6 +125,14 @@ public class ClientInit {
             CompoundTag nbt = itemStack.getTag();
             if (nbt != null) {
                 return nbt.getInt("paint");
+            }
+            return 0;
+        });
+
+        ItemProperties.register(ModItems.TRAFFIC_LIGHT_LINKER.get(), new ResourceLocation("mode"), (itemStack, world, entity, id) -> { 
+            CompoundTag nbt = itemStack.getTag();
+            if (nbt != null) {
+                return nbt.getInt("Mode");
             }
             return 0;
         });

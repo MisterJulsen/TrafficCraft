@@ -57,6 +57,7 @@ public class RoadBuilderDataPacket implements IPacketBase<RoadBuilderDataPacket>
                 nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, packet.replaceBlocks);
                 nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, packet.roadType.getIndex());
             }
+            sender.getInventory().setChanged();
         });
     }
 
