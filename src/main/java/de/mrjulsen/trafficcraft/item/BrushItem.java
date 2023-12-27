@@ -53,9 +53,7 @@ public class BrushItem extends Item
         stack.setTag(nbt);
 
         if (level.isClientSide) {
-            if (player.isShiftKeyDown()) {
-                ClientWrapper.showPaintBrushScreen(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll"));
-            }
+            ClientWrapper.showPaintBrushScreen(nbt.getInt("pattern"), nbt.getInt("paint"), nbt.getInt("color"), nbt.getFloat("scroll"));
         }
 
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
@@ -65,8 +63,7 @@ public class BrushItem extends Item
     public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, player, list, flag);
         
-        if(stack.hasTag())
-        {
+        if (stack.hasTag()) {
             String color = GuiUtils.translate(PaintColor.byId(stack.getTag().getInt("color")).getTranslatableString()).getString();
             char colorCode = PaintColor.byId(stack.getTag().getInt("color")).getColorCode();
 
@@ -151,7 +148,9 @@ public class BrushItem extends Item
         Player player = pContext.getPlayer();
 
         if (!level.isClientSide) {
-            if (state.getBlock() instanceof PaintBucketBlock) {
+            
+        }
+        if (state.getBlock() instanceof PaintBucketBlock) {
                 level.playSound(null, pos, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, 0.8F, 1.0F);
                 return InteractionResult.SUCCESS;
             } else {
@@ -173,8 +172,7 @@ public class BrushItem extends Item
                     return res;
                 }
             }
-        }
-        return InteractionResult.FAIL;
+        return InteractionResult.PASS;
     }
 
     private void removePaint(Player player, CompoundTag nbt) {
