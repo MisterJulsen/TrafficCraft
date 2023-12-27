@@ -29,46 +29,51 @@ import net.minecraft.world.level.block.state.BlockState;
 public class StreetLampConfigCardItem extends Item
 {
 
+    private static final String NBT_TIME_ON = "turnOnTime";
+    private static final String NBT_TIME_OFF = "turnOffTime";
+    private static final String NBT_TIME_FORMAT = "timeFormat";
+
+    private static final Component textEmpty = GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.empty").withStyle(ChatFormatting.GRAY);
+    private static final Component textClear = GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.clear");
+    private static final Component textErrorTimeEqual = GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.error_same_time").withStyle(ChatFormatting.RED);
+    private static final Component textApply = GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.set").withStyle(ChatFormatting.GREEN);
+    private static final Component textRemove = GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.unset").withStyle(ChatFormatting.RED);
+    private static final String keyTurnOn = "item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time";
+    private static final String keyTurnOff = "item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time";
+
     public StreetLampConfigCardItem(Properties properties) {
         super(properties.stacksTo(1));
     }
 
-    
-    @Override
-    public boolean canAttackBlock(BlockState state, Level worldIn, BlockPos pos, Player player) {
-        if (player.isCreative()) {
-            if (state.getBlock() instanceof StreetLampBaseBlock block) {  
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        
+        ItemStack stack = player.getItemInHand(hand);        
 
-        if (level.isClientSide) {
-            if (player.isShiftKeyDown()) {
-                stack.setTag(new CompoundTag());
-                player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.clear"), true);
-            } else {
+        CompoundTag nbt = null;
+        if (player.isShiftKeyDown()) {
+            if ((nbt = doesContainValidLinkData(stack)) != null) {
+                nbt.remove(NBT_TIME_ON);
+                nbt.remove(NBT_TIME_OFF);
+            }
+            player.displayClientMessage(textClear, true);
+            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        } else {
+            if (level.isClientSide) {                
                 int turnOn = 18500;
                 int turnOff = 5500;
                 int timeFormat = 0;
-                CompoundTag nbt = null;
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
-                    turnOn = nbt.getInt("turnOnTime");
-                    turnOff = nbt.getInt("turnOffTime");
-                    timeFormat = nbt.getInt("timeFormat");
+                    turnOn = nbt.getInt(NBT_TIME_ON);
+                    turnOff = nbt.getInt(NBT_TIME_OFF);
                 }
+                timeFormat = stack.getOrCreateTag().getInt(NBT_TIME_FORMAT);
 
                 ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, TimeFormat.getFormatByIndex(timeFormat));
+                return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             }
         }
 
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+        return super.use(level, player, hand);
     }
 
     @Override
@@ -77,10 +82,10 @@ public class StreetLampConfigCardItem extends Item
         
         CompoundTag nbt = null;
         if ((nbt = doesContainValidLinkData(stack)) != null) {
-            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_on_time", TimeUtils.parseTime(nbt.getInt("turnOnTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));
-            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.turn_off_time", TimeUtils.parseTime(nbt.getInt("turnOffTime"), TimeFormat.getFormatByIndex(nbt.getInt("timeFormat")))));            
+            list.add(GuiUtils.translate(keyTurnOn, TimeUtils.parseTime(nbt.getInt(NBT_TIME_ON), TimeFormat.getFormatByIndex(nbt.getInt(NBT_TIME_FORMAT)))));
+            list.add(GuiUtils.translate(keyTurnOff, TimeUtils.parseTime(nbt.getInt(NBT_TIME_OFF), TimeFormat.getFormatByIndex(nbt.getInt(NBT_TIME_FORMAT)))));            
         } else {
-            list.add(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.tooltip.empty").withStyle(ChatFormatting.GRAY));
+            list.add(textEmpty);
         }        
     }
     
@@ -91,7 +96,7 @@ public class StreetLampConfigCardItem extends Item
 
     public static CompoundTag doesContainValidLinkData(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        return tag != null && tag.contains("turnOnTime") && tag.contains("turnOffTime") && tag.contains("timeFormat") ? tag : null;
+        return tag != null && tag.contains(NBT_TIME_ON) && tag.contains(NBT_TIME_OFF) && tag.contains(NBT_TIME_FORMAT) ? tag : null;
     }
 
     @Override
@@ -107,23 +112,23 @@ public class StreetLampConfigCardItem extends Item
         if (!player.isShiftKeyDown() && state.getBlock() instanceof StreetLampBaseBlock block && level.getBlockEntity(pos) instanceof StreetLampBlockEntity blockEntity) {
             if (!level.isClientSide) {
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
-                    if (nbt.getInt("turnOnTime") == nbt.getInt("turnOffTime")) {
-                        player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.error_same_time").withStyle(ChatFormatting.RED), false);                        
+                    if (nbt.getInt(NBT_TIME_ON) == nbt.getInt(NBT_TIME_OFF)) {
+                        player.displayClientMessage(textErrorTimeEqual, false);                        
                         return InteractionResult.FAIL;
                     }
-                    blockEntity.setOnTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOnTime")));
-                    blockEntity.setOffTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt("turnOffTime")));
-                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.set"), true);
+                    blockEntity.setOnTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt(NBT_TIME_ON)));
+                    blockEntity.setOffTime(TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt(NBT_TIME_OFF)));
+                    player.displayClientMessage(textApply, true);
                     Utils.giveAdvancement((ServerPlayer)player, ModMain.MOD_ID, "street_lamp_config", "requirement");
                 } else {
                     blockEntity.setOnTime(-1);
                     blockEntity.setOffTime(-1);
-                    player.displayClientMessage(GuiUtils.translate("item.trafficcraft.street_lamp_config_card.use.unset"), true);
+                    player.displayClientMessage(textRemove, true);
                 }
             }
             return InteractionResult.SUCCESS;
         }
 
-        return InteractionResult.FAIL;
+        return super.useOn(pContext);
     }
 }
