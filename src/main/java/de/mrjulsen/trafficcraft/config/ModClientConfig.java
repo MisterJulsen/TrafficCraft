@@ -12,7 +12,7 @@ public class ModClientConfig {
     static {
         BUILDER.push(ModMain.MOD_ID + "_client_config");
         
-        GLOW_RENDER_EFFECT = BUILDER.comment("Defines how the glow effect is implemented. Changing this option may fix compatibility issues with other mods. Restart is required!")
+        GLOW_RENDER_EFFECT = BUILDER.comment("Implementation of the glow effect. Changing this option may fix compatibility issues with other mods. Restart is required!")
             .defineEnum("glow_shader_renderer", ERenderType.DEFAULT);
 
         BUILDER.pop();
