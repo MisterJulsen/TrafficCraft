@@ -171,7 +171,7 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     jarJar("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}") {
-        jarJar.ranged(it, '[0.1.10-1.18.2,)')
+        jarJar.ranged(it, '[0.1.11-1.18.2,)')
     }
     implementation fg.deobf("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}")
     //implementation fg.deobf("com.github.MisterJulsen:MC-DragonLib:1.18.2-SNAPSHOT")

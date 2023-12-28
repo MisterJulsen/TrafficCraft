@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Arrays;
 
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.common.IIterableEnum;
 import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
-import de.mrjulsen.trafficcraft.block.data.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
