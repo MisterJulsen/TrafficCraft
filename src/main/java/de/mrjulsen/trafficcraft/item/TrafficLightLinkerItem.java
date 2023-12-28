@@ -89,12 +89,12 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                     switch (mode) {
                         case UNLINK:
                             blockEntity.clearLink();
-                            player.displayClientMessage(GuiUtils.translate(keyRemoveLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
+                            player.displayClientMessage(GuiUtils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
                             break;
                         case LINK:
                         default:
                             blockEntity.linkTo(linkLoc);
-                            player.displayClientMessage(GuiUtils.translate(keySetLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                            player.displayClientMessage(GuiUtils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                             break;
                     }
                 } else {                        
@@ -106,12 +106,12 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                             switch (mode) {
                                 case UNLINK:                                
                                     blockEntity.removeTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                                    player.displayClientMessage(GuiUtils.translate(keyRemoveLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
+                                    player.displayClientMessage(GuiUtils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
                                     break;
                                 case LINK:
                                 default:
                                     blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                                    player.displayClientMessage(GuiUtils.translate(keySetLink, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                                    player.displayClientMessage(GuiUtils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                                     break;
                             }
                         }
