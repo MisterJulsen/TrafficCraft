@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -73,13 +72,13 @@ public class BrushItem extends Item {
         if (stack.hasTag()) {
             PaintColor paintColor = PaintColor.byId(stack.getTag().getInt(NBT_COLOR));
             String color = GuiUtils.translate(paintColor.getTranslatableString()).getString();
-
-            if (stack.getTag().getInt(NBT_PAINT) == 0) {                
-                color = GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty").getString();
+    
+            list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));            
+            if (stack.getTag().getInt(NBT_PAINT) == 0) {
+                list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color", GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
+            } else {
+                list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color", GuiUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
             }
-
-            list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));
-            list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color", GuiUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
             list.add(GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt(NBT_PAINT))).withStyle(ChatFormatting.GRAY));
         }
         
