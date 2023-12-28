@@ -108,6 +108,7 @@ public class PaintBrushScreen extends CommonScreen {
 
             if (patternId == j) {
                 btnImport.select();
+                preview = resources[j];                
             }
             this.addRenderableWidget(btnImport);
         }        
