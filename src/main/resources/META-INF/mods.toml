@@ -9,7 +9,7 @@ modLoader="javafml" #mandatory
 loaderVersion="[40,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 # The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.
 # Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.
-license="MIT License"
+license="GNU General Public License v3.0"
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/MisterJulsen/TrafficCraft/issues" #optional
 # A list of mods - how many allowed here is determined by the individual mod loader
@@ -25,17 +25,15 @@ displayName="Traffic Craft" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 updateJSONURL="https://raw.githubusercontent.com/MisterJulsen/TrafficCraft/1.18.2/update.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
-displayURL="https://www.curseforge.com/minecraft/mc-mods/trafficcraft" #optional
+displayURL="https://modrinth.com/mod/trafficcraft" #optional
 # A file name (in the root of the mod JAR) containing a logo for display
 logoFile="mod_icon.png" #optional
 # A text field displayed in the mod UI
-credits="This mod is inspired by MapperBase's RoadStuff mod." #optional
+credits="This mod is inspired by Mapper's RoadStuff mod." #optional
 # A text field displayed in the mod UI
 authors="MrJulsen" #optional
 # The description text for the mod (multi line!) (#mandatory)
-description='''
-A Minecraft mod that brings roads, traffic signs, traffic lights and much more to your Minecraft world. Build your own cities and roads according to your wishes.
-'''
+description='''A Minecraft mod that brings roads, traffic signs, traffic lights and much more to your Minecraft world. Build your own cities and roads according to your wishes. Feel free to join my Discord server for more information about my mods or to send bug reports, suggestions or to exchange with the community! https://discord.gg/AeSbNgvc7f'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.trafficcraft]] #optional
     # the modid of the dependency
@@ -61,5 +59,5 @@ A Minecraft mod that brings roads, traffic signs, traffic lights and much more t
     mandatory=true
     # This version range declares a minimum of the current minecraft version up to but not including the next major version
     versionRange="[1.18.2,1.19)"
-    ordering="NONE"
+    ordering="BEFORE"
     side="BOTH"
