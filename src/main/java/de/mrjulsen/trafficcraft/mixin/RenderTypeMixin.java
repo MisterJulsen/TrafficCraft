@@ -16,16 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(RenderType.class)
 public class RenderTypeMixin {
     
-    /*
-    @Overwrite
-    public static List<RenderType> chunkBufferLayers() {
-        // Ersetzen Sie dies durch Ihre eigene Liste von RenderType-Elementen
-        return ImmutableList.of(RenderType.solid(), RenderType.cutoutMipped(), RenderType.cutout(), RenderType.translucent(), RenderType.tripwire(), RenderTypes.GLOW_SOLID);
-    }
-    
-    */
-
-    
     @Inject(method = "chunkBufferLayers", at = @At("RETURN"), cancellable = true)
     private static void addCustomLayer(CallbackInfoReturnable<List<RenderType>> cir) {
         List<RenderType> layers = new ArrayList<>();

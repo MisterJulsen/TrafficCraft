@@ -49,9 +49,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 }
             }
             maxWidth += w;
-        }/* else {
-            maxWidth = 10;
-        }*/
+        }
         return maxWidth;
     }
 

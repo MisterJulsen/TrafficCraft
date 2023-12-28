@@ -556,7 +556,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 ));
             }
 
-            if (this.enabledColors.contains(color)) {
+            if (this.enabledColors.stream().anyMatch(x -> x.isSimilar(color))) {
                 b.select();
             }
         }

@@ -26,7 +26,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -87,34 +86,8 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)
             .setValue(MODEL, TrafficLightModel.THREE_LIGHTS)
-            //.setValue(VARIANT, TrafficLightVariant.NORMAL)
-            //.setValue(DIRECTION, TrafficLightDirection.NORMAL)
-            //.setValue(MODE, TrafficLightMode.OFF)
         );
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(MODEL, TrafficLightModel.THREE_LIGHTS));
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState, BlockState newState) {
-
-        // TODO: Don't know if this works...
-        
-        if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
-            boolean isPedestrian = false;
-            if (oldState.getOptionalValue(MODE).isPresent()) {
-                blockEntity.enableOnlyColors(oldState.getValue(MODE).convertToColorList());
-            }
-            if (oldState.getOptionalValue(VARIANT).isPresent()) {
-                newState = newState.setValue(MODEL, oldState.getValue(VARIANT).convertToModel());
-                isPedestrian = oldState.getValue(VARIANT) == de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant.PEDESTRIAN;
-            }
-            if (oldState.getOptionalValue(DIRECTION).isPresent()) {
-                blockEntity.setIcon(oldState.getValue(DIRECTION).convertToIcon(isPedestrian));
-            }
-        }
-        
-        super.onBlockStateChange(level, pos, oldState, newState);
     }
 
     @Override

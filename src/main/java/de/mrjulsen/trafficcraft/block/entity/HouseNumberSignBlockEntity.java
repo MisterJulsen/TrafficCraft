@@ -25,7 +25,6 @@ public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity i
     @Override
     public SignRenderingConfig getRenderingConfig() {
         SignRenderingConfig config = new SignRenderingConfig(1);
-        //config.textureYOffset = config.height() / 2;
         config.maxLineWidth = config.width() / 2;
         config.textureYOffset = 40;
         config.setFontScale(0, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 3.0D));

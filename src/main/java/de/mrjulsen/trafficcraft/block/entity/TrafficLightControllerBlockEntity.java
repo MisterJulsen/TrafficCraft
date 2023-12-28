@@ -41,9 +41,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
     private boolean powered = false;
     private List<Location> trafficLightLocations = new ArrayList<>();
 
-    // ticking
-    //private Map<Integer, TrafficLightMode> modes = new HashMap<>();
-
     protected TrafficLightControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -69,17 +66,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
             schedules.add(data);
         }
 
-        /*
-        ListTag modesList = compound.getList("modes", Tag.TAG_COMPOUND);
-        modes.clear();
-        for (int i = 0; i < modesList.size(); i++) {
-            CompoundTag c = modesList.getCompound(i);
-            int key = c.getInt("key");
-            int value = compound.getInt("value");
-            modes.put(key, TrafficLightMode.getModeByIndex(value));
-        }
-        */
-
         ListTag trafficLightsList = compound.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
         trafficLightLocations.clear();
         for (int i = 0; i < trafficLightsList.size(); i++) {
@@ -96,16 +82,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         for (TrafficLightSchedule data : schedules) {
             listTag.add(data.toNbt());
         }
-
-        /*
-        ListTag modesTag = new ListTag();        
-        for (Map.Entry<Integer, TrafficLightMode> entry : modes.entrySet()) {
-            CompoundTag c = new CompoundTag();
-            c.putInt("key", entry.getKey());
-            c.putInt("value", entry.getValue().getIndex());
-            modesTag.add(c);
-        }
-        */
 
         ListTag trafficLightsList = new ListTag();
         for (Location loc : trafficLightLocations) {
@@ -239,15 +215,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         BlockEntityUtil.sendUpdatePacket(this);
     }
 
-    /*
-    public TrafficLightMode getModeForPhaseId(int phaseId) {
-        if (!modes.containsKey(phaseId))
-            return null;
-
-        return modes.get(phaseId);
-    }
-    */
-
     public void startSchedule(boolean forceRestart) {
         if (forceRestart || !this.isFirstIteration()) {
             this.totalTicks = 0;
@@ -265,12 +232,6 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
         setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
-
-    /*
-    public boolean hasSomethingToDo(int phaseId, TrafficLightMode currentMode) {
-        return modes.containsKey(phaseId) && modes.get(phaseId) != currentMode;
-    }
-    */
 
     public boolean isFirstIteration() {
         return this.totalTicks == this.ticks;

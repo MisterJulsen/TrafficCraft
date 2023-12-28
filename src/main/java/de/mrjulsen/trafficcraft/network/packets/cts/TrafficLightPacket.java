@@ -55,7 +55,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
         if (enabledColorsArr.length > 0) {
             byte[] enColBArr = new byte[enabledColorsArr.length];
             for (int i = 0; i < enabledColorsArr.length; i++) {
-                enColBArr[i] = enabledColorsArr[i].getIndex();
+                enColBArr[i] = enabledColorsArr[i].getGroupIndex();
             }
             buffer.writeByteArray(enColBArr);
         }
