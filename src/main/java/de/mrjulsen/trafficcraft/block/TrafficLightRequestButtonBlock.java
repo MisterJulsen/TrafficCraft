@@ -125,8 +125,11 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRand) {
         if (pState.getValue(POWERED)) {
             if (pLevel.getBlockEntity(pPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity && blockEntity.isValidLinked()) {
-                pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, false).setValue(ACTIVATED, true));
-                blockEntity.activate();               
+                if (blockEntity.activate()) {
+                    pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, false).setValue(ACTIVATED, true));
+                } else {
+                    pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, false).setValue(ACTIVATED, false));
+                }
             } else {
                 pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, false).setValue(ACTIVATED, false));
             }

@@ -339,6 +339,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             this.totalTicks = 0;
             this.running = true;
         }
+        setChanged();
         BlockEntityUtil.sendUpdatePacket(this);
     }
 

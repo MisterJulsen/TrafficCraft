@@ -69,10 +69,13 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
         if (this.listening) {
             if (!level.isClientSide) {
                 boolean isRunning = false;
-                if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
-                    isRunning = blockEntity.isFirstIteration();
-                } else  if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
-                    isRunning = blockEntity.isFirstIteration();
+
+                if (this.linkLocation != null) {
+                    if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
+                        isRunning = blockEntity.isFirstIteration();
+                    } else  if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
+                        isRunning = blockEntity.isFirstIteration();
+                    }
                 }
                 
                 if (!isRunning) {
@@ -105,7 +108,10 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
     }
 
     public boolean isValidLinked() {
-        return this.getLinkLocation() != null && level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity;
+        return this.getLinkLocation() != null && (
+            level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity ||
+            level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity
+        );
     }
 
     public boolean isListening() {
@@ -113,13 +119,14 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
     }
 
     public boolean activate() {
-        this.listening = true;
         if (!this.isValidLinked()) 
             return false;
+            
+        this.listening = true;
 
         if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity) {
             if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.ON_REQUEST) {
-                blockEntity.startSchedule(false);
+                blockEntity.startSchedule(true);
                 return true;
             }
         } else if (level.getBlockEntity(this.linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
@@ -128,6 +135,8 @@ public class TrafficLightRequestButtonBlockEntity extends BlockEntity {
                 return true;
             }
         }
+        
+        this.listening = false;
 
         return false;
     }
