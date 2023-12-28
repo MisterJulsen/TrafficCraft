@@ -14,8 +14,9 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
@@ -53,7 +54,7 @@ public class TownSignScreen extends CommonScreen {
     protected final SignRenderingConfig config;
 
     
-    private Component textVariant = GuiUtils.translate("gui.trafficcraft.townsignvariant");
+    private Component textVariant = Utils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
     private final TownSignBlock.ETownSignSide side;
 
@@ -61,7 +62,7 @@ public class TownSignScreen extends CommonScreen {
     protected Button btnDone;
 
     public TownSignScreen(TownSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
-        super(GuiUtils.translate("sign.edit"));
+        super(Utils.translate("sign.edit"));
 
         this.variant = pSign.getBlockState().getValue(TownSignBlock.VARIANT);
         this.side = side;
@@ -120,7 +121,7 @@ public class TownSignScreen extends CommonScreen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
     }
 
     public void tick() {
@@ -133,7 +134,7 @@ public class TownSignScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NetworkManager.getInstance().send(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side), null); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
         this.minecraft.setScreen(null);
     }
 

@@ -7,12 +7,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
 import de.mrjulsen.mcdragonlib.utils.Clipboard;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
@@ -32,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TrafficLightControllerScreen extends CommonScreen {
-    public static final Component title = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.title");
+    public static final Component title = Utils.translate("gui.trafficcraft.trafficlightcontroller.title");
 
     private static final int GUI_WIDTH = 240;
     
@@ -52,8 +53,8 @@ public class TrafficLightControllerScreen extends CommonScreen {
     protected ResizableCycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
-    private Component textStatus = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
-    private Component textEditSchedule = GuiUtils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
+    private Component textStatus = Utils.translate("gui.trafficcraft.trafficlightcontroller.status");
+    private Component textEditSchedule = Utils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
 
     public TrafficLightControllerScreen(BlockPos pos, Level level) {
         super(title);
@@ -128,10 +129,10 @@ public class TrafficLightControllerScreen extends CommonScreen {
             (btn) ->  {
                 Optional<TrafficLightSchedule> schedule = Clipboard.get(TrafficLightSchedule.class);
                 if (schedule.isPresent()) {
-                    NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
+                    NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficLightSchedulePacket(
                         blockPos,
                         List.of(schedule.get())
-                    ), null);
+                    ));
                 }
             })
         );
@@ -141,10 +142,10 @@ public class TrafficLightControllerScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NetworkManager.getInstance().send(new TrafficLightControllerPacket(
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficLightControllerPacket(
             blockPos,
             status
-        ), null);
+        ));
 
         this.onClose();
     }

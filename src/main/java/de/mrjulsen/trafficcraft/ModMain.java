@@ -3,9 +3,8 @@ package de.mrjulsen.trafficcraft;
 import com.mojang.logging.LogUtils;
 
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
-import de.mrjulsen.trafficcraft.config.ModClientConfig;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.init.ClientInit;
+import de.mrjulsen.trafficcraft.init.ClientInitWrapper;
 import de.mrjulsen.trafficcraft.init.ServerInit;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -32,13 +31,12 @@ public class ModMain {
 
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(ServerInit::setup);
-        eventBus.addListener(ClientInit::setup);
+        eventBus.addListener(ClientInitWrapper::setup);
 
         ModBlocks.register(eventBus);
         ModItems.register(eventBus);
         ModBlockEntities.register(eventBus);
         ModMenuTypes.register(eventBus);        
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ModClientConfig.SPEC, MOD_ID + "-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
         NetworkManager.create();       
         MinecraftForge.EVENT_BUS.register(this);

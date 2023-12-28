@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import de.mrjulsen.mcdragonlib.client.ColorObject;
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -29,21 +29,21 @@ public class ColorPaletteItem extends Item {
     public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(stack, player, list, flag);
         if (!stack.hasTag()) {
-            list.add(GuiUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+            list.add(Utils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
             return;
         }
 
         CompoundTag tag = checkNbt(stack);
 
         if (!IntStream.of(tag.getIntArray(COLORS_TAG)).anyMatch(x -> x != 0)) {
-            list.add(GuiUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+            list.add(Utils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
         } else {
             for (int i : tag.getIntArray(COLORS_TAG)) {
                 if (i == 0) {
-                    list.add(GuiUtils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+                    list.add(Utils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
                 } else {                
                     ColorObject c = ColorObject.fromInt(i);
-                    list.add(GuiUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
+                    list.add(Utils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
                 }
             } 
         }

@@ -49,7 +49,7 @@ public class PatternCatalogueDeletePacket implements IPacketBase<PatternCatalogu
                 menu.patternSlot.setChanged();
                 menu.broadcastChanges();
                 
-                NetworkManager.getInstance().send(new TrafficSignWorkbenchUpdateClientPacket(), sender);
+                NetworkManager.getInstance().sendToClient(new TrafficSignWorkbenchUpdateClientPacket(), sender);
             }
         });
     }

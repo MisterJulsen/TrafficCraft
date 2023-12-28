@@ -22,6 +22,8 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
@@ -81,13 +83,13 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     private final TrafficLightSchedule schedule;
 
     //texts
-    private static final Component textStart = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.start");
-    private static final Component textEnd = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.end");
-    private static final Component textAddEntry = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
-    private static final String textLoop = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
+    private static final Component textStart = Utils.translate("gui.trafficcraft.trafficlightschedule.start");
+    private static final Component textEnd = Utils.translate("gui.trafficcraft.trafficlightschedule.end");
+    private static final Component textAddEntry = Utils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
+    private static final String textLoop = Utils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
 
     protected TrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
-        super(GuiUtils.translate("gui.trafficcraft.trafficlightschedule.title"));
+        super(Utils.translate("gui.trafficcraft.trafficlightschedule.title"));
         this.last = last;
         this.pos = pos;
         this.level = level;
@@ -150,10 +152,10 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     @Override
     protected void onDone() {
         super.onDone();
-        NetworkManager.getInstance().send(new TrafficLightSchedulePacket(
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficLightSchedulePacket(
             pos,
             List.of(schedule)
-        ), null);
+        ));
         onClose();
     }
 
@@ -185,12 +187,12 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            GuiUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)),
+            Utils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)),
             (btn) -> {
                 ItemButton ibtn = (ItemButton)btn;
                 schedule.setTrigger(schedule.getTrigger().next());
                 ibtn.withItem(schedule.getTrigger().getIconStack());
-                btn.setMessage(GuiUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)));
+                btn.setMessage(Utils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)));
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
@@ -210,10 +212,10 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            GuiUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
+            Utils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
             (btn) -> {
                 schedule.setLoop(!schedule.isLoop());
-                btn.setMessage(GuiUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
+                btn.setMessage(Utils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
             }
         ));
 
@@ -223,7 +225,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             guiTop + WINDOW_HEIGHT - PADDING - 20,
             20,
             20,
-            GuiUtils.text("+"),
+            Utils.text("+"),
             (btn) -> {
                 createNewEntry();
             },

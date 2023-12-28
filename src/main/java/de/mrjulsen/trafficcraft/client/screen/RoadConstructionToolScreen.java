@@ -14,6 +14,8 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
@@ -36,7 +38,7 @@ import net.minecraftforge.client.gui.widget.ForgeSlider;
 
 @OnlyIn(Dist.CLIENT)
 public class RoadConstructionToolScreen extends CommonScreen {
-    public static final Component title = GuiUtils.translate("gui.trafficcraft.road_builder.title");
+    public static final Component title = Utils.translate("gui.trafficcraft.road_builder.title");
 
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/road_construction_tool.png");
     private static final int GUI_WIDTH = 244;
@@ -72,21 +74,21 @@ public class RoadConstructionToolScreen extends CommonScreen {
     private int slopesCount;
 
 
-    private final Component resetText = GuiUtils.translate("gui.trafficcraft.road_builder.reset");
-    private final Component buildText = GuiUtils.translate("gui.trafficcraft.road_builder.build").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD);
-    private final Component replaceBlocksText = GuiUtils.translate("gui.trafficcraft.road_builder.replace_blocks");
-    private final Component roadWidthText = GuiUtils.translate("gui.trafficcraft.road_builder.road_width");
-    private final Component roadBlocksText = GuiUtils.translate("gui.trafficcraft.road_builder.road_blocks");
-    private final Component requiredResourcesText = GuiUtils.translate("gui.trafficcraft.road_builder.required_resources");
-    private final Component noPositionDefined = GuiUtils.translate("gui.trafficcraft.road_builder.no_pos_defined");
+    private final Component resetText = Utils.translate("gui.trafficcraft.road_builder.reset");
+    private final Component buildText = Utils.translate("gui.trafficcraft.road_builder.build").withStyle(ChatFormatting.GOLD).withStyle(ChatFormatting.BOLD);
+    private final Component replaceBlocksText = Utils.translate("gui.trafficcraft.road_builder.replace_blocks");
+    private final Component roadWidthText = Utils.translate("gui.trafficcraft.road_builder.road_width");
+    private final Component roadBlocksText = Utils.translate("gui.trafficcraft.road_builder.road_blocks");
+    private final Component requiredResourcesText = Utils.translate("gui.trafficcraft.road_builder.required_resources");
+    private final Component noPositionDefined = Utils.translate("gui.trafficcraft.road_builder.no_pos_defined");
 
-    private final Component tooltipPos1 = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.pos1");
-    private final Component tooltipPos2 = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.pos2");
-    private final Component tooltipReplaceBlocks = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.replace_blocks");
-    private final Component tooltipReset = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.reset");
-    private final Component tooltipBuild = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.build");
-    private final Component tooltipBuildMissingPos = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.build_missing_pos");
-    //private final Component tooltipBuildMissingResources = GuiUtils.translate("gui.trafficcraft.road_builder.tooltip.build_missing_res").withStyle(ChatFormatting.RED);
+    private final Component tooltipPos1 = Utils.translate("gui.trafficcraft.road_builder.tooltip.pos1");
+    private final Component tooltipPos2 = Utils.translate("gui.trafficcraft.road_builder.tooltip.pos2");
+    private final Component tooltipReplaceBlocks = Utils.translate("gui.trafficcraft.road_builder.tooltip.replace_blocks");
+    private final Component tooltipReset = Utils.translate("gui.trafficcraft.road_builder.tooltip.reset");
+    private final Component tooltipBuild = Utils.translate("gui.trafficcraft.road_builder.tooltip.build");
+    private final Component tooltipBuildMissingPos = Utils.translate("gui.trafficcraft.road_builder.tooltip.build_missing_pos");
+    //private final Component tooltipBuildMissingResources = Utils.translate("gui.trafficcraft.road_builder.tooltip.build_missing_res").withStyle(ChatFormatting.RED);
 
 
     public RoadConstructionToolScreen(ItemStack stack, int blocksCount, int slopesCount) {
@@ -126,7 +128,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         int btnWidth = btnSpace - 2;
 
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
-            NetworkManager.getInstance().send(new RoadBuilderResetPacket(), null);
+            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new RoadBuilderResetPacket());
             this.onCancel();
         }, Tooltip.of(tooltipReset).withMaxWidth(width / 4));
 
@@ -139,10 +141,10 @@ public class RoadConstructionToolScreen extends CommonScreen {
             boolean replaceBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
             RoadType roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
 
-            NetworkManager.getInstance().send(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType), null);
+            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
 
             RoadConstructionTool.reset(stack);
-            NetworkManager.getInstance().send(new RoadBuilderResetPacket(), null);
+            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new RoadBuilderResetPacket());
             this.onClose();
         }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
@@ -162,7 +164,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
             }
         }, Tooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
 
-        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, GuiUtils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
+        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, Utils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
         (slider, value) -> {
             roadWidth = value.byteValue();
             if (pos1 != null && pos2 != null) {
@@ -209,7 +211,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, roadWidth);
         nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, replaceExistingBlocks);
         nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, roadType.getIndex());
-        NetworkManager.getInstance().send(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType), null);
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
     }
 
     public void onCancel() {

@@ -67,7 +67,7 @@ public class TrafficSignPatternPacket implements IPacketBase<TrafficSignPatternP
 
                 Utils.giveAdvancement(sender, ModMain.MOD_ID, "create_traffic_sign_pattern", "requirement");
 
-                NetworkManager.getInstance().send(new TrafficSignWorkbenchUpdateClientPacket(), sender);
+                NetworkManager.getInstance().sendToClient(new TrafficSignWorkbenchUpdateClientPacket(), sender);
             }
         });
     }

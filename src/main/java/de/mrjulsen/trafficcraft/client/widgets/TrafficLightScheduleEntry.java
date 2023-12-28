@@ -16,6 +16,7 @@ import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableButton;
 import de.mrjulsen.mcdragonlib.utils.Math;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
@@ -66,13 +67,13 @@ public class TrafficLightScheduleEntry extends Button {
     private final BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction; 
 
     // texts
-    private static final Component textDelay = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.delay");
-    private static final Component textAddTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.add_time");
-    private static final Component textRemoveTime = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.remove_time");
-    private static final Component textPhaseId = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.phase_id");
-    private static final Component textMoveUp = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.move_up");
-    private static final Component textMoveDown = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.move_down");
-    private static final Component textDelete = GuiUtils.translate("gui.trafficcraft.trafficlightschedule.delete");
+    private static final Component textDelay = Utils.translate("gui.trafficcraft.trafficlightschedule.delay");
+    private static final Component textAddTime = Utils.translate("gui.trafficcraft.trafficlightschedule.add_time");
+    private static final Component textRemoveTime = Utils.translate("gui.trafficcraft.trafficlightschedule.remove_time");
+    private static final Component textPhaseId = Utils.translate("gui.trafficcraft.trafficlightschedule.phase_id");
+    private static final Component textMoveUp = Utils.translate("gui.trafficcraft.trafficlightschedule.move_up");
+    private static final Component textMoveDown = Utils.translate("gui.trafficcraft.trafficlightschedule.move_down");
+    private static final Component textDelete = Utils.translate("gui.trafficcraft.trafficlightschedule.delete");
 
     private final List<Tooltip> widgetTooltips = new ArrayList<>();
     private final List<Tooltip> areaTooltips = new ArrayList<>();
@@ -115,7 +116,7 @@ public class TrafficLightScheduleEntry extends Button {
             TrafficLightScheduleEditor.ENTRY_PADDING / 2 + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
             DEFAULT_EDIT_BOX_HEIGHT,
             DEFAULT_EDIT_BOX_HEIGHT,
-            GuiUtils.text("-"),
+            Utils.text("-"),
             (btn) -> {
                 if (entry.getDurationSeconds() <= 0) {
                     return;
@@ -132,7 +133,7 @@ public class TrafficLightScheduleEntry extends Button {
             TrafficLightScheduleEditor.ENTRY_PADDING / 2 + TrafficLightScheduleEditor.DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
             DEFAULT_EDIT_BOX_HEIGHT,
             DEFAULT_EDIT_BOX_HEIGHT,
-            GuiUtils.text("+"),
+            Utils.text("+"),
             (btn) -> {
                 if (entry.getDurationSeconds() >= TrafficLightScheduleEntryData.MAX_SECONDS) {
                     return;

@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import de.mrjulsen.mcdragonlib.client.ColorObject;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class ColorPickerGui extends CommonScreen {
 
-    public static final Component title = GuiUtils.translate("gui.trafficcraft.colorpicker.title");
+    public static final Component title = Utils.translate("gui.trafficcraft.colorpicker.title");
 
     private static final int WIDTH = 250;
     private static final int HEIGHT = 185;
@@ -53,9 +54,9 @@ public class ColorPickerGui extends CommonScreen {
     // fix
     private boolean rgbNoUpdate = false;
 
-    private Component textHSV = GuiUtils.translate("gui.trafficcraft.colorpicker.hsv");
-    private Component textRGB = GuiUtils.translate("gui.trafficcraft.colorpicker.rgb");
-    private Component textInteger = GuiUtils.translate("gui.trafficcraft.colorpicker.integer");
+    private Component textHSV = Utils.translate("gui.trafficcraft.colorpicker.hsv");
+    private Component textRGB = Utils.translate("gui.trafficcraft.colorpicker.rgb");
+    private Component textInteger = Utils.translate("gui.trafficcraft.colorpicker.integer");
 
     private static final ResourceLocation gui = new ResourceLocation(ModMain.MOD_ID, "textures/gui/color_picker.png");
 

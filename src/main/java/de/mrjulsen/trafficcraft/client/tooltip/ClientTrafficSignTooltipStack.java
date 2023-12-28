@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.client.tooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;
@@ -43,7 +43,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                     w = 0;
                 }
                 String label = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-                int textWidth = (int)(pFont.width(GuiUtils.text(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET)) * FONT_SCALE);
+                int textWidth = (int)(pFont.width(Utils.text(label).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET)) * FONT_SCALE);
                 if (w < textWidth + IMAGE_HEIGHT + 10) {
                     w = textWidth + IMAGE_HEIGHT + 10;
                 }
@@ -78,7 +78,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
             
             if (true) { //(Screen.hasShiftDown()) {
                 String txt = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-                MutableComponent label = GuiUtils.text(txt).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
+                MutableComponent label = Utils.text(txt).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
                 int fW = (int)(pFont.width(label) * FONT_SCALE);
                 if (maxW < fW) {
                     maxW = fW;

@@ -12,8 +12,9 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
@@ -52,7 +53,7 @@ public class WritableSignScreen extends CommonScreen {
     protected Button btnDone;
 
     public WritableSignScreen(WritableTrafficSignBlockEntity pSign) {
-        super(GuiUtils.translate("sign.edit"));
+        super(Utils.translate("sign.edit"));
 
         this.config = pSign.getRenderingConfig();
         this.lines = pSign.getRenderingConfig().getLines();
@@ -82,7 +83,7 @@ public class WritableSignScreen extends CommonScreen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NetworkManager.getInstance().send(new WritableSignPacket(this.sign.getBlockPos(), messages), null); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new WritableSignPacket(this.sign.getBlockPos(), messages)); 
     }
 
     public void tick() {
@@ -95,7 +96,7 @@ public class WritableSignScreen extends CommonScreen {
 
     @Override
     protected void onDone() {
-        NetworkManager.getInstance().send(new WritableSignPacket(this.sign.getBlockPos(), messages), null); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new WritableSignPacket(this.sign.getBlockPos(), messages)); 
         this.minecraft.setScreen(null);
     }
 

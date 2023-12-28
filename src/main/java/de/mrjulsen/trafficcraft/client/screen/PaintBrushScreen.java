@@ -18,6 +18,8 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -31,10 +33,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class PaintBrushScreen extends CommonScreen {
 
-    public static final Component title = GuiUtils.translate("gui.trafficcraft.paint_brush.title");
-    public static final Component titleOpenFileDialog = GuiUtils.translate("gui.trafficcraft.signpicker.openfiledialog");
-    public static final Component btnDoneText = GuiUtils.translate("gui.trafficcraft.signpicker.load");
-    public static final Component tooltipImport = GuiUtils.translate("gui.trafficcraft.signpicker.tooltip.import");
+    public static final Component title = Utils.translate("gui.trafficcraft.paint_brush.title");
+    public static final Component titleOpenFileDialog = Utils.translate("gui.trafficcraft.signpicker.openfiledialog");
+    public static final Component btnDoneText = Utils.translate("gui.trafficcraft.signpicker.load");
+    public static final Component tooltipImport = Utils.translate("gui.trafficcraft.signpicker.tooltip.import");
 
     private static final int WIDTH = 187;
     private static final int HEIGHT = 171;
@@ -80,7 +82,7 @@ public class PaintBrushScreen extends CommonScreen {
 
     @Override
     public void onClose() {
-        NetworkManager.getInstance().send(new PaintBrushPacket(patternId), null);
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new PaintBrushPacket(patternId));
         super.onClose();
     }
 
@@ -137,9 +139,9 @@ public class PaintBrushScreen extends CommonScreen {
             GuiUtils.setShaderColor(1, 1, 1, 1);            
         }
 
-        Component textPattern = GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", patternId);
-        Component textColor = GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.color", GuiUtils.translate(color.getTranslatableString()).getString());
-        Component textPaint = GuiUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", (int)(100.0f / Constants.MAX_PAINT * paint));
+        Component textPattern = Utils.translate("item.trafficcraft.paint_brush.tooltip.pattern", patternId);
+        Component textColor = Utils.translate("item.trafficcraft.paint_brush.tooltip.color", Utils.translate(color.getTranslatableString()).getString());
+        Component textPaint = Utils.translate("item.trafficcraft.paint_brush.tooltip.paint", (int)(100.0f / Constants.MAX_PAINT * paint));
 
         font.draw(stack, textPattern, guiLeft + WIDTH - 7 - font.width(textPattern), guiTop + 130, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
         font.draw(stack, textColor, guiLeft + WIDTH - 7 - font.width(textColor), guiTop + 130 + font.lineHeight, DragonLibConstants.DEFAULT_UI_FONT_COLOR);

@@ -83,7 +83,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
         setBase64Texture(base64);
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
+                NetworkManager.getInstance().sendToClient(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }
@@ -103,7 +103,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
     private void clear() {
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NetworkManager.getInstance().send(new TrafficSignTextureResetPacket(ID), player);
+                NetworkManager.getInstance().sendToClient(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }

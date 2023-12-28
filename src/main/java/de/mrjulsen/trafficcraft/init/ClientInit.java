@@ -33,13 +33,10 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientInit {
 
 	private static final int CHECKERBOARD_COLOR_A = 0xFFE9E9E9;
@@ -69,13 +66,10 @@ public class ClientInit {
         ItemModelGenerator.LAYERS.add("layer8");
         
         /* RENDER LAYERS */
-        /*
-        ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_LIGHT.get(), RenderTypes.getGlowingSolid());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
         ItemBlockRenderTypes.setRenderLayer(ModBlocks.TRAFFIC_SIGN_WORKBENCH.get(), RenderType.cutout());
-        */
 
         for (RegistryObject<Block> block : ModBlocks.COLORED_BLOCKS) {
             if (block.getId().toString().contains("pattern")) {
