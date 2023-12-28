@@ -168,7 +168,7 @@ public enum PaintColor implements StringRepresentable {
 
       double luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
       return luminance < 0.5;
-  }
+   }
 
    public boolean equals(DyeColor dye) {
       return dye.getId() == this.getId();
@@ -213,7 +213,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_CONCRETE;
          case WHITE:
-            return Blocks.WHITE_CONCRETE;            
+            return Blocks.WHITE_CONCRETE;
          case YELLOW:
             return Blocks.YELLOW_CONCRETE;
          default:
@@ -252,7 +252,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_WOOL;
          case WHITE:
-            return Blocks.WHITE_WOOL;            
+            return Blocks.WHITE_WOOL;
          case YELLOW:
             return Blocks.YELLOW_WOOL;
          default:
@@ -291,7 +291,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_STAINED_GLASS;
          case WHITE:
-            return Blocks.WHITE_STAINED_GLASS;            
+            return Blocks.WHITE_STAINED_GLASS;
          case YELLOW:
             return Blocks.YELLOW_STAINED_GLASS;
          default:
@@ -330,7 +330,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_STAINED_GLASS_PANE;
          case WHITE:
-            return Blocks.WHITE_STAINED_GLASS_PANE;            
+            return Blocks.WHITE_STAINED_GLASS_PANE;
          case YELLOW:
             return Blocks.YELLOW_STAINED_GLASS_PANE;
          default:
@@ -369,7 +369,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_SHULKER_BOX;
          case WHITE:
-            return Blocks.WHITE_SHULKER_BOX;            
+            return Blocks.WHITE_SHULKER_BOX;
          case YELLOW:
             return Blocks.YELLOW_SHULKER_BOX;
          default:
@@ -408,7 +408,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_CARPET;
          case WHITE:
-            return Blocks.WHITE_CARPET;            
+            return Blocks.WHITE_CARPET;
          case YELLOW:
             return Blocks.YELLOW_CARPET;
          default:
@@ -447,7 +447,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_BED;
          case WHITE:
-            return Blocks.WHITE_BED;            
+            return Blocks.WHITE_BED;
          case YELLOW:
             return Blocks.YELLOW_BED;
          default:
@@ -486,7 +486,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_TERRACOTTA;
          case WHITE:
-            return Blocks.WHITE_TERRACOTTA;            
+            return Blocks.WHITE_TERRACOTTA;
          case YELLOW:
             return Blocks.YELLOW_TERRACOTTA;
          default:
@@ -525,7 +525,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_CANDLE;
          case WHITE:
-            return Blocks.WHITE_CANDLE;            
+            return Blocks.WHITE_CANDLE;
          case YELLOW:
             return Blocks.YELLOW_CANDLE;
          default:
@@ -564,7 +564,7 @@ public enum PaintColor implements StringRepresentable {
          case RED:
             return Blocks.RED_BANNER;
          case WHITE:
-            return Blocks.WHITE_BANNER;            
+            return Blocks.WHITE_BANNER;
          case YELLOW:
             return Blocks.YELLOW_BANNER;
          default:

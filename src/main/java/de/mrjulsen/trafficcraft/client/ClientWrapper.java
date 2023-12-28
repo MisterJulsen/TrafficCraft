@@ -17,6 +17,7 @@ import de.mrjulsen.trafficcraft.client.screen.TrafficLightControllerScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen;
+import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
 import net.minecraft.client.Minecraft;
@@ -27,8 +28,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 public class ClientWrapper {
 
-    public static void showPaintBrushScreen(int pattern, int paint, int color, float scroll) {        
-        Minecraft.getInstance().setScreen(new PaintBrushScreen(pattern, paint, color, scroll));
+    public static void showPaintBrushScreen(int pattern, int paint, PaintColor color) {
+        Minecraft.getInstance().setScreen(new PaintBrushScreen(pattern, paint, color));
     }
 
     public static void showSignPatternSelectionScreen(ItemStack stack) {        
