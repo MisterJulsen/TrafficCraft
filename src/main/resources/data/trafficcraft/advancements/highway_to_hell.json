@@ -1,8 +1,7 @@
 {
   "display": {
     "icon": {
-      "item": "trafficcraft:paint_brush",
-      "nbt": "{color:14,paint:100,Enchantments:[{lvl:0}]}"
+      "item": "trafficcraft:gold_road_construction_tool"
     },
     "title": {
       "translate": "advancement.trafficcraft.highway_to_hell"
@@ -15,25 +14,10 @@
     "announce_to_chat": true,
     "hidden": true
   },
-  "parent": "trafficcraft:paint_blocks",
+  "parent": "trafficcraft:road_construction_tool",
   "criteria": {
     "req": {
-      "trigger": "minecraft:item_used_on_block",
-      "conditions": {
-        "player": {
-          "nbt": "{Dimension:\"minecraft:the_nether\"}"
-        },
-        "item": {
-          "items": [
-            "trafficcraft:paint_brush"
-          ]
-        },
-        "location": {
-          "block": {
-            "tag": "trafficcraft:road"
-          }
-        }
-      }
+      "trigger": "minecraft:impossible"
     }
   },
   "rewards": {
