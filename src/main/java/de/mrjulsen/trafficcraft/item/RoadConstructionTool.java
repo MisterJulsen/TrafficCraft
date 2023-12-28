@@ -39,6 +39,7 @@ import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -240,7 +241,7 @@ public class RoadConstructionTool extends Item {
         pPlayer.getCooldowns().addCooldown(pStack.getItem(), blockList.size() * BUILD_DELAY_TICKS);
 
         if (!pLevel.isClientSide) {
-            Utils.giveAdvancement((ServerPlayer)pPlayer, ModMain.MOD_ID, "road_construction_tool", "req");
+            Utils.giveAdvancement((ServerPlayer)pPlayer, ModMain.MOD_ID, "road_construction_tool", "req");            
         }
 
         return new RoadBuildingData(blockList, pPlayer, pHand, pStack, start, end, roadWidth, replaceBlocks, roadType);
