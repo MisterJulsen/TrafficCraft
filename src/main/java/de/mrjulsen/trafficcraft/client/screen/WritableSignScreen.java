@@ -12,23 +12,24 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.WritableSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
 
 import java.util.stream.IntStream;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +37,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 @OnlyIn(Dist.CLIENT)
-public class WritableSignScreen extends Screen {
+public class WritableSignScreen extends CommonScreen {
     /** Reference to the sign object. */
     protected final WritableTrafficSignBlockEntity sign;
     /** Counts the number of screen updates. */
@@ -52,7 +53,7 @@ public class WritableSignScreen extends Screen {
     protected Button btnDone;
 
     public WritableSignScreen(WritableTrafficSignBlockEntity pSign) {
-        super(new TranslatableComponent("sign.edit"));
+        super(Utils.translate("sign.edit"));
 
         this.config = pSign.getRenderingConfig();
         this.lines = pSign.getRenderingConfig().getLines();
@@ -66,10 +67,10 @@ public class WritableSignScreen extends Screen {
 
     protected void init() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        this.btnDone = new Button(this.width / 2 - 100, this.height / 4 + 120, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
+        this.btnDone = addButton(this.width / 2 - 100, this.height / 4 + 120, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
             this.onDone();
-        });
-        this.addRenderableWidget(btnDone);
+        }, null);
+
         this.signField = new TextFieldHelper(() -> {
             return this.messages[this.line];
         }, (text) -> {
@@ -82,7 +83,7 @@ public class WritableSignScreen extends Screen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NetworkManager.MOD_CHANNEL.sendToServer(new WritableSignPacket(this.sign.getBlockPos(), messages)); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new WritableSignPacket(this.sign.getBlockPos(), messages)); 
     }
 
     public void tick() {
@@ -93,8 +94,9 @@ public class WritableSignScreen extends Screen {
 
     }
 
+    @Override
     protected void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new WritableSignPacket(this.sign.getBlockPos(), messages)); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new WritableSignPacket(this.sign.getBlockPos(), messages)); 
         this.minecraft.setScreen(null);
     }
 

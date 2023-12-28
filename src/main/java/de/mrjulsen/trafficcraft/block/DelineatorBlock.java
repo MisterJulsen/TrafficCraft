@@ -28,12 +28,19 @@ public class DelineatorBlock extends WaterloggableBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     
     public static final VoxelShape SHAPE_COMMON = Block.box(6, 0, 6, 10, 16, 10);
+    public static final VoxelShape SHAPE_SMALL = Block.box(6, 0, 6, 10, 11, 10);
     
-    public DelineatorBlock() {
+    public static final VoxelShape OCCLUSION_COMMON = Block.box(5, 0, 5, 9, 16, 9);
+    public static final VoxelShape OCCLUSION_SMALL = Block.box(5, 0, 5, 9, 11, 9);
+
+    private final boolean small;
+    
+    public DelineatorBlock(boolean small) {
         super(BlockBehaviour.Properties.of(Material.BAMBOO)
             .sound(SoundType.BAMBOO)   
             .instabreak()         
         );
+        this.small = small;
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)          
         );
@@ -42,12 +49,12 @@ public class DelineatorBlock extends WaterloggableBlock {
 
     @Override
     public VoxelShape getOcclusionShape(BlockState pState, BlockGetter pLevel, BlockPos pPos) {
-        return SHAPE_COMMON;
+        return isSmall() ? OCCLUSION_SMALL : OCCLUSION_COMMON;
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {        
-        return SHAPE_COMMON;
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {  
+        return isSmall() ? SHAPE_SMALL : SHAPE_COMMON;
     }
 
     @Override
@@ -85,6 +92,10 @@ public class DelineatorBlock extends WaterloggableBlock {
 
     public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
         return canSupportCenter(pLevel, pPos.below(), Direction.UP);
+    }
+
+    public boolean isSmall() {
+        return small;
     }
     
 }

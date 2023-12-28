@@ -14,6 +14,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
@@ -21,17 +25,15 @@ import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TownSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.font.TextFieldHelper;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -39,7 +41,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 @OnlyIn(Dist.CLIENT)
-public class TownSignScreen extends Screen {
+public class TownSignScreen extends CommonScreen {
     /** Reference to the sign object. */
     protected final TownSignBlockEntity sign;
     /** Counts the number of screen updates. */
@@ -52,7 +54,7 @@ public class TownSignScreen extends Screen {
     protected final SignRenderingConfig config;
 
     
-    private TranslatableComponent textVariant = new TranslatableComponent("gui.trafficcraft.town_sign.variant");
+    private Component textVariant = Utils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
     private final TownSignBlock.ETownSignSide side;
 
@@ -60,7 +62,7 @@ public class TownSignScreen extends Screen {
     protected Button btnDone;
 
     public TownSignScreen(TownSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
-        super(new TranslatableComponent("sign.edit"));
+        super(Utils.translate("sign.edit"));
 
         this.variant = pSign.getBlockState().getValue(TownSignBlock.VARIANT);
         this.side = side;
@@ -88,17 +90,14 @@ public class TownSignScreen extends Screen {
 
     protected void init() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        this.btnDone = new Button(this.width / 2 - 100, this.height / 4 + 145, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
+        this.btnDone = addButton(this.width / 2 - 100, this.height / 4 + 145, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
             this.onDone();
-        });
-        this.addRenderableWidget(btnDone);
-        this.addRenderableWidget(CycleButton.<TownSignVariant>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TownSignVariant.values()).withInitialValue(variant)
-                .create(this.width / 2 - 100, this.height / 4 + 120, 200, 20, textVariant, (pCycleButton, pValue) -> {
-                    this.variant = pValue;
-        }));
+        }, null);
+
+        addCycleButton(ModMain.MOD_ID, TownSignVariant.class, this.width / 2 - 100, this.height / 4 + 120, 200, 20, textVariant, variant,
+        (btn, value) -> {
+            this.variant = value;            
+        }, null);
 
 
         this.signField = new TextFieldHelper(() -> {
@@ -122,7 +121,7 @@ public class TownSignScreen extends Screen {
 
     public void removed() {
         this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
-        NetworkManager.MOD_CHANNEL.sendToServer(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
     }
 
     public void tick() {
@@ -133,8 +132,9 @@ public class TownSignScreen extends Screen {
 
     }
 
+    @Override
     protected void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
         this.minecraft.setScreen(null);
     }
 

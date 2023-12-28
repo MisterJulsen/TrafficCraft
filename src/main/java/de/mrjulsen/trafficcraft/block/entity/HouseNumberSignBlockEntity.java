@@ -4,7 +4,7 @@ import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,7 +25,6 @@ public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity i
     @Override
     public SignRenderingConfig getRenderingConfig() {
         SignRenderingConfig config = new SignRenderingConfig(1);
-        //config.textureYOffset = config.height() / 2;
         config.maxLineWidth = config.width() / 2;
         config.textureYOffset = 40;
         config.setFontScale(0, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 3.0D));

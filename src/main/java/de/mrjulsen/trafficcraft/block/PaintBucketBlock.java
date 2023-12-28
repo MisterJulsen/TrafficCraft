@@ -1,13 +1,14 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.item.BrushItem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -108,7 +109,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
     {
         if (state.getValue(WATERLOGGED)) {
-            player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.underwater"), true);
+            player.displayClientMessage(Utils.translate("block.trafficcraft.paint_bucket.message.underwater").withStyle(ChatFormatting.RED), true);
             return InteractionResult.FAIL;
         }
 
@@ -126,7 +127,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             // Check if bucket is empty
             if (paint <= 0) {
                 if(!level.isClientSide)
-                    player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.empty"), true);
+                    player.displayClientMessage(Utils.translate("block.trafficcraft.paint_bucket.message.empty").withStyle(ChatFormatting.RED), true);
                 return InteractionResult.FAIL;
             }
 
@@ -152,13 +153,13 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
 
             if (state.getValue(PAINT) > 0) {
                 if (!blockEntity.getColor().equals(dye.getDyeColor())) {
-                    player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.wrong_color"), true);
+                    player.displayClientMessage(Utils.translate("block.trafficcraft.paint_bucket.message.wrong_color").withStyle(ChatFormatting.RED), true);
                     return InteractionResult.FAIL;
                 }
             }
 
             if (state.getValue(PAINT) >= MAX_PAINT) {
-                player.displayClientMessage(new TranslatableComponent("block.trafficcraft.paint_bucket.message.full"), true);
+                player.displayClientMessage(Utils.translate("block.trafficcraft.paint_bucket.message.full").withStyle(ChatFormatting.YELLOW), true);
                 return InteractionResult.FAIL;
             }
 

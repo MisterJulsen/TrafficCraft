@@ -123,7 +123,9 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
                 }
             } else {
                 blockEntity.setPowered(false);
-                blockEntity.stopSchedule();
+                if (blockEntity.getFirstOrMainSchedule().getTrigger() == TrafficLightTrigger.REDSTONE) {
+                    blockEntity.stopSchedule();
+                }
             }                    
         }
     }

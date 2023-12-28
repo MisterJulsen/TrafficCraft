@@ -2,26 +2,26 @@ package de.mrjulsen.trafficcraft.client.screen;
 
 import java.util.function.Consumer;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.ColorObject;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ColorPickerGui extends Screen {
+public class ColorPickerGui extends CommonScreen {
 
-    public static final Component title = new TextComponent("colorpicker");
+    public static final Component title = Utils.translate("gui.trafficcraft.colorpicker.title");
 
     private static final int WIDTH = 250;
     private static final int HEIGHT = 185;
@@ -54,10 +54,9 @@ public class ColorPickerGui extends Screen {
     // fix
     private boolean rgbNoUpdate = false;
 
-    private TranslatableComponent textTitle = new TranslatableComponent("gui.trafficcraft.colorpicker.title");
-    private TranslatableComponent textHSV = new TranslatableComponent("gui.trafficcraft.colorpicker.hsv");
-    private TranslatableComponent textRGB = new TranslatableComponent("gui.trafficcraft.colorpicker.rgb");
-    private TranslatableComponent textInteger = new TranslatableComponent("gui.trafficcraft.colorpicker.integer");
+    private Component textHSV = Utils.translate("gui.trafficcraft.colorpicker.hsv");
+    private Component textRGB = Utils.translate("gui.trafficcraft.colorpicker.rgb");
+    private Component textInteger = Utils.translate("gui.trafficcraft.colorpicker.integer");
 
     private static final ResourceLocation gui = new ResourceLocation(ModMain.MOD_ID, "textures/gui/color_picker.png");
 
@@ -88,113 +87,152 @@ public class ColorPickerGui extends Screen {
     }
 
     @Override
-    public void tick() {
-        this.hBox.tick();
-        this.sBox.tick();
-        this.vBox.tick();
-        super.tick();
-    }
-
-    @Override
     public void init() {
         super.init();
         guiLeft = this.width / 2 - WIDTH / 2;
         guiTop = this.height / 2 - (HEIGHT + 24) / 2;
 
-        this.addRenderableWidget(new Button(this.width / 2 - 2 - 115, guiTop + HEIGHT - 28, 115, 20, CommonComponents.GUI_DONE, (p) -> {
+        addButton(this.width / 2 - 2 - 115, guiTop + HEIGHT - 28, 115, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onDone();
-        }));
+        }, null);
 
-        this.addRenderableWidget(new Button(this.width / 2 + 3, guiTop + HEIGHT - 28, 115, 20, CommonComponents.GUI_CANCEL, (p) -> {
+        addButton(this.width / 2 + 3, guiTop + HEIGHT - 28, 115, 20, CommonComponents.GUI_CANCEL, (p) -> {
             this.onClose();
-        }));
+        }, null);
 
-        this.hBox = new EditBox(this.font, guiLeft + 197, guiTop + 41, 44, 16, new TextComponent("null"));
+        this.hBox = addEditBox(
+            guiLeft + 197, guiTop + 41, 44, 16,
+            "0", true,
+            (x) -> {
+                h = Double.valueOf(nullCheck(x)) / 360.0D;
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.hBox.setFilter(this::numberFilter360);
-        this.hBox.setValue("0");
-        this.hBox.setResponder(x -> h = Double.valueOf(nullCheck(x)) / 360.0D);
         this.addRenderableWidget(this.hBox);
 
-        this.sBox = new EditBox(this.font, guiLeft + 197, guiTop + 67, 44, 16, new TextComponent("null"));
+        this.sBox = addEditBox(
+            guiLeft + 197, guiTop + 67, 44, 16,
+            "0", true,
+            (x) -> {
+                s = Double.valueOf(nullCheck(x)) / 100.0D;
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.sBox.setFilter(this::numberFilter100);
-        this.sBox.setValue("0");
-        this.sBox.setResponder(x -> s = Double.valueOf(nullCheck(x)) / 100.0D);
         this.addRenderableWidget(this.sBox);
 
-        this.vBox = new EditBox(this.font, guiLeft + 197, guiTop + 93, 44, 16, new TextComponent("null"));
+        this.vBox = addEditBox(
+            guiLeft + 197, guiTop + 93, 44, 16,
+            "0", true,
+            (x) -> {
+                v = Double.valueOf(nullCheck(x)) / 100.0D;
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.vBox.setFilter(this::numberFilter100);
-        this.vBox.setValue("0");
-        this.vBox.setResponder(x -> v = Double.valueOf(nullCheck(x)) / 100.0D);
         this.addRenderableWidget(this.vBox);
 
-        this.rBox = new EditBox(this.font, guiLeft + 64, guiTop + 115, 32, 16, new TextComponent("null"));
+        rgbNoUpdate = true;
+        this.rBox = addEditBox(
+            guiLeft + 64, guiTop + 115, 32, 16,
+            "0", true,
+            (x) -> {
+                if (rgbNoUpdate) {
+                    return;
+                }
+                ColorObject c = new ColorObject(Integer.valueOf(nullCheck(x)), Integer.valueOf(nullCheck(gBox.getValue())), Integer.valueOf(nullCheck(bBox.getValue())));
+                float[] hsv = c.toHSV();
+                h = hsv[0];
+                s = hsv[1];
+                v = hsv[2];
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.rBox.setFilter(this::numberFilter255);
-        this.rBox.setValue("0");
-        this.rBox.setResponder(x -> {
-            if (rgbNoUpdate) {
-                return;
-            }
-            ColorObject c = new ColorObject(Integer.valueOf(nullCheck(x)), Integer.valueOf(nullCheck(gBox.getValue())), Integer.valueOf(nullCheck(bBox.getValue())));
-            float[] hsv = c.toHSV();
-            h = hsv[0];
-            s = hsv[1];
-            v = hsv[2];
-        });
         this.addRenderableWidget(this.rBox);
 
-        this.gBox = new EditBox(this.font, guiLeft + 96, guiTop + 115, 32, 16, new TextComponent("null"));
+        this.gBox = addEditBox(
+            guiLeft + 96, guiTop + 115, 32, 16,
+            "0", true,
+            (x) -> {
+                if (rgbNoUpdate) {
+                    return;
+                }
+                ColorObject c = new ColorObject(Integer.valueOf(nullCheck(rBox.getValue())), Integer.valueOf(nullCheck(x)), Integer.valueOf(nullCheck(bBox.getValue())));
+                float[] hsv = c.toHSV();
+                h = hsv[0];
+                s = hsv[1];
+                v = hsv[2];
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.gBox.setFilter(this::numberFilter255);
-        this.gBox.setValue("0");
-        this.gBox.setResponder(x -> {
-            if (rgbNoUpdate) {
-                return;
-            }
-            ColorObject c = new ColorObject(Integer.valueOf(nullCheck(rBox.getValue())), Integer.valueOf(nullCheck(x)), Integer.valueOf(nullCheck(bBox.getValue())));
-            float[] hsv = c.toHSV();
-            h = hsv[0];
-            s = hsv[1];
-            v = hsv[2];
-        });
         this.addRenderableWidget(this.gBox);
 
-        this.bBox = new EditBox(this.font, guiLeft + 128, guiTop + 115, 32, 16, new TextComponent("null"));
+        this.bBox = addEditBox(
+            guiLeft + 128, guiTop + 115, 32, 16,
+            "0", true,
+            (x) -> {
+                if (rgbNoUpdate) {
+                    return;
+                }
+                ColorObject c = new ColorObject(Integer.valueOf(nullCheck(rBox.getValue())), Integer.valueOf(nullCheck(gBox.getValue())), Integer.valueOf(nullCheck(x)));
+                float[] hsv = c.toHSV();
+                h = hsv[0];
+                s = hsv[1];
+                v = hsv[2];
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
         this.bBox.setFilter(this::numberFilter255);
-        this.bBox.setValue("0");
-        this.bBox.setResponder(x -> {
-            if (rgbNoUpdate) {
-                return;
-            }
-            ColorObject c = new ColorObject(Integer.valueOf(nullCheck(rBox.getValue())), Integer.valueOf(nullCheck(gBox.getValue())), Integer.valueOf(nullCheck(x)));
-            float[] hsv = c.toHSV();
-            h = hsv[0];
-            s = hsv[1];
-            v = hsv[2];
-        });
         this.addRenderableWidget(this.bBox);
 
-        this.colorIntBox = new EditBox(this.font, guiLeft + 64, guiTop + 135, 96, 16, new TextComponent("null"));
-        this.colorIntBox.setFilter(this::number);
-        this.colorIntBox.setValue("0");
-        this.colorIntBox.setResponder(x -> {
-            if (rgbNoUpdate) {
-                return;
-            }
-            ColorObject c = ColorObject.fromInt(Integer.valueOf(nullCheck(x)));
-            float[] hsv = c.toHSV();
-            h = hsv[0];
-            s = hsv[1];
-            v = hsv[2];
-        });
+
+        this.colorIntBox = addEditBox(
+            guiLeft + 64, guiTop + 135, 96, 16,
+            "0", true,
+            (x) -> {
+                if (rgbNoUpdate) {
+                    return;
+                }
+                ColorObject c = ColorObject.fromInt(Integer.valueOf(nullCheck(x)));
+                float[] hsv = c.toHSV();
+                h = hsv[0];
+                s = hsv[1];
+                v = hsv[2];
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+        );
+        this.colorIntBox.setFilter(this::editBoxNumberFilter);
         this.addRenderableWidget(this.colorIntBox);
         
         this.updateInputBoxes();
+        rgbNoUpdate = false;
     }
 
     private String nullCheck(String in) {
-        return in == null || in.isEmpty() ? "0" : in;
+        return in == null || in.isEmpty() || in.equals("-") ? "0" : in;
     }
 
-    private void onDone() {
+    private boolean editBoxNumberFilter(String input) {
+        if (input.isEmpty())
+            return true;
+
+        String i = input;
+        if (input.equals("-"))
+            i = "-0";
+
+        try {
+            Integer.parseInt(i);
+			return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    @Override
+    protected void onDone() {
         this.result.accept(ColorObject.fromHSV(h, s, v));
         this.onClose();
     }
@@ -223,25 +261,12 @@ public class ColorPickerGui extends Screen {
         return numberFilter(input, 0, 360);
     }
 
-    private boolean number(String input) {
-        if (input.isEmpty())
-            return true;
-
-        try {
-            Integer.parseInt(input);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
 
         renderBackground(stack, 0);
-        RenderSystem.setShaderTexture(0, gui);
 
-        blit(stack, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT);
+        GuiUtils.blit(gui, stack, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT);
 
         for (int i = 0; i < COLOR_PICKER_WIDTH; i++) {
             ColorObject ch = getH(i, COLOR_PICKER_WIDTH);
@@ -257,17 +282,16 @@ public class ColorPickerGui extends Screen {
         fill(stack, guiLeft + 197, guiTop + 10, guiLeft + 197 + 22, guiTop + 10 + 24, ColorObject.fromHSV(h, s, v).toInt());
         fill(stack, guiLeft + 197 + 22, guiTop + 10, guiLeft + 197 + 44, guiTop + 10 + 24, currentColor);
 
-        String title = textTitle.getString();
+        String title = getTitle().getString();
         this.font.draw(stack, textHSV, guiLeft + 9, guiTop + 28, 4210752);
         this.font.draw(stack, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752);
         this.font.draw(stack, textRGB, guiLeft + 9, guiTop + 119, 4210752);
         this.font.draw(stack, textInteger, guiLeft + 9, guiTop + 139, 4210752);
 
         // Draw selections
-        RenderSystem.setShaderTexture(0, gui);
-        blit(stack, guiLeft + 5 + (int)(h * COLOR_PICKER_WIDTH), guiTop + 38, inSliderH(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
-        blit(stack, guiLeft + 5 + (int)(s * COLOR_PICKER_WIDTH), guiTop + 64, inSliderS(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
-        blit(stack, guiLeft + 5 + (int)(v * COLOR_PICKER_WIDTH), guiTop + 90, inSliderV(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
+        GuiUtils.blit(gui, stack, guiLeft + 5 + (int)(h * COLOR_PICKER_WIDTH), guiTop + 38, inSliderH(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
+        GuiUtils.blit(gui, stack, guiLeft + 5 + (int)(s * COLOR_PICKER_WIDTH), guiTop + 64, inSliderS(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
+        GuiUtils.blit(gui, stack, guiLeft + 5 + (int)(v * COLOR_PICKER_WIDTH), guiTop + 90, inSliderV(mouseX, mouseY) ? SELECTION_W : 0, SELECTION_Y, SELECTION_W, SELECTION_H);
 
         super.render(stack, mouseX, mouseY, partialTicks);
     }

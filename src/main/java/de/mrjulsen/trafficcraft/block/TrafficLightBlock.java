@@ -1,13 +1,15 @@
 package de.mrjulsen.trafficcraft.block;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
@@ -55,43 +57,37 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final EnumProperty<TrafficLightVariant> VARIANT = EnumProperty.create("variant", TrafficLightVariant.class);
-    public static final EnumProperty<TrafficLightDirection> DIRECTION = EnumProperty.create("direction", TrafficLightDirection.class);
-    public static final EnumProperty<TrafficLightMode> MODE = EnumProperty.create("mode", TrafficLightMode.class);
+    public static final EnumProperty<TrafficLightModel> MODEL = EnumProperty.create("model", TrafficLightModel.class);
+
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant> VARIANT = EnumProperty.create("variant", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightVariant.class);
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection> DIRECTION = EnumProperty.create("direction", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightDirection.class);
+    @Deprecated public static final EnumProperty<de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode> MODE = EnumProperty.create("mode", de.mrjulsen.trafficcraft.block.data.compat.TrafficLightMode.class);
 
     public static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
 
-    public static final VoxelShape SHAPE_PART_NORTH = Block.box(4, 4.5d, 1, 12, 16, 6);
-    public static final VoxelShape SHAPE_PART_SOUTH = Block.box(4, 4.5d, 10, 12, 16, 15);
-    public static final VoxelShape SHAPE_PART_EAST = Block.box(10, 4.5d, 4, 15, 16, 12);
-    public static final VoxelShape SHAPE_PART_WEST = Block.box(1, 4.5d, 4, 6, 16, 12);
-    
-    public static final VoxelShape SHAPE_EXTRA_PART_NORTH = Block.box(4, -0.5d, 1, 12, 5, 6);
-    public static final VoxelShape SHAPE_EXTRA_PART_SOUTH = Block.box(4, -0.5d, 10, 12, 5, 15);
-    public static final VoxelShape SHAPE_EXTRA_PART_EAST = Block.box(10, -0.5d, 4, 15, 5, 12);
-    public static final VoxelShape SHAPE_EXTRA_PART_WEST = Block.box(1, -0.5d, 4, 6, 5, 12);
-
-    public static final VoxelShape SHAPE_NORTH = Shapes.or(SHAPE_COMMON, SHAPE_PART_NORTH);
-    public static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, SHAPE_PART_SOUTH);
-    public static final VoxelShape SHAPE_EAST = Shapes.or(SHAPE_COMMON, SHAPE_PART_EAST);
-    public static final VoxelShape SHAPE_WEST = Shapes.or(SHAPE_COMMON, SHAPE_PART_WEST);
+    private static final Map<TrafficLightModel, Map<Direction, VoxelShape>> shapes = new HashMap<>();
+    static {
+        Arrays.stream(TrafficLightModel.values()).forEach(x -> {
+            Map<Direction, VoxelShape> voxelShapes = new HashMap<>();
+            voxelShapes.put(Direction.NORTH, Block.box(4, x.getHitboxBottom(), 1, 12, x.getHitboxTop(), 6));
+            voxelShapes.put(Direction.SOUTH, Block.box(4, x.getHitboxBottom(), 10, 12, x.getHitboxTop(), 15));
+            voxelShapes.put(Direction.EAST, Block.box(10, x.getHitboxBottom(), 4, 15, x.getHitboxTop(), 12));
+            voxelShapes.put(Direction.WEST, Block.box(1, x.getHitboxBottom(), 4, 6, x.getHitboxTop(), 12));        
+            shapes.put(x, voxelShapes);
+        });
+    }
 
     public TrafficLightBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL)
             .strength(5f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.ANVIL)
-            .lightLevel((state) -> {
-                return state.getValue(MODE) == TrafficLightMode.OFF ? 0 : 1;
-            })
         );
         this.registerDefaultState(this.stateDefinition.any()
-            .setValue(FACING, Direction.NORTH)            
-            .setValue(VARIANT, TrafficLightVariant.NORMAL)
-            .setValue(DIRECTION, TrafficLightDirection.NORMAL)
-            .setValue(MODE, TrafficLightMode.OFF)
+            .setValue(FACING, Direction.NORTH)
+            .setValue(MODEL, TrafficLightModel.THREE_LIGHTS)
         );
-        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(VARIANT, TrafficLightVariant.NORMAL).setValue(DIRECTION, TrafficLightDirection.NORMAL).setValue(MODE, TrafficLightMode.OFF));
+        this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.NORTH).setValue(MODEL, TrafficLightModel.THREE_LIGHTS));
     }
 
     @Override
@@ -101,19 +97,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        TrafficLightVariant variant = pState.getValue(VARIANT);
-        switch((Direction)pState.getValue(FACING)) {
-            case NORTH:
-               return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_NORTH, SHAPE_EXTRA_PART_NORTH) : SHAPE_NORTH;
-            case SOUTH:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_SOUTH, SHAPE_EXTRA_PART_SOUTH) : SHAPE_SOUTH;
-            case EAST:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_EAST, SHAPE_EXTRA_PART_EAST) : SHAPE_EAST;
-            case WEST:
-                return variant == TrafficLightVariant.NORMAL ? Shapes.or(SHAPE_WEST, SHAPE_EXTRA_PART_WEST) : SHAPE_WEST;
-            default:
-               return SHAPE_COMMON;
-        }
+        return Shapes.or(SHAPE_COMMON, shapes.get(pState.getValue(MODEL)).get((Direction)pState.getValue(FACING)));
     }
 
     @Override
@@ -154,7 +138,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     @Override
     protected void createBlockStateDefinition(Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(WATERLOGGED, FACING, VARIANT, DIRECTION, MODE);
+        pBuilder.add(WATERLOGGED, FACING, MODEL);
     }
 
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
@@ -174,7 +158,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
 
         if (pLevel.isClientSide && item instanceof WrenchItem) {
             if (!pPlayer.isShiftKeyDown())
-                ClientWrapper.showTrafficLightConfigScreen(pPos, pLevel);
+                ClientWrapper.showTrafficLightConfigScreen(pLevel, pPos);
                 
             return InteractionResult.SUCCESS;
         }
@@ -191,7 +175,9 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
                 }
             } else {
                 blockEntity.setPowered(false);
-                blockEntity.stopSchedule();
+                if (blockEntity.getSchedule().getTrigger() == TrafficLightTrigger.REDSTONE) {
+                    blockEntity.stopSchedule();
+                }
             }                    
         }
     }

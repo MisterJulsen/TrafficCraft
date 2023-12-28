@@ -41,9 +41,7 @@ public class CreativePatternCatalogueItem extends PatternCatalogueItem {
         ItemStack stack = player.getItemInHand(hand);
 
         if (level.isClientSide) {
-            if (player.isShiftKeyDown()) {
-                ClientWrapper.showSignPatternSelectionScreen(stack);
-            }
+            ClientWrapper.showSignPatternSelectionScreen(stack);
         }
 
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

@@ -2,12 +2,12 @@ package de.mrjulsen.trafficcraft.block;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -136,7 +136,7 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
             if (!pLevel.isClientSide) {
                 if (pLevel.getBlockEntity(pPos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
                     if (!pLevel.isClientSide) {
-                        pPlayer.displayClientMessage(new TranslatableComponent("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
+                        pPlayer.displayClientMessage(Utils.translate("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
                         return InteractionResult.FAIL;
                     }
                 } else {                    

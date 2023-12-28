@@ -13,7 +13,7 @@
       "show_toast": true,
       "announce_to_chat": true
     },
-    "parent": "trafficcraft:paint_road",
+    "parent": "trafficcraft:craft_road",
     "criteria": {
       "requirement": {
         "trigger": "minecraft:inventory_changed",

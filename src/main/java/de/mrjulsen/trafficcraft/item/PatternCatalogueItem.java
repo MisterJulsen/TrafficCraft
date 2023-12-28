@@ -32,9 +32,7 @@ public class PatternCatalogueItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (level.isClientSide) {
-            if (player.isShiftKeyDown()) {
-                ClientWrapper.showSignPatternSelectionScreen(stack);
-            }
+            ClientWrapper.showSignPatternSelectionScreen(stack);
         }
 
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);

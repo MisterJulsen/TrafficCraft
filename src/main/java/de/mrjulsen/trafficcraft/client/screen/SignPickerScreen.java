@@ -14,40 +14,41 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer;
-import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
-import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
-import de.mrjulsen.trafficcraft.client.widgets.HScrollBar;
-import de.mrjulsen.trafficcraft.client.widgets.ICustomAreaControl;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.AreaStyle;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
-import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SignPickerScreen extends Screen {
+public class SignPickerScreen extends CommonScreen {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.signpicker.title");
-    public static final Component titleOpenFileDialog = new TranslatableComponent("gui.trafficcraft.signpicker.openfiledialog");
-    public static final Component btnDoneText = new TranslatableComponent("gui.trafficcraft.signpicker.load");
-    public static final Component tooltipImport = new TranslatableComponent("gui.trafficcraft.signpicker.tooltip.import");
+    public static final Component title = Utils.translate("gui.trafficcraft.signpicker.title");
+    public static final Component titleOpenFileDialog = Utils.translate("gui.trafficcraft.signpicker.openfiledialog");
+    public static final Component btnDoneText = Utils.translate("gui.trafficcraft.signpicker.load");
+    public static final Component tooltipImport = Utils.translate("gui.trafficcraft.signpicker.tooltip.import");
 
     private static final int WIDTH = 187;
     private static final int HEIGHT = 171;
@@ -65,8 +66,8 @@ public class SignPickerScreen extends Screen {
     private final Screen lastScreen;
     private final TrafficSignShape shape;
 
-    private final ControlCollection groupPatterns = new ControlCollection();
-    private HScrollBar scrollbar;
+    private final WidgetsCollection groupPatterns = new WidgetsCollection();
+    private VerticalScrollBar scrollbar;
     private Button doneButton;
 
     private final ResourceLocation[] resources;
@@ -114,16 +115,16 @@ public class SignPickerScreen extends Screen {
 
         groupPatterns.components.clear();
         
-        doneButton = this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, btnDoneText, (p) -> {
+        doneButton = addButton(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, btnDoneText, (p) -> {
             this.onDone();
-        }));
+        }, null);
 
-        this.addRenderableWidget(new Button(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
+        addButton(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
             this.onClose();
-        }));
+        }, null);
 
         
-        IconButton btn = new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+        IconButton btn = new IconButton(ButtonType.DEFAULT, AreaStyle.BROWN, TrafficSignWorkbenchGui.ButtonIcons.IMPORT.getSprite(), groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
             groupPatterns.performForEach(x -> ((IconButton)x).deselect());
             PointerBuffer filterPatterns = MemoryUtil.memAllocPointer(5);
             filterPatterns.put(MemoryUtil.memUTF8("*.png"));
@@ -155,20 +156,14 @@ public class SignPickerScreen extends Screen {
                 
             }
             this.minecraft.getSoundManager().resume();
-        }, (button, poseStack, mouseX, mouseY) -> {
-            
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                TrafficSignWorkbenchGui.ButtonIcons.IMPORT.render(pPoseStack, x, y);
-            }
-        };
+        }).withAlignment(Alignment.CENTER);
+        addTooltip(Tooltip.of(tooltipImport).assignedTo(btn)).withMaxWidth(width / 4);
         this.addRenderableWidget(btn);
         
         for (int i = 0; i < count; i++) {
             final int j = i;
-            IconButton btnImport = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, title, (button) -> {
+            Sprite sprite = new Sprite(resources[j], 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
+            IconButton btnImport = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
                 if (preview != null) {
                     preview.close();
                     preview = null;
@@ -179,21 +174,12 @@ public class SignPickerScreen extends Screen {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }, (button, poseStack, mouseX, mouseY) -> {
-                
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                    RenderSystem.setShaderTexture(0, resources[j]);
-                    blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, 32, 32, 32, 32);
-                }
-            };
+            }).withAlignment(Alignment.CENTER);            
             this.addRenderableWidget(btnImport);
         }
         
 
-        this.scrollbar = this.addRenderableWidget(new HScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)).setOnValueChangedEvent(v -> {
+        this.scrollbar = this.addRenderableWidget(new VerticalScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)).setOnValueChangedEvent(v -> {
             this.scroll = v.getScrollValue();
             fillButtons(groupPatterns.components.toArray(IconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
         }).setAutoScrollerHeight(true));
@@ -201,7 +187,8 @@ public class SignPickerScreen extends Screen {
         fillButtons(groupPatterns.components.toArray(IconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
     }
 
-    private void onDone() {
+    @Override
+    protected void onDone() {
         NativeImage img = null;
         if (preview != null) {
             final NativeImage image = preview.getPixels();
@@ -220,22 +207,19 @@ public class SignPickerScreen extends Screen {
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
         renderBackground(stack, 0);
-        AreaRenderer.renderWindow(stack, guiLeft, guiTop, WIDTH, HEIGHT);
-        AreaRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
+        DynamicGuiRenderer.renderWindow(stack, guiLeft, guiTop, WIDTH, HEIGHT);
+        DynamicGuiRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
         
         this.font.draw(stack, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752);
 
         super.render(stack, mouseX, mouseY, partialTicks);
         
         if (preview != null) {
-            RenderSystem.setShaderTexture(0, preview.getId());
-            blit(stack, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
+            GuiUtils.blit(preview.getId(), stack, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
         }
-
-        Utils.renderTooltip(this, groupPatterns.components.get(0), () -> List.of(tooltipImport.getVisualOrderText()), stack, mouseX, mouseY);
     }
 
-    private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, HScrollBar scrollbar) {
+    private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, VerticalScrollBar scrollbar) {
         if (buttons.length <= 0) {
             return;
         }
@@ -265,6 +249,7 @@ public class SignPickerScreen extends Screen {
         }
     }
 
+    /*
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         boolean[] b = new boolean[] { false };
@@ -299,4 +284,5 @@ public class SignPickerScreen extends Screen {
         super.mouseReleased(pMouseX, pMouseY, pButton);
         return b[0];
     }
+    */
 }

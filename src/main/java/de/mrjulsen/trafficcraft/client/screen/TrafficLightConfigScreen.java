@@ -1,296 +1,837 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+
+import de.mrjulsen.mcdragonlib.DragonLibConstants;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Clipboard;
+import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.utils.Wikipedia;
+import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightDirection;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightMode;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightVariant;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.data.Location;
+import de.mrjulsen.trafficcraft.client.ModGuiUtils;
+import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager;
+import de.mrjulsen.trafficcraft.client.ModGuiUtils.HelpButtonComponents;
+import de.mrjulsen.trafficcraft.client.TrafficLightTextureManager.TrafficLightTextureKey;
+import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TrafficLightPacket;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
-@OnlyIn(Dist.CLIENT)
-public class TrafficLightConfigScreen extends ParentableScreen
-{
-    public static final Component title = new TextComponent("trafficlightsettings");
+public class TrafficLightConfigScreen extends CommonScreen {
+
+    private static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(ModMain.MOD_ID, "textures/gui/window_arrow.png");
+    private static final int WINDOW_WIDTH = 241;
+    private static final int WINDOW_HEIGHT = 230;
+    private static final int WINDOW_PADDING_LEFT = 69;
+    private static final int INNER_PADDING = 7;
+    private static final int INNER_TOP_PADDING = 20;
+    private static final int TRAFFIC_LIGHT_LIGHT_SIZE = 24;
+    private static final int GLOBAL_SETTINGS_INDEX = -1;
+    private static final float SMALL_SCALE_VALUE = 0.75f;
+
+    private MultiLineLabel emptyLabel;
+    private MultiLineLabel phaseIdDescriptionLabel;
+    private Tooltip trafficLightAreaTooltip;
+    private GuiAreaDefinition trafficLightArea;
+    private GuiAreaDefinition ctrlWindowArea;
+    private GuiAreaDefinition ctrlButtonsArea;
+    private GuiAreaDefinition ctrlSettingsArea;
+    private GuiAreaDefinition[] trafficLightLightAreas;
+    private final WidgetsCollection typeGroup = new WidgetsCollection();
+    private final WidgetsCollection modelGroup = new WidgetsCollection();
+    private final WidgetsCollection iconGroup = new WidgetsCollection();
+    private final WidgetsCollection colorGroup = new WidgetsCollection();
+    private final WidgetsCollection controlTypeGroup = new WidgetsCollection();
+    private final Collection<Tooltip> iconTooltips = new ArrayList<>();
+    private final Collection<Tooltip> colorTooltips = new ArrayList<>();
+    private final Collection<Tooltip> modelTooltips = new ArrayList<>();
+    private final Collection<Tooltip> controlTypeTooltips = new ArrayList<>();
+    private final Map<TrafficLightControlType, WidgetsCollection> controlTypeTabGroups = new HashMap<>();
+    private final Map<TrafficLightControlType, Collection<Tooltip>> controlTypeTabTooltips = new HashMap<>();
     
-    private int guiTop = 50;
-    private static final int LINES = 5;
-
-    private static final int SPACING_X = 3;
-    private static final int SPACING_Y = 25;
-
-    private static final int HEIGHT = (int)((LINES + 2.5) * SPACING_Y);
+    private final Map<Byte, IconButton> indexedColorButtons = new HashMap<>();
 
 
-    private BlockPos blockPos;
-    private Level level;
-    private TrafficLightControlType controlType;
-    private TrafficLightMode mode;
-    private TrafficLightVariant variant;
-    private TrafficLightDirection direction;
-    private boolean status;
+    // mem
+    private final Level level;
+    private final BlockPos blockPos;
+    private int selectedPart = -2;
+    private int guiLeft;
+    private int guiTop;
+    private IconButton pasteButton;
+
+
+    // User settings
+    private final Set<TrafficLightColor> enabledColors = new HashSet<>();
+    private TrafficLightType type = TrafficLightType.CAR;
+    private TrafficLightModel model = TrafficLightModel.THREE_LIGHTS;
+    private TrafficLightIcon icon = TrafficLightIcon.NONE;
+    private TrafficLightControlType controlType = TrafficLightControlType.STATIC;
+    private TrafficLightColor[] colors = new TrafficLightColor[TrafficLightModel.maxRequiredSlots()];
+    private int phaseId = 0;
+    private boolean scheduleEnabled = true;
+
+    // text    
+    private static final Component textEmpty = Utils.translate("gui.trafficcraft.trafficlight.empty");
+    private static final Component textGeneralSettings = Utils.translate("gui.trafficcraft.trafficlight.general_settings");
+    private static final Component textSetSignal = Utils.translate("gui.trafficcraft.trafficlight.set_signal");
+    private static final Component textAreaTrafficLight = Utils.translate("gui.trafficcraft.trafficlight.edit_traffic_light");
+    private static final Component textCustomizeSchedule = Utils.translate("gui.trafficcraft.trafficlight.edit_schedule");
+    private static final Component textSetEnabledColors = Utils.translate("gui.trafficcraft.trafficlight.set_enabled_colors");
+    private static final Component textSetPhaseId = Utils.translate("gui.trafficcraft.trafficlight.set_phase_id");
+    private static final Component textPhaseIdDescription = Utils.translate("gui.trafficcraft.trafficlight.set_phase_id.description");
+    private static final String textStatus = Utils.translate("gui.trafficcraft.trafficlight.schedule_status").getString();
+    private static final String keyAreaTrafficLightSignal = "gui.trafficcraft.trafficlight.edit_signal_";
     
-    private boolean isLinked;
-    private Location linkLocation;
+    private static final String keyhelpTrafficLight = "gui.trafficcraft.trafficlight.help.traffic_light";
+    private static final String keyhelpTrafficLightDescription = "gui.trafficcraft.trafficlight.helpdesc.traffic_light";    
+    private static final String keyhelpTramTrafficLight = "gui.trafficcraft.trafficlight.help.traffic_light_tram";
+    private static final String keyhelpTramTrafficLightDescription = "gui.trafficcraft.trafficlight.helpdesc.traffic_light_tram";
 
-    // Controls    
-    protected CycleButton<TrafficLightControlType> controlTypeButton;
-
-    protected EditBox idInput;
-    protected CycleButton<TrafficLightMode> modeButton;
-    protected CycleButton<TrafficLightVariant> variantButton;
-    protected CycleButton<TrafficLightDirection> directionButton;
-    protected Button editScheduleButton;
-    protected CycleButton<Boolean> statusButton;
-
-    private TranslatableComponent textTitle = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.title");
-    private TranslatableComponent textEditSchedule = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.edit_schedule");
-    private TranslatableComponent textId = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.id");
-    private TranslatableComponent textMode = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.mode");
-    private TranslatableComponent textVariant = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.variant");
-    private TranslatableComponent textDirection = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.direction");
-    private TranslatableComponent textControlType = new TranslatableComponent("gui.trafficcraft.trafficlightsettings.controltype");
-    private TranslatableComponent textStatus = new TranslatableComponent("gui.trafficcraft.trafficlightcontroller.status");
-
-    private TranslatableComponent btnDoneTxt = new TranslatableComponent("gui.done");
-    private TranslatableComponent btnCancelTxt = new TranslatableComponent("gui.cancel");
-
-    public TrafficLightConfigScreen(BlockPos pos, Level level)
-    {
-        super(title);
+    public TrafficLightConfigScreen(Level level, BlockPos pos) {
+        super(Utils.translate("gui.trafficcraft.trafficlight.title"));
         this.level = level;
         this.blockPos = pos;
 
-        BlockState state = this.level.getBlockState(blockPos);
-        mode = state.getValue(TrafficLightBlock.MODE);
-        variant = state.getValue(TrafficLightBlock.VARIANT);
-        direction = state.getValue(TrafficLightBlock.DIRECTION);
-        
-        readBlockEntity();
+        Arrays.fill(colors, TrafficLightColor.NONE);
+        for (TrafficLightControlType type : TrafficLightControlType.values()) {
+            controlTypeTabTooltips.put(type, new ArrayList<>());
+            controlTypeTabGroups.put(type, new WidgetsCollection());
+        }
+
+        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock block) {            
+            this.model = level.getBlockState(pos).getValue(TrafficLightBlock.MODEL);
+        }
+        if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
+            for (TrafficLightColor color : blockEntity.getEnabledColors()) {
+                this.enabledColors.add(color);
+            }
+            this.type = blockEntity.getTLType();
+            this.icon = blockEntity.getIcon();
+            this.controlType = blockEntity.getControlType();
+            TrafficLightColor[] slots = blockEntity.getColorSlots();
+            for (int i = 0; i < slots.length && i < this.colors.length; i++) {
+                this.colors[i] = slots[i];
+            }
+            this.phaseId = blockEntity.getPhaseId();
+            this.scheduleEnabled = blockEntity.isRunning();
+        }
     }
 
-
-    public TrafficLightBlockEntity getBlockEntity() {
-        BlockEntity be = level.getBlockEntity(blockPos);
-        return be instanceof TrafficLightBlockEntity ? (TrafficLightBlockEntity)be : null;
-    }
-
-    private void updateControlType(TrafficLightControlType newControlType) {
-        this.controlType = newControlType;
-        this.updatePage();
+    @Override
+    public void onClose() {
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled));
+        super.onClose();
     }
 
     @Override
     public void tick() {
         super.tick();
 
-        if (this.controlType == TrafficLightControlType.REMOTE) {
-            this.idInput.tick();
-        }        
-    }
-
-    @Override
-    public boolean isPauseScreen()
-    {
-        return true;
-    }
-
-    private void readBlockEntity() {
-        if (this.level.getBlockEntity(blockPos) instanceof TrafficLightBlockEntity blockEntity) {
-            this.controlType = blockEntity.getControlType();
-            this.status = blockEntity.isRunning();
-            //TODO: change
-            //this.isLinked = blockEntity.isValidLinked();
-            //this.linkLocation = blockEntity.getLinkLocation();
+        if (pasteButton != null) {
+            pasteButton.active = Clipboard.contains(TrafficLightSchedule.class);
         }
     }
 
     @Override
-    public void init()
-    {
+    protected void init() {
         super.init();
+
+        guiLeft = width / 2 - WINDOW_WIDTH / 2;
+        guiTop = height / 2 - WINDOW_HEIGHT / 2;       
         
-        guiTop = this.height / 2 - HEIGHT / 2;
+        typeGroup.clear();
+        modelGroup.clear();
+        iconGroup.clear();
+        colorGroup.clear();
 
-
-        /* Default page */
-
-        this.addRenderableWidget(new Button(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, btnDoneTxt, (p) -> {
-            this.onDone();
-        }));
-
-        this.addRenderableWidget(new Button(this.width / 2 + SPACING_X, guiTop + (int)(SPACING_Y * 6.5f), 100 - SPACING_X, 20, btnCancelTxt, (p) -> {
-            this.onClose();
-        }));        
-        
-        this.variantButton = this.addRenderableWidget(CycleButton.<TrafficLightVariant>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightVariant.values()).withInitialValue(variant)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 1, 300, 20, textVariant, (pCycleButton, pValue) -> {
-                    this.variant = pValue;
-
-                    this.directionButton.active = pValue != TrafficLightVariant.PEDESTRIAN;
-                    if (pValue == TrafficLightVariant.PEDESTRIAN) {
-                        this.direction = TrafficLightDirection.NORMAL;
-                        this.directionButton.setValue(TrafficLightDirection.NORMAL);
+        /* GLOBAL SETTINGS WIDGETS */
+        int typeButtonWidth = (WINDOW_WIDTH - WINDOW_PADDING_LEFT - INNER_PADDING * 2 - 2) / TrafficLightType.values().length;
+        for (int i = 0; i < TrafficLightType.values().length; i++) {
+            final TrafficLightType type = TrafficLightType.values()[i];
+            final IconButton b = addRenderableWidget(new IconButton(
+                ButtonType.RADIO_BUTTON,
+                AreaStyle.BROWN,
+                type.getSprite(),
+                typeGroup,
+                guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING + 1 + i * typeButtonWidth,
+                guiTop + 21 + INNER_TOP_PADDING,
+                typeButtonWidth,
+                18,
+                Utils.translate(type.getTranslationKey()),
+                (btn) -> {
+                    this.type = type;
+                    initIconButtons();
+                    initColorButtons();
+                    for (int k = 0; k < colors.length; k++) {
+                        TrafficLightColor color = colors[k];
+                        if (color.isAllowedFor(type)) {
+                            continue;
+                        }
+                        colors[k] = Arrays.stream(color.getSimilar()).filter(x -> x.isAllowedFor(type)).findFirst().orElse(TrafficLightColor.NONE);
                     }
-        }));
-
-        this.directionButton = this.addRenderableWidget(CycleButton.<TrafficLightDirection>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightDirection.values()).withInitialValue(direction)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 2, 300, 20, textDirection, (pCycleButton, pValue) -> {
-                    this.direction = pValue;
-        }));
-        this.directionButton.active = variant != TrafficLightVariant.PEDESTRIAN;
-
-        this.controlTypeButton = this.addRenderableWidget(CycleButton.<TrafficLightControlType>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightControlType.values()).withInitialValue(controlType)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 3, 300, 20, textControlType, (pCycleButton, pValue) -> {
-                    this.updateControlType(pValue);
-        }));
-
-
-        /* STATIC PAGE */
-
-        this.modeButton = this.addRenderableWidget(CycleButton.<TrafficLightMode>builder((p) -> {            
-            return new TranslatableComponent(p.getTranslationKey());
-            })
-                .withValues(TrafficLightMode.values()).withInitialValue(mode)
-                .create(this.width / 2 - 150, guiTop + SPACING_Y * 4, 300, 20, textMode, (pCycleButton, pValue) -> {
-                    this.mode = pValue;
-        }));
-
-        /* REMOTE PAGE */
-        this.idInput = new EditBox(this.font, this.width / 2 + SPACING_X, guiTop + SPACING_Y * 4, 60, 16, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.id"));
-        this.idInput.setMaxLength(5);
-        this.idInput.setValue(Integer.toString(this.getBlockEntity().getPhaseId()));
-        this.idInput.setFilter(input -> {
-                if (input.isEmpty()) {
-                    return true;
                 }
+            ).withAlignment(Alignment.LEFT));
 
-                try {
-                    Integer.parseInt(input);
-                    return true;
-                } catch (NumberFormatException e) {
-                    return false;
-                }
+            addTooltip(Tooltip
+                .of(List.of(Utils.translate(type.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(type.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                .withMaxWidth(width / 4)
+                .assignedTo(b)
+            );
+
+            if (this.type == type) {
+                b.select();
             }
-        );
-        this.addWidget(this.idInput);  
+        }
 
-        /* OWN SCHEDULE PAGE */
-        this.editScheduleButton = new Button(this.width / 2 - 100, guiTop + SPACING_Y * 4, 200, 20, textEditSchedule, (p) -> {
-            this.minecraft.setScreen(new TrafficLightScheduleScreen(this, blockPos, level, false));
-        });
-        this.addRenderableWidget(editScheduleButton); 
+        for (int i = 0; i < TrafficLightModel.values().length; i++) {
+            final TrafficLightModel model = TrafficLightModel.values()[i];
+            final IconButton b = addRenderableWidget(new IconButton(
+                ButtonType.RADIO_BUTTON,
+                AreaStyle.BROWN,
+                model.getSprite(),
+                modelGroup,
+                guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING + 1 + i * IconButton.DEFAULT_BUTTON_WIDTH,
+                guiTop + 21 + 25 + INNER_TOP_PADDING,
+                null,
+                (btn) -> {
+                    this.model = model;
+                    initModelButtonAreas();
+                }
+            ));
 
-        this.statusButton = this.addRenderableWidget(CycleButton.onOffBuilder(this.status)
-            .withInitialValue(this.status)
-            .create(this.width / 2 - 100, guiTop + SPACING_Y * 5, 200, 20, textStatus, (pCycleButton, pValue) -> {
-                this.status = pValue;
-        }));
+            addTooltip(Tooltip
+                .of(List.of(Utils.translate(model.getValueTranslationKey(ModMain.MOD_ID))))
+                .withMaxWidth(width / 4)
+                .assignedTo(b)
+            );
+            
+            if (this.model == model) {
+                b.select();
+            }
+        }
         
-        this.updatePage();
+        emptyLabel = MultiLineLabel.create(this.font, textEmpty, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 10);
+
+        initIconButtons();
+        initModelButtonAreas();
+        initColorButtons();
+        switchPartEditor(selectedPart);
     }
 
-    private void onDone() {
-        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficLightPacket(
-            blockPos,
-            Integer.parseInt(idInput.getValue()),
-            mode.getIndex(),
-            variant.getIndex(),
-            direction.getIndex(),
-            controlType.getIndex(),
-            this.status
+    private void initIconButtons() {
+        iconGroup.performForEach(x -> removeWidget(x));
+        iconGroup.clear();
+        removeTooltips(x -> iconTooltips.contains(x));
+
+        TrafficLightIcon[] icons = TrafficLightIcon.getAllowedForType(type);
+        for (int i = 0; i < icons.length; i++) {
+            final TrafficLightIcon icon = icons[i];
+            final IconButton b = addRenderableWidget(new IconButton(
+                ButtonType.RADIO_BUTTON,
+                AreaStyle.BROWN,
+                icon.getSprite(type),
+                iconGroup,
+                guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING + 1 + i * IconButton.DEFAULT_BUTTON_WIDTH,
+                guiTop + 21 + 50 + INNER_TOP_PADDING,
+                null,
+                (btn) -> {
+                    this.icon = icon;
+                    initColorButtons();
+                }
+            ));
+
+            if (this.type == TrafficLightType.TRAM) {
+                String signalName = "h-1";
+                switch (icon) {
+                    default:
+                    case NONE:
+                        signalName = "f5";
+                        break;
+                    case LEFT:
+                        signalName = "f3";
+                        break;
+                    case RIGHT:
+                        signalName = "f2";
+                        break;
+                    case STRAIGHT:
+                        signalName = "f1";
+                        break;
+                }
+                iconTooltips.add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            } else {                
+                iconTooltips.add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(icon.getValueTranslationKey(ModMain.MOD_ID))))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            }
+            
+            if (this.icon == icon) {
+                b.select();
+            }
+        }
+
+        String url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
+        Component helpTitle = TextComponent.EMPTY;
+        Collection<Component> helpDescription = new ArrayList<>();
+
+        if (type == TrafficLightType.TRAM && Locale.getDefault().getLanguage().equals(Constants.GERMAN_LOCAL_CODE)) { // For german players only because that article only exists in germany
+            url = Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID;
+            helpTitle = Utils.translate(keyhelpTramTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(Utils.translate(keyhelpTramTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+        } else {    
+            url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
+            helpTitle = Utils.translate(keyhelpTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(Utils.translate(keyhelpTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+        }
+
+        HelpButtonComponents data = ModGuiUtils.createHelpButton(
+            this,
+            guiLeft + WINDOW_WIDTH + 4,
+            guiTop + 20,
+            IconButton.DEFAULT_BUTTON_WIDTH,
+            IconButton.DEFAULT_BUTTON_HEIGHT,
+            iconGroup,
+            AreaStyle.NATIVE,
+            Wikipedia.getArticle(url).getArticleUrl(Locale.getDefault().getLanguage()),
+            helpTitle,
+            helpDescription
+        );
+        addRenderableWidget(data.helpButton());
+        iconTooltips.add(addTooltip(data.tooltip()));
+
+        iconGroup.setVisible(selectedPart == GLOBAL_SETTINGS_INDEX);
+    }
+
+    private void initColorButtons() {
+        colorGroup.performForEach(x -> removeWidget(x));
+        colorGroup.clear();
+        indexedColorButtons.clear();
+        removeTooltips(x -> colorTooltips.contains(x));
+
+        TrafficLightColor[] colors = TrafficLightColor.getAllowedForType(type, true);
+        for (int i = 0; i < colors.length; i++) {
+            final TrafficLightColor color = colors[i];
+            final byte j = color.getIndex();
+            final IconButton b = addRenderableWidget(new IconButton(
+                ButtonType.RADIO_BUTTON,
+                AreaStyle.BROWN,
+                new Sprite(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, color)), 16, 16, 0, 0, 16, 16),
+                colorGroup,
+                guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING + 1 + i * IconButton.DEFAULT_BUTTON_WIDTH,
+                guiTop,
+                null,
+                (btn) -> {
+                    this.colors[selectedPart] = color;
+                }
+            ));
+            
+            if (color == TrafficLightColor.F1_F2_F3_F5) {
+                String signalName = "h-1";
+                switch (icon) {
+                    case NONE:
+                        signalName = "f5";
+                        break;
+                    case LEFT:
+                        signalName = "f3";
+                        break;
+                    case RIGHT:
+                        signalName = "f2";
+                        break;
+                    case STRAIGHT:
+                        signalName = "f1";
+                        break;
+                    default:
+                        break;
+                }
+                colorTooltips.add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            } else {
+                colorTooltips.add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            }
+            
+            indexedColorButtons.put(j, b);        
+        }
+        
+        colorGroup.setVisible(selectedPart >= 0);
+        
+        initControlTypeStatic();
+    }
+
+    private void initModelButtonAreas() {
+        removeTooltips(x -> modelTooltips.contains(x));
+
+        trafficLightArea = new GuiAreaDefinition(guiLeft - 5, guiTop + 20 - 5, 48 + 10, (int)(Math.max(model.getTotalHitboxHeight(), 16.0f) * 6.0f) + 10);      
+        trafficLightAreaTooltip = Tooltip
+            .of(List.of(textAreaTrafficLight))
+            .withMaxWidth(width / 4)
+            .assignedTo(trafficLightArea)
+        ;
+        modelTooltips.add(trafficLightAreaTooltip);
+
+        trafficLightLightAreas = new GuiAreaDefinition[Math.min(colors.length, model.getLightsCount())];
+
+        for (int i = 0; i < trafficLightLightAreas.length; i++) {
+            trafficLightLightAreas[i] = new GuiAreaDefinition((int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE);
+            
+            modelTooltips.add(addTooltip(Tooltip
+                .of(List.of(Utils.translate(keyAreaTrafficLightSignal + i)))
+                .withMaxWidth(width / 4)
+                .assignedTo(trafficLightLightAreas[i])
+            ));
+        }
+
+        initControlTypeAreas();
+    }
+
+    private void initControlTypeAreas() {
+        ctrlWindowArea = new GuiAreaDefinition(guiLeft, guiTop + 20 + (int)(Math.max(model.getTotalHitboxHeight(), 16.0f) * 6.0f) + 10, WINDOW_WIDTH, 100);
+        ctrlButtonsArea = new GuiAreaDefinition(guiLeft + INNER_PADDING, guiTop + 20 + (int)(Math.max(model.getTotalHitboxHeight(), 16.0f) * 6.0f) + 10 + INNER_TOP_PADDING, WINDOW_WIDTH - INNER_PADDING * 2, IconButton.DEFAULT_BUTTON_HEIGHT + 2);
+        ctrlSettingsArea = new GuiAreaDefinition(guiLeft + INNER_PADDING, guiTop + 20 + (int)(Math.max(model.getTotalHitboxHeight(), 16.0f) * 6.0f) + 10 + INNER_TOP_PADDING + IconButton.DEFAULT_BUTTON_HEIGHT + 2, WINDOW_WIDTH - INNER_PADDING * 2, 53);
+
+        removeTooltips(x -> controlTypeTooltips.contains(x));
+        controlTypeGroup.clear(x -> removeWidget(x));
+
+        controlTypeTabTooltips.values().forEach(x -> {
+            removeTooltips(y -> x.contains(y));
+            x.clear();
+        });
+        controlTypeTabGroups.values().forEach(x -> x.clear(y -> removeWidget(y)));
+
+        // Common buttons
+        final int ctrlBtnW = ctrlButtonsArea.getWidth() - 2;
+        final ItemButton bt = addRenderableWidget(new ItemButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            controlType.getIconStack(),
+            controlTypeGroup,
+            ctrlButtonsArea.getLeft() + 1,
+            ctrlButtonsArea.getTop() + 1,
+            ctrlBtnW,                
+            ctrlButtonsArea.getHeight() - 2,
+            Utils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)),
+            (btn) -> {
+                ItemButton ibtn = (ItemButton)btn;
+                controlType = controlType.next();
+                switchControlType(controlType);
+                ibtn.withItem(controlType.getIconStack());
+                btn.setMessage(Utils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)));
+            }
+        ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
+
+        controlTypeTooltips.add(addTooltip(Tooltip
+            .of(GuiUtils.getEnumTooltipData(ModMain.MOD_ID, TrafficLightControlType.class))
+            .withMaxWidth(width / 4)
+            .assignedTo(bt)
         ));
-        this.onClose();
+
+        // tabs
+        initControlTypeStatic();
+        initControlTypeOwnSchedule();
+        initControlTypeRemote();
+    }
+
+    private void initControlTypeStatic() {
+        removeTooltips(y -> controlTypeTabTooltips.get(TrafficLightControlType.STATIC).contains(y));
+        controlTypeTabTooltips.get(TrafficLightControlType.STATIC).clear();
+        controlTypeTabGroups.get(TrafficLightControlType.STATIC).clear(y -> removeWidget(y));
+
+        TrafficLightColor[] colors = TrafficLightColor.getAllowedForType(type, false);
+        for (int i = 0; i < colors.length; i++) {
+            final TrafficLightColor color = colors[i];
+            final IconButton b = addRenderableWidget(new IconButton(
+                ButtonType.TOGGLE_BUTTON,
+                AreaStyle.BROWN,
+                new Sprite(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, color)), 16, 16, 0, 0, 16, 16),
+                controlTypeTabGroups.get(TrafficLightControlType.STATIC),
+                ctrlSettingsArea.getRight() - 1 - (colors.length - i) * IconButton.DEFAULT_BUTTON_WIDTH,
+                ctrlSettingsArea.getTop() + 1,
+                null,
+                (btn) -> {
+                    IconButton ibtn = (IconButton)btn;
+                    if (ibtn.isSelected()) {
+                        enabledColors.add(color);
+                    } else { 
+                        enabledColors.removeIf(x -> x == color);
+                    }
+                }
+            ) {
+                @Override
+                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                    GuiUtils.setShaderColor(1, 1, 1, 0.5f);
+                    super.renderImage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                    GuiUtils.setShaderColor(1, 1, 1, 1);
+                }
+            });
+            
+            if (color == TrafficLightColor.F1_F2_F3_F5) {
+                String signalName = "h-1";
+                switch (icon) {
+                    case NONE:
+                        signalName = "f5";
+                        break;
+                    case LEFT:
+                        signalName = "f3";
+                        break;
+                    case RIGHT:
+                        signalName = "f2";
+                        break;
+                    case STRAIGHT:
+                        signalName = "f1";
+                        break;
+                    default:
+                        break;
+                }
+                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            } else {
+                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
+                    .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                    .withMaxWidth(width / 4)
+                    .assignedTo(b)
+                ));
+            }
+
+            if (this.enabledColors.stream().anyMatch(x -> x.isSimilar(color))) {
+                b.select();
+            }
+        }
+        controlTypeTabGroups.get(TrafficLightControlType.STATIC).setVisible(controlType == TrafficLightControlType.STATIC);
+    }
+
+    private void initControlTypeOwnSchedule() {
+        removeTooltips(y -> controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).contains(y));
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).clear();
+        controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE).clear(y -> removeWidget(y));
+        // editor
+        addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT, 
+            AreaStyle.GRAY, 
+            Sprite.empty(),
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            ctrlSettingsArea.getLeft() + 1,
+            ctrlSettingsArea.getTop() + 1,
+            ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
+            IconButton.DEFAULT_BUTTON_HEIGHT,
+            textCustomizeSchedule,
+            (btn) -> {
+                Minecraft.getInstance().setScreen(new TrafficLightScheduleEditor(this, level, blockPos));
+            }
+        ));
+        // copy
+        IconButton copyBtn = addRenderableWidget(ModGuiUtils.createCopyButton(
+            ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT * 2,
+            ctrlSettingsArea.getTop() + 1,
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            AreaStyle.GRAY,
+            (btn) -> {
+                if (level.getBlockEntity(blockPos) instanceof TrafficLightBlockEntity blockEntity) {
+                    Clipboard.put(TrafficLightSchedule.class, blockEntity.getSchedule());
+                }
+            })
+        );
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textCopy).assignedTo(copyBtn)));
+        // paste
+        pasteButton = addRenderableWidget(ModGuiUtils.createPasteButton(
+            ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT,
+            ctrlSettingsArea.getTop() + 1,
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            AreaStyle.GRAY,
+            (btn) ->  {
+                Optional<TrafficLightSchedule> schedule = Clipboard.get(TrafficLightSchedule.class);
+                if (schedule.isPresent()) {
+                    if (schedule.get() != null) {
+                        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficLightSchedulePacket(
+                            blockPos,
+                            List.of(schedule.get())
+                        ));
+                    }
+                }
+            })
+        );
+        pasteButton.active = false;
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textPaste).assignedTo(pasteButton)));
+        // status
+        addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT, 
+            AreaStyle.GRAY, 
+            Sprite.empty(),
+            controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE),
+            ctrlSettingsArea.getLeft() + 1,
+            ctrlSettingsArea.getTop() + 1 + IconButton.DEFAULT_BUTTON_HEIGHT,
+            ctrlSettingsArea.getWidth() - 2,
+            IconButton.DEFAULT_BUTTON_HEIGHT,
+            Utils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
+            (btn) -> {
+                scheduleEnabled = !scheduleEnabled;
+                btn.setMessage(Utils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
+            }
+        ));
+        controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE).setVisible(controlType == TrafficLightControlType.OWN_SCHEDULE);
+    }
+
+    private void initControlTypeRemote() {
+        removeTooltips(y -> controlTypeTabTooltips.get(TrafficLightControlType.REMOTE).contains(y));
+        controlTypeTabTooltips.get(TrafficLightControlType.REMOTE).clear();
+        controlTypeTabGroups.get(TrafficLightControlType.REMOTE).clear(y -> removeWidget(y));
+        EditBox box = addEditBox(
+            ctrlSettingsArea.getRight() - 2 - 50,
+            ctrlSettingsArea.getTop() + 2,
+            50,
+            IconButton.DEFAULT_BUTTON_HEIGHT - 2,
+            String.valueOf(phaseId),
+            true,
+            (text) -> {
+                try {
+                    phaseId = Integer.parseInt(text);
+                } catch (Exception e) {}
+            },
+            NO_EDIT_BOX_FOCUS_CHANGE_ACTION,
+            null
+        );
+        box.setFilter(GuiUtils::editBoxNumberFilter);
+        box.setMaxLength(3);
+        controlTypeTabGroups.get(TrafficLightControlType.REMOTE).add(box);
+        controlTypeTabGroups.get(TrafficLightControlType.REMOTE).setVisible(controlType == TrafficLightControlType.REMOTE);
+
+        phaseIdDescriptionLabel = MultiLineLabel.create(this.font, textPhaseIdDescription, (int)((ctrlSettingsArea.getWidth() - 8) / SMALL_SCALE_VALUE), 10);
+    }
+
+    private void switchPartEditor(int partIndex) {
+        this.selectedPart = partIndex;
+
+        typeGroup.setVisible(false);
+        modelGroup.setVisible(false);
+        iconGroup.setVisible(false);
+        colorGroup.setVisible(false);
+
+        if (selectedPart == GLOBAL_SETTINGS_INDEX) {
+            typeGroup.setVisible(true);
+            modelGroup.setVisible(true);
+            iconGroup.setVisible(true);
+        } else if (selectedPart >= 0) {
+            colorGroup.setVisible(true);
+            if (selectedPart < colors.length && indexedColorButtons.containsKey(colors[selectedPart].getIndex())) {
+                colorGroup.performForEachOfType(IconButton.class, x -> x.deselect());
+                indexedColorButtons.get(colors[selectedPart].getIndex()).select();
+            }
+        } else {
+            
+        }
+    }
+
+    private void switchControlType(TrafficLightControlType controlType) {
+        this.controlType = controlType;
+
+        controlTypeTabGroups.entrySet().stream().filter(x -> x.getValue() instanceof WidgetsCollection).forEach(x -> ((WidgetsCollection)x.getValue()).setVisible(x.getKey() == controlType));
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks)
-    {        
-        renderBackground(stack, 0);
-        
-        /* DEFAULT PAGE */
-        drawCenteredString(stack, this.font, textTitle, this.width / 2, guiTop, 16777215);        
-        
-        switch (this.controlType) {
-            case REMOTE:
-                drawString(stack, this.font, textId, this.width / 2 - this.font.width(textId) - SPACING_X, guiTop + 25 * 4 + 8 - this.font.lineHeight / 2, 16777215);
-                
-                if (isLinked) {
-                    drawCenteredString(stack, this.font, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.linked", this.linkLocation.x, this.linkLocation.y, this.linkLocation.z, this.linkLocation.dimension), this.width / 2, guiTop + SPACING_Y * 5, 0x55FF55);
-                } else {
-                    drawCenteredString(stack, this.font, new TranslatableComponent("gui.trafficcraft.trafficlightsettings.not_linked"), this.width / 2, guiTop + SPACING_Y * 5, 0xFF5555);
-                }
-
-                this.idInput.render(stack, mouseX, mouseY, partialTicks);
-                break;
-            default:
-                break;
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        for (int i = 0; i < trafficLightLightAreas.length; i++) {
+            if (trafficLightLightAreas[i].isInBounds(pMouseX, pMouseY)) {
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                switchPartEditor(i);
+                return true;
+            }
         }
-        
-        super.render(stack, mouseX, mouseY, partialTicks);
+
+        if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
+            switchPartEditor(GLOBAL_SETTINGS_INDEX);
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return true;
+        }
+
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
-    private void updatePage() {
-        this.modeButton.visible = false;
+    @Override
+    public void renderBg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        Lighting.setupForFlatItems();
+        this.renderBackground(pPoseStack);
+        //DynamicGuiRenderer.renderArea(pPoseStack, guiLeft, guiTop, WINDOW_WIDTH, WINDOW_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
+        drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, guiTop, 16777215);
 
-        this.idInput.setVisible(false);
+        // Render traffic light
+        pPoseStack.pushPose();
+        pPoseStack.setIdentity();
+        pPoseStack.translate((double)guiLeft + 72, guiTop + 116, -100);
+        pPoseStack.scale(96, 96, -96);
+        pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+        MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+        pPoseStack.popPose();
+        multibuffersource$buffersource.endBatch();
+        pPoseStack.popPose();
+        Lighting.setupFor3DItems();
 
-        this.editScheduleButton.visible = false;
-        this.statusButton.visible = false;
+        // render lights
+        for (int i = 0; i < colors.length && i < model.getLightsCount(); i++) {
+            GuiUtils.blit(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, colors[i])), pPoseStack, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
+        }        
 
-        switch (this.controlType) {
+        // render settings pannels
+        if (selectedPart == GLOBAL_SETTINGS_INDEX) {
+            renderGlobalWindow(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        } else if (selectedPart >= 0) {
+            renderPartEditor(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        } else {
+            renderEmptyWindow(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        }
+
+        // render hover outline
+        GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
+        if (lightDef != null) {
+            GuiUtils.renderBoundingBox(pPoseStack, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
+        } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
+            GuiUtils.renderBoundingBox(pPoseStack, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
+        }
+
+        // render controlling window
+        DynamicGuiRenderer.renderWindow(pPoseStack, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
+        DynamicGuiRenderer.renderArea(pPoseStack, ctrlButtonsArea.getLeft(), ctrlButtonsArea.getTop(), ctrlButtonsArea.getWidth(), ctrlButtonsArea.getHeight(), AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderContainerBackground(pPoseStack, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight());
+        font.draw(pPoseStack, Utils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(ModMain.MOD_ID)), ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+
+        // render controltype tab
+        switch (controlType) {
             case STATIC:
-                this.modeButton.visible = true;
-                break;
-            case OWN_SCHEDULE:  
-                this.editScheduleButton.visible = true;
-                this.statusButton.visible = true;
+                renderControlTypeStatic(pPoseStack, pMouseX, pMouseY, pPartialTick);
                 break;
             case REMOTE:
-                this.idInput.setVisible(true);
+                renderControlTypeRemote(pPoseStack, pMouseX, pMouseY, pPartialTick);
                 break;
             default:
                 break;
         }
     }
 
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
-    {
-        if(this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_)))
-        {
+    @Override
+    public void renderFg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+
+        if (Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null) == null && trafficLightArea.isInBounds(pMouseX, pMouseY)) {
+            trafficLightAreaTooltip.render(this, pPoseStack, pMouseX, pMouseY);
+        }
+    }
+
+    public void renderEmptyWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        emptyLabel.renderCentered(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
+    }   
+
+    public void renderGlobalWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        DynamicGuiRenderer.renderWindow(pPoseStack, guiLeft + WINDOW_PADDING_LEFT, guiTop + 20, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 96);
+        GuiUtils.blit(WIDGETS_LOCATION, pPoseStack, guiLeft + WINDOW_PADDING_LEFT - 9, guiTop + 20 + 96 / 2 - 9, 0, 0, 12, 18, 32, 32);
+
+        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING, WINDOW_WIDTH - WINDOW_PADDING_LEFT - INNER_PADDING * 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 25, TrafficLightModel.values().length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 50, TrafficLightIcon.getAllowedForType(type).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        
+        font.draw(pPoseStack, textGeneralSettings, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 27, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+    }   
+    
+    public void renderPartEditor(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        int windowHeight = INNER_TOP_PADDING + 27;
+        int yBase = guiTop + 20;
+        int y = 9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * selectedPart + yBase + TRAFFIC_LIGHT_LIGHT_SIZE / 2 - windowHeight / 2;
+
+        DynamicGuiRenderer.renderWindow(pPoseStack, guiLeft + WINDOW_PADDING_LEFT, y, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2 + INNER_PADDING * 2, windowHeight);
+        GuiUtils.blit(WIDGETS_LOCATION, pPoseStack, guiLeft + WINDOW_PADDING_LEFT - 9, y + windowHeight / 2 - 9, 0, 0, 12, 18, 32, 32);
+
+        colorGroup.performForEach(x -> {
+            x.y = y + INNER_TOP_PADDING + 1;
+        });
+        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + INNER_TOP_PADDING, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+
+        font.draw(pPoseStack, textSetSignal, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+    } 
+
+    public void renderControlTypeStatic(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        font.draw(pPoseStack, textSetEnabledColors, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB);
+    }
+
+    public void renderControlTypeRemote(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        font.draw(pPoseStack, textSetPhaseId, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB);
+        
+        float scale = 0.75f;
+        pPoseStack.scale(scale, scale, scale);
+        phaseIdDescriptionLabel.renderLeftAlignedNoShadow(pPoseStack, (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xCBCBCB);
+        pPoseStack.setIdentity();
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+       if ((this.shouldCloseOnEsc() && pKeyCode == InputConstants.KEY_ESCAPE) || (!(getFocused() instanceof EditBox) && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))) {
             this.onClose();
             return true;
         }
-        else
-        {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-        }
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
-
 }

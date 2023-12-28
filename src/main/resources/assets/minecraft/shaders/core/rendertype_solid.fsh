@@ -22,8 +22,8 @@ void main() {
     if (tex.a == (254.0 / 255.0)){
         tex.a = 1.0;
         color = tex * ColorModulator;
-        color.rgb *= 2.0; // erhöht die Farbintensität
-        fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd * 0.5, FogColor); // verringert die Entfernung, bei der der Leucht-Effekt endet
+        color.rgb *= 2.0;
+        fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd * 0.5, FogColor);
     }else{
         color = texture(Sampler0, texCoord0) * vertexColor * ColorModulator;
         fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);

@@ -1,43 +1,67 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import net.minecraft.util.StringRepresentable;
+import java.util.Arrays;
 
-public enum TrafficLightControlType implements StringRepresentable {
-    STATIC("static", 0),
-	OWN_SCHEDULE("own_schedule", 1),
-	REMOTE("remote", 2);
+import de.mrjulsen.mcdragonlib.common.IIterableEnum;
+import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModItems;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.ItemLike;
+
+public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightControlType> {
+    STATIC("static", 0, ModBlocks.TRAFFIC_LIGHT.get()),
+	OWN_SCHEDULE("own_schedule", 1, ModItems.PATTERN_CATALOGUE.get()),
+	REMOTE("remote", 2, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get());
 	
 	private String controlType;
-	private int index;
+	private byte index;
+	private ItemLike icon;
 	
-	private TrafficLightControlType(String controlType, int index) {
+	private TrafficLightControlType(String controlType, int index, ItemLike icon) {
 		this.controlType = controlType;
-		this.index = index;
+		this.index = (byte)index;
+		this.icon = icon;
 	}
 	
 	public String getControlType() {
 		return this.controlType;
 	}
 
-	public int getIndex() {
+	public byte getIndex() {
 		return this.index;
 	}
 
-	public String getTranslationKey() {
-		return String.format("gui.trafficcraft.trafficlight.controltype.%s", controlType);
+	@Override
+	public ItemLike getItemIcon() {
+		return icon;
 	}
 
-	public static TrafficLightControlType getControlTypeByIndex(int index) {
-		for (TrafficLightControlType controlType : TrafficLightControlType.values()) {
-			if (controlType.getIndex() == index) {
-				return controlType;
-			}
-		}
-		return TrafficLightControlType.STATIC;
+	public String getValueShortTranslationKey() {
+		return String.format("enum.trafficcraft.trafficlightcontroltype.short.%s", controlType);
+	}
+
+	public static TrafficLightControlType getControlTypeByIndex(byte index) {
+		return Arrays.stream(TrafficLightControlType.values()).filter(x -> x.getIndex() == index).findFirst().orElse(TrafficLightControlType.STATIC);
 	}
 
     @Override
     public String getSerializedName() {
         return controlType;
     }
+
+	@Override
+	public String getEnumName() {
+		return "trafficlightcontroltype";
+	}
+
+	@Override
+	public String getEnumValueName() {
+		return getControlType();
+	}
+
+	@Override
+	public TrafficLightControlType[] getValues() {
+		return values();
+	}
 }

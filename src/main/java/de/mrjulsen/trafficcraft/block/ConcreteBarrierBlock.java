@@ -98,7 +98,6 @@ public class ConcreteBarrierBlock extends ColorableBlock implements SimpleWaterl
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        //return pState.getValue(FACING) == Direction.NORTH || pState.getValue(FACING) == Direction.SOUTH ? SHAPE_SN : SHAPE_EW;
         if ((pState.getValue(FACING) == Direction.NORTH || pState.getValue(FACING) == Direction.SOUTH) && !pState.getValue(NORTH) && !pState.getValue(SOUTH)) {
             return Shapes.or(SHAPE_SIDE_EAST, SHAPE_SIDE_WEST);
         } else if ((pState.getValue(FACING) == Direction.EAST || pState.getValue(FACING) == Direction.WEST) && !pState.getValue(EAST) && !pState.getValue(WEST)) {

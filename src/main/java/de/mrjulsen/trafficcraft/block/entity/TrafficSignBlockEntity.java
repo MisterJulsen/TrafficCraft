@@ -4,9 +4,10 @@ import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.TrafficSignTextureResetPacket;
+import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.util.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkDirection;
 
 public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable, AutoCloseable {
 
@@ -83,7 +83,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
         setBase64Texture(base64);
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignTextureResetPacket(ID), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+                NetworkManager.getInstance().sendToClient(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }
@@ -103,7 +103,7 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
     private void clear() {
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                NetworkManager.MOD_CHANNEL.sendTo(new TrafficSignTextureResetPacket(ID), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
+                NetworkManager.getInstance().sendToClient(new TrafficSignTextureResetPacket(ID), player);
             }
         }
     }
@@ -111,10 +111,5 @@ public class TrafficSignBlockEntity extends BlockEntity implements IIdentifiable
     @Override
     public void close() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
-    }
-
-    @Override
-    protected void finalize() {
-        this.close();
     }
 }

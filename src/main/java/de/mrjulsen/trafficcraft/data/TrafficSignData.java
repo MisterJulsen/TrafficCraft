@@ -7,15 +7,15 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.common.IIdentifiable;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.block.entity.IIdentifiable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -55,7 +55,7 @@ public class TrafficSignData implements Closeable, IIdentifiable {
     }
 
     public String getName() {
-        return name == null || name.isEmpty() ? new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString(): name;
+        return name == null || name.isEmpty() ? Utils.translate("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString(): name;
     }
 
     public void setName(String name) {

@@ -1,7 +1,10 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -9,32 +12,35 @@ import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
+import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.VerticalScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.utils.ClientTools;
+import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer;
-import de.mrjulsen.trafficcraft.client.widgets.ControlCollection;
-import de.mrjulsen.trafficcraft.client.widgets.GuiAreaDefinition;
-import de.mrjulsen.trafficcraft.client.widgets.HScrollBar;
-import de.mrjulsen.trafficcraft.client.widgets.ICustomAreaControl;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.AreaStyle;
-import de.mrjulsen.trafficcraft.client.widgets.AreaRenderer.ColorStyle;
-import de.mrjulsen.trafficcraft.client.widgets.IconButton.ButtonType;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
-import de.mrjulsen.trafficcraft.network.packets.ColorPaletteItemPacket;
-import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueDeletePacket;
-import de.mrjulsen.trafficcraft.network.packets.PatternCatalogueIndexPacketGui;
-import de.mrjulsen.trafficcraft.network.packets.TrafficSignPatternPacket;
-import de.mrjulsen.trafficcraft.util.Utils;
+import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
+import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -42,10 +48,8 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -54,7 +58,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSignWorkbenchMenu> {
 
-    public static final Component title = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.title");
+    public static final Component title = Utils.translate("gui.trafficcraft.trafficsignworkbench.title");
 
     private static final int TEXTURE_WIDTH = 256;
     private static final int TEXTURE_HEIGHT = 256;
@@ -67,14 +71,16 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private static final int ICON_BUTTON_WIDTH = 18;
     private static final int ICON_BUTTON_HEIGHT = 18;
 
+    private static final int MAX_TOOLBAR1_BUTTONS = 4;
+
 
     // Groups
-    private final ControlCollection groupDefaultModeButtons = new ControlCollection();
-    private final ControlCollection groupEditor = new ControlCollection();
-    private final ControlCollection groupEditorToolbar1 = new ControlCollection();
-    private final ControlCollection groupShapes = new ControlCollection();
-    private final ControlCollection groupCreatePattern = new ControlCollection();
-    private final ControlCollection groupColors = new ControlCollection();
+    private final WidgetsCollection groupDefaultModeButtons = new WidgetsCollection();
+    private final WidgetsCollection groupEditor = new WidgetsCollection();
+    private final WidgetsCollection groupEditorToolbar1 = new WidgetsCollection();
+    private final WidgetsCollection groupShapes = new WidgetsCollection();
+    private final WidgetsCollection groupCreatePattern = new WidgetsCollection();
+    private final WidgetsCollection groupColors = new WidgetsCollection();
     
     // gui
     private int guiLeft;
@@ -83,6 +89,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private GuiAreaDefinition editorArea, nextButton, prevButton;
     private TrafficSignData preview;
     private EditBox nameBox;
+    private IconButton createNewAcceptBtn;
+
+    // tooltips
+    private final Map<TrafficSignWorkbenchMode, List<Tooltip>> tooltips = new HashMap<>();
 
     // data
     private TrafficSignShape shape;
@@ -93,25 +103,24 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private int selectedIndex = -1;
 
     // texts
-    private final TranslatableComponent createPattern = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.createpattern.title");
-    private final TranslatableComponent createPatternInstruction = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
-    private final TranslatableComponent emptyPattern = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
+    private final Component createPattern = Utils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.title");
+    private final Component createPatternInstruction = Utils.translate("gui.trafficcraft.trafficsignworkbench.createpattern.instruction");
+    private final Component emptyPattern = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
 
-    private final TranslatableComponent tooltipDefaultNew = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add");
-    private final TranslatableComponent tooltipDefaultNewFull1 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
-    private final TranslatableComponent tooltipDefaultNewFull2 = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
-    private final TranslatableComponent tooltipDefaultEdit = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.edit");
-    private final TranslatableComponent tooltipDefaultDelete = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.menu.delete");
+    private final Component tooltipDefaultNew = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.add");
+    //private final Component tooltipDefaultNewFull1 = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full1");
+    //private final Component tooltipDefaultNewFull2 = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.add_full2");
+    private final Component tooltipDefaultEdit = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.edit");
+    private final Component tooltipDefaultDelete = Utils.translate("gui.trafficcraft.trafficsignworkbench.menu.delete");
 
-    private final FormattedCharSequence[] editorToolbar1Tooltips = new FormattedCharSequence[] {
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.draw").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.erase").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.pick_color").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.fill").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.load").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.save").getVisualOrderText(),
-        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.pick_color").getVisualOrderText()
-    };
+    private final Component tooltipEditorToolbarDraw = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.draw");
+    private final Component tooltipEditorToolbarErase = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.erase");
+    private final Component tooltipEditorToolbarPickColor = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.pick_color");
+    private final Component tooltipEditorToolbarFill = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.fill");
+    private final Component tooltipEditorToolbarText = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
+    private final Component tooltipEditorToolbarLoad = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
+    private final Component tooltipEditorToolbarSave = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
+
 
     // gui textures
     private static final ResourceLocation GUI = new ResourceLocation(ModMain.MOD_ID, "textures/gui/traffic_sign_workbench.png");
@@ -151,61 +160,82 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         groupEditor.components.clear();
         groupEditorToolbar1.components.clear();
         groupColors.components.clear();
+        tooltips.clear();
+        Arrays.stream(TrafficSignWorkbenchMode.values()).forEach(x -> this.tooltips.put(x, new ArrayList<>()));
 
         //#region DEFAULT MODE CONTROLS
+
         // Add new
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                ButtonIcons.ADD.render(pPoseStack, x, y);
+        final IconButton btnNew = this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.ADD.getSprite(),
+            groupDefaultModeButtons,
+            guiLeft + 9,
+            guiTop + 36 + 0 * ICON_BUTTON_HEIGHT,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null,
+            (btn) -> {
+                switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
             }
-        });
+        )).withAlignment(Alignment.CENTER);
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultNew).assignedTo(btnNew));
         
         // Edit selected
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 1 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            if (preview == null) {
-                return;
-            }
+        final IconButton btnEdit = this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.EDIT.getSprite(),
+            groupDefaultModeButtons,
+            guiLeft + 9,
+            guiTop + 36 + 1 * ICON_BUTTON_HEIGHT,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null, (btn) -> {
+                if (preview == null) {
+                    return;
+                }
 
-            switchMode(TrafficSignWorkbenchMode.EDITOR);
-            shape = preview.getShape();
-            pixels = TrafficSignTextureCacheClient.textureToIntArray(preview, true);
-            nameBox.setValue(preview.getName());
-            selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                ButtonIcons.EDIT.render(pPoseStack, x, y);
+                switchMode(TrafficSignWorkbenchMode.EDITOR);
+                shape = preview.getShape();
+                pixels = TrafficSignTextureCacheClient.textureToIntArray(preview, true);
+                nameBox.setValue(preview.getName());
+                selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
             }
-        });
+        )).withAlignment(Alignment.CENTER);
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultEdit).assignedTo(btnEdit));
 
         // Delete selected
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupDefaultModeButtons, guiLeft + 9, guiTop + 36 + 2 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            if (preview == null) {
-                return;
+        final IconButton btnDelete = this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.DELETE.getSprite(),
+            groupDefaultModeButtons,
+            guiLeft + 9,
+            guiTop + 36 + 2 * ICON_BUTTON_HEIGHT,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null,
+            (btn) -> {
+                if (preview == null) {
+                    return;
+                }
+                
+                this.minecraft.setScreen(new ConfirmScreen((b) -> {
+                    if (b) {
+                        int idx = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
+                        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new PatternCatalogueDeletePacket(idx));
+                    }
+                    this.minecraft.setScreen(this);
+                },
+                Utils.translate("gui.trafficcraft.trafficsignworkbench.delete.question"),
+                Utils.translate("selectWorld.deleteWarning", preview.getName()),
+                Utils.translate("selectWorld.deleteButton"),
+                CommonComponents.GUI_CANCEL));
             }
-            
-            this.minecraft.setScreen(new ConfirmScreen((b) -> {
-            if (b) {
-                int idx = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
-                NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueDeletePacket(idx));
-            }
-
-            this.minecraft.setScreen(this);
-         }, new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.delete.question"), new TranslatableComponent("selectWorld.deleteWarning", preview.getName()), new TranslatableComponent("selectWorld.deleteButton"), CommonComponents.GUI_CANCEL));
-
-            
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                ButtonIcons.DELETE.render(pPoseStack, x, y);
-            }
-        });
+        )).withAlignment(Alignment.CENTER);
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultDelete).assignedTo(btnDelete));
         //#endregion
 
         //#region CREATE NEW PATTERN
@@ -214,62 +244,79 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         final int y = guiTop + 70;
         final IconButton[] shapeButtons = Arrays.stream(TrafficSignShape.values()).map(pShape -> {
             final TrafficSignShape shape = pShape;
-            IconButton button = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupShapes, x, y, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-                this.shape = shape;
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                    RenderSystem.setShaderTexture(0, shape.getIconResourceLocation());
-                    blit(pPoseStack, x + 1, y + 1, 0, 0, 16, 16, 16, 16);
+
+            final IconButton button = new IconButton(
+                ButtonType.RADIO_BUTTON, 
+                AreaStyle.BROWN, 
+                new Sprite(shape.getIconResourceLocation(), 16, 16, 0, 0, 16, 16),
+                groupShapes,
+                x,
+                y,
+                ICON_BUTTON_WIDTH,
+                ICON_BUTTON_HEIGHT,
+                null,
+                (btn) -> {
+                    this.shape = shape;
                 }
-            };
+            ).withAlignment(Alignment.CENTER);
             if (shape == this.shape) {
                 button.select();
             }
+            this.tooltips.get(TrafficSignWorkbenchMode.CREATE_NEW).add(Tooltip.of(Utils.translate(shape.getTranslationKey())).assignedTo(button));
             return this.addRenderableWidget(button);
         }).toArray(IconButton[]::new);
         
         fillButtons(shapeButtons, 0, x, y, null);
 
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.GRAY, groupCreatePattern, guiLeft + WIDTH / 2 - 20, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            switchMode(TrafficSignWorkbenchMode.EDITOR);
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                RenderSystem.setShaderTexture(0, OVERLAY);
-                blit(pPoseStack, x + 1, y + 1, 46, 174, 16, 16, 256, 256);
+        createNewAcceptBtn = this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.GRAY,
+            new Sprite(OVERLAY, 256, 256, 46, 174, 16, 16),
+            groupCreatePattern,
+            guiLeft + WIDTH / 2 - 20,
+            guiTop + 150,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null,
+            (btn) -> {
+                switchMode(TrafficSignWorkbenchMode.EDITOR);
+            }).withAlignment(Alignment.CENTER)
+        );
 
-                this.active = shape != null;
+        this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.GRAY,
+            new Sprite(OVERLAY, 256, 256, 62, 174, 16, 16),
+            groupCreatePattern,
+            guiLeft + WIDTH / 2 + 2,
+            guiTop + 150,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null,
+            (btn) -> {
+                switchMode(TrafficSignWorkbenchMode.DEFAULT);
             }
-        });
-
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.GRAY, groupCreatePattern, guiLeft + WIDTH / 2 + 2, guiTop + 150, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            switchMode(TrafficSignWorkbenchMode.DEFAULT);
-        }) {
-            @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                RenderSystem.setShaderTexture(0, OVERLAY);
-                blit(pPoseStack, x + 1, y + 1, 62, 174, 16, 16, 256, 256);
-            }
-        });
+        ).withAlignment(Alignment.CENTER));
         //#endregion
 
         //#region EDITOR SCREEN
 
-        nameBox = new EditBox(this.font, guiLeft + WIDTH / 2 - 63, guiTop + 164, 120, 10, new TranslatableComponent("container.repair"));
+        nameBox = GuiUtils.createEditBox(
+            guiLeft + WIDTH / 2 - 63,
+            guiTop + 164,
+            120,
+            10,
+            font,
+            name,
+            false,
+            (txt) -> {
+                this.name = txt;
+            },
+            null
+        );
         nameBox.setTextColor(-1);
         nameBox.setTextColorUneditable(-1);
-        nameBox.setBordered(false);
-        nameBox.setMaxLength(50);
-        nameBox.setValue(name);
-        nameBox.setResponder(n -> {
-            this.name = n;
-        });
-        nameBox.setMaxLength(20);
-        
+        nameBox.setMaxLength(20);        
         addRenderableWidget(nameBox);
         groupEditor.components.add(nameBox);
 
@@ -278,119 +325,180 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         nextButton = new GuiAreaDefinition(guiLeft + 149, guiTop + 164, 23, 13);
 
         // Toolbar 1
-        for (int i = 0; i < 4; i++) {  
+        for (int i = 0; i < MAX_TOOLBAR1_BUTTONS; i++) {  
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (b) -> {
-                tool = TrafficSignWorkbenchEditorTool.byIndex(j);
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                    switch (j) {
-                        case 0:
-                            ButtonIcons.EDIT.render(pPoseStack, x, y);
-                            break;
-                        case 1:
-                            ButtonIcons.ERASER.render(pPoseStack, x, y);
-                            break;
-                        case 2:
-                            ButtonIcons.PICK_COLOR.render(pPoseStack, x, y);
-                            break;
-                        case 3:
-                            ButtonIcons.FILL.render(pPoseStack, x, y);
-                            break;
-                        case 4:
-                            ButtonIcons.TEXT.render(pPoseStack, x, y);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            };
+            Sprite sprite = null;
+            switch (j) {
+                case 0:
+                    sprite = ButtonIcons.EDIT.getSprite();
+                    break;
+                case 1:
+                    sprite = ButtonIcons.ERASER.getSprite();
+                    break;
+                case 2:
+                    sprite = ButtonIcons.PICK_COLOR.getSprite();
+                    break;
+                case 3:
+                    sprite = ButtonIcons.FILL.getSprite();
+                    break;
+                case 4:
+                    sprite = ButtonIcons.TEXT.getSprite();
+                    break;
+                default:
+                    break;
+            }
 
+            final IconButton btn = new IconButton(
+                ButtonType.RADIO_BUTTON,
+                AreaStyle.BROWN,
+                sprite,
+                groupEditorToolbar1,
+                guiLeft + 9,
+                guiTop + 36 + j * ICON_BUTTON_HEIGHT,
+                ICON_BUTTON_WIDTH,
+                ICON_BUTTON_HEIGHT,
+                null,
+                (b) -> {
+                    tool = TrafficSignWorkbenchEditorTool.byIndex(j);
+                }
+            ).withAlignment(Alignment.CENTER);
+            switch (j) {
+                case 0:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarDraw).assignedTo(btn));
+                    break;
+                case 1:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarErase).assignedTo(btn));
+                    break;
+                case 2:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarPickColor).assignedTo(btn));
+                    break;
+                case 3:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarFill).assignedTo(btn));
+                    break;
+                case 4:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarText).assignedTo(btn));
+                    break;
+                default:
+                    break;
+            }
             if (this.tool == TrafficSignWorkbenchEditorTool.byIndex(j)) {
                 btn.select();
             }
-
             this.addRenderableWidget(btn);
         } 
 
         // Save/Load
-        for (int i = 0; i < 2; i++) {  
+        for (int i = 0; i < 2; i++) {
             final int j = i;
-            IconButton btn = new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 9, guiTop + 148 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (button) -> {
-                switch (j) {
-                    case 0:
-                        this.minecraft.setScreen(new SignPickerScreen(this, shape, (image) -> {
-                            if (image != null) {
-                                for (int a = 0; a < TrafficSignShape.MAX_WIDTH; a++) {
-                                    for (int b = 0; b < TrafficSignShape.MAX_HEIGHT; b++) {
-                                        pixels[a][b] = Utils.swapRedBlue(image.getPixelRGBA(a, b)); 
-                                    }
-                                }
-                            }
-                        }));
-                        break;
-                    case 1:
-                        TrafficSignData tsd = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
-                        NativeImage img = new NativeImage(Format.RGBA, tsd.getWidth(), tsd.getHeight(), false);
-                        for (int k = 0; k < tsd.getWidth(); k++) {
-                            for (int l = 0; l < tsd.getHeight(); l++) {
-                                img.setPixelRGBA(k, l, 0);
-                                if (shape.isPixelValid(k, l))
-                                    img.setPixelRGBA(k, l, Utils.swapRedBlue(pixels[k][l]));
-                            }
-
-                        }
-                        tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
-                        tsd.setName(name);
-                        img.close();
-                        NetworkManager.MOD_CHANNEL.sendToServer(new TrafficSignPatternPacket(tsd, selectedIndex));
-                        switchMode(TrafficSignWorkbenchMode.DEFAULT);
-                        initPreview();
-                        break;
-                    default:
-                        break;
-                }
-            }) {
-                @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+            Sprite sprite1 = null;
+            switch (j) {
+                case 0:
+                    sprite1 = ButtonIcons.OPEN.getSprite();
+                    break;
+                case 1:
+                    sprite1 = ButtonIcons.SAVE.getSprite();
+                    break;
+                default:
+                    break;
+            }
+            final IconButton btn = new IconButton(
+                ButtonType.DEFAULT,
+                AreaStyle.BROWN,
+                sprite1,
+                groupEditorToolbar1,
+                guiLeft + 9,
+                guiTop + 148 + j * ICON_BUTTON_HEIGHT,
+                ICON_BUTTON_WIDTH,
+                ICON_BUTTON_HEIGHT,
+                null,
+                (button) -> {
                     switch (j) {
                         case 0:
-                            ButtonIcons.OPEN.render(pPoseStack, x, y);
+                            this.minecraft.setScreen(new SignPickerScreen(this, shape, (image) -> {
+                                if (image != null) {
+                                    for (int a = 0; a < TrafficSignShape.MAX_WIDTH; a++) {
+                                        for (int b = 0; b < TrafficSignShape.MAX_HEIGHT; b++) {
+                                            pixels[a][b] = Utils.swapRedBlue(image.getPixelRGBA(a, b)); 
+                                        }
+                                    }
+                                }
+                            }));
                             break;
                         case 1:
-                            ButtonIcons.SAVE.render(pPoseStack, x, y);
+                            TrafficSignData tsd = new TrafficSignData(TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, shape);
+                            NativeImage img = new NativeImage(Format.RGBA, tsd.getWidth(), tsd.getHeight(), false);
+                            for (int k = 0; k < tsd.getWidth(); k++) {
+                                for (int l = 0; l < tsd.getHeight(); l++) {
+                                    img.setPixelRGBA(k, l, 0);
+                                    if (shape.isPixelValid(k, l))
+                                        img.setPixelRGBA(k, l, Utils.swapRedBlue(pixels[k][l]));
+                                }
+
+                            }
+                            tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
+                            tsd.setName(name);
+                            img.close();
+                            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficSignPatternPacket(tsd, selectedIndex));
+                            switchMode(TrafficSignWorkbenchMode.DEFAULT);
+                            initPreview();
                             break;
                         default:
                             break;
                     }
                 }
-            };
-
+            ).withAlignment(Alignment.CENTER);
+            switch (j) {
+                case 0:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarLoad).assignedTo(btn));
+                    break;
+                case 1:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarSave).assignedTo(btn));
+                    break;
+                default:
+                    break;
+            }
             this.addRenderableWidget(btn);
         } 
 
         // Color picker
-        this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupEditorToolbar1, guiLeft + 203, guiTop + 36, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> {
-            minecraft.setScreen(new ColorPickerGui(this, selectedColor, (c) -> {
-                this.selectedColor = c.toInt();
-            }));
-        }) {
+        this.addRenderableWidget(new IconButton(
+            ButtonType.DEFAULT,
+            AreaStyle.BROWN,
+            ButtonIcons.ADD_SMALL.getSprite(),
+            groupEditorToolbar1, 
+            guiLeft + 203,
+            guiTop + 36,
+            ICON_BUTTON_WIDTH,
+            ICON_BUTTON_HEIGHT,
+            null,
+            (btn) -> {
+                minecraft.setScreen(new ColorPickerGui(this, selectedColor, (c) -> {
+                    this.selectedColor = c.toInt();
+                }));
+            }
+        ) {
             @Override
             protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                 super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
                 fill(pPoseStack, x + 2, y + 2, x + 16, y + 16, selectedColor);
-                ButtonIcons.ADD_SMALL.render(pPoseStack, x, y);
             }
-        });
-
+        }.withAlignment(Alignment.CENTER));
         
         // Colors
         for (int i = 0; i < 7; i++) { 
             final int j = i;
-            this.addRenderableWidget(new IconButton(ButtonType.DEFAULT, ColorStyle.BROWN, groupColors, guiLeft + 203, guiTop + 40 + (j + 1) * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, playerInventoryTitle, (btn) -> { }) {    
+            this.addRenderableWidget(new IconButton(
+                ButtonType.DEFAULT,
+                AreaStyle.BROWN,
+                Sprite.empty(),
+                groupColors,
+                guiLeft + 203,
+                guiTop + 40 + (j + 1) * ICON_BUTTON_HEIGHT,
+                ICON_BUTTON_WIDTH,
+                ICON_BUTTON_HEIGHT,
+                null,
+                (btn) -> { }
+            ) {    
                 @Override
                 protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                     super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
@@ -422,24 +530,24 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             selectedColor = color == 0 ? selectedColor : color;
                             break;
                         case 1:
-                            NetworkManager.MOD_CHANNEL.sendToServer(new ColorPaletteItemPacket(selectedColor, j));
+                            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new ColorPaletteItemPacket(selectedColor, j));
                             break;
                         case 2:
-                            NetworkManager.MOD_CHANNEL.sendToServer(new ColorPaletteItemPacket(0, j));
+                            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new ColorPaletteItemPacket(0, j));
                             break;
                         default:
                             break;
                     }
                     return super.mouseClicked(pMouseX, pMouseY, pButton);
                 }
-            });
+            }.withAlignment(Alignment.CENTER));
         }
         //#endregion
 
         switchMode(mode);
     }
 
-    private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, HScrollBar scrollbar) {
+    private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, VerticalScrollBar scrollbar) {
         int currentRow = -1;
         for (int i = 0; i < buttons.length; i++) {
             if (i % MAX_ENTRIES_IN_ROW == 0)
@@ -487,6 +595,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             default:
                 break;
         }
+
+        if (createNewAcceptBtn.visible) {
+            createNewAcceptBtn.active = shape != null;
+        }
     }
 
     private boolean isFull() {
@@ -522,31 +634,30 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 }
 
                 // render buttons bg
-                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 56, ColorStyle.BROWN, AreaStyle.SUNKEN);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 56, AreaStyle.BROWN, ButtonState.SUNKEN);
                 break;
             case CREATE_NEW:
                 renderPatternBackground(pPoseStack);
-                AreaRenderer.renderArea(pPoseStack, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, ColorStyle.BROWN, AreaStyle.SUNKEN);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, AreaStyle.BROWN, ButtonState.SUNKEN);
                 this.font.draw(pPoseStack, createPattern, guiLeft + WIDTH / 2 - font.width(createPattern) / 2, guiTop + 40 - font.lineHeight / 2, 4210752);
                 this.font.draw(pPoseStack, createPatternInstruction, guiLeft + WIDTH / 2 - font.width(createPatternInstruction) / 2, guiTop + 55 - font.lineHeight / 2, 4210752);
                 break;
             case EDITOR:
                 renderPatternBackground(pPoseStack);  
-                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
-                AreaRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 147, 20, 18 * 2 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);
-                AreaRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, ColorStyle.BROWN, AreaStyle.SUNKEN);   
-                AreaRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, ColorStyle.BROWN, AreaStyle.SUNKEN);           
-                AreaRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, ColorStyle.GRAY, AreaStyle.SUNKEN); // textbox
-                RenderSystem.setShaderTexture(0, shape.getShapeTextureId());
-                RenderSystem.setShaderColor(0, 0, 0, 1);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 147, 20, 18 * 2 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, AreaStyle.BROWN, ButtonState.SUNKEN);   
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);           
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, AreaStyle.GRAY, ButtonState.SUNKEN); // textbox
+                GuiUtils.setShaderColor(0, 0, 0, 1);
 
                 // render shape
-                blit(pPoseStack, editorArea.getX() - 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                blit(pPoseStack, editorArea.getX() + 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                blit(pPoseStack, editorArea.getX() - 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                blit(pPoseStack, editorArea.getX() + 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                RenderSystem.setShaderColor(1, 1, 1, 1);
-                blit(pPoseStack, editorArea.getX(), editorArea.getY(), editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() - 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() + 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() - 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() + 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.setShaderColor(1, 1, 1, 1);
+                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX(), editorArea.getY(), editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
 
                 // render pixels
                 for (int a = 0; a < pixels.length; a++) {
@@ -581,8 +692,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     }
 
     private void renderPatternBackground(PoseStack pPoseStack) {
-        RenderSystem.setShaderTexture(0, OVERLAY);
-        blit(pPoseStack, guiLeft + 36, guiTop + 14, 0, 0, 158, 174, 256, 256);
+        GuiUtils.blit(OVERLAY, pPoseStack, guiLeft + 36, guiTop + 14, 0, 0, 158, 174, 256, 256);
     }
 
     private int getMouseXEditorCoord(double mouseX) {
@@ -659,7 +769,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
     private void switchPreview(int index) {
         PatternCatalogueItem.setSelectedIndex(this.getMenu().patternSlot.getItem(), index);
-        NetworkManager.MOD_CHANNEL.sendToServer(new PatternCatalogueIndexPacketGui(index));
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new PatternCatalogueIndexPacketGui(index));
         initPreview();
     }
 
@@ -684,17 +794,17 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         
         switch (this.mode) {
             case DEFAULT:
-                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(0), () -> isFull() ? List.of(tooltipDefaultNewFull1.withStyle(ChatFormatting.RED).getVisualOrderText(), tooltipDefaultNewFull2.withStyle(ChatFormatting.GRAY).getVisualOrderText()) : List.of(tooltipDefaultNew.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
-                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(1), () -> List.of(tooltipDefaultEdit.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
-                Utils.renderTooltip(this, groupDefaultModeButtons.components.get(2), () -> List.of(tooltipDefaultDelete.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(0), () -> isFull() ? List.of(tooltipDefaultNewFull1.withStyle(ChatFormatting.RED).getVisualOrderText(), tooltipDefaultNewFull2.withStyle(ChatFormatting.GRAY).getVisualOrderText()) : List.of(tooltipDefaultNew.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(1), () -> List.of(tooltipDefaultEdit.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(2), () -> List.of(tooltipDefaultDelete.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
                 break;
             case CREATE_NEW:
 
                 break;
             case EDITOR:
                 for (int i = 0; i < groupEditorToolbar1.components.size(); i++) {
-                    final int j = i;
-                    Utils.renderTooltip(this, groupEditorToolbar1.components.get(j), () -> List.of(editorToolbar1Tooltips[j]), pPoseStack, pMouseX, pMouseY);
+                    //final int j = i;
+                    //Utils.renderTooltip(this, groupEditorToolbar1.components.get(j), () -> List.of(editorToolbar1Tooltips[j]), pPoseStack, pMouseX, pMouseY);
                 }
 
                 //Color tooltips
@@ -709,17 +819,21 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     }
                     final int c = color;
 
-                    Utils.renderTooltip(this, groupColors.components.get(j), () -> List.of(
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.slot", j + 1).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(c))).getVisualOrderText(),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.get").withStyle(ChatFormatting.GRAY).getVisualOrderText(),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.set").withStyle(ChatFormatting.GRAY).getVisualOrderText(),
-                        new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.editor.color.remove").withStyle(ChatFormatting.GRAY).getVisualOrderText()
-                    ), pPoseStack, pMouseX, pMouseY);
+                    GuiUtils.renderTooltip(this, groupColors.components.get(j), List.of(
+                        Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.slot", j + 1).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(c))),
+                        Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.get").withStyle(ChatFormatting.GRAY),
+                        Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.set").withStyle(ChatFormatting.GRAY),
+                        Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.color.remove").withStyle(ChatFormatting.GRAY)
+                    ), width / 4, pPoseStack, pMouseX, pMouseY);
                 }
                 break;
             default:
                 break;
         }
+
+        this.tooltips.get(this.mode).forEach((x) -> {
+            x.render(this, pPoseStack, pMouseX, pMouseY);
+        });
     }
 
 
@@ -744,41 +858,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+    
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         draw(pMouseX, pMouseY, pButton);
-
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof GuiEventListener).forEach(x -> {
-            if (((GuiEventListener)x).mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY) && !b[0])
-                b[0] = true;
-        });
-        super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
-        return b[0];
-    }
-
-    @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof ICustomAreaControl && x instanceof GuiEventListener).forEach(x -> {
-            if (((ICustomAreaControl)x).isInArea(pMouseX, pMouseY) && ((GuiEventListener)x).mouseScrolled(pMouseX, pMouseY, pDelta) && !b[0]) {
-                b[0] = true;
-            }
-        });
-        super.mouseScrolled(pMouseX, pMouseY, pDelta);
-        return b[0];
-    }
-
-    @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof GuiEventListener).forEach(x -> {
-            if (((GuiEventListener)x).mouseReleased(pMouseX, pMouseY, pButton) && !b[0]) {
-                b[0] = true;
-            }
-        });
-        super.mouseReleased(pMouseX, pMouseY, pButton);
-        return b[0];
+        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
     @SuppressWarnings("unused")
@@ -829,14 +913,14 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 break;
             case CREATE_NEW:
                 this.shape = null;
-                groupCreatePattern.performForEach(x -> x instanceof IconButton, w -> ((IconButton)w).deselect());
+                groupShapes.performForEachOfType(IconButton.class, w -> w.deselect());
                 break;
             case EDITOR:
                 pixels = new int[TrafficSignShape.MAX_WIDTH][];
                 for (int a = 0; a < pixels.length; a++) {
                     pixels[a] = new int[TrafficSignShape.MAX_HEIGHT];
                 }
-                name = new TranslatableComponent("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString();
+                name = Utils.translate("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString();
                 nameBox.setValue(name);
                 selectedIndex = -1;
                 break;
@@ -925,6 +1009,10 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         public void render(PoseStack pPoseStack, int x, int y) {   
             RenderSystem.setShaderTexture(0, OVERLAY);         
             blit(pPoseStack, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        }
+
+        public Sprite getSprite() {
+            return new Sprite(OVERLAY, 256, 256, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE);
         }
     }
 }
