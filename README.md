@@ -37,3 +37,8 @@ To protect your world from damage, you should always create a backup of your wor
 
 ## **Supported Versions**
 A **fabric** version of this mod is currently **not planned** and the mod is mainly ported to **newer versions**. Please don't ask when the update for version X will come out as I don't know myself. The update will come when I have time for it and it's ready.
+
+## **Dependencies**
+This mod uses **DragonLib** as a library mod that contains useful code shared accross all my mods. DragonLib is embedded in all builds of TrafficCraft since version `0.6.0-beta-1.18.2`, so you don't need to install DragonLib manually. If you are developer and are interested in this library you can find more information about it on [GitHub](https://github.com/MisterJulsen/MC-DragonLib "DragonLib on GitHub").
+
+[![DragonLib](https://i.imgur.com/4d8BF5J.png)](https://github.com/MisterJulsen/MC-DragonLib "DragonLib on GitHub")
