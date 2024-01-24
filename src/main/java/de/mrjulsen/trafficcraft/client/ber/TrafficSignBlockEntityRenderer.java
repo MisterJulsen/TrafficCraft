@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.chunk.RenderRegionCache;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -115,7 +114,7 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
                 ModelBlockRenderer.AmbientOcclusionFace ao = Minecraft.getInstance().getBlockRenderer().getModelRenderer().new AmbientOcclusionFace();
 
                 BlockPos origin = be.getLevel().getChunk(be.getBlockPos()).getPos().getWorldPosition();
-                BlockAndTintGetter batg = new RenderRegionCache().createRegion(be.getLevel(), origin.offset(-1, -1, -1), origin.offset(16, 16, 16), 1);
+                BlockAndTintGetter batg = Minecraft.getInstance().level;//new RenderRegionCache().createRegion(be.getLevel(), origin.offset(-1, -1, -1), origin.offset(16, 16, 16), 1);
                 if (batg == null) {
                     ModMain.LOGGER.warn("Chunk Region Renderer was null.");
                     return;
