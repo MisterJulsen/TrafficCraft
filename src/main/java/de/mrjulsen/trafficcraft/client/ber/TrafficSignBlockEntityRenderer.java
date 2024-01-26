@@ -102,7 +102,11 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
     @SuppressWarnings("resources")
     public static void addQuadSide(BlockEntity be, BlockState state, Direction direction, VertexConsumer builder, PoseStack pPoseStack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1, float r, float g, float b, float a, int packedLight) {
         if (!Minecraft.useAmbientOcclusion() || be.getLevel() == null || be.getBlockPos() == null) {
-            renderWithoutAO(be, state, direction, builder, pPoseStack, x0, y0, z0, x1, y1, z1, u0, v0, u1, v1, r, g, b, a, packedLight);
+            try {
+                renderWithoutAO(be, state, direction, builder, pPoseStack, x0, y0, z0, x1, y1, z1, u0, v0, u1, v1, r, g, b, a, packedLight);
+            } catch (Exception e2) {
+                ModMain.LOGGER.error("Error while rendering Traffic Sign without AO.", e2);
+            }
         } else {
             try {
                 renderWithAO(be, state, direction, builder, pPoseStack, x0, y0, z0, x1, y1, z1, u0, v0, u1, v1, r, g, b, a, packedLight);
@@ -112,7 +116,12 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
                     ModMain.LOGGER.error("Error while rendering Traffic Sign with AO.", e);
                 }
                 aoRenderingErrorKnown = true;
-                renderWithoutAO(be, state, direction, builder, pPoseStack, x0, y0, z0, x1, y1, z1, u0, v0, u1, v1, r, g, b, a, packedLight);
+
+                try {
+                    renderWithoutAO(be, state, direction, builder, pPoseStack, x0, y0, z0, x1, y1, z1, u0, v0, u1, v1, r, g, b, a, packedLight);
+                } catch (Exception e2) {
+                    ModMain.LOGGER.error("Error while rendering Traffic Sign without AO.", e2);
+                }
             }
         }
     }
