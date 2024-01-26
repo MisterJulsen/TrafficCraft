@@ -102,7 +102,7 @@ public class ColorPickerGui extends CommonScreen {
 
         this.hBox = addEditBox(
             guiLeft + 197, guiTop + 41, 44, 16,
-            "0", true,
+            String.valueOf(h), true,
             (x) -> {
                 h = Double.valueOf(nullCheck(x)) / 360.0D;
             },
@@ -113,7 +113,7 @@ public class ColorPickerGui extends CommonScreen {
 
         this.sBox = addEditBox(
             guiLeft + 197, guiTop + 67, 44, 16,
-            "0", true,
+            String.valueOf(s), true,
             (x) -> {
                 s = Double.valueOf(nullCheck(x)) / 100.0D;
             },
@@ -124,7 +124,7 @@ public class ColorPickerGui extends CommonScreen {
 
         this.vBox = addEditBox(
             guiLeft + 197, guiTop + 93, 44, 16,
-            "0", true,
+            String.valueOf(v), true,
             (x) -> {
                 v = Double.valueOf(nullCheck(x)) / 100.0D;
             },
@@ -188,7 +188,6 @@ public class ColorPickerGui extends CommonScreen {
         this.bBox.setFilter(this::numberFilter255);
         this.addRenderableWidget(this.bBox);
 
-
         this.colorIntBox = addEditBox(
             guiLeft + 64, guiTop + 135, 96, 16,
             "0", true,
@@ -196,7 +195,7 @@ public class ColorPickerGui extends CommonScreen {
                 if (rgbNoUpdate) {
                     return;
                 }
-                ColorObject c = ColorObject.fromInt(Integer.valueOf(nullCheck(x)));
+                ColorObject c = ColorObject.fromInt(Integer.parseInt(nullCheck(x), 16));
                 float[] hsv = c.toHSV();
                 h = hsv[0];
                 s = hsv[1];
@@ -204,7 +203,7 @@ public class ColorPickerGui extends CommonScreen {
             },
             NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
         );
-        this.colorIntBox.setFilter(this::editBoxNumberFilter);
+        this.colorIntBox.setFilter(this::editBoxHexFilter);
         this.addRenderableWidget(this.colorIntBox);
         
         this.updateInputBoxes();
@@ -215,16 +214,12 @@ public class ColorPickerGui extends CommonScreen {
         return in == null || in.isEmpty() || in.equals("-") ? "0" : in;
     }
 
-    private boolean editBoxNumberFilter(String input) {
+    private boolean editBoxHexFilter(String input) {
         if (input.isEmpty())
             return true;
 
-        String i = input;
-        if (input.equals("-"))
-            i = "-0";
-
         try {
-            Integer.parseInt(i);
+            Integer.parseInt(input, 16);
 			return true;
         } catch (NumberFormatException e) {
             return false;
@@ -381,7 +376,7 @@ public class ColorPickerGui extends CommonScreen {
         this.rBox.setValue(Integer.toString((int)c.getR()));
         this.gBox.setValue(Integer.toString((int)c.getG()));
         this.bBox.setValue(Integer.toString((int)c.getB()));
-        this.colorIntBox.setValue(Integer.toString((int)c.toInt()));
+        this.colorIntBox.setValue(Integer.toHexString(c.toInt()));
         rgbNoUpdate = false;
     }
 
