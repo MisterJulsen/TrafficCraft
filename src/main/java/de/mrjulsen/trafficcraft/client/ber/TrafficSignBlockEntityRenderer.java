@@ -130,10 +130,6 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
         BitSet bitset = new BitSet(3);
         ModelBlockRenderer.AmbientOcclusionFace ao = Minecraft.getInstance().getBlockRenderer().getModelRenderer().new AmbientOcclusionFace();
         BlockAndTintGetter batg = Minecraft.getInstance().level;
-        if (batg == null) {
-            ModMain.LOGGER.warn("Chunk Region Renderer was null.");
-            return;
-        }
         ao.calculate(batg, state, be.getBlockPos(), direction, afloat, bitset, true);
         
         addVert(builder, pPoseStack, x0, y1, z0, u0, v0, r * ao.brightness[0], g * ao.brightness[0], b * ao.brightness[0], a, ao.lightmap[0] & 0xFFFF, (ao.lightmap[0] >> 16) & 0xFFFF);
