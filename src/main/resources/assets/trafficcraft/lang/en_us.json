@@ -280,7 +280,7 @@
     "gui.trafficcraft.colorpicker.title": "Color Picker",
     "gui.trafficcraft.colorpicker.hsv": "HSV",
     "gui.trafficcraft.colorpicker.rgb": "RGB",
-    "gui.trafficcraft.colorpicker.integer": "Integer",
+    "gui.trafficcraft.colorpicker.hex": "HEX",
     
     "gui.trafficcraft.trafficsignworkbench.title": "Traffic Sign Workbench",
     "gui.trafficcraft.trafficsignworkbench.editor.draw": "Draw",

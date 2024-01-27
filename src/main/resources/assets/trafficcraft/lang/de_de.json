@@ -280,7 +280,7 @@
     "gui.trafficcraft.colorpicker.title": "Farbauswahl",
     "gui.trafficcraft.colorpicker.hsv": "HSV",
     "gui.trafficcraft.colorpicker.rgb": "RGB",
-    "gui.trafficcraft.colorpicker.integer": "Ganzzahl",
+    "gui.trafficcraft.colorpicker.hex": "HEX",
     
     "gui.trafficcraft.trafficsignworkbench.title": "Verkehrszeichen-Werkbank",
     "gui.trafficcraft.trafficsignworkbench.editor.draw": "Zeichnen",

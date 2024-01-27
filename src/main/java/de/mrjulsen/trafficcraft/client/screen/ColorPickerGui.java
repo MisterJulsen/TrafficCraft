@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -56,7 +57,7 @@ public class ColorPickerGui extends CommonScreen {
 
     private Component textHSV = Utils.translate("gui.trafficcraft.colorpicker.hsv");
     private Component textRGB = Utils.translate("gui.trafficcraft.colorpicker.rgb");
-    private Component textInteger = Utils.translate("gui.trafficcraft.colorpicker.integer");
+    private Component textInteger = Utils.translate("gui.trafficcraft.colorpicker.hex");
 
     private static final ResourceLocation gui = new ResourceLocation(ModMain.MOD_ID, "textures/gui/color_picker.png");
 
@@ -102,40 +103,49 @@ public class ColorPickerGui extends CommonScreen {
 
         this.hBox = addEditBox(
             guiLeft + 197, guiTop + 41, 44, 16,
-            String.valueOf(h), true,
+            String.valueOf(h * 360), true,
             (x) -> {
                 h = Double.valueOf(nullCheck(x)) / 360.0D;
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.hBox.setFilter(this::numberFilter360);
-        this.addRenderableWidget(this.hBox);
 
         this.sBox = addEditBox(
             guiLeft + 197, guiTop + 67, 44, 16,
-            String.valueOf(s), true,
+            String.valueOf(s * 100), true,
             (x) -> {
                 s = Double.valueOf(nullCheck(x)) / 100.0D;
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.sBox.setFilter(this::numberFilter100);
-        this.addRenderableWidget(this.sBox);
 
         this.vBox = addEditBox(
             guiLeft + 197, guiTop + 93, 44, 16,
-            String.valueOf(v), true,
+            String.valueOf(v * 100), true,
             (x) -> {
                 v = Double.valueOf(nullCheck(x)) / 100.0D;
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.vBox.setFilter(this::numberFilter100);
-        this.addRenderableWidget(this.vBox);
 
         rgbNoUpdate = true;
         this.rBox = addEditBox(
-            guiLeft + 64, guiTop + 115, 32, 16,
+            guiLeft + 50, guiTop + 115, 32, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
@@ -147,13 +157,16 @@ public class ColorPickerGui extends CommonScreen {
                 s = hsv[1];
                 v = hsv[2];
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.rBox.setFilter(this::numberFilter255);
-        this.addRenderableWidget(this.rBox);
 
         this.gBox = addEditBox(
-            guiLeft + 96, guiTop + 115, 32, 16,
+            guiLeft + 50 + 32, guiTop + 115, 32, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
@@ -165,13 +178,16 @@ public class ColorPickerGui extends CommonScreen {
                 s = hsv[1];
                 v = hsv[2];
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.gBox.setFilter(this::numberFilter255);
-        this.addRenderableWidget(this.gBox);
 
         this.bBox = addEditBox(
-            guiLeft + 128, guiTop + 115, 32, 16,
+            guiLeft + 50 + 64, guiTop + 115, 32, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
@@ -183,28 +199,35 @@ public class ColorPickerGui extends CommonScreen {
                 s = hsv[1];
                 v = hsv[2];
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.bBox.setFilter(this::numberFilter255);
-        this.addRenderableWidget(this.bBox);
 
         this.colorIntBox = addEditBox(
-            guiLeft + 64, guiTop + 135, 96, 16,
+            guiLeft + 50, guiTop + 135, 48, 16,
             "0", true,
             (x) -> {
                 if (rgbNoUpdate) {
                     return;
                 }
-                ColorObject c = ColorObject.fromInt(Integer.parseInt(nullCheck(x), 16));
+                ColorObject c = ColorObject.fromInt((int)Long.parseLong(nullCheck(x), 16));
                 float[] hsv = c.toHSV();
                 h = hsv[0];
                 s = hsv[1];
                 v = hsv[2];
             },
-            NO_EDIT_BOX_FOCUS_CHANGE_ACTION, null
+            (box, focusLost) -> {
+                if (focusLost) {
+                    updateInputBoxes();
+                }
+            }, null
         );
         this.colorIntBox.setFilter(this::editBoxHexFilter);
-        this.addRenderableWidget(this.colorIntBox);
+        this.colorIntBox.setMaxLength(6);
         
         this.updateInputBoxes();
         rgbNoUpdate = false;
@@ -237,7 +260,7 @@ public class ColorPickerGui extends CommonScreen {
             return true;
 
         try {
-            int i = Integer.parseInt(input);
+            long i = Long.parseLong(input);
             return i >= min && i <= max;
         } catch (NumberFormatException e) {
             return false;
@@ -376,8 +399,16 @@ public class ColorPickerGui extends CommonScreen {
         this.rBox.setValue(Integer.toString((int)c.getR()));
         this.gBox.setValue(Integer.toString((int)c.getG()));
         this.bBox.setValue(Integer.toString((int)c.getB()));
-        this.colorIntBox.setValue(Integer.toHexString(c.toInt()));
+        this.colorIntBox.setValue(convertToHex(c.toInt()));
         rgbNoUpdate = false;
+    }
+
+    private static String convertToHex(int rgbValue) {
+        String hexString = Integer.toHexString(rgbValue & 0xFFFFFF);
+        while (hexString.length() < 6) {
+            hexString = "0" + hexString;
+        }
+        return hexString.toUpperCase(Locale.ENGLISH);
     }
 
     private double setMouseValue(double mouseX) {
