@@ -289,6 +289,7 @@
     "gui.trafficcraft.trafficsignworkbench.editor.text": "Text",
     "gui.trafficcraft.trafficsignworkbench.editor.fill": "Bereich füllen",
     "gui.trafficcraft.trafficsignworkbench.editor.save": "Speichern und Schließen",
+    "gui.trafficcraft.trafficsignworkbench.editor.discard": "Verwerfen und Schließen",
     "gui.trafficcraft.trafficsignworkbench.editor.load": "Textur laden...",
     "gui.trafficcraft.trafficsignworkbench.editor.color.slot": "Farbe #%s",
     "gui.trafficcraft.trafficsignworkbench.editor.color.get": "Linksklick, um die Farbe zu verwenden.",
@@ -303,7 +304,8 @@
     "gui.trafficcraft.trafficsignworkbench.createpattern.title": "Neue Vorlage erstellen",
     "gui.trafficcraft.trafficsignworkbench.createpattern.instruction": "Bitte wähle eine Form aus.",
     "gui.trafficcraft.trafficsignworkbench.pattern.name_unknown": "Unbenanntes Schild",
-    "gui.trafficcraft.trafficsignworkbench.delete.question": "Bist du sicher, dass du diese Vorlage löschen möchtest?",
+    "gui.trafficcraft.trafficsignworkbench.delete.question": "Bist du sicher, dass du dieses Schild löschen möchtest?",
+    "gui.trafficcraft.trafficsignworkbench.discard.question": "Bist du sicher, dass du die Änderungen an diesem Schild verwerfen möchtest?",
 
     "gui.trafficcraft.patternselection.title": "Verkehrszeichenvorlage auswählen",
     "gui.trafficcraft.patternselection.build_in_pattern": "Eingebaut %s %s",

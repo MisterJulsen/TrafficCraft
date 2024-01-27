@@ -120,6 +120,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private final Component tooltipEditorToolbarText = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.text");
     private final Component tooltipEditorToolbarLoad = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.load");
     private final Component tooltipEditorToolbarSave = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.save");
+    private final Component tooltipEditorToolbarDiscard = Utils.translate("gui.trafficcraft.trafficsignworkbench.editor.discard");
 
 
     // gui textures
@@ -388,7 +389,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         } 
 
         // Save/Load
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             final int j = i;
             Sprite sprite1 = null;
             switch (j) {
@@ -397,6 +398,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     break;
                 case 1:
                     sprite1 = ButtonIcons.SAVE.getSprite();
+                    break;
+                case 2:
+                    sprite1 = ButtonIcons.DISCARD.getSprite();
                     break;
                 default:
                     break;
@@ -407,7 +411,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 sprite1,
                 groupEditorToolbar1,
                 guiLeft + 9,
-                guiTop + 148 + j * ICON_BUTTON_HEIGHT,
+                guiTop + 130 + j * ICON_BUTTON_HEIGHT,
                 ICON_BUTTON_WIDTH,
                 ICON_BUTTON_HEIGHT,
                 null,
@@ -442,6 +446,20 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             switchMode(TrafficSignWorkbenchMode.DEFAULT);
                             initPreview();
                             break;
+                        case 2:
+                            this.minecraft.setScreen(new ConfirmScreen((b) -> {                                
+                                this.minecraft.setScreen(this);
+                                if (b) {
+                                    switchMode(TrafficSignWorkbenchMode.DEFAULT);
+                                    initPreview();
+                                }
+                            },
+                            Utils.translate("gui.trafficcraft.trafficsignworkbench.discard.question"),
+                            Utils.emptyText(),
+                            CommonComponents.GUI_YES,
+                            CommonComponents.GUI_NO));
+                            
+                            break;
                         default:
                             break;
                     }
@@ -453,6 +471,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     break;
                 case 1:
                     this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarSave).assignedTo(btn));
+                    break;
+                case 2:
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarDiscard).assignedTo(btn));
                     break;
                 default:
                     break;
@@ -645,7 +666,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             case EDITOR:
                 renderPatternBackground(pPoseStack);  
                 DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 147, 20, 18 * 2 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 129, 20, 18 * 3 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
                 DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, AreaStyle.BROWN, ButtonState.SUNKEN);   
                 DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);           
                 DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, AreaStyle.GRAY, ButtonState.SUNKEN); // textbox
@@ -976,7 +997,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         ADD_SMALL(8),
         SAVE(9),
         OPEN(10),
-        IMPORT(11);
+        IMPORT(11),
+        DISCARD(12);
 
         private int index;
 

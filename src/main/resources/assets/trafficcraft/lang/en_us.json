@@ -289,6 +289,7 @@
     "gui.trafficcraft.trafficsignworkbench.editor.text": "Text",
     "gui.trafficcraft.trafficsignworkbench.editor.fill": "Fill Area",
     "gui.trafficcraft.trafficsignworkbench.editor.save": "Save and Close",
+    "gui.trafficcraft.trafficsignworkbench.editor.discard": "Discard and Close",
     "gui.trafficcraft.trafficsignworkbench.editor.load": "Load Texture...",
     "gui.trafficcraft.trafficsignworkbench.editor.color.slot": "Color #%s",
     "gui.trafficcraft.trafficsignworkbench.editor.color.get": "Left click to use the color.",
@@ -304,6 +305,7 @@
     "gui.trafficcraft.trafficsignworkbench.createpattern.instruction": "Please select a shape.",
     "gui.trafficcraft.trafficsignworkbench.pattern.name_unknown": "Unnamed Sign",
     "gui.trafficcraft.trafficsignworkbench.delete.question": "Are you sure you want to delete this pattern?",
+    "gui.trafficcraft.trafficsignworkbench.discard.question": "Are you sure you want to discard your changes to this pattern?",
 
     "gui.trafficcraft.patternselection.title": "Select a Traffic Sign Pattern",
     "gui.trafficcraft.patternselection.build_in_pattern": "Build-In %s %s",
