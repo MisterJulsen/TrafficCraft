@@ -12,6 +12,7 @@ import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.ColorPickerScreen;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
@@ -493,7 +494,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             ICON_BUTTON_HEIGHT,
             null,
             (btn) -> {
-                minecraft.setScreen(new ColorPickerGui(this, selectedColor, (c) -> {
+                minecraft.setScreen(new ColorPickerScreen(this, selectedColor, (c) -> {
                     this.selectedColor = c.toInt();
                 }));
             }
