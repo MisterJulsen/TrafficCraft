@@ -17,7 +17,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -161,7 +161,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
         CompoundTag nbt = pStack.getOrCreateTag();
         LinkerMode mode = LinkerMode.getByIndex(nbt.getInt(NBT_MODE));
         if (nbt.contains(NBT_BLOCK)) {
-            pTooltipComponents.add(Utils.translate(keyTooltipBlock, Registry.BLOCK.get(new ResourceLocation(nbt.getString(NBT_BLOCK))).getName().getString()));
+            pTooltipComponents.add(Utils.translate(keyTooltipBlock, BuiltInRegistries.BLOCK.get(new ResourceLocation(nbt.getString(NBT_BLOCK))).getName().getString()));
         }
         pTooltipComponents.add(Utils.translate(keyTooltipMode, Utils.translate(mode.getValueTranslationKey(ModMain.MOD_ID)), Utils.translate(mode.getValueTranslationKey(ModMain.MOD_ID))));
         pTooltipComponents.add(textTooltipInstruction);

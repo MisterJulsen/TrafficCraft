@@ -158,8 +158,8 @@ public class PaintBrushScreen extends CommonScreen {
             if (i % MAX_ENTRIES_IN_ROW == 0)
                 currentRow++;
 
-            buttons[i].x = defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH;
-            buttons[i].y = defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT);
+            buttons[i].setX(defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH);
+            buttons[i].setY(defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT));
             buttons[i].visible = currentRow >= scrollRow && currentRow < scrollRow + MAX_ROWS;
         }
 

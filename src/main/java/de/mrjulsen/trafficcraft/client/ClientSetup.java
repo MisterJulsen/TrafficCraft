@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.textures.TextureAtlasSpriteLoaderManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -27,8 +28,9 @@ public class ClientSetup {
 
     private static final String TEXTURE_PATH = "block/traffic_light";
     
+    /*
     @SubscribeEvent
-    public static void onTextureStitch(TextureStitchEvent.Pre event) {
+    public static void onTextureStitch(TextureAtlasSpriteLoaderManager event) {
         if (!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
             return;
         }
@@ -44,9 +46,11 @@ public class ClientSetup {
                         } else {
                             loc = new ResourceLocation(ModMain.MOD_ID, String.format("%s/%s_%s", TEXTURE_PATH, x.getName(), y.getName()));
                         }
+                        event.
                         event.addSprite(loc);
                     }));
     }
+    */
 
     public static void onRegisterTooltipEvent(RegisterClientTooltipComponentFactoriesEvent event) {
 		event.register(TrafficSignTooltip.class, (tooltip) -> {

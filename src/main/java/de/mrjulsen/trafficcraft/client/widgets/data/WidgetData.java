@@ -10,8 +10,8 @@ public class WidgetData {
 
     public WidgetData(AbstractWidget widget) {
         this.widget = widget;
-        this.x = widget.x;
-        this.y = widget.y;
+        this.x = widget.getX();
+        this.y = widget.getY();
     }
 
     public AbstractWidget getWidget() {
@@ -27,8 +27,8 @@ public class WidgetData {
     }
 
     public void setPosOffset(int xOffset, int yOffset) {
-        this.widget.x = this.x + xOffset;
-        this.widget.y = this.y + yOffset;
+        this.widget.setX(this.x + xOffset);
+        this.widget.setY(this.y + yOffset);
     }
 
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {

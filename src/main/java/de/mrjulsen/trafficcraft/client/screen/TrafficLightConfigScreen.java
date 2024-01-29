@@ -14,7 +14,7 @@ import java.util.Set;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
@@ -724,7 +724,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         pPoseStack.setIdentity();
         pPoseStack.translate((double)guiLeft + 72, guiTop + 116, -100);
         pPoseStack.scale(96, 96, -96);
-        pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
         pPoseStack.popPose();
@@ -806,7 +806,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         GuiUtils.blit(WIDGETS_LOCATION, pPoseStack, guiLeft + WINDOW_PADDING_LEFT - 9, y + windowHeight / 2 - 9, 0, 0, 12, 18, 32, 32);
 
         colorGroup.performForEach(x -> {
-            x.y = y + INNER_TOP_PADDING + 1;
+            x.setY(y + INNER_TOP_PADDING + 1);
         });
         DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + INNER_TOP_PADDING, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
 

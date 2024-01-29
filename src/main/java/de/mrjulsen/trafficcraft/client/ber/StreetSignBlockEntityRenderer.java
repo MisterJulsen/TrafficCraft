@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.client.ber;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
@@ -40,7 +39,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
 
             pPoseStack.translate(0.5D, 0.5D, 0.5D);
             float f4 = -blockstate.getValue(WritableTrafficSign.FACING).getClockWise(Axis.Y).toYRot();
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+            pPoseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(f4));
             pPoseStack.translate(-0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
             this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
@@ -49,7 +48,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
             pPoseStack.pushPose();
             pPoseStack.translate(0.5D, 0.5D, 0.5D);
             float f5 = -blockstate.getValue(WritableTrafficSign.FACING).getClockWise(Axis.Y).getOpposite().toYRot();
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f5));
+            pPoseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(f5));
             pPoseStack.translate(0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
             this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);

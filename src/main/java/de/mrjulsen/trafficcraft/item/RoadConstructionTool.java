@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.joml.Vector3f;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
-import com.mojang.math.Vector3f;
 
 import de.mrjulsen.mcdragonlib.common.Location;
 import de.mrjulsen.mcdragonlib.utils.StatusResult;

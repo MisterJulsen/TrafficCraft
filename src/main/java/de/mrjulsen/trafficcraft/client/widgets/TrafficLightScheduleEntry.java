@@ -82,7 +82,7 @@ public class TrafficLightScheduleEntry extends Button {
     private final boolean hidePhaseId;
 
     public TrafficLightScheduleEntry(TrafficLightScheduleEditor parent, boolean hidePhaseId, TrafficLightScheduleEntryData entry, int pX, int pY, int pWidth, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
-        super(pX, pY, pWidth, HEIGHT, Utils.emptyText(), (btn) -> {});
+        super(pX, pY, pWidth, HEIGHT, Utils.emptyText(), (btn) -> {}, DEFAULT_NARRATION);
         this.hidePhaseId = hidePhaseId;
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -176,28 +176,28 @@ public class TrafficLightScheduleEntry extends Button {
     }
 
     public void setY(int y) {
-        if (this.y == y) {
+        if (this.getY() == y) {
             return;
         }
 
         areaTooltips.clear();
 
-        delayBox.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1;
-        addTimeButton.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
-        removeTimeButton.y = y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2;
+        delayBox.setY(y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
+        addTimeButton.setY(y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2);
+        removeTimeButton.setY(y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2);
 
         int phaseIdBoxY = y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1);
-        int signalSelectionX = x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH;
+        int signalSelectionX = getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH;
         if (!hidePhaseId) {
-            phaseIdBox.y = phaseIdBoxY;
+            phaseIdBox.setY(phaseIdBoxY);
             signalSelectionX += phaseIdBox.getWidth() + 6;
         }
 
-        this.y = y;
+        this.setY(y);
 
-        moveUpButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
-        moveDownButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + 4 + CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
-        deleteButton = new GuiAreaDefinition(x + width - CONTROL_BUTTON_SIZE - 4, y + height - CONTROL_BUTTON_SIZE - 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
+        moveUpButton = new GuiAreaDefinition(getX() + width - CONTROL_BUTTON_SIZE - 4, y + 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
+        moveDownButton = new GuiAreaDefinition(getX() + width - CONTROL_BUTTON_SIZE - 4, y + 4 + CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
+        deleteButton = new GuiAreaDefinition(getX() + width - CONTROL_BUTTON_SIZE - 4, y + height - CONTROL_BUTTON_SIZE - 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
         signalSelectionArea = new GuiAreaDefinition(signalSelectionX, phaseIdBoxY - 1, signals.length * (SIGNAL_ICON_SIZE + 4) + 4, DEFAULT_EDIT_BOX_HEIGHT);
         
         areaTooltips.add(Tooltip.of(textMoveUp).assignedTo(moveUpButton));
@@ -225,8 +225,8 @@ public class TrafficLightScheduleEntry extends Button {
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {        
         DynamicGuiRenderer.renderArea(
             pPoseStack,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING,
-            y + TrafficLightScheduleEditor.ENTRY_PADDING / 2,
+            getX() + TrafficLightScheduleEditor.ENTRY_PADDING,
+            getY() + TrafficLightScheduleEditor.ENTRY_PADDING / 2,
             TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + removeTimeButton.getWidth() + delayBox.getWidth() + 2 + addTimeButton.getWidth() + 8,
             DEFAULT_ENTRY_HEIGHT,
             AreaStyle.GRAY,
@@ -235,8 +235,8 @@ public class TrafficLightScheduleEntry extends Button {
 
         DynamicGuiRenderer.renderArea(
             pPoseStack,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING,
-            y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
+            getX() + TrafficLightScheduleEditor.ENTRY_PADDING,
+            getY() + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
             TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
             DEFAULT_ENTRY_HEIGHT,
             AreaStyle.GRAY,
@@ -245,8 +245,8 @@ public class TrafficLightScheduleEntry extends Button {
 
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
-            pPoseStack, x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y,
+            pPoseStack, getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            getY(),
             TrafficLightScheduleEditor.TIMELINE_UW,
             HEIGHT,
             27,
@@ -260,8 +260,8 @@ public class TrafficLightScheduleEntry extends Button {
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
             pPoseStack,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TrafficLightScheduleEditor.TIMELINE_VH / 2,
+            getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            getY() + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TrafficLightScheduleEditor.TIMELINE_VH / 2,
             TrafficLightScheduleEditor.TIMELINE_UW,
             TrafficLightScheduleEditor.TIMELINE_VH,
             18,
@@ -275,8 +275,8 @@ public class TrafficLightScheduleEntry extends Button {
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
             pPoseStack,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - TrafficLightScheduleEditor.TIMELINE_VH / 2),
+            getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            getY() + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - TrafficLightScheduleEditor.TIMELINE_VH / 2),
             TrafficLightScheduleEditor.TIMELINE_UW,
             TrafficLightScheduleEditor.TIMELINE_VH,
             9,
@@ -288,7 +288,7 @@ public class TrafficLightScheduleEntry extends Button {
         );
 
         if (isMouseOver(pMouseX, pMouseY)) {
-            fill(pPoseStack, x + 1, y, x + 1 + width, y + height, 0x22FFFFFF);
+            fill(pPoseStack, getX() + 1, getY(), getX() + 1 + width, getY() + height, 0x22FFFFFF);
 
             GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveUpButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveUpButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE * 2, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
             GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveDownButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveDownButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);

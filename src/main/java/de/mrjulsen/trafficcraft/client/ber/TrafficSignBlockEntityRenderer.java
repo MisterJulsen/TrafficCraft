@@ -4,7 +4,7 @@ import java.util.BitSet;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
@@ -57,7 +57,7 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
         pPoseStack.translate(0.5f, 0.5f, 0.5f);
 
         float f4 = blockstate.getValue(TrafficSignBlock.FACING) == Direction.EAST || blockstate.getValue(TrafficSignBlock.FACING) == Direction.WEST ? blockstate.getValue(TrafficSignBlock.FACING).getOpposite().toYRot() : blockstate.getValue(TrafficSignBlock.FACING).toYRot();
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
         pPoseStack.translate(-0.5d, -0.5d, z + 0.002d);
           
         
@@ -79,8 +79,8 @@ public class TrafficSignBlockEntityRenderer implements BlockEntityRenderer<Traff
             z = 7.0d * p - 0.5d;
             pPoseStack.pushPose();
             pPoseStack.translate(0.5f, 0.5f, 0.5f);
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4)); 
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(180));         
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(f4)); 
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(180));         
             pPoseStack.translate(-0.5d, -0.5d, z - 0.002d);
             
             addQuadSide(pBlockEntity, blockstate, blockstate.getValue(TrafficSignBlock.FACING), vertexconsumer, pPoseStack,

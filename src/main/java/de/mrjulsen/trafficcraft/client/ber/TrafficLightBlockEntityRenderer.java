@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.client.ber;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
@@ -33,7 +33,7 @@ public class TrafficLightBlockEntityRenderer implements BlockEntityRenderer<Traf
         
         pPoseStack.translate(0.5f, 0, 0.5f);
         float f4 = blockstate.getValue(TrafficSignBlock.FACING) == Direction.EAST || blockstate.getValue(TrafficSignBlock.FACING) == Direction.WEST ? blockstate.getValue(TrafficSignBlock.FACING).getOpposite().getClockWise().toYRot() : blockstate.getValue(TrafficSignBlock.FACING).getClockWise().toYRot();
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
         pPoseStack.translate(-0.5f, 0, -0.5f);
 
         VertexConsumer vertexconsumer = pBufferSource.getBuffer(RenderType.solid());

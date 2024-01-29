@@ -162,7 +162,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                             });
                             RenderSystem.setShaderTexture(0, tex.getId());
                             NativeImage img = tex.getPixels();
-                            blit(pPoseStack, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                            blit(pPoseStack, getX() + 1, getY() + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                         }
                         
                     }
@@ -233,8 +233,8 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
             if (i % MAX_ENTRIES_IN_ROW == 0)
                 currentRow++;
 
-            buttons[i].x = defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH;
-            buttons[i].y = defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT);
+            buttons[i].setX(defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH);
+            buttons[i].setY(defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT));
             buttons[i].visible = currentRow >= scrollRow && currentRow < scrollRow + MAX_ROWS;
         }
 
@@ -294,10 +294,9 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
             }            
         }
 
-        drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);        
-        
+        drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);
         super.render(pPoseStack, mouseX, mouseY, partialTicks);
-        groupPatterns.performForEach(x -> x.renderToolTip(pPoseStack, mouseX, mouseY));
+        //groupPatterns.performForEach(x -> rendertool);
     }
 
     private int addBookmark(PoseStack pPoseStack, int mouseX, int mouseY, float partialTicks, int bookY, int bookmarkIndex, ResourceLocation icon, int u, int v, int uW, int vH, int texW, int texH) {

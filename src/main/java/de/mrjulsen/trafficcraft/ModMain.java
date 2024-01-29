@@ -6,12 +6,11 @@ import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.init.ClientInitWrapper;
 import de.mrjulsen.trafficcraft.init.ServerInit;
+import de.mrjulsen.trafficcraft.item.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
-import de.mrjulsen.trafficcraft.world.feature.ModConfiguredFeatures;
-import de.mrjulsen.trafficcraft.world.feature.ModPlacedFeatures;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -45,8 +44,9 @@ public class ModMain {
         ModItems.register(eventBus);
         ModBlockEntities.register(eventBus);
         ModMenuTypes.register(eventBus);
-        ModConfiguredFeatures.register(eventBus);
-        ModPlacedFeatures.register(eventBus);
+        //ModConfiguredFeatures.register(eventBus);
+        //ModPlacedFeatures.register(eventBus);
+        eventBus.addListener(ModCreativeModeTab::addCreative);
         NetworkManager.create();       
         MinecraftForge.EVENT_BUS.register(this);
     }

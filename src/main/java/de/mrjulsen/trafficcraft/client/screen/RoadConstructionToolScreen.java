@@ -149,7 +149,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
             this.onClose();
         }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
-        buildButtonArea = new GuiAreaDefinition(buildButton.x, buildButton.y, buildButton.getWidth(), buildButton.getHeight());
+        buildButtonArea = new GuiAreaDefinition(buildButton.getX(), buildButton.getY(), buildButton.getWidth(), buildButton.getHeight());
 
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 2) + 4, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onClose();

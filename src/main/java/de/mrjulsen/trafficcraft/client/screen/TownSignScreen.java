@@ -2,6 +2,8 @@ package de.mrjulsen.trafficcraft.client.screen;
 
 import java.util.stream.IntStream;
 
+import org.joml.Matrix4f;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,8 +13,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.ClientTools;
@@ -90,7 +91,6 @@ public class TownSignScreen extends CommonScreen {
     }
 
     protected void init() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         this.btnDone = addButton(this.width / 2 - 100, this.height / 4 + 145, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
             this.onDone();
         }, null);
@@ -121,7 +121,6 @@ public class TownSignScreen extends CommonScreen {
     }
 
     public void removed() {
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
         NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
     }
 
@@ -184,8 +183,8 @@ public class TownSignScreen extends CommonScreen {
         pPoseStack.setIdentity();
         pPoseStack.translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
         pPoseStack.scale(config.scale, config.scale, -config.scale);
-        pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
-        pPoseStack.mulPose(Vector3f.YP.rotationDegrees(config.modelRotation));
+        pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(config.modelRotation));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid()); // TODO: ModelData
         pPoseStack.popPose();

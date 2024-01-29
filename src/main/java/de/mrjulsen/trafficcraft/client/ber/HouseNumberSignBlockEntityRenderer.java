@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.client.ber;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
@@ -40,7 +40,7 @@ public class HouseNumberSignBlockEntityRenderer implements BlockEntityRenderer<H
 
             pPoseStack.translate(0.5D, 0.5D, 0.5D);
             float f4 = blockstate.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockstate.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockstate.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockstate.getValue(WritableTrafficSign.FACING).toYRot();
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
             pPoseStack.translate(0, -0.05D + (scale * 5), -0.45D);
             pPoseStack.scale((float)scale, (float)-scale, (float)scale);
             this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);

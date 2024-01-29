@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.client.ber;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
@@ -49,7 +49,7 @@ public class TownSignBlockEntityRenderer implements BlockEntityRenderer<TownSign
             pPoseStack.pushPose();
             pPoseStack.translate(0.5D, 0.5D, 0.5D);
             float f4 = -blockstate.getValue(WritableTrafficSign.FACING).toYRot();
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
             pPoseStack.translate(0.0D, 0.4D, 0.1D);
             double lineHeight = this.font.lineHeight;
 
@@ -84,9 +84,9 @@ public class TownSignBlockEntityRenderer implements BlockEntityRenderer<TownSign
             pPoseStack.pushPose();
             pPoseStack.translate(0.5D, 0.5D, 0.5D); // Set pos to center
             float f4 = -blockstate.getValue(WritableTrafficSign.FACING).toYRot();
-            pPoseStack.mulPose(Vector3f.YP.rotationDegrees(f4));
+            pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
             if (bothSides) {                
-                pPoseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+                pPoseStack.mulPose(Axis.YP.rotationDegrees(180));
             }
             pPoseStack.translate(i1 == 0 ? -0.1F : 0, 0.35D, 0.1D);
 

@@ -1,6 +1,5 @@
 package de.mrjulsen.trafficcraft.registry;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +58,7 @@ public class ModBlocks {
     
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
     public static final List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
-    public static final HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();    
+    public static final HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();
     
     public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(3f)
@@ -166,12 +165,14 @@ public class ModBlocks {
         return toReturn;
     }
 
+    /*
     @SuppressWarnings("unused")
     private static <T extends Block, I extends BlockItem>RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab, blockItemClass);
         return toReturn;
     }
+    */
 
     @SuppressWarnings("unused")
     private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
@@ -182,22 +183,31 @@ public class ModBlocks {
 
     private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, boolean wearable) {
         if (wearable) {
-            return ModItems.ITEMS.register(name, () -> new WearableBlockItem(block.get(), new Item.Properties().tab(tab)));
+            RegistryObject<Item> item = ModItems.ITEMS.register(name, () -> new WearableBlockItem(block.get(), new Item.Properties()));
+            ModCreativeModeTab.put(tab, item);
+            return item;
         }
 
-        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+        RegistryObject<Item> item = ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        ModCreativeModeTab.put(tab, item);
+        return item;
     }
 
+    /*
     private static <T extends Block, I extends BlockItem>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
         return ModItems.ITEMS.register(name, () -> {
             try {
-                return blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), new Item.Properties().tab(tab));
+                I registeredItem = blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), new Item.Properties());
+                ModCreativeModeTab.put(tab, registeredItem);
+                return registeredItem;
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 e.printStackTrace();
-                return new BlockItem(block.get(), new Item.Properties().tab(tab));
+                ModCreativeModeTab.put(tab, block);
+                return new BlockItem(block.get(), new Item.Properties());
             }
         });
     }
+    */
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);
