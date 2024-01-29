@@ -46,7 +46,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -58,15 +58,15 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModBlocks {
     
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
-    public static List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
-    public static HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();    
+    public static final List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
+    public static final HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();    
     
-    public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(3f)
         .requiresCorrectToolForDrops()
     ), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistryObject<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(4.5f)
         .requiresCorrectToolForDrops()
         .sound(SoundType.DEEPSLATE)

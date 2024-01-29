@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.item;
 
-import javax.annotation.Nonnull;
-
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
 import net.minecraft.core.BlockPos;
@@ -74,18 +72,17 @@ public class HammerItem extends DiggerItem {
         return super.useOn(pContext);
     }
 
-    @Nonnull
-	@Override
-	public ItemStack getContainerItem(@Nonnull ItemStack stack) {
-		ItemStack container = stack.copy();
-		if (container.hurt(1, Constants.RANDOM, null))
-			return ItemStack.EMPTY;
-		else
-			return container;
-	}
-
-	@Override
-	public boolean hasContainerItem(@Nonnull ItemStack stack) {
-		return true;
-	}
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        ItemStack container = itemStack.copy();
+        if (container.hurt(1, Constants.RANDOM_SOURCE, null))
+            return ItemStack.EMPTY;
+        else
+            return container;
+    }
+    
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
+    }
 }

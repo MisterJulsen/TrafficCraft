@@ -43,6 +43,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.gui.ScreenUtils;
 
 public class TrafficLightScheduleEditor extends CommonScreen {
 
@@ -343,8 +344,8 @@ public class TrafficLightScheduleEditor extends CommonScreen {
 
         pPoseStack.popPose();
         GuiUtils.endStencil();        
-        net.minecraftforge.client.gui.GuiUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 0x77000000, 0x00000000);
-        net.minecraftforge.client.gui.GuiUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 0x00000000, 0x77000000);
+        ScreenUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 0x77000000, 0x00000000);
+        ScreenUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 0x00000000, 0x77000000);
         GuiUtils.swapAndBlitColor(GuiUtils.getFramebuffer(), minecraft.getMainRenderTarget());        
 
         super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);

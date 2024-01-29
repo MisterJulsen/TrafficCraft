@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
@@ -12,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -100,7 +99,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
             boolean flag = this.isProperHit(pState, direction, pResult.getLocation().y - (double)blockpos.getY());
             if (flag) {
                 this.press(pState, pLevel, pPos);
-                pLevel.gameEvent(pPlayer, GameEvent.BLOCK_PRESS, pPos);
+                pLevel.gameEvent(pPlayer, GameEvent.BLOCK_ACTIVATE, pPos);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -114,15 +113,16 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
         } else {
            return false;
         }
-     }
+    }
 
     public void press(BlockState pState, Level pLevel, BlockPos pPos) {
-        pLevel.setBlock(pPos, pState.setValue(POWERED, Boolean.valueOf(true)), 3);
+        pLevel.setBlockAndUpdate(pPos, pState.setValue(POWERED, Boolean.valueOf(true)));
         pLevel.playSound(null, pPos, SoundEvents.METAL_PRESSURE_PLATE_CLICK_ON, SoundSource.BLOCKS, 0.3F, 0.90000004F);
         pLevel.scheduleTick(pPos, this, PRESS_DURATION);
     }
     
-    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRand) {
+    @Override
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRand) {
         if (pState.getValue(POWERED)) {
             if (pLevel.getBlockEntity(pPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity && blockEntity.isValidLinked()) {
                 if (blockEntity.activate()) {
@@ -135,7 +135,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
             }
 
             pLevel.playSound(null, pPos, SoundEvents.METAL_PRESSURE_PLATE_CLICK_OFF, SoundSource.BLOCKS, 0.3F, 0.75F);
-            pLevel.gameEvent(GameEvent.BLOCK_UNPRESS, pPos);  
+            pLevel.gameEvent(null, GameEvent.BLOCK_DEACTIVATE, pPos);              
         }
     }
 

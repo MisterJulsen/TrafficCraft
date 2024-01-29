@@ -32,6 +32,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScrollEventItem {
 
@@ -69,7 +70,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 if (!level.isClientSide) {
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
                     compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
-                    compound.putString(NBT_BLOCK, clickedBlock.getRegistryName().toString());
+                    compound.putString(NBT_BLOCK, ForgeRegistries.BLOCKS.getKey(clickedBlock).toString());
                     player.displayClientMessage(Utils.translate(keySet, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.AQUA), true);
                 }
                 return InteractionResult.SUCCESS;

@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModMenuTypes {
-    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS, ModMain.MOD_ID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, ModMain.MOD_ID);
 
     public static final RegistryObject<MenuType<TrafficSignWorkbenchMenu>> TRAFFIC_SIGN_WORKBENCH_MENU = registerMenuType(TrafficSignWorkbenchMenu::new, "traffic_sign_workbench_menu");
 

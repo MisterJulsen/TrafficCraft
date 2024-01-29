@@ -57,16 +57,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 public class TrafficLightConfigScreen extends CommonScreen {
 
@@ -328,7 +328,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         }
 
         String url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
-        Component helpTitle = TextComponent.EMPTY;
+        Component helpTitle = Utils.emptyText();
         Collection<Component> helpDescription = new ArrayList<>();
 
         if (type == TrafficLightType.TRAM && Locale.getDefault().getLanguage().equals(Constants.GERMAN_LOCAL_CODE)) { // For german players only because that article only exists in germany
@@ -726,7 +726,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         pPoseStack.scale(96, 96, -96);
         pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
         pPoseStack.popPose();
         multibuffersource$buffersource.endBatch();
         pPoseStack.popPose();

@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"render_type": "cutout",
+
 	"textures": {
 		"1": "block/anvil",
 		"3": "trafficcraft:block/lamp_light",

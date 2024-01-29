@@ -83,7 +83,7 @@ public class SignPickerScreen extends CommonScreen {
         int i = 1;
         ResourceLocation path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
         List<ResourceLocation> locs = new ArrayList<>();
-        while (Minecraft.getInstance().getResourceManager().hasResource(path)) {
+        while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
             locs.add(path);
             i++;
             path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
@@ -170,7 +170,7 @@ public class SignPickerScreen extends CommonScreen {
                 }
 
                 try {
-                    preview = new DynamicTexture(NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).getInputStream()));
+                    preview = new DynamicTexture(NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).get().open()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -248,41 +248,4 @@ public class SignPickerScreen extends CommonScreen {
             return super.keyPressed(pKeyCode, pScanCode, pModifiers);
         }
     }
-
-    /*
-    @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof GuiEventListener).forEach(x -> {
-            if (((GuiEventListener)x).mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY) && !b[0])
-                b[0] = true;
-        });
-        super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
-        return b[0];
-    }
-
-    @Override
-    public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof ICustomAreaControl && x instanceof GuiEventListener).forEach(x -> {
-            if (((ICustomAreaControl)x).isInArea(pMouseX, pMouseY) && ((GuiEventListener)x).mouseScrolled(pMouseX, pMouseY, pDelta) && !b[0]) {
-                b[0] = true;
-            }
-        });
-        super.mouseScrolled(pMouseX, pMouseY, pDelta);
-        return b[0];
-    }
-
-    @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
-        boolean[] b = new boolean[] { false };
-        this.renderables.stream().filter(x -> x instanceof GuiEventListener).forEach(x -> {
-            if (((GuiEventListener)x).mouseReleased(pMouseX, pMouseY, pButton) && !b[0]) {
-                b[0] = true;
-            }
-        });
-        super.mouseReleased(pMouseX, pMouseY, pButton);
-        return b[0];
-    }
-    */
 }

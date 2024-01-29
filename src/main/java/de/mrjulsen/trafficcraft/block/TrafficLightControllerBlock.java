@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
 
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
@@ -13,6 +11,7 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -89,9 +88,9 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
+    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
         if (pLevel.dimensionType().ultraWarm() && pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity && blockEntity.isRunning()) {
-            pLevel.addParticle(ParticleTypes.SMOKE, pPos.getX() + 0.5D, pPos.getY() + 0.5D, pPos.getZ() + 0.5D, pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D), pRandom.nextDouble(-0.05D, 0.05D));
+            pLevel.addParticle(ParticleTypes.SMOKE, pPos.getX() + 0.5D, pPos.getY() + 0.5D, pPos.getZ() + 0.5D, pRandom.triangle(-0.05D, 0.05D), pRandom.triangle(-0.05D, 0.05D), pRandom.triangle(-0.05D, 0.05D));
         }
 
         super.animateTick(pState, pLevel, pPos, pRandom);

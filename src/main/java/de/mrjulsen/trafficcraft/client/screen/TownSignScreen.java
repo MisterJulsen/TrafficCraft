@@ -31,6 +31,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -38,7 +39,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 @OnlyIn(Dist.CLIENT)
 public class TownSignScreen extends CommonScreen {
@@ -186,7 +187,7 @@ public class TownSignScreen extends CommonScreen {
         pPoseStack.mulPose(Vector3f.ZP.rotationDegrees(180));
         pPoseStack.mulPose(Vector3f.YP.rotationDegrees(config.modelRotation));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, EmptyModelData.INSTANCE);
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid()); // TODO: ModelData
         pPoseStack.popPose();
 
         // Text rendering
@@ -272,8 +273,7 @@ public class TownSignScreen extends CommonScreen {
                     bufferbuilder.vertex(matrix4f, (float) l2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
                     bufferbuilder.vertex(matrix4f, (float) l2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
                     bufferbuilder.vertex(matrix4f, (float) k2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.end();
-                    BufferUploader.end(bufferbuilder);
+                    BufferUploader.drawWithShader(bufferbuilder.end());
                     RenderSystem.disableColorLogicOp();
                     RenderSystem.enableTexture();
                 }

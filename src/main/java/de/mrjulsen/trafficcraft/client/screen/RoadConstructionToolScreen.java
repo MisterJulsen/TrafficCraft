@@ -35,6 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @OnlyIn(Dist.CLIENT)
 public class RoadConstructionToolScreen extends CommonScreen {
@@ -95,7 +96,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         super(title);
 
         if (!(stack.getItem() instanceof RoadConstructionTool)) {
-            throw new IllegalArgumentException(stack.getItem().getRegistryName() + " is not a valid item for screen 'RoadBuilderToolScreen'.");
+            throw new IllegalArgumentException(ForgeRegistries.ITEMS.getKey(stack.getItem()) + " is not a valid item for screen 'RoadBuilderToolScreen'.");
         }
 
         CompoundTag nbt = stack.getOrCreateTag();

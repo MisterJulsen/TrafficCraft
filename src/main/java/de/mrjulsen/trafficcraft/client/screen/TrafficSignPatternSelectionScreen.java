@@ -180,7 +180,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                 int a = 1;
                 ResourceLocation path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
                 List<ResourceLocation> locs = new ArrayList<>();
-                while (Minecraft.getInstance().getResourceManager().hasResource(path)) {
+                while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
                     locs.add(path);
                     a++;
                     path = new ResourceLocation(ModMain.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
@@ -193,7 +193,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                     Sprite sprite = new Sprite(resources[j], 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
 
                     IconButton btn = new IconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
-                        try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).getInputStream())) {
+                        try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).get().open())) {
                             TrafficSignData tsd = new TrafficSignData(img.getWidth(), img.getHeight(), shape);
                             tsd.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(img));
                             CreativePatternCatalogueItem.setCustomImage(stack, tsd);

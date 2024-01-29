@@ -22,7 +22,7 @@ public class ClientEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     @SuppressWarnings("resource")
-    public static void mouseScrollEvent(InputEvent.MouseScrollEvent event) {
+    public static void mouseScrollEvent(InputEvent.MouseScrollingEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         double scroll = event.getScrollDelta();
 

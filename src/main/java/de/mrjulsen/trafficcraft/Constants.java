@@ -6,6 +6,7 @@ import de.mrjulsen.mcdragonlib.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.RandomSource;
 
 public class Constants {
     public static final int MAX_ASPHALT_PATTERNS = 323;
@@ -25,6 +26,7 @@ public class Constants {
     public static final String WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID = "Q2354774";
 
     public static final Random RANDOM = new Random();
+    public static final RandomSource RANDOM_SOURCE = RandomSource.create();
 }
 
 

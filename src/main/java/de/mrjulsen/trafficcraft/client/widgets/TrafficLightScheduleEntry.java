@@ -27,7 +27,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.sounds.SoundEvents;
 
 public class TrafficLightScheduleEntry extends Button {
@@ -83,7 +82,7 @@ public class TrafficLightScheduleEntry extends Button {
     private final boolean hidePhaseId;
 
     public TrafficLightScheduleEntry(TrafficLightScheduleEditor parent, boolean hidePhaseId, TrafficLightScheduleEntryData entry, int pX, int pY, int pWidth, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
-        super(pX, pY, pWidth, HEIGHT, TextComponent.EMPTY, (btn) -> {});
+        super(pX, pY, pWidth, HEIGHT, Utils.emptyText(), (btn) -> {});
         this.hidePhaseId = hidePhaseId;
 
         Minecraft minecraft = Minecraft.getInstance();

@@ -22,7 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -132,9 +132,9 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                 }
 
                 if (iteration >= buildingData.blocks.size() - 1) {
-                    if (level.dimension().location().equals(DimensionType.NETHER_LOCATION.location())) {
+                    if (level.dimension().location().equals(BuiltinDimensionTypes.NETHER.location())) {
                         Utils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "highway_to_hell", "req");
-                    } else if (level.dimension().location().equals(DimensionType.END_LOCATION.location())) {
+                    } else if (level.dimension().location().equals(BuiltinDimensionTypes.END.location())) {
                         Utils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "final_destination", "req");
                     }
                 }

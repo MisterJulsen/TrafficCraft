@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"render_type": "cutout",
+
 	"textures": {
 		"0": "trafficcraft:block/red_delineator",
 		"particle": "trafficcraft:block/red_delineator"
