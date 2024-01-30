@@ -44,7 +44,7 @@ public class ModCreativeModeTab {
     public static void addCreative(CreativeModeTabEvent.BuildContents event) {
         Optional<Entry<ModTab, Collection<RegistryObject<? extends ItemLike>>>> tab = CREATIVE_MODE_TAB_REGISTRY.entrySet().stream().filter(x -> MOD_TAB.get(x.getKey()) == event.getTab()).findFirst();
         if (tab.isPresent()) {
-            tab.get().getValue().stream().map(x -> new ItemStack(x.get())).toList();
+            event.acceptAll(tab.get().getValue().stream().map(x -> new ItemStack(x.get())).toList());
         }            
     }
 
