@@ -41,8 +41,8 @@ import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock.LampType;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.item.WearableBlockItem;
+import de.mrjulsen.trafficcraft.item.ModCreativeModeTab.ModTab;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
@@ -63,29 +63,29 @@ public class ModBlocks {
     public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(3f)
         .requiresCorrectToolForDrops()
-    ), ModCreativeModeTab.MOD_TAB, false);
+    ), ModTab.MAIN, false);
 
     public static final RegistryObject<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
         .strength(4.5f)
         .requiresCorrectToolForDrops()
         .sound(SoundType.DEEPSLATE)
-    ), ModCreativeModeTab.MOD_TAB, false);
+    ), ModTab.MAIN, false);
 
     public static final RegistryObject<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
         .strength(1.5f)
         .requiresCorrectToolForDrops()
-    ), ModCreativeModeTab.MOD_TAB, false);
+    ), ModTab.MAIN, false);
 
-    public static final RegistryObject<Block> TRAFFIC_SIGN_WORKBENCH = registerBlock("traffic_sign_workbench", () -> new TrafficSignWorkbenchBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ASPHALT = registerBlock("asphalt", () -> new AsphaltBlock(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE = registerBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ASPHALT_SLOPE = registerBlock("asphalt_slope", () -> new AsphaltSlope(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE_SLOPE = registerBlock("concrete_slope", () -> new AsphaltSlope(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ASPHALT_CURB = registerBlock("asphalt_curb", () -> new AsphaltCurb(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE_CURB = registerBlock("concrete_curb", () -> new AsphaltCurb(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ASPHALT_CURB_SLOPE = registerBlock("asphalt_curb_slope", () -> new AsphaltCurbSlope(RoadType.ASPHALT), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE_CURB_SLOPE = registerBlock("concrete_curb_slope", () -> new AsphaltCurbSlope(RoadType.CONCRETE), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> CONCRETE_BARRIER = registerColoredBlock("concrete_barrier", () -> new ConcreteBarrierBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRAFFIC_SIGN_WORKBENCH = registerBlock("traffic_sign_workbench", () -> new TrafficSignWorkbenchBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> ASPHALT = registerBlock("asphalt", () -> new AsphaltBlock(RoadType.ASPHALT), ModTab.MAIN, false);
+    public static final RegistryObject<Block> CONCRETE = registerBlock("concrete", () -> new AsphaltBlock(RoadType.CONCRETE), ModTab.MAIN, false);
+    public static final RegistryObject<Block> ASPHALT_SLOPE = registerBlock("asphalt_slope", () -> new AsphaltSlope(RoadType.ASPHALT), ModTab.MAIN, false);
+    public static final RegistryObject<Block> CONCRETE_SLOPE = registerBlock("concrete_slope", () -> new AsphaltSlope(RoadType.CONCRETE), ModTab.MAIN, false);
+    public static final RegistryObject<Block> ASPHALT_CURB = registerBlock("asphalt_curb", () -> new AsphaltCurb(RoadType.ASPHALT), ModTab.MAIN, false);
+    public static final RegistryObject<Block> CONCRETE_CURB = registerBlock("concrete_curb", () -> new AsphaltCurb(RoadType.CONCRETE), ModTab.MAIN, false);
+    public static final RegistryObject<Block> ASPHALT_CURB_SLOPE = registerBlock("asphalt_curb_slope", () -> new AsphaltCurbSlope(RoadType.ASPHALT), ModTab.MAIN, false);
+    public static final RegistryObject<Block> CONCRETE_CURB_SLOPE = registerBlock("concrete_curb_slope", () -> new AsphaltCurbSlope(RoadType.CONCRETE), ModTab.MAIN, false);
+    public static final RegistryObject<Block> CONCRETE_BARRIER = registerColoredBlock("concrete_barrier", () -> new ConcreteBarrierBlock(), ModTab.MAIN, false);
 
     static
     {
@@ -105,39 +105,39 @@ public class ModBlocks {
         }
     }
 
-    public static final RegistryObject<Block> MANHOLE = registerBlock("manhole", () -> new ManholeBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> MANHOLE_COVER = registerBlock("manhole_cover", () -> new ManholeCoverBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> ROAD_GULLY = registerBlock("road_gully", () -> new ManholeCoverBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_SIGN = registerBlock("traffic_sign", () -> new TrafficSignBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TOWN_SIGN = registerBlock("town_sign", () -> new TownSignBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> STREET_SIGN = registerColoredBlock("street_sign", () -> new StreetSignBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> HOUSE_NUMBER_SIGN = registerColoredBlock("house_number_sign", () -> new HouseNumberSignBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LIGHT = registerColoredBlock("traffic_light", () -> new TrafficLightBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> STREET_LAMP = registerBlock("street_lamp", () -> new StreetLampBaseBlock(LampType.NORMAL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> DOUBLE_STREET_LAMP = registerBlock("double_street_lamp", () -> new StreetLampBaseBlock(LampType.DOUBLE), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_STREET_LAMP = registerBlock("small_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> SMALL_DOUBLE_STREET_LAMP = registerBlock("small_double_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> STREET_LIGHT = registerBlock("street_light", () -> new StreetLightBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> FLUORESCENT_TUBE_LAMP = registerBlock("fluorescent_tube_lamp", () -> new FluorescentTubeLampBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> MANHOLE = registerBlock("manhole", () -> new ManholeBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> MANHOLE_COVER = registerBlock("manhole_cover", () -> new ManholeCoverBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> ROAD_GULLY = registerBlock("road_gully", () -> new ManholeCoverBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TRAFFIC_SIGN_POST = registerBlock("traffic_sign_post", () -> new TrafficSignPostBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TRAFFIC_SIGN = registerBlock("traffic_sign", () -> new TrafficSignBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TOWN_SIGN = registerBlock("town_sign", () -> new TownSignBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> STREET_SIGN = registerColoredBlock("street_sign", () -> new StreetSignBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> HOUSE_NUMBER_SIGN = registerColoredBlock("house_number_sign", () -> new HouseNumberSignBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TRAFFIC_LIGHT = registerColoredBlock("traffic_light", () -> new TrafficLightBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TRAFFIC_LIGHT_CONTROLLER = registerBlock("traffic_light_controller", () -> new TrafficLightControllerBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> TRAFFIC_LIGHT_REQUEST_BUTTON = registerBlock("traffic_light_request_button", () -> new TrafficLightRequestButtonBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> STREET_LAMP = registerBlock("street_lamp", () -> new StreetLampBaseBlock(LampType.NORMAL), ModTab.MAIN, true);
+    public static final RegistryObject<Block> DOUBLE_STREET_LAMP = registerBlock("double_street_lamp", () -> new StreetLampBaseBlock(LampType.DOUBLE), ModTab.MAIN, true);
+    public static final RegistryObject<Block> SMALL_STREET_LAMP = registerBlock("small_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL), ModTab.MAIN, true);
+    public static final RegistryObject<Block> SMALL_DOUBLE_STREET_LAMP = registerBlock("small_double_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModTab.MAIN, true);
+    public static final RegistryObject<Block> STREET_LIGHT = registerBlock("street_light", () -> new StreetLightBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> FLUORESCENT_TUBE_LAMP = registerBlock("fluorescent_tube_lamp", () -> new FluorescentTubeLampBlock(), ModTab.MAIN, false);
     
-    public static final RegistryObject<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(false), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(false), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> RED_DELINEATOR = registerBlock("red_delineator", () -> new DelineatorBlock(false), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(true), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(true), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(false), ModTab.MAIN, false);
+    public static final RegistryObject<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(false), ModTab.MAIN, false);
+    public static final RegistryObject<Block> RED_DELINEATOR = registerBlock("red_delineator", () -> new DelineatorBlock(false), ModTab.MAIN, false);
+    public static final RegistryObject<Block> SMALL_WHITE_DELINEATOR = registerBlock("small_white_delineator", () -> new DelineatorBlock(true), ModTab.MAIN, false);
+    public static final RegistryObject<Block> SMALL_YELLOW_DELINEATOR = registerBlock("small_yellow_delineator", () -> new DelineatorBlock(true), ModTab.MAIN, false);
 
-    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new GuardrailBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> GUARDRAIL = registerColoredBlock("guardrail", () -> new GuardrailBlock(), ModTab.MAIN, false);
 
-    public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModCreativeModeTab.MOD_TAB, true);
+    public static final RegistryObject<Block> PAINT_BUCKET = registerColoredBlock("paint_bucket", () -> new PaintBucketBlock(), ModTab.MAIN, true);
     
-    public static final RegistryObject<Block> TRAFFIC_CONE = registerColoredBlock("traffic_cone", () -> new TrafficConeBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> TRAFFIC_BOLLARD = registerColoredBlock("traffic_bollard", () -> new TrafficBollardBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> TRAFFIC_BARREL = registerColoredBlock("traffic_barrel", () -> new TrafficBarrelBlock(), ModCreativeModeTab.MOD_TAB, true);
-    public static final RegistryObject<Block> ROAD_BARRIER_FENCE = registerColoredBlock("road_barrier_fence", () -> new RoadBarrierFenceBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistryObject<Block> REFLECTOR = registerColoredBlock("reflector", () -> new ReflectorBlock(), ModCreativeModeTab.MOD_TAB, false);
+    public static final RegistryObject<Block> TRAFFIC_CONE = registerColoredBlock("traffic_cone", () -> new TrafficConeBlock(), ModTab.MAIN, true);
+    public static final RegistryObject<Block> TRAFFIC_BOLLARD = registerColoredBlock("traffic_bollard", () -> new TrafficBollardBlock(), ModTab.MAIN, true);
+    public static final RegistryObject<Block> TRAFFIC_BARREL = registerColoredBlock("traffic_barrel", () -> new TrafficBarrelBlock(), ModTab.MAIN, true);
+    public static final RegistryObject<Block> ROAD_BARRIER_FENCE = registerColoredBlock("road_barrier_fence", () -> new RoadBarrierFenceBlock(), ModTab.MAIN, false);
+    public static final RegistryObject<Block> REFLECTOR = registerColoredBlock("reflector", () -> new ReflectorBlock(), ModTab.MAIN, false);
 
     
 
@@ -153,13 +153,13 @@ public class ModBlocks {
         return toReturn;
     }
     
-    private static <T extends Block>RegistryObject<Block> registerColoredBlock(String name, Supplier<Block> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistryObject<Block> registerColoredBlock(String name, Supplier<Block> block, ModTab tab, boolean wearable) {
         RegistryObject<Block> toReturn = registerBlock(name, block, tab, wearable);
         COLORED_BLOCKS.add(toReturn);
         return toReturn;
     }
 
-    private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistryObject<T> registerBlock(String name, Supplier<T> block, ModTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab, wearable);
         return toReturn;
@@ -175,13 +175,13 @@ public class ModBlocks {
     */
 
     @SuppressWarnings("unused")
-    private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, ModTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(itemId, toReturn, tab, wearable);
         return toReturn;
     }
 
-    private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, ModTab tab, boolean wearable) {
         if (wearable) {
             RegistryObject<Item> item = ModItems.ITEMS.register(name, () -> new WearableBlockItem(block.get(), new Item.Properties()));
             ModCreativeModeTab.put(tab, item);

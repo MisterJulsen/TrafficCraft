@@ -1,34 +1,27 @@
 package de.mrjulsen.trafficcraft.client;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.mrjulsen.trafficcraft.ModMain;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
 import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.textures.TextureAtlasSpriteLoaderManager;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ModMain.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
 
+    /*
     private static final String TEXTURE_PATH = "block/traffic_light";
     
-    /*
     @SubscribeEvent
     public static void onTextureStitch(TextureAtlasSpriteLoaderManager event) {
         if (!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {

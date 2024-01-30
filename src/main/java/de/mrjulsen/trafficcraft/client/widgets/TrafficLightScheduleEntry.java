@@ -175,7 +175,7 @@ public class TrafficLightScheduleEntry extends Button {
         signals = TrafficLightColor.getAllowedForType(TrafficLightType.CAR, false);
     }
 
-    public void setY(int y) {
+    public void setYPos(int y) {
         if (this.getY() == y) {
             return;
         }

@@ -15,7 +15,7 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import net.minecraft.world.item.CreativeModeTab;
+import de.mrjulsen.trafficcraft.item.ModCreativeModeTab.ModTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -28,31 +28,31 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ModMain.MOD_ID);
     public static final List<RegistryObject<Item>> COLORED_ITEMS = new ArrayList<>();    
 
-    public static final RegistryObject<Item> WRENCH = registerItem("wrench", () -> new WrenchItem(), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> TRAFFIC_LIGHT_LINKER = registerItem("traffic_light_linker", () -> new TrafficLightLinkerItem(new Item.Properties().stacksTo(1)), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> BITUMEN = registerItem("raw_bitumen", () -> new Item(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> IRON_ROD = registerItem("iron_rod", () -> new Item(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> IRON_PLATE = registerItem("iron_plate", () -> new Item(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> PAINT_BRUSH = registerColoredItem("paint_brush", () -> new BrushItem(new Item.Properties(),0), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> WOOD_ROAD_CONSTRUCTION_TOOL = registerItem("wood_road_construction_tool", () -> new RoadConstructionTool(Tiers.WOOD, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> STONE_ROAD_CONSTRUCTION_TOOL = registerItem("stone_road_construction_tool", () -> new RoadConstructionTool(Tiers.STONE, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> IRON_ROAD_CONSTRUCTION_TOOL = registerItem("iron_road_construction_tool", () -> new RoadConstructionTool(Tiers.IRON, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> GOLD_ROAD_CONSTRUCTION_TOOL = registerItem("gold_road_construction_tool", () -> new RoadConstructionTool(Tiers.GOLD, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> DIAMOND_ROAD_CONSTRUCTION_TOOL = registerItem("diamond_road_construction_tool", () -> new RoadConstructionTool(Tiers.DIAMOND, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> NETHERITE_ROAD_CONSTRUCTION_TOOL = registerItem("netherite_road_construction_tool", () -> new RoadConstructionTool(Tiers.NETHERITE, new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> HAMMER = registerItem("hammer", () -> new HammerItem(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = registerItem("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> COLOR_PALETTE = registerColoredItem("color_palette", () -> new ColorPaletteItem(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> PATTERN_CATALOGUE = registerItem("pattern_catalogue", () -> new PatternCatalogueItem(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
-    public static final RegistryObject<Item> CREATIVE_PATTERN_CATALOGUE = registerItem("creative_pattern_catalogue", () -> new CreativePatternCatalogueItem(new Item.Properties()), ModCreativeModeTab.MOD_TAB);
+    public static final RegistryObject<Item> WRENCH = registerItem("wrench", () -> new WrenchItem(), ModTab.MAIN);
+    public static final RegistryObject<Item> TRAFFIC_LIGHT_LINKER = registerItem("traffic_light_linker", () -> new TrafficLightLinkerItem(new Item.Properties().stacksTo(1)), ModTab.MAIN);
+    public static final RegistryObject<Item> BITUMEN = registerItem("raw_bitumen", () -> new Item(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> IRON_ROD = registerItem("iron_rod", () -> new Item(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> IRON_PLATE = registerItem("iron_plate", () -> new Item(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> PAINT_BRUSH = registerColoredItem("paint_brush", () -> new BrushItem(new Item.Properties(),0), ModTab.MAIN);
+    public static final RegistryObject<Item> WOOD_ROAD_CONSTRUCTION_TOOL = registerItem("wood_road_construction_tool", () -> new RoadConstructionTool(Tiers.WOOD, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> STONE_ROAD_CONSTRUCTION_TOOL = registerItem("stone_road_construction_tool", () -> new RoadConstructionTool(Tiers.STONE, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> IRON_ROAD_CONSTRUCTION_TOOL = registerItem("iron_road_construction_tool", () -> new RoadConstructionTool(Tiers.IRON, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> GOLD_ROAD_CONSTRUCTION_TOOL = registerItem("gold_road_construction_tool", () -> new RoadConstructionTool(Tiers.GOLD, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> DIAMOND_ROAD_CONSTRUCTION_TOOL = registerItem("diamond_road_construction_tool", () -> new RoadConstructionTool(Tiers.DIAMOND, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> NETHERITE_ROAD_CONSTRUCTION_TOOL = registerItem("netherite_road_construction_tool", () -> new RoadConstructionTool(Tiers.NETHERITE, new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> HAMMER = registerItem("hammer", () -> new HammerItem(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> STREET_LAMP_CONFIG_CARD = registerItem("street_lamp_config_card", () -> new StreetLampConfigCardItem(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> COLOR_PALETTE = registerColoredItem("color_palette", () -> new ColorPaletteItem(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> PATTERN_CATALOGUE = registerItem("pattern_catalogue", () -> new PatternCatalogueItem(new Item.Properties()), ModTab.MAIN);
+    public static final RegistryObject<Item> CREATIVE_PATTERN_CATALOGUE = registerItem("creative_pattern_catalogue", () -> new CreativePatternCatalogueItem(new Item.Properties()), ModTab.MAIN);
 
-    private static RegistryObject<Item> registerItem(String id, Supplier<? extends Item> sup, CreativeModeTab tab) { 
+    private static RegistryObject<Item> registerItem(String id, Supplier<? extends Item> sup, ModTab tab) { 
         RegistryObject<Item> item = ITEMS.register(id, sup);
         ModCreativeModeTab.put(tab, item);
         return item;
     }
 
-    private static RegistryObject<Item> registerColoredItem(String id, Supplier<? extends Item> sup, CreativeModeTab tab) { 
+    private static RegistryObject<Item> registerColoredItem(String id, Supplier<? extends Item> sup, ModTab tab) { 
         RegistryObject<Item> item = ITEMS.register(id, sup);
         ModCreativeModeTab.put(tab, item);
         COLORED_ITEMS.add(item);

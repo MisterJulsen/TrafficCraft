@@ -186,7 +186,7 @@ public class TownSignScreen extends CommonScreen {
         pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
         pPoseStack.mulPose(Axis.YP.rotationDegrees(config.modelRotation));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid()); // TODO: ModelData
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
         pPoseStack.popPose();
 
         // Text rendering

@@ -333,7 +333,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
 
         int offset = scrollBar.getScrollValue();
         for (TrafficLightScheduleEntry entry : entries) {
-            entry.setY(y);
+            entry.setYPos(y);
             y += TrafficLightScheduleEntry.HEIGHT;
             if (y > areaWorkspace.getTop() + offset && y - TrafficLightScheduleEntry.HEIGHT < areaWorkspace.getTop() + areaWorkspace.getHeight() + offset) {                
                 entry.render(pPoseStack, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseX : -1, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseY + scrollBar.getScrollValue() : -1, pPartialTick);
