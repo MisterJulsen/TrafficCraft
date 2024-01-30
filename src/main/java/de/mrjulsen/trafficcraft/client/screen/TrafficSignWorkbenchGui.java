@@ -502,7 +502,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             @Override
             protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
                 super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
-                fill(pPoseStack, x + 2, y + 2, x + 16, y + 16, selectedColor);
+                fill(pPoseStack, getX() + 2, getY() + 2, getX() + 16, getY() + 16, selectedColor);
             }
         }.withAlignment(Alignment.CENTER));
         
@@ -528,7 +528,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     if (!(stack.getItem() instanceof ColorPaletteItem))
                         return;
                     
-                    fill(pPoseStack, x + 2, y + 2, x + 16, y + 16, ColorPaletteItem.getColorAt(stack, j));                    
+                    fill(pPoseStack, getX() + 2, getY() + 2, getX() + 16, getY() + 16, ColorPaletteItem.getColorAt(stack, j));                    
                 }
 
                 @Override
