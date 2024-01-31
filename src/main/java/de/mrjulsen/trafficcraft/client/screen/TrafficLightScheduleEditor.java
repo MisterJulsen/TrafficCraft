@@ -6,14 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.Alignment;
@@ -35,6 +34,7 @@ import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -43,7 +43,6 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.client.gui.ScreenUtils;
 
 public class TrafficLightScheduleEditor extends CommonScreen {
 
@@ -197,7 +196,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
-        addTooltip(Tooltip
+        addTooltip(DragonLibTooltip
             .of(GuiUtils.getEnumTooltipData(ModMain.MOD_ID, TrafficLightTrigger.class))
             .withMaxWidth(width / 4)
             .assignedTo(bt)
@@ -230,7 +229,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             (btn) -> {
                 createNewEntry();
             },
-            Tooltip.of(textAddEntry)
+            DragonLibTooltip.of(textAddEntry)
         );
 
         addButton(
@@ -314,60 +313,60 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     }
 
     @Override
-    public void renderBg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        renderBackground(pPoseStack);
-        DynamicGuiRenderer.renderWindow(pPoseStack, guiLeft, guiTop, WINDOW_WIDTH, WINDOW_HEIGHT);
-        DynamicGuiRenderer.renderArea(pPoseStack, areaHeader, AreaStyle.GRAY, ButtonState.SUNKEN);
-        DynamicGuiRenderer.renderContainerBackground(pPoseStack, areaWorkspace);
-        font.draw(pPoseStack, title, width / 2 - font.width(title) / 2, guiTop + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+    public void renderBg(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        renderBackground(graphics);
+        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WINDOW_WIDTH, WINDOW_HEIGHT);
+        DynamicGuiRenderer.renderArea(graphics, areaHeader, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderContainerBackground(graphics, areaWorkspace);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, guiTop + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
     
-        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, areaWorkspace.getTop() + 1, TIMELINE_UW, areaWorkspace.getHeight() - 2, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiUtils.blit(WIDGETS, graphics, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, areaWorkspace.getTop() + 1, TIMELINE_UW, areaWorkspace.getHeight() - 2, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         
         GuiUtils.swapAndBlitColor(minecraft.getMainRenderTarget(), GuiUtils.getFramebuffer());
-        GuiUtils.startStencil(pPoseStack, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getWidth() - 2, areaWorkspace.getHeight() - 2);
-        pPoseStack.pushPose();
-        pPoseStack.translate(0, -scrollBar.getScrollValue(), 0);
+        GuiUtils.startStencil(graphics, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getWidth() - 2, areaWorkspace.getHeight() - 2);
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, -scrollBar.getScrollValue(), 0);
 
         int y = areaWorkspace.getTop() + 1;
-        y = renderInfo(pPoseStack, y, textStart);
+        y = renderInfo(graphics, y, textStart);
 
         int offset = scrollBar.getScrollValue();
         for (TrafficLightScheduleEntry entry : entries) {
             entry.setYPos(y);
             y += TrafficLightScheduleEntry.HEIGHT;
             if (y > areaWorkspace.getTop() + offset && y - TrafficLightScheduleEntry.HEIGHT < areaWorkspace.getTop() + areaWorkspace.getHeight() + offset) {                
-                entry.render(pPoseStack, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseX : -1, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseY + scrollBar.getScrollValue() : -1, pPartialTick);
+                entry.render(graphics, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseX : -1, areaWorkspace.isInBounds(pMouseX, pMouseY) ? pMouseY + scrollBar.getScrollValue() : -1, pPartialTick);
             }
         }
         
-        y = renderInfo(pPoseStack, y, textEnd);
+        y = renderInfo(graphics, y, textEnd);
 
-        pPoseStack.popPose();
-        GuiUtils.endStencil();        
-        ScreenUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 0x77000000, 0x00000000);
-        ScreenUtils.drawGradientRect(pPoseStack.last().pose(), 200, areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 0x00000000, 0x77000000);
+        graphics.pose().popPose();
+        GuiUtils.endStencil();
+        graphics.fillGradient(200, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 0x77000000, 0x00000000);
+        graphics.fillGradient(200, areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 0x00000000, 0x77000000);
         GuiUtils.swapAndBlitColor(GuiUtils.getFramebuffer(), minecraft.getMainRenderTarget());        
 
-        super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.renderBg(graphics, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override
-    public void renderFg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void renderFg(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderFg(graphics, pMouseX, pMouseY, pPartialTick);
         int offset = scrollBar.getScrollValue();
         
         if (areaWorkspace.isInBounds(pMouseX, pMouseY)) {
             for (TrafficLightScheduleEntry entry : entries) {
-                entry.renderTooltips(pPoseStack, pMouseX, pMouseY, offset);
+                entry.renderTooltips(graphics, pMouseX, pMouseY, offset);
             }
         }
     }
 
-    public int renderInfo(PoseStack pPoseStack, int y, Component text) {
-        DynamicGuiRenderer.renderArea(pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING, y + ENTRY_PADDING / 2, Math.min(ENTRY_TIMELINE_COLUMN_WIDTH + font.width(text) + 8, areaWorkspace.getWidth() - ENTRY_PADDING * 2), DEFAULT_ENTRY_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
-        font.draw(pPoseStack, text, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - font.lineHeight / 2, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
-        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y, TIMELINE_UW, DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        GuiUtils.blit(WIDGETS, pPoseStack, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TIMELINE_VH / 2, TIMELINE_UW, TIMELINE_VH, 0, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+    public int renderInfo(GuiGraphics graphics, int y, Component text) {
+        DynamicGuiRenderer.renderArea(graphics, areaWorkspace.getLeft() + ENTRY_PADDING, y + ENTRY_PADDING / 2, Math.min(ENTRY_TIMELINE_COLUMN_WIDTH + font.width(text) + 8, areaWorkspace.getWidth() - ENTRY_PADDING * 2), DEFAULT_ENTRY_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
+        graphics.drawString(font, text, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - font.lineHeight / 2, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
+        GuiUtils.blit(WIDGETS, graphics, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y, TIMELINE_UW, DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING, 27, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        GuiUtils.blit(WIDGETS, graphics, areaWorkspace.getLeft() + ENTRY_PADDING + ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TIMELINE_UW / 2, y + ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TIMELINE_VH / 2, TIMELINE_UW, TIMELINE_VH, 0, 20, TIMELINE_UW, TIMELINE_VH, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         
         return y + DEFAULT_ENTRY_HEIGHT + ENTRY_PADDING;
     }

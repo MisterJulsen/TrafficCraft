@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.client.widgets.data;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 
 public class WidgetData {
@@ -31,12 +30,12 @@ public class WidgetData {
         this.widget.setY(this.y + yOffset);
     }
 
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        this.widget.render(stack, mouseX, mouseY, partialTicks);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        this.widget.render(graphics, mouseX, mouseY, partialTicks);
     }
 
-    public void renderWithOffset(PoseStack stack, int mouseX, int mouseY, float partialTicks, int xOffset, int yOffset) {
+    public void renderWithOffset(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks, int xOffset, int yOffset) {
         this.setPosOffset(xOffset, yOffset);
-        this.widget.render(stack, mouseX, mouseY, partialTicks);
+        this.widget.render(graphics, mouseX, mouseY, partialTicks);
     }
 }

@@ -5,12 +5,10 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
@@ -23,6 +21,7 @@ import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleEditor;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -74,8 +73,8 @@ public class TrafficLightScheduleEntry extends Button {
     private static final Component textMoveDown = Utils.translate("gui.trafficcraft.trafficlightschedule.move_down");
     private static final Component textDelete = Utils.translate("gui.trafficcraft.trafficlightschedule.delete");
 
-    private final List<Tooltip> widgetTooltips = new ArrayList<>();
-    private final List<Tooltip> areaTooltips = new ArrayList<>();
+    private final List<DragonLibTooltip> widgetTooltips = new ArrayList<>();
+    private final List<DragonLibTooltip> areaTooltips = new ArrayList<>();
 
     // data
     private final TrafficLightScheduleEntryData entry;
@@ -108,7 +107,7 @@ public class TrafficLightScheduleEntry extends Button {
         );
         delayBox.setFilter(ModGuiUtils::editBoxNonNegativeNumberFilter);
         delayBox.setMaxLength(String.valueOf(TrafficLightScheduleEntryData.MAX_SECONDS).length());
-        widgetTooltips.add(Tooltip.of(textDelay).assignedTo(delayBox));
+        widgetTooltips.add(DragonLibTooltip.of(textDelay).assignedTo(delayBox));
 
         removeTimeButton = GuiUtils.createButton(
             pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH,
@@ -125,7 +124,7 @@ public class TrafficLightScheduleEntry extends Button {
                 entry.setDurationSeconds(val);
             }
         );
-        widgetTooltips.add(Tooltip.of(textRemoveTime).assignedTo(removeTimeButton));
+        widgetTooltips.add(DragonLibTooltip.of(textRemoveTime).assignedTo(removeTimeButton));
 
         addTimeButton = GuiUtils.createButton(
             pX + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + 16 + 40,
@@ -142,7 +141,7 @@ public class TrafficLightScheduleEntry extends Button {
                 entry.setDurationSeconds(val);
             }
         );
-        widgetTooltips.add(Tooltip.of(textAddTime).assignedTo(addTimeButton));
+        widgetTooltips.add(DragonLibTooltip.of(textAddTime).assignedTo(addTimeButton));
 
         widgets.add(delayBox);
         widgets.add(addTimeButton);
@@ -166,7 +165,7 @@ public class TrafficLightScheduleEntry extends Button {
             );
             phaseIdBox.setFilter(GuiUtils::editBoxNumberFilter);
             phaseIdBox.setMaxLength(4);
-            widgetTooltips.add(Tooltip.of(textPhaseId).assignedTo(phaseIdBox)); 
+            widgetTooltips.add(DragonLibTooltip.of(textPhaseId).assignedTo(phaseIdBox)); 
             widgets.add(phaseIdBox);
         } else {
             phaseIdBox = null;
@@ -200,9 +199,9 @@ public class TrafficLightScheduleEntry extends Button {
         deleteButton = new GuiAreaDefinition(getX() + width - CONTROL_BUTTON_SIZE - 4, y + height - CONTROL_BUTTON_SIZE - 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE);
         signalSelectionArea = new GuiAreaDefinition(signalSelectionX, phaseIdBoxY - 1, signals.length * (SIGNAL_ICON_SIZE + 4) + 4, DEFAULT_EDIT_BOX_HEIGHT);
         
-        areaTooltips.add(Tooltip.of(textMoveUp).assignedTo(moveUpButton));
-        areaTooltips.add(Tooltip.of(textMoveDown).assignedTo(moveDownButton));
-        areaTooltips.add(Tooltip.of(textDelete).assignedTo(deleteButton));
+        areaTooltips.add(DragonLibTooltip.of(textMoveUp).assignedTo(moveUpButton));
+        areaTooltips.add(DragonLibTooltip.of(textMoveDown).assignedTo(moveDownButton));
+        areaTooltips.add(DragonLibTooltip.of(textDelete).assignedTo(deleteButton));
 
         this.signalAreas = new GuiAreaDefinition[signals.length];
         for (int i = 0; i < signals.length; i++) {
@@ -222,9 +221,9 @@ public class TrafficLightScheduleEntry extends Button {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {        
+    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {        
         DynamicGuiRenderer.renderArea(
-            pPoseStack,
+            graphics,
             getX() + TrafficLightScheduleEditor.ENTRY_PADDING,
             getY() + TrafficLightScheduleEditor.ENTRY_PADDING / 2,
             TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + removeTimeButton.getWidth() + delayBox.getWidth() + 2 + addTimeButton.getWidth() + 8,
@@ -234,7 +233,7 @@ public class TrafficLightScheduleEntry extends Button {
         );
 
         DynamicGuiRenderer.renderArea(
-            pPoseStack,
+            graphics,
             getX() + TrafficLightScheduleEditor.ENTRY_PADDING,
             getY() + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT),
             TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
@@ -245,7 +244,7 @@ public class TrafficLightScheduleEntry extends Button {
 
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
-            pPoseStack, getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
+            graphics, getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
             getY(),
             TrafficLightScheduleEditor.TIMELINE_UW,
             HEIGHT,
@@ -259,7 +258,7 @@ public class TrafficLightScheduleEntry extends Button {
 
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
-            pPoseStack,
+            graphics,
             getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
             getY() + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TrafficLightScheduleEditor.TIMELINE_VH / 2,
             TrafficLightScheduleEditor.TIMELINE_UW,
@@ -274,7 +273,7 @@ public class TrafficLightScheduleEntry extends Button {
 
         GuiUtils.blit(
             TrafficLightScheduleEditor.WIDGETS,
-            pPoseStack,
+            graphics,
             getX() + TrafficLightScheduleEditor.ENTRY_PADDING + TrafficLightScheduleEditor.ENTRY_TIMELINE_COLUMN_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
             getY() + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - TrafficLightScheduleEditor.TIMELINE_VH / 2),
             TrafficLightScheduleEditor.TIMELINE_UW,
@@ -288,29 +287,29 @@ public class TrafficLightScheduleEntry extends Button {
         );
 
         if (isMouseOver(pMouseX, pMouseY)) {
-            fill(pPoseStack, getX() + 1, getY(), getX() + 1 + width, getY() + height, 0x22FFFFFF);
+            graphics.fill(getX() + 1, getY(), getX() + 1 + width, getY() + height, 0x22FFFFFF);
 
-            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveUpButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveUpButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE * 2, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
-            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, moveDownButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveDownButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
-            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, pPoseStack, deleteButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, deleteButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 0, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, graphics, moveUpButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveUpButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE * 2, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, graphics, moveDownButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, moveDownButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
+            GuiUtils.blit(TrafficLightScheduleEditor.WIDGETS, graphics, deleteButton.getLeft() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, deleteButton.getTop() + (CONTROL_BUTTON_SIZE - CONTROL_BUTTON_IMAGE_SIZE) / 2, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, 0, 29, CONTROL_BUTTON_IMAGE_SIZE, CONTROL_BUTTON_IMAGE_SIZE, TrafficLightScheduleEditor.TEXTURE_WIDTH, TrafficLightScheduleEditor.TEXTURE_HEIGHT);
 
             if (moveUpButton.isInBounds(pMouseX, pMouseY)) {
-                fill(pPoseStack, moveUpButton.getLeft(), moveUpButton.getTop(), moveUpButton.getRight(), moveUpButton.getBottom(), 0x22FFFFFF);
+                graphics.fill(moveUpButton.getLeft(), moveUpButton.getTop(), moveUpButton.getRight(), moveUpButton.getBottom(), 0x22FFFFFF);
             } else if (moveDownButton.isInBounds(pMouseX, pMouseY)) {
-                fill(pPoseStack, moveDownButton.getLeft(), moveDownButton.getTop(), moveDownButton.getRight(), moveDownButton.getBottom(), 0x22FFFFFF);
+                graphics.fill(moveDownButton.getLeft(), moveDownButton.getTop(), moveDownButton.getRight(), moveDownButton.getBottom(), 0x22FFFFFF);
             } else if (deleteButton.isInBounds(pMouseX, pMouseY)) {
-                fill(pPoseStack, deleteButton.getLeft(), deleteButton.getTop(), deleteButton.getRight(), deleteButton.getBottom(), 0x22FFFFFF);
+                graphics.fill(deleteButton.getLeft(), deleteButton.getTop(), deleteButton.getRight(), deleteButton.getBottom(), 0x22FFFFFF);
             }
         }
 
-        fill(pPoseStack, signalSelectionArea.getLeft(), signalSelectionArea.getTop(), signalSelectionArea.getRight(), signalSelectionArea.getBottom(), 0xFFDBDBDB);
-        fill(pPoseStack, signalSelectionArea.getLeft() + 1, signalSelectionArea.getTop() + 1, signalSelectionArea.getRight() - 1, signalSelectionArea.getBottom() - 1, 0xFF000000);
+        graphics.fill(signalSelectionArea.getLeft(), signalSelectionArea.getTop(), signalSelectionArea.getRight(), signalSelectionArea.getBottom(), 0xFFDBDBDB);
+        graphics.fill(signalSelectionArea.getLeft() + 1, signalSelectionArea.getTop() + 1, signalSelectionArea.getRight() - 1, signalSelectionArea.getBottom() - 1, 0xFF000000);
 
         for (int i = 0; i < signalAreas.length; i++) {
-            fill(pPoseStack, signalAreas[i].getLeft(), signalAreas[i].getTop(), signalAreas[i].getRight(), signalAreas[i].getBottom(), signalAreas[i].isInBounds(pMouseX, pMouseY) ? 0xFFFFFFFF : 0xFFA7A7A7);
+            graphics.fill(signalAreas[i].getLeft(), signalAreas[i].getTop(), signalAreas[i].getRight(), signalAreas[i].getBottom(), signalAreas[i].isInBounds(pMouseX, pMouseY) ? 0xFFFFFFFF : 0xFFA7A7A7);
             GuiUtils.blit(
                 TrafficLightScheduleEditor.WIDGETS,
-                pPoseStack,
+                graphics,
                 signalAreas[i].getLeft() + 1,
                 signalAreas[i].getTop() + 1,
                 SIGNAL_ICON_SIZE,
@@ -324,18 +323,18 @@ public class TrafficLightScheduleEntry extends Button {
             );
 
             if (!entry.getEnabledColors().contains(signals[i])) {
-                fill(pPoseStack, signalAreas[i].getLeft() + 1, signalAreas[i].getTop() + 1, signalAreas[i].getRight() - 1, signalAreas[i].getBottom() - 1, 0xAA000000);
+                graphics.fill(signalAreas[i].getLeft() + 1, signalAreas[i].getTop() + 1, signalAreas[i].getRight() - 1, signalAreas[i].getBottom() - 1, 0xAA000000);
             }
         }
 
-        widgets.performForEach(x -> x.visible, x -> x.render(pPoseStack, pMouseX, pMouseY, pPartialTick));
+        widgets.performForEach(x -> x.visible, x -> x.render(graphics, pMouseX, pMouseY, pPartialTick));
     }
 
-    public void renderTooltips(PoseStack pPoseStack, int pMouseX, int pMouseY, int offset) {
+    public void renderTooltips(GuiGraphics graphics, int pMouseX, int pMouseY, int offset) {
         widgetTooltips.forEach(x -> {
-            x.render(parent, pPoseStack, pMouseX, pMouseY, 0, offset);
+            x.render(parent, graphics, pMouseX, pMouseY, 0, offset);
         });
-        areaTooltips.forEach(x -> x.render(parent, pPoseStack, pMouseX, pMouseY, 0, offset));
+        areaTooltips.forEach(x -> x.render(parent, graphics, pMouseX, pMouseY, 0, offset));
     }
 
     @Override

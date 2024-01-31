@@ -44,9 +44,7 @@ public class ModMain {
         ModItems.register(eventBus);
         ModBlockEntities.register(eventBus);
         ModMenuTypes.register(eventBus);
-        //ModConfiguredFeatures.register(eventBus);
-        //ModPlacedFeatures.register(eventBus);
-        eventBus.addListener(ModCreativeModeTab::addCreative);
+        ModCreativeModeTab.register(eventBus);
         NetworkManager.create();       
         MinecraftForge.EVENT_BUS.register(this);
     }

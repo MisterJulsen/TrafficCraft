@@ -68,7 +68,7 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
     public void handle(RoadBuilderBuildRoadPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
-            final Level level = sender.getLevel();
+            final Level level = sender.level();
             ItemStack item = null;
             InteractionHand hand = null;
 

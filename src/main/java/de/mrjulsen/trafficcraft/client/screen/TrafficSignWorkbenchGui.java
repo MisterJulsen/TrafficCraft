@@ -9,15 +9,13 @@ import java.util.Map;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.NativeImage.Format;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.ColorPickerScreen;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
@@ -40,6 +38,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -92,7 +91,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     private IconButton createNewAcceptBtn;
 
     // tooltips
-    private final Map<TrafficSignWorkbenchMode, List<Tooltip>> tooltips = new HashMap<>();
+    private final Map<TrafficSignWorkbenchMode, List<DragonLibTooltip>> tooltips = new HashMap<>();
 
     // data
     private TrafficSignShape shape;
@@ -181,7 +180,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 switchMode(TrafficSignWorkbenchMode.CREATE_NEW);
             }
         )).withAlignment(Alignment.CENTER);
-        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultNew).assignedTo(btnNew));
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(DragonLibTooltip.of(tooltipDefaultNew).assignedTo(btnNew));
         
         // Edit selected
         final IconButton btnEdit = this.addRenderableWidget(new IconButton(
@@ -205,7 +204,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
             }
         )).withAlignment(Alignment.CENTER);
-        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultEdit).assignedTo(btnEdit));
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(DragonLibTooltip.of(tooltipDefaultEdit).assignedTo(btnEdit));
 
         // Delete selected
         final IconButton btnDelete = this.addRenderableWidget(new IconButton(
@@ -236,7 +235,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 CommonComponents.GUI_CANCEL));
             }
         )).withAlignment(Alignment.CENTER);
-        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(Tooltip.of(tooltipDefaultDelete).assignedTo(btnDelete));
+        this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(DragonLibTooltip.of(tooltipDefaultDelete).assignedTo(btnDelete));
         //#endregion
 
         //#region CREATE NEW PATTERN
@@ -263,7 +262,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             if (shape == this.shape) {
                 button.select();
             }
-            this.tooltips.get(TrafficSignWorkbenchMode.CREATE_NEW).add(Tooltip.of(Utils.translate(shape.getTranslationKey())).assignedTo(button));
+            this.tooltips.get(TrafficSignWorkbenchMode.CREATE_NEW).add(DragonLibTooltip.of(Utils.translate(shape.getTranslationKey())).assignedTo(button));
             return this.addRenderableWidget(button);
         }).toArray(IconButton[]::new);
         
@@ -365,19 +364,19 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             ).withAlignment(Alignment.CENTER);
             switch (j) {
                 case 0:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarDraw).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarDraw).assignedTo(btn));
                     break;
                 case 1:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarErase).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarErase).assignedTo(btn));
                     break;
                 case 2:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarPickColor).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarPickColor).assignedTo(btn));
                     break;
                 case 3:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarFill).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarFill).assignedTo(btn));
                     break;
                 case 4:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarText).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarText).assignedTo(btn));
                     break;
                 default:
                     break;
@@ -467,13 +466,13 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             ).withAlignment(Alignment.CENTER);
             switch (j) {
                 case 0:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarLoad).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarLoad).assignedTo(btn));
                     break;
                 case 1:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarSave).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarSave).assignedTo(btn));
                     break;
                 case 2:
-                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(Tooltip.of(tooltipEditorToolbarDiscard).assignedTo(btn));
+                    this.tooltips.get(TrafficSignWorkbenchMode.EDITOR).add(DragonLibTooltip.of(tooltipEditorToolbarDiscard).assignedTo(btn));
                     break;
                 default:
                     break;
@@ -499,9 +498,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             }
         ) {
             @Override
-            public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
-                super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
-                fill(pPoseStack, getX() + 2, getY() + 2, getX() + 16, getY() + 16, selectedColor);
+            public void renderImage(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
+                super.renderImage(graphics, pMouseX, pMouseY, partialTicks);
+                graphics.fill(getX() + 2, getY() + 2, getX() + 16, getY() + 16, selectedColor);
             }
         }.withAlignment(Alignment.CENTER));
         
@@ -521,13 +520,13 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 (btn) -> { }
             ) {    
                 @Override
-                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
-                    super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
+                public void renderImage(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
+                    super.renderImage(graphics, pMouseX, pMouseY, partialTicks);
                     ItemStack stack = menu.colorSlot.getItem();
                     if (!(stack.getItem() instanceof ColorPaletteItem))
                         return;
                     
-                    fill(pPoseStack, getX() + 2, getY() + 2, getX() + 16, getY() + 16, ColorPaletteItem.getColorAt(stack, j));                    
+                        graphics.fill(getX() + 2, getY() + 2, getX() + 16, getY() + 16, ColorPaletteItem.getColorAt(stack, j));                    
                 }
 
                 @Override
@@ -627,63 +626,62 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     }
 
     @Override
-    protected void renderBg(PoseStack pPoseStack, float pPartialTick, int pMouseX, int pMouseY) {
-        RenderSystem.setShaderTexture(0, GUI);
-        blit(pPoseStack, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+    protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY) {
+        GuiUtils.blit(GUI, graphics, guiLeft, guiTop, 0, 0, WIDTH, HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
         // Render mode
         switch (this.mode) {
             case DEFAULT:
-                renderPatternBackground(pPoseStack);    
+                renderPatternBackground(graphics);    
 
                 // render arrow
-                blit(pPoseStack, prevButton.getX(), prevButton.getY(), prevButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174 + 13, prevButton.getWidth(), prevButton.getHeight(), 256, 256); //right
-                blit(pPoseStack, nextButton.getX(), nextButton.getY(), nextButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174, nextButton.getWidth(), nextButton.getHeight(), 256, 256); //left
+                GuiUtils.blit(GUI, graphics, prevButton.getX(), prevButton.getY(), prevButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174 + 13, prevButton.getWidth(), prevButton.getHeight(), 256, 256); //right
+                GuiUtils.blit(GUI, graphics, nextButton.getX(), nextButton.getY(), nextButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174, nextButton.getWidth(), nextButton.getHeight(), 256, 256); //left
                 
                 // render pattern count            
                 String label = String.format("%s / %s", PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1, PatternCatalogueItem.getStoredPatternCount(this.getMenu().patternSlot.getItem()));
-                this.font.draw(pPoseStack, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 170 - font.lineHeight / 2, 4210752);
+                graphics.drawString(font, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 170 - font.lineHeight / 2, 4210752, false);
                 label = preview == null ? "" : preview.getName();
-                this.font.draw(pPoseStack, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 155 - font.lineHeight / 2, 4210752);
+                graphics.drawString(font, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 155 - font.lineHeight / 2, 4210752, false);
 
                 // render preview image
                 if (preview != null) {  
-                    this.preview.render(pPoseStack, guiLeft + WIDTH / 2 - 50, guiTop + 40, 100, 100);
+                    this.preview.render(graphics, guiLeft + WIDTH / 2 - 50, guiTop + 40, 100, 100);
                 } else {
                     label = emptyPattern.getString();
-                    this.font.draw(pPoseStack, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 100 - font.lineHeight / 2, 4210752);
+                    graphics.drawString(font, label, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 100 - font.lineHeight / 2, 4210752, false);
                 }
 
                 // render buttons bg
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 56, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + 8, guiTop + 35, 20, 56, AreaStyle.BROWN, ButtonState.SUNKEN);
                 break;
             case CREATE_NEW:
-                renderPatternBackground(pPoseStack);
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, AreaStyle.BROWN, ButtonState.SUNKEN);
-                this.font.draw(pPoseStack, createPattern, guiLeft + WIDTH / 2 - font.width(createPattern) / 2, guiTop + 40 - font.lineHeight / 2, 4210752);
-                this.font.draw(pPoseStack, createPatternInstruction, guiLeft + WIDTH / 2 - font.width(createPatternInstruction) / 2, guiTop + 55 - font.lineHeight / 2, 4210752);
+                renderPatternBackground(graphics);
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + (WIDTH / 2 - 18 * 2) - 1, guiTop + 69, 18 * 4 + 2, 2 + (TrafficSignShape.values().length / 4 + (TrafficSignShape.values().length % 4 == 0 ? 0 : 1)) * 18, AreaStyle.BROWN, ButtonState.SUNKEN);
+                graphics.drawString(font, createPattern, guiLeft + WIDTH / 2 - font.width(createPattern) / 2, guiTop + 40 - font.lineHeight / 2, 4210752, false);
+                graphics.drawString(font, createPatternInstruction, guiLeft + WIDTH / 2 - font.width(createPatternInstruction) / 2, guiTop + 55 - font.lineHeight / 2, 4210752, false);
                 break;
             case EDITOR:
-                renderPatternBackground(pPoseStack);  
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 8, guiTop + 129, 20, 18 * 3 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 35, 20, 20, AreaStyle.BROWN, ButtonState.SUNKEN);   
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);           
-                DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, AreaStyle.GRAY, ButtonState.SUNKEN); // textbox
+                renderPatternBackground(graphics);  
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + 8, guiTop + 35, 20, 18 * 4 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + 8, guiTop + 129, 20, 18 * 3 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + 202, guiTop + 35, 20, 20, AreaStyle.BROWN, ButtonState.SUNKEN);   
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + 202, guiTop + 57, 20, 18 * 7 + 2, AreaStyle.BROWN, ButtonState.SUNKEN);           
+                DynamicGuiRenderer.renderArea(graphics, guiLeft + WIDTH / 2 - 65, guiTop + 162, 120, 12, AreaStyle.GRAY, ButtonState.SUNKEN); // textbox
                 GuiUtils.setShaderColor(0, 0, 0, 1);
 
                 // render shape
-                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() - 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() + 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() - 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
-                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX() + 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), graphics, editorArea.getX() - 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), graphics, editorArea.getX() + 1, editorArea.getY() - 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), graphics, editorArea.getX() - 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), graphics, editorArea.getX() + 1, editorArea.getY() + 1, editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
                 GuiUtils.setShaderColor(1, 1, 1, 1);
-                GuiUtils.blit(shape.getShapeTextureId(), pPoseStack, editorArea.getX(), editorArea.getY(), editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
+                GuiUtils.blit(shape.getShapeTextureId(), graphics, editorArea.getX(), editorArea.getY(), editorArea.getWidth(), editorArea.getHeight(), 0, 0, 32, 32, 32, 32);
 
                 // render pixels
                 for (int a = 0; a < pixels.length; a++) {
                     for (int b = 0; b < pixels[a].length; b++) {
-                        fill(pPoseStack,
+                        graphics.fill(
                             editorArea.getX() + a * 4,
                             editorArea.getY() + b * 4,
                             editorArea.getX() + a * 4 + 4,
@@ -700,7 +698,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                     if (shape.isPixelValid(mX, mY)) {
                         int x = editorArea.getX() + mX * 4;
                         int y = editorArea.getY() + mY * 4;
-                        fill(pPoseStack, x, y, x + 4, y + 4, 0x7F000000);
+                        graphics.fill(x, y, x + 4, y + 4, 0x7F000000);
                     }
                 }
                 break;
@@ -708,11 +706,11 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 break;
         }
                 
-        this.font.draw(pPoseStack, title.getString(), guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 5, 4210752);
+        graphics.drawString(font, title.getString(), guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 5, 4210752, false);
         
     }
 
-    private void renderPatternBackground(PoseStack pPoseStack) {
+    private void renderPatternBackground(GuiGraphics pPoseStack) {
         GuiUtils.blit(OVERLAY, pPoseStack, guiLeft + 36, guiTop + 14, 0, 0, 158, 174, 256, 256);
     }
 
@@ -808,7 +806,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         renderTooltip(pPoseStack, pMouseX, pMouseY);
@@ -1028,9 +1026,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             return ButtonIcons.values()[index];
         }
 
-        public void render(PoseStack pPoseStack, int x, int y) {   
-            RenderSystem.setShaderTexture(0, OVERLAY);         
-            blit(pPoseStack, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        public void render(GuiGraphics pPoseStack, int x, int y) {
+            GuiUtils.blit(OVERLAY, pPoseStack, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
 
         public Sprite getSprite() {

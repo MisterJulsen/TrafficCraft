@@ -48,7 +48,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -60,18 +59,18 @@ public class ModBlocks {
     public static final List<RegistryObject<Block>> COLORED_BLOCKS = new ArrayList<>();
     public static final HashMap<String, RegistryObject<Block>> ROAD_BLOCKS = new HashMap<>();
     
-    public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE)
         .strength(3f)
         .requiresCorrectToolForDrops()
     ), ModTab.MAIN, false);
 
-    public static final RegistryObject<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE)
         .strength(4.5f)
         .requiresCorrectToolForDrops()
         .sound(SoundType.DEEPSLATE)
     ), ModTab.MAIN, false);
 
-    public static final RegistryObject<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistryObject<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of().sound(SoundType.STONE)
         .strength(1.5f)
         .requiresCorrectToolForDrops()
     ), ModTab.MAIN, false);

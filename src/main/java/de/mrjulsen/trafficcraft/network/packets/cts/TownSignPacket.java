@@ -67,11 +67,11 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
     public void handle(TownSignPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
-            if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
+            if (sender.level().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
                 
             }
 
-            if (sender.getLevel().getBlockState(packet.pos).getBlock() instanceof TownSignBlock && sender.getLevel().getBlockEntity(packet.pos) instanceof TownSignBlockEntity blockEntity) {
+            if (sender.level().getBlockState(packet.pos).getBlock() instanceof TownSignBlock && sender.level().getBlockEntity(packet.pos) instanceof TownSignBlockEntity blockEntity) {
                 switch (packet.side) {
                     case BACK:
                         blockEntity.setBackTexts(packet.messages);
@@ -81,8 +81,8 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
                         blockEntity.setTexts(packet.messages);
                         break;
                 }
-                BlockState state = sender.getLevel().getBlockState(packet.pos);
-                sender.getLevel().setBlockAndUpdate(packet.pos, state.setValue(TownSignBlock.VARIANT, packet.variant));
+                BlockState state = sender.level().getBlockState(packet.pos);
+                sender.level().setBlockAndUpdate(packet.pos, state.setValue(TownSignBlock.VARIANT, packet.variant));
             }
         });
     }

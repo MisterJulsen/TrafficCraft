@@ -13,7 +13,6 @@ import java.util.Set;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
@@ -21,7 +20,7 @@ import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
@@ -54,6 +53,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -82,7 +82,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
 
     private MultiLineLabel emptyLabel;
     private MultiLineLabel phaseIdDescriptionLabel;
-    private Tooltip trafficLightAreaTooltip;
+    private DragonLibTooltip trafficLightAreaTooltip;
     private GuiAreaDefinition trafficLightArea;
     private GuiAreaDefinition ctrlWindowArea;
     private GuiAreaDefinition ctrlButtonsArea;
@@ -93,12 +93,12 @@ public class TrafficLightConfigScreen extends CommonScreen {
     private final WidgetsCollection iconGroup = new WidgetsCollection();
     private final WidgetsCollection colorGroup = new WidgetsCollection();
     private final WidgetsCollection controlTypeGroup = new WidgetsCollection();
-    private final Collection<Tooltip> iconTooltips = new ArrayList<>();
-    private final Collection<Tooltip> colorTooltips = new ArrayList<>();
-    private final Collection<Tooltip> modelTooltips = new ArrayList<>();
-    private final Collection<Tooltip> controlTypeTooltips = new ArrayList<>();
+    private final Collection<DragonLibTooltip> iconTooltips = new ArrayList<>();
+    private final Collection<DragonLibTooltip> colorTooltips = new ArrayList<>();
+    private final Collection<DragonLibTooltip> modelTooltips = new ArrayList<>();
+    private final Collection<DragonLibTooltip> controlTypeTooltips = new ArrayList<>();
     private final Map<TrafficLightControlType, WidgetsCollection> controlTypeTabGroups = new HashMap<>();
-    private final Map<TrafficLightControlType, Collection<Tooltip>> controlTypeTabTooltips = new HashMap<>();
+    private final Map<TrafficLightControlType, Collection<DragonLibTooltip>> controlTypeTabTooltips = new HashMap<>();
     
     private final Map<Byte, IconButton> indexedColorButtons = new HashMap<>();
 
@@ -224,7 +224,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 }
             ).withAlignment(Alignment.LEFT));
 
-            addTooltip(Tooltip
+            addTooltip(DragonLibTooltip
                 .of(List.of(Utils.translate(type.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(type.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                 .withMaxWidth(width / 4)
                 .assignedTo(b)
@@ -251,7 +251,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 }
             ));
 
-            addTooltip(Tooltip
+            addTooltip(DragonLibTooltip
                 .of(List.of(Utils.translate(model.getValueTranslationKey(ModMain.MOD_ID))))
                 .withMaxWidth(width / 4)
                 .assignedTo(b)
@@ -309,13 +309,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                         signalName = "f1";
                         break;
                 }
-                iconTooltips.add(addTooltip(Tooltip
+                iconTooltips.add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {                
-                iconTooltips.add(addTooltip(Tooltip
+                iconTooltips.add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(icon.getValueTranslationKey(ModMain.MOD_ID))))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
@@ -400,13 +400,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                     default:
                         break;
                 }
-                colorTooltips.add(addTooltip(Tooltip
+                colorTooltips.add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {
-                colorTooltips.add(addTooltip(Tooltip
+                colorTooltips.add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
@@ -425,7 +425,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         removeTooltips(x -> modelTooltips.contains(x));
 
         trafficLightArea = new GuiAreaDefinition(guiLeft - 5, guiTop + 20 - 5, 48 + 10, (int)(Math.max(model.getTotalHitboxHeight(), 16.0f) * 6.0f) + 10);      
-        trafficLightAreaTooltip = Tooltip
+        trafficLightAreaTooltip = DragonLibTooltip
             .of(List.of(textAreaTrafficLight))
             .withMaxWidth(width / 4)
             .assignedTo(trafficLightArea)
@@ -437,7 +437,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         for (int i = 0; i < trafficLightLightAreas.length; i++) {
             trafficLightLightAreas[i] = new GuiAreaDefinition((int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE);
             
-            modelTooltips.add(addTooltip(Tooltip
+            modelTooltips.add(addTooltip(DragonLibTooltip
                 .of(List.of(Utils.translate(keyAreaTrafficLightSignal + i)))
                 .withMaxWidth(width / 4)
                 .assignedTo(trafficLightLightAreas[i])
@@ -482,7 +482,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
-        controlTypeTooltips.add(addTooltip(Tooltip
+        controlTypeTooltips.add(addTooltip(DragonLibTooltip
             .of(GuiUtils.getEnumTooltipData(ModMain.MOD_ID, TrafficLightControlType.class))
             .withMaxWidth(width / 4)
             .assignedTo(bt)
@@ -520,9 +520,9 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 }
             ) {
                 @Override
-                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                public void renderImage(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
                     GuiUtils.setShaderColor(1, 1, 1, 0.5f);
-                    super.renderImage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                    super.renderImage(graphics, pMouseX, pMouseY, pPartialTick);
                     GuiUtils.setShaderColor(1, 1, 1, 1);
                 }
             });
@@ -545,13 +545,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                     default:
                         break;
                 }
-                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
+                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {
-                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
+                controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(DragonLibTooltip
                     .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
@@ -596,7 +596,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 }
             })
         );
-        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textCopy).assignedTo(copyBtn)));
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(DragonLibTooltip.of(Constants.textCopy).assignedTo(copyBtn)));
         // paste
         pasteButton = addRenderableWidget(ModGuiUtils.createPasteButton(
             ctrlSettingsArea.getLeft() + 1 + ctrlSettingsArea.getWidth() - 2 - IconButton.DEFAULT_BUTTON_HEIGHT,
@@ -616,7 +616,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             })
         );
         pasteButton.active = false;
-        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(Tooltip.of(Constants.textPaste).assignedTo(pasteButton)));
+        controlTypeTabTooltips.get(TrafficLightControlType.OWN_SCHEDULE).add(addTooltip(DragonLibTooltip.of(Constants.textPaste).assignedTo(pasteButton)));
         // status
         addRenderableWidget(new IconButton(
             ButtonType.DEFAULT, 
@@ -712,61 +712,61 @@ public class TrafficLightConfigScreen extends CommonScreen {
     }
 
     @Override
-    public void renderBg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        this.renderBackground(pPoseStack);
-        drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, guiTop, 16777215);
+    public void renderBg(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        super.renderBg(graphics, pMouseX, pMouseY, pPartialTick);
+        this.renderBackground(graphics);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, guiTop, 16777215);
         Lighting.setupForFlatItems();
 
         // Render traffic light
-        pPoseStack.pushPose();
-        pPoseStack.pushPose();
-        pPoseStack.setIdentity();
-        pPoseStack.translate((double)guiLeft + 72, guiTop + 116, -100);
-        pPoseStack.scale(96, 96, -96);
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        graphics.pose().pushPose();
+        graphics.pose().pushPose();
+        graphics.pose().setIdentity();
+        graphics.pose().translate((double)guiLeft + 72, guiTop + 116, -100);
+        graphics.pose().scale(96, 96, -96);
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
-        pPoseStack.popPose();
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), graphics.pose(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+        graphics.pose().popPose();
         multibuffersource$buffersource.endBatch();
-        pPoseStack.popPose();
+        graphics.pose().popPose();
         Lighting.setupFor3DItems();
 
         // render lights
         for (int i = 0; i < colors.length && i < model.getLightsCount(); i++) {
-            GuiUtils.blit(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, colors[i])), pPoseStack, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
+            GuiUtils.blit(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, colors[i])), graphics, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
         }        
 
         // render settings pannels
         if (selectedPart == GLOBAL_SETTINGS_INDEX) {
-            renderGlobalWindow(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            renderGlobalWindow(graphics, pMouseX, pMouseY, pPartialTick);
         } else if (selectedPart >= 0) {
-            renderPartEditor(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            renderPartEditor(graphics, pMouseX, pMouseY, pPartialTick);
         } else {
-            renderEmptyWindow(pPoseStack, pMouseX, pMouseY, pPartialTick);
+            renderEmptyWindow(graphics, pMouseX, pMouseY, pPartialTick);
         }
 
         // render hover outline
         GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
         if (lightDef != null) {
-            GuiUtils.renderBoundingBox(pPoseStack, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
+            GuiUtils.renderBoundingBox(graphics, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
         } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
-            GuiUtils.renderBoundingBox(pPoseStack, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
+            GuiUtils.renderBoundingBox(graphics, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
         }
 
         // render controlling window
-        DynamicGuiRenderer.renderWindow(pPoseStack, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
-        DynamicGuiRenderer.renderArea(pPoseStack, ctrlButtonsArea.getLeft(), ctrlButtonsArea.getTop(), ctrlButtonsArea.getWidth(), ctrlButtonsArea.getHeight(), AreaStyle.GRAY, ButtonState.SUNKEN);
-        DynamicGuiRenderer.renderContainerBackground(pPoseStack, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight());
-        font.draw(pPoseStack, Utils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(ModMain.MOD_ID)), ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+        DynamicGuiRenderer.renderWindow(graphics, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
+        DynamicGuiRenderer.renderArea(graphics, ctrlButtonsArea.getLeft(), ctrlButtonsArea.getTop(), ctrlButtonsArea.getWidth(), ctrlButtonsArea.getHeight(), AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderContainerBackground(graphics, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight());
+        graphics.drawString(font, Utils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(ModMain.MOD_ID)), ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
 
         // render controltype tab
         switch (controlType) {
             case STATIC:
-                renderControlTypeStatic(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                renderControlTypeStatic(graphics, pMouseX, pMouseY, pPartialTick);
                 break;
             case REMOTE:
-                renderControlTypeRemote(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                renderControlTypeRemote(graphics, pMouseX, pMouseY, pPartialTick);
                 break;
             default:
                 break;
@@ -774,7 +774,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
     }
 
     @Override
-    public void renderFg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderFg(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.renderFg(pPoseStack, pMouseX, pMouseY, pPartialTick);
 
         if (Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null) == null && trafficLightArea.isInBounds(pMouseX, pMouseY)) {
@@ -782,48 +782,48 @@ public class TrafficLightConfigScreen extends CommonScreen {
         }
     }
 
-    public void renderEmptyWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderEmptyWindow(GuiGraphics pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         emptyLabel.renderCentered(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
     }   
 
-    public void renderGlobalWindow(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        DynamicGuiRenderer.renderWindow(pPoseStack, guiLeft + WINDOW_PADDING_LEFT, guiTop + 20, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 96);
-        GuiUtils.blit(WIDGETS_LOCATION, pPoseStack, guiLeft + WINDOW_PADDING_LEFT - 9, guiTop + 20 + 96 / 2 - 9, 0, 0, 12, 18, 32, 32);
+    public void renderGlobalWindow(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        DynamicGuiRenderer.renderWindow(graphics, guiLeft + WINDOW_PADDING_LEFT, guiTop + 20, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 96);
+        GuiUtils.blit(WIDGETS_LOCATION, graphics, guiLeft + WINDOW_PADDING_LEFT - 9, guiTop + 20 + 96 / 2 - 9, 0, 0, 12, 18, 32, 32);
 
-        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING, WINDOW_WIDTH - WINDOW_PADDING_LEFT - INNER_PADDING * 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
-        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 25, TrafficLightModel.values().length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
-        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 50, TrafficLightIcon.getAllowedForType(type).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING, WINDOW_WIDTH - WINDOW_PADDING_LEFT - INNER_PADDING * 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 25, TrafficLightModel.values().length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 20 + INNER_TOP_PADDING + 50, TrafficLightIcon.getAllowedForType(type).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
         
-        font.draw(pPoseStack, textGeneralSettings, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 27, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+        graphics.drawString(font, textGeneralSettings, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, guiTop + 27, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
     }   
     
-    public void renderPartEditor(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+    public void renderPartEditor(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         int windowHeight = INNER_TOP_PADDING + 27;
         int yBase = guiTop + 20;
         int y = 9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * selectedPart + yBase + TRAFFIC_LIGHT_LIGHT_SIZE / 2 - windowHeight / 2;
 
-        DynamicGuiRenderer.renderWindow(pPoseStack, guiLeft + WINDOW_PADDING_LEFT, y, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2 + INNER_PADDING * 2, windowHeight);
-        GuiUtils.blit(WIDGETS_LOCATION, pPoseStack, guiLeft + WINDOW_PADDING_LEFT - 9, y + windowHeight / 2 - 9, 0, 0, 12, 18, 32, 32);
+        DynamicGuiRenderer.renderWindow(graphics, guiLeft + WINDOW_PADDING_LEFT, y, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2 + INNER_PADDING * 2, windowHeight);
+        GuiUtils.blit(WIDGETS_LOCATION, graphics, guiLeft + WINDOW_PADDING_LEFT - 9, y + windowHeight / 2 - 9, 0, 0, 12, 18, 32, 32);
 
         colorGroup.performForEach(x -> {
             x.setY(y + INNER_TOP_PADDING + 1);
         });
-        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + INNER_TOP_PADDING, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + INNER_TOP_PADDING, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.SUNKEN);
 
-        font.draw(pPoseStack, textSetSignal, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+        graphics.drawString(font, textSetSignal, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
     } 
 
-    public void renderControlTypeStatic(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        font.draw(pPoseStack, textSetEnabledColors, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB);
+    public void renderControlTypeStatic(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        graphics.drawString(font, textSetEnabledColors, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB, false);
     }
 
-    public void renderControlTypeRemote(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        font.draw(pPoseStack, textSetPhaseId, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB);
+    public void renderControlTypeRemote(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        graphics.drawString(font, textSetPhaseId, ctrlSettingsArea.getLeft() + 4, ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT / 2 - font.lineHeight / 2, 0xDBDBDB, false);
         
         float scale = 0.75f;
-        pPoseStack.scale(scale, scale, scale);
-        phaseIdDescriptionLabel.renderLeftAlignedNoShadow(pPoseStack, (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xCBCBCB);
-        pPoseStack.setIdentity();
+        graphics.pose().scale(scale, scale, scale);
+        phaseIdDescriptionLabel.renderLeftAlignedNoShadow(graphics, (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + IconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xCBCBCB);
+        graphics.pose().setIdentity();
     }
 
     @Override

@@ -2,11 +2,9 @@ package de.mrjulsen.trafficcraft.client.screen;
 
 import java.util.List;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ItemButton;
@@ -26,6 +24,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderResetPacket;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
@@ -131,7 +130,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
             NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new RoadBuilderResetPacket());
             this.onCancel();
-        }, Tooltip.of(tooltipReset).withMaxWidth(width / 4));
+        }, DragonLibTooltip.of(tooltipReset).withMaxWidth(width / 4));
 
         this.buildButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
             updateStackData();
@@ -163,7 +162,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
                 blocksCount = res.blocksCount;
                 slopesCount = res.slopesCount;
             }
-        }, Tooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
+        }, DragonLibTooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
 
         this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, Utils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
         (slider, value) -> {
@@ -201,8 +200,8 @@ public class RoadConstructionToolScreen extends CommonScreen {
             }
         }
 
-        addTooltip(Tooltip.of(tooltipPos1).assignedTo(pos1Area));
-        addTooltip(Tooltip.of(tooltipPos2).assignedTo(pos2Area));
+        addTooltip(DragonLibTooltip.of(tooltipPos1).assignedTo(pos1Area));
+        addTooltip(DragonLibTooltip.of(tooltipPos2).assignedTo(pos2Area));
 
     }
 
@@ -226,19 +225,19 @@ public class RoadConstructionToolScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {        
+        renderBackground(graphics);
         
-        GuiUtils.blit(GUI, stack, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
-        this.font.draw(stack, title, this.width / 2 - font.width(title) / 2, guiTop + 6, 4210752);
-        this.font.draw(stack, roadBlocksText, guiLeft + WORKING_AREA_X, guiTop + 73, 4210752);
-        this.font.draw(stack, requiredResourcesText, guiLeft + WORKING_AREA_X + 3, guiTop + 107, 0xFFFFFF);
+        GuiUtils.blit(GUI, graphics, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        graphics.drawString(font, title, this.width / 2 - font.width(title) / 2, guiTop + 6, 4210752, false);
+        graphics.drawString(font, roadBlocksText, guiLeft + WORKING_AREA_X, guiTop + 73, 4210752, false);
+        graphics.drawString(font, requiredResourcesText, guiLeft + WORKING_AREA_X + 3, guiTop + 107, 0xFFFFFF, false);
 
         // render positions
         String pos1Text = pos1 == null ? noPositionDefined.getString() : String.format("%s, %s, %s", pos1.x, pos1.y, pos1.z);
         String pos2Text = pos2 == null ? noPositionDefined.getString() : String.format("%s, %s, %s", pos2.x, pos2.y, pos2.z);        
-        this.font.draw(stack, pos1Text, guiLeft + WORKING_AREA_X + (114 / 2 - font.width(pos1Text) / 2), guiTop + 22, pos1 == null ? 0xDD2222 : 0x555555);
-        this.font.draw(stack, pos2Text, guiLeft + WORKING_AREA_X + 116 + (114 / 2 - font.width(pos2Text) / 2), guiTop + 22, pos2 == null ? 0xDD2222 : 0x555555);
+        graphics.drawString(font, pos1Text, guiLeft + WORKING_AREA_X + (114 / 2 - font.width(pos1Text) / 2), guiTop + 22, pos1 == null ? 0xDD2222 : 0x555555, false);
+        graphics.drawString(font, pos2Text, guiLeft + WORKING_AREA_X + 116 + (114 / 2 - font.width(pos2Text) / 2), guiTop + 22, pos2 == null ? 0xDD2222 : 0x555555, false);
 
         // render required items
         if (pos1 != null && pos2 != null) {
@@ -248,23 +247,23 @@ public class RoadConstructionToolScreen extends CommonScreen {
             int slopeDisplayWidth = 20 + font.width(slopeCountText);
             int guiCenter = guiLeft + WORKING_AREA_X + WORKING_AREA_WIDTH / 2;
 
-            minecraft.getItemRenderer().renderAndDecorateItem(stack, new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
-            minecraft.getItemRenderer().renderAndDecorateItem(stack, new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
-            this.font.draw(stack, blockCountText, guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB);
-            this.font.draw(stack, slopeCountText, guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB);
+            graphics.renderItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
+            graphics.renderItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
+            graphics.drawString(font, blockCountText, guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB, false);
+            graphics.drawString(font, slopeCountText, guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB, false);
         }
         
         // default rendering
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
 
         // Tooltips
         //itemButtonCollection.performForEachOfType(ItemButton.class, x -> x.isMouseOver(mouseX, mouseY), x -> this.renderTooltip(stack, x.getItem(), mouseX, mouseY));
 
         if (buildButtonArea.isInBounds(mouseX, mouseY)) {
             if (pos1 == null || pos2 == null) {
-                GuiUtils.renderTooltip(this, buildButtonArea, List.of(tooltipBuildMissingPos), width / 4, stack, mouseX, mouseY);
+                GuiUtils.renderTooltip(this, buildButtonArea, List.of(tooltipBuildMissingPos), width / 4, graphics, mouseX, mouseY);
             } else {
-                GuiUtils.renderTooltip(this, buildButton, List.of(tooltipBuild), width / 4, stack, mouseX, mouseY);
+                GuiUtils.renderTooltip(this, buildButton, List.of(tooltipBuild), width / 4, graphics, mouseX, mouseY);
             }
         }
     }

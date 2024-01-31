@@ -10,7 +10,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
@@ -29,6 +28,7 @@ import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.renderer.GameRenderer;
@@ -163,9 +163,9 @@ public class TownSignScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderBackground(pPoseStack);
-        drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, 40, 16777215);
+    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        this.renderBackground(graphics);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
         Lighting.setupForFlatItems();
 
         BlockState blockstate;
@@ -180,16 +180,16 @@ public class TownSignScreen extends CommonScreen {
         }
 
         // Render sign
-        pPoseStack.pushPose();
-        pPoseStack.pushPose();
-        pPoseStack.setIdentity();
-        pPoseStack.translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
-        pPoseStack.scale(config.scale, config.scale, -config.scale);
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(config.modelRotation));
+        graphics.pose().pushPose();
+        graphics.pose().pushPose();
+        graphics.pose().setIdentity();
+        graphics.pose().translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
+        graphics.pose().scale(config.scale, config.scale, -config.scale);
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+        graphics.pose().mulPose(Axis.YP.rotationDegrees(config.modelRotation));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
-        pPoseStack.popPose();
+        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, graphics.pose(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+        graphics.pose().popPose();
 
         // Text rendering
         
@@ -198,9 +198,9 @@ public class TownSignScreen extends CommonScreen {
         int k = this.signField.getSelectionPos();
         String msg = this.messages[this.line];
         int l = config.getLineHeightsTo(font.lineHeight, this.line, msg == null ? 0 : this.font.width(this.messages[this.line]), config.maxLineWidth - (this.side == ETownSignSide.BACK && this.line == 0 ? 20 : 0));
-        pPoseStack.setIdentity();
-        pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-        Matrix4f matrix4f = pPoseStack.last().pose();
+        graphics.pose().setIdentity();
+        graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
+        Matrix4f matrix4f = graphics.pose().last().pose();
 
         // Cursor blinking        
         boolean flag1 = this.frame / 6 % 2 == 0;
@@ -212,10 +212,10 @@ public class TownSignScreen extends CommonScreen {
             String s = this.messages[i1];
             IFontScale scaleConfig = config.getFontScale(i1);
             float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s), config.maxLineWidth - (this.side == ETownSignSide.BACK && i1 == 0 ? 20 : 0));            
-            pPoseStack.setIdentity();
-            pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-            pPoseStack.scale(scale, scale, -scale);
-            matrix4f = pPoseStack.last().pose();
+            graphics.pose().setIdentity();
+            graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
+            graphics.pose().scale(scale, scale, -scale);
+            matrix4f = graphics.pose().last().pose();
 
             if (s != null) {
                 if (this.font.isBidirectional()) {
@@ -244,16 +244,16 @@ public class TownSignScreen extends CommonScreen {
             String s1 = this.messages[i3];
             IFontScale scaleConfig = config.getFontScale(i3);
             float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s1), config.maxLineWidth - (this.side == ETownSignSide.BACK && i3 == 0 ? 20 : 0));            
-            pPoseStack.setIdentity();
-            pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-            pPoseStack.scale(scale, scale, -scale);
-            matrix4f = pPoseStack.last().pose();
+            graphics.pose().setIdentity();
+            graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
+            graphics.pose().scale(scale, scale, -scale);
+            matrix4f = graphics.pose().last().pose();
 
             if (s1 != null && i3 == this.line && j >= 0) {
                 int j3 = this.minecraft.font.width(s1.substring(0, Math.max(Math.min(j, s1.length()), 0)));
                 int k3 = j3 - this.minecraft.font.width(s1) / 2;
                 if (flag1 && j < s1.length()) {
-                    fill(pPoseStack, k3, l - 1, k3 + 1, l + 9, -16777216 | i);
+                    graphics.fill(k3, l - 1, k3 + 1, l + 9, -16777216 | i);
                 }
 
                 if (k != j) {
@@ -279,9 +279,9 @@ public class TownSignScreen extends CommonScreen {
             }
         }
 
-        pPoseStack.popPose();
+        graphics.pose().popPose();
         Lighting.setupFor3DItems();
 
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+        super.render(graphics, pMouseX, pMouseY, pPartialTick);
     }
 }

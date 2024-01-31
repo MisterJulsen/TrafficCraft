@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -47,7 +46,7 @@ public class AsphaltCurbSlope extends Block implements SimpleWaterloggedBlock {
     public static final int HEIGHT_IMPASSABLE = 5;
 
     public AsphaltCurbSlope(RoadType type) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
             .strength(1.5f)
             .requiresCorrectToolForDrops()
         );

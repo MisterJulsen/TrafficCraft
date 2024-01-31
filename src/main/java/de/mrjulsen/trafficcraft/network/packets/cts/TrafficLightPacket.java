@@ -111,7 +111,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer player = context.get().getSender();
             if (player != null) {
-                Level level = player.getLevel();
+                Level level = player.level();
                 if (level.isLoaded(packet.pos)) {
                     if (level.getBlockEntity(packet.pos) instanceof TrafficLightBlockEntity blockEntity) {
                         blockEntity.setRunning(packet.scheduleEnabled);

@@ -13,14 +13,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 public class AsphaltBlock extends Block implements IPaintableBlock {
 
     private RoadType defaultRoadType;
 
     public AsphaltBlock(RoadType type) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
             .strength(1.5f)
             .requiresCorrectToolForDrops());
 

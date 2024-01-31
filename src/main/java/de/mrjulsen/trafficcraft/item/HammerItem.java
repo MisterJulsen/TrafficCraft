@@ -34,7 +34,7 @@ public class HammerItem extends DiggerItem {
     
     @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-        Level level = player.getLevel();
+        Level level = player.level();
         BlockState pState = level.getBlockState(pos);
         if (pState.hasProperty(BlockStateProperties.LAYERS) && pState.getValue(BlockStateProperties.LAYERS) > 1) {
             level.setBlockAndUpdate(pos, pState.setValue(BlockStateProperties.LAYERS, pState.getValue(BlockStateProperties.LAYERS) - 1));

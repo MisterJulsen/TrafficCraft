@@ -1,10 +1,8 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.ClientTools;
@@ -13,6 +11,7 @@ import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
@@ -76,7 +75,7 @@ public class StreetLampScheduleScreen extends CommonScreen {
         this.timeFormatButton = addCycleButton(DragonLibConstants.DRAGONLIB_MODID, TimeFormat.class, this.width / 2 - 100, guiTop + (int)(SPACING_Y * 1), 200, 20, textTimeFormat, timeFormat,
         (btn, value) -> {
             this.timeFormat = value;
-        }, Tooltip.of(GuiUtils.getEnumTooltipData(DragonLibConstants.DRAGONLIB_MODID, this, TimeFormat.class, width / 4)));
+        }, DragonLibTooltip.of(GuiUtils.getEnumTooltipData(DragonLibConstants.DRAGONLIB_MODID, this, TimeFormat.class, width / 4)));
 
         this.timeOnSlider = addSlider(this.width / 2 - 100, guiTop + (int)(SPACING_Y * 2), 200, 20, textTurnOnTime, Utils.text(""), 0, 23750, 250, turnOnTime, true,
         (slider, value) -> {            
@@ -116,9 +115,9 @@ public class StreetLampScheduleScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack);        
-        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 16777215);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {        
+        renderBackground(graphics);        
+        graphics.drawCenteredString(this.font, getTitle(), this.width / 2, guiTop, 16777215);
         
         String timeOnSuffix = this.getTimeSuffix(this.timeOnSlider.getValueInt());
         this.timeOnSlider.setMessage(Utils.text(Utils.translate("gui.trafficcraft.streetlampconfig.turn_on_time", TimeUtils.parseTime(this.timeOnSlider.getValueInt(), timeFormat)).getString() + (timeOnSuffix == null ? "" :  " (" + Utils.translate(timeOnSuffix).getString() + ")")));
@@ -126,6 +125,6 @@ public class StreetLampScheduleScreen extends CommonScreen {
         String timeOffSuffix = this.getTimeSuffix(this.timeOffSlider.getValueInt());
         this.timeOffSlider.setMessage(Utils.text(Utils.translate("gui.trafficcraft.streetlampconfig.turn_off_time", TimeUtils.parseTime(this.timeOffSlider.getValueInt(), timeFormat)).getString() + (timeOffSuffix == null ? "" :  " (" + Utils.translate(timeOffSuffix).getString() + ")")));
 
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 }

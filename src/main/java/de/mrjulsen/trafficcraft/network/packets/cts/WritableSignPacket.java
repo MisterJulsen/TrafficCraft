@@ -53,7 +53,7 @@ public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     public void handle(WritableSignPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
-            if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
+            if (sender.level().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
                 blockEntity.setTexts(packet.messages);
             }
         });

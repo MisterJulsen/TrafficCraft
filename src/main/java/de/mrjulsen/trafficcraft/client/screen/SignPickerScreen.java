@@ -14,13 +14,12 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
@@ -33,6 +32,7 @@ import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -157,7 +157,7 @@ public class SignPickerScreen extends CommonScreen {
             }
             this.minecraft.getSoundManager().resume();
         }).withAlignment(Alignment.CENTER);
-        addTooltip(Tooltip.of(tooltipImport).assignedTo(btn)).withMaxWidth(width / 4);
+        addTooltip(DragonLibTooltip.of(tooltipImport).assignedTo(btn)).withMaxWidth(width / 4);
         this.addRenderableWidget(btn);
         
         for (int i = 0; i < count; i++) {
@@ -205,17 +205,17 @@ public class SignPickerScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(stack);
-        DynamicGuiRenderer.renderWindow(stack, guiLeft, guiTop, WIDTH, HEIGHT);
-        DynamicGuiRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(graphics);
+        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WIDTH, HEIGHT);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
         
-        this.font.draw(stack, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752);
+        graphics.drawString(font, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752, false);
 
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
         
         if (preview != null) {
-            GuiUtils.blit(preview.getId(), stack, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
+            GuiUtils.blit(preview.getId(), graphics, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
         }
     }
 

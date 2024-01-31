@@ -14,29 +14,29 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 /*
  * EXTENDED COPY OF DyeColor.class
  */
 public enum PaintColor implements StringRepresentable {
-   NONE(-1, "none", 0xFFFFFFFF, MaterialColor.NONE, 0xFFFFFFFF, 0xFFFFFFFF, 'r'),
-   WHITE(0, "white", 16383998, MaterialColor.SNOW, 15790320, 16777215, 'f'),
-   ORANGE(1, "orange", 16351261, MaterialColor.COLOR_ORANGE, 15435844, 16738335, '6'),
-   MAGENTA(2, "magenta", 13061821, MaterialColor.COLOR_MAGENTA, 12801229, 16711935, '5'),
-   LIGHT_BLUE(3, "light_blue", 3847130, MaterialColor.COLOR_LIGHT_BLUE, 6719955, 10141901, 'b'),
-   YELLOW(4, "yellow", 16701501, MaterialColor.COLOR_YELLOW, 14602026, 16776960, 'e'),
-   LIME(5, "lime", 8439583, MaterialColor.COLOR_LIGHT_GREEN, 4312372, 12582656, 'a'),
-   PINK(6, "pink", 15961002, MaterialColor.COLOR_PINK, 14188952, 16738740, 'd'),
-   GRAY(7, "gray", 4673362, MaterialColor.COLOR_GRAY, 4408131, 8421504, '8'),
-   LIGHT_GRAY(8, "light_gray", 10329495, MaterialColor.COLOR_LIGHT_GRAY, 11250603, 13882323, '7'),
-   CYAN(9, "cyan", 1481884, MaterialColor.COLOR_CYAN, 2651799, 65535, '3'),
-   PURPLE(10, "purple", 8991416, MaterialColor.COLOR_PURPLE, 8073150, 10494192, '5'),
-   BLUE(11, "blue", 3949738, MaterialColor.COLOR_BLUE, 2437522, 255, '1'),
-   BROWN(12, "brown", 8606770, MaterialColor.COLOR_BROWN, 5320730, 9127187, '6'),
-   GREEN(13, "green", 6192150, MaterialColor.COLOR_GREEN, 3887386, 65280, '2'),
-   RED(14, "red", 11546150, MaterialColor.COLOR_RED, 11743532, 16711680, 'c'),
-   BLACK(15, "black", 1908001, MaterialColor.COLOR_BLACK, 1973019, 0, '0');
+   NONE(-1, "none", 0xFFFFFFFF, MapColor.NONE, 0xFFFFFFFF, 0xFFFFFFFF, 'r'),
+   WHITE(0, "white", 16383998, MapColor.SNOW, 15790320, 16777215, 'f'),
+   ORANGE(1, "orange", 16351261, MapColor.COLOR_ORANGE, 15435844, 16738335, '6'),
+   MAGENTA(2, "magenta", 13061821, MapColor.COLOR_MAGENTA, 12801229, 16711935, '5'),
+   LIGHT_BLUE(3, "light_blue", 3847130, MapColor.COLOR_LIGHT_BLUE, 6719955, 10141901, 'b'),
+   YELLOW(4, "yellow", 16701501, MapColor.COLOR_YELLOW, 14602026, 16776960, 'e'),
+   LIME(5, "lime", 8439583, MapColor.COLOR_LIGHT_GREEN, 4312372, 12582656, 'a'),
+   PINK(6, "pink", 15961002, MapColor.COLOR_PINK, 14188952, 16738740, 'd'),
+   GRAY(7, "gray", 4673362, MapColor.COLOR_GRAY, 4408131, 8421504, '8'),
+   LIGHT_GRAY(8, "light_gray", 10329495, MapColor.COLOR_LIGHT_GRAY, 11250603, 13882323, '7'),
+   CYAN(9, "cyan", 1481884, MapColor.COLOR_CYAN, 2651799, 65535, '3'),
+   PURPLE(10, "purple", 8991416, MapColor.COLOR_PURPLE, 8073150, 10494192, '5'),
+   BLUE(11, "blue", 3949738, MapColor.COLOR_BLUE, 2437522, 255, '1'),
+   BROWN(12, "brown", 8606770, MapColor.COLOR_BROWN, 5320730, 9127187, '6'),
+   GREEN(13, "green", 6192150, MapColor.COLOR_GREEN, 3887386, 65280, '2'),
+   RED(14, "red", 11546150, MapColor.COLOR_RED, 11743532, 16711680, 'c'),
+   BLACK(15, "black", 1908001, MapColor.COLOR_BLACK, 1973019, 0, '0');
 
    private static final PaintColor[] BY_ID = Arrays.stream(values()).sorted(Comparator.comparingInt(PaintColor::getId))
          .toArray((p_41067_) -> {
@@ -50,7 +50,7 @@ public enum PaintColor implements StringRepresentable {
          })));
    private final int id;
    private final String name;
-   private final MaterialColor color;
+   private final MapColor color;
    private final float[] textureDiffuseColors;
    private final int textureColor;
    private final int fireworkColor;
@@ -58,7 +58,7 @@ public enum PaintColor implements StringRepresentable {
    private final int textColor;
    private final char colorCode;
 
-   private PaintColor(int pId, String pName, int pTextureColor, MaterialColor pColor, int pFireworkColor,
+   private PaintColor(int pId, String pName, int pTextureColor, MapColor pColor, int pFireworkColor,
          int pTextColor, char colorCode) {
       this.id = pId;
       this.name = pName;
@@ -100,7 +100,7 @@ public enum PaintColor implements StringRepresentable {
       return this.textureColor;
    }
 
-   public MaterialColor getMaterialColor() {
+   public MapColor getMapColor() {
       return this.color;
    }
 

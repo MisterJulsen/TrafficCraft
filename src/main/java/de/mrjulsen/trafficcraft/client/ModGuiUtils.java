@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
@@ -92,7 +92,7 @@ public class ModGuiUtils {
         List<FormattedText> list = new ArrayList<>(List.of(title));
         list.addAll(description);
 
-        Tooltip tooltip = Tooltip
+        DragonLibTooltip tooltip = DragonLibTooltip
             .of(list)
             .withMaxWidth(parent.width / 4)
             .assignedTo(btn)
@@ -127,5 +127,5 @@ public class ModGuiUtils {
         }
     }
 
-    public static record HelpButtonComponents(IconButton helpButton, Tooltip tooltip) {}
+    public static record HelpButtonComponents(IconButton helpButton, DragonLibTooltip tooltip) {}
 }

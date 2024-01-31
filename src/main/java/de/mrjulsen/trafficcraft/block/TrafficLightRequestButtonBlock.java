@@ -37,7 +37,6 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -62,7 +61,7 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     public static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(3, 1, 5, 8, 10, 11), SHAPE_COMMON);
     
     public TrafficLightRequestButtonBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
             .strength(2f)
             .requiresCorrectToolForDrops()
             .sound(SoundType.METAL)            

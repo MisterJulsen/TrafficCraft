@@ -5,14 +5,14 @@ import java.nio.charset.StandardCharsets;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.common.IIdentifiable;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -93,22 +93,20 @@ public class TrafficSignData implements Closeable, IIdentifiable {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void render(PoseStack stack, int x, int y, int w, int h) {
+    public void render(GuiGraphics graphics, int x, int y, int w, int h) {
         DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(this, texture, false, (texture) -> {
             this.texture = TrafficSignTextureCacheClient.textureToBase64(this);
         });
 
-        RenderSystem.setShaderTexture(0, shape.getShapeTextureId());
         RenderSystem.setShaderColor(0, 0, 0, 1);
-        GuiComponent.blit(stack, x - 1, y - 1, w, h, 0, 0, 32, 32, 32, 32);
-        GuiComponent.blit(stack, x + 1, y - 1, w, h, 0, 0, 32, 32, 32, 32);
-        GuiComponent.blit(stack, x - 1, y + 1, w, h, 0, 0, 32, 32, 32, 32);
-        GuiComponent.blit(stack, x + 1, y + 1, w, h, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(shape.getShapeTextureId(), graphics, x - 1, y - 1, w, h, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(shape.getShapeTextureId(), graphics, x + 1, y - 1, w, h, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(shape.getShapeTextureId(), graphics, x - 1, y + 1, w, h, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(shape.getShapeTextureId(), graphics, x + 1, y + 1, w, h, 0, 0, 32, 32, 32, 32);
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        GuiComponent.blit(stack, x, y, w, h, 0, 0, 32, 32, 32, 32);
+        GuiUtils.blit(shape.getShapeTextureId(), graphics, x, y, w, h, 0, 0, 32, 32, 32, 32);
 
-        RenderSystem.setShaderTexture(0, tex.getId());
-        GuiComponent.blit(stack, x, y, w, h, 0, 0, width, height, width, height);
+        GuiUtils.blit(tex.getId(), graphics, x, y, w, h, 0, 0, width, height, width, height);
     }
 
 

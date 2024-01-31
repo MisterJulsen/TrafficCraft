@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -33,7 +32,7 @@ public class StreetSignBlock extends WritableTrafficSign implements ITrafficPost
    public static final VoxelShape SHAPE_EAST = Block.box(-7, 10.5, 7.5, 10, 14.5, 8.5);
 
    public StreetSignBlock() {
-      super(BlockBehaviour.Properties.of(Material.BAMBOO)
+      super(BlockBehaviour.Properties.of()
             .strength(0.2f)
             .sound(SoundType.BAMBOO));
    }

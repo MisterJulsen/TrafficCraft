@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Map.Entry;
-
+import java.util.function.Supplier;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.event.CreativeModeTabEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = ModMain.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -24,14 +22,27 @@ public class ModCreativeModeTab {
     
     private static final Map<ModTab, Collection<RegistryObject<? extends ItemLike>>> CREATIVE_MODE_TAB_REGISTRY = new HashMap<>();
 
-    private static Map<ModTab, CreativeModeTab> MOD_TAB = new HashMap<>();;
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModMain.MOD_ID);
 
-    @SubscribeEvent
-    public static void registerCreativeModeTabs(CreativeModeTabEvent.Register event) {
-        MOD_TAB.put(ModTab.MAIN, event.registerCreativeModeTab(new ResourceLocation(ModMain.MOD_ID, "trafficcrafttab"), (builder) -> builder
+    public static final RegistryObject<CreativeModeTab> MAIN_TAB = registerTab("trafficcrafttab", () -> CreativeModeTab.builder()
             .icon(() -> new ItemStack(ModBlocks.TRAFFIC_LIGHT.get()))
             .title(Utils.translate("itemGroup.trafficcrafttab"))
-        ));
+            .displayItems((pParameters, pOutput) -> {
+                Collection<RegistryObject<? extends ItemLike>> content = CREATIVE_MODE_TAB_REGISTRY.get(ModTab.MAIN);
+                if (content != null) {
+                    pOutput.acceptAll(content.stream().map(x -> new ItemStack(x.get())).toList());
+                }
+            })
+            .build()
+        );
+
+    private static RegistryObject<CreativeModeTab> registerTab(String id, Supplier<? extends CreativeModeTab> sup) { 
+        RegistryObject<CreativeModeTab> cTab = CREATIVE_MODE_TABS.register(id, sup);
+        return cTab;
+    }
+
+    public static void register(IEventBus event) {
+        CREATIVE_MODE_TABS.register(event);
     }
 
     public static void put(ModTab tab, RegistryObject<? extends ItemLike> item) {
@@ -39,13 +50,6 @@ public class ModCreativeModeTab {
             CREATIVE_MODE_TAB_REGISTRY.put(tab, new ArrayList<>());
         }
         CREATIVE_MODE_TAB_REGISTRY.get(tab).add(item);
-    }
-
-    public static void addCreative(CreativeModeTabEvent.BuildContents event) {
-        Optional<Entry<ModTab, Collection<RegistryObject<? extends ItemLike>>>> tab = CREATIVE_MODE_TAB_REGISTRY.entrySet().stream().filter(x -> MOD_TAB.get(x.getKey()) == event.getTab()).findFirst();
-        if (tab.isPresent()) {
-            event.acceptAll(tab.get().getValue().stream().map(x -> new ItemStack(x.get())).toList());
-        }            
     }
 
     public static enum ModTab {

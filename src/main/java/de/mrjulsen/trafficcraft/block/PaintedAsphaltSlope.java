@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -48,7 +47,7 @@ public class PaintedAsphaltSlope extends RoadBlock implements SimpleWaterloggedB
     public static final int HEIGHT_IMPASSABLE = 5;
 
     public PaintedAsphaltSlope(RoadType type, Block pickupBlock) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
                 .strength(1.5f)
                 .requiresCorrectToolForDrops(), type);
 

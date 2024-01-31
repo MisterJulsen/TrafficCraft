@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,7 +35,7 @@ public class DelineatorBlock extends WaterloggableBlock {
     private final boolean small;
     
     public DelineatorBlock(boolean small) {
-        super(BlockBehaviour.Properties.of(Material.BAMBOO)
+        super(BlockBehaviour.Properties.of()
             .sound(SoundType.BAMBOO)   
             .instabreak()         
         );

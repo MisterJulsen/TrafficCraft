@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -38,7 +37,7 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
    public static final VoxelShape SHAPE_EAST = Block.box(0, 5, 3, 1, 11, 13);
 
    public HouseNumberSignBlock() {      
-      super(BlockBehaviour.Properties.of(Material.BAMBOO)
+      super(BlockBehaviour.Properties.of()
          .strength(0.2f)
          .sound(SoundType.BAMBOO)
       );
@@ -125,7 +124,7 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
 
    @Override
    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-      return pLevel.getBlockState(pPos.relative(pState.getValue(FACING).getOpposite())).getMaterial().isSolid();
+      return pLevel.getBlockState(pPos.relative(pState.getValue(FACING).getOpposite())).isSolid();
    }
 
    @Nullable

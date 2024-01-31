@@ -3,7 +3,6 @@ package de.mrjulsen.trafficcraft.client.screen;
 import java.util.ArrayList;
 import java.util.List;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
@@ -25,6 +24,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -101,9 +101,9 @@ public class PaintBrushScreen extends CommonScreen {
                 preview = resources[j];
                 patternId = j;
             }) {
-                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+                public void renderImage(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
                     GuiUtils.setShaderColor(diffuseColor[0], diffuseColor[1], diffuseColor[2], 1);
-                    super.renderImage(pPoseStack, pMouseX, pMouseY, pPartialTick);
+                    super.renderImage(graphics, pMouseX, pMouseY, pPartialTick);
                     GuiUtils.setShaderColor(1, 1, 1, 1);
                 };
             }.withAlignment(Alignment.CENTER);
@@ -124,18 +124,18 @@ public class PaintBrushScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(stack);
-        DynamicGuiRenderer.renderWindow(stack, guiLeft, guiTop, WIDTH, HEIGHT);
-        DynamicGuiRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(graphics);
+        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WIDTH, HEIGHT);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
         
-        this.font.draw(stack, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752);
+        graphics.drawString(font, title, guiLeft + WIDTH / 2 - font.width(title) / 2, guiTop + 6, 4210752, false);
 
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
         
         if (preview != null) {
             GuiUtils.setShaderColor(diffuseColor[0], diffuseColor[1], diffuseColor[2], 1);
-            GuiUtils.blit(preview, stack, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
+            GuiUtils.blit(preview, graphics, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
             GuiUtils.setShaderColor(1, 1, 1, 1);            
         }
 
@@ -143,9 +143,9 @@ public class PaintBrushScreen extends CommonScreen {
         Component textColor = Utils.translate("item.trafficcraft.paint_brush.tooltip.color", Utils.translate(color.getTranslatableString()).getString());
         Component textPaint = Utils.translate("item.trafficcraft.paint_brush.tooltip.paint", (int)(100.0f / Constants.MAX_PAINT * paint));
 
-        font.draw(stack, textPattern, guiLeft + WIDTH - 7 - font.width(textPattern), guiTop + 130, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
-        font.draw(stack, textColor, guiLeft + WIDTH - 7 - font.width(textColor), guiTop + 130 + font.lineHeight, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
-        font.draw(stack, textPaint, guiLeft + WIDTH - 7 - font.width(textPaint), guiTop + 130 + font.lineHeight * 2, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+        graphics.drawString(font, textPattern, guiLeft + WIDTH - 7 - font.width(textPattern), guiTop + 130, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
+        graphics.drawString(font, textColor, guiLeft + WIDTH - 7 - font.width(textColor), guiTop + 130 + font.lineHeight, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
+        graphics.drawString(font, textPaint, guiLeft + WIDTH - 7 - font.width(textPaint), guiTop + 130 + font.lineHeight * 2, DragonLibConstants.DEFAULT_UI_FONT_COLOR, false);
     }
 
     private void fillButtons(IconButton[] buttons, int scrollRow, int defX, int defY, VerticalScrollBar scrollbar) {

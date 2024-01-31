@@ -7,14 +7,12 @@ import java.util.List;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
@@ -35,6 +33,7 @@ import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
@@ -154,20 +153,19 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                 }
                 }) {
                     @Override
-                    public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
-                        super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
+                    public void renderImage(GuiGraphics graphics, int pMouseX, int pMouseY, float partialTicks) {
+                        super.renderImage(graphics, pMouseX, pMouseY, partialTicks);
                         try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
                             DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
                                 data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
                             });
-                            RenderSystem.setShaderTexture(0, tex.getId());
                             NativeImage img = tex.getPixels();
-                            blit(pPoseStack, getX() + 1, getY() + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                            GuiUtils.blit(tex.getId(), graphics, getX() + 1, getY() + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                         }
                         
                     }
                 }.withAlignment(Alignment.CENTER);
-                addTooltip(Tooltip.of(Utils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
+                addTooltip(DragonLibTooltip.of(Utils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
                 this.addRenderableWidget(btn);
             }
         } else {
@@ -244,22 +242,22 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack pPoseStack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(pPoseStack);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {        
+        renderBackground(graphics);
         
-        GuiUtils.blit(OVERLAY, pPoseStack, guiLeft, guiTop + 26, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 256, 256);
+        GuiUtils.blit(OVERLAY, graphics, guiLeft, guiTop + 26, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 256, 256);
         
         if (creative) {
             int bookY = guiTop + 26;
             int bookmarkIndex = 0;
             for (TrafficSignShape shape : bookmarks) {      
-                bookmarkIndex = addBookmark(pPoseStack, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, shape.getIconResourceLocation(), 0, 0, 32, 32, 32, 32);
+                bookmarkIndex = addBookmark(graphics, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, shape.getIconResourceLocation(), 0, 0, 32, 32, 32, 32);
             }
             // Bookmark custom textures
-            bookmarkIndex = addBookmark(pPoseStack, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, OVERLAY, 239, 0, 16, 16, 256, 256);
+            bookmarkIndex = addBookmark(graphics, mouseX, mouseY, partialTicks, bookY, bookmarkIndex, OVERLAY, 239, 0, 16, 16, 256, 256);
         }
 
-        DynamicGuiRenderer.renderArea(pPoseStack, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
+        DynamicGuiRenderer.renderArea(graphics, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
 
         if (CreativePatternCatalogueItem.hasCustomPattern(stack)) {            
             try (TrafficSignData data = CreativePatternCatalogueItem.getCustomImage(stack)) {
@@ -267,13 +265,13 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                     data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
                 });
                 NativeImage img = tex.getPixels();
-                GuiUtils.blit(tex.getId(), pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                GuiUtils.blit(tex.getId(), graphics, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                 img.close();
 
                 float scale = 0.75f;
-                pPoseStack.scale(scale, scale, scale);
-                this.font.draw(pPoseStack, Utils.translate("gui.trafficcraft.patternselection.build_in_pattern", Utils.translate(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
-                pPoseStack.setIdentity();
+                graphics.pose().scale(scale, scale, scale);
+                graphics.drawString(font, Utils.translate("gui.trafficcraft.patternselection.build_in_pattern", Utils.translate(data.getShape().getTranslationKey()).getString(), selectedIndex + 1).getString(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752, false);
+                graphics.pose().setIdentity();
             }
             
         } else {
@@ -283,23 +281,23 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                         data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
                     });
                     NativeImage img = tex.getPixels();
-                    GuiUtils.blit(tex.getId(), pPoseStack, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
+                    GuiUtils.blit(tex.getId(), graphics, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, img.getWidth(), img.getHeight(), img.getWidth(), img.getHeight());
                     img.close();
 
                     float scale = 0.75f;
-                    pPoseStack.scale(scale, scale, scale);
-                    this.font.draw(pPoseStack, data.getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
-                    pPoseStack.setIdentity();
+                    graphics.pose().scale(scale, scale, scale);
+                    graphics.drawString(font, data.getName(), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752, false);
+                    graphics.pose().setIdentity();
                 }
             }            
         }
 
-        drawCenteredString(pPoseStack, this.font, title, this.width / 2, guiTop, 16777215);
-        super.render(pPoseStack, mouseX, mouseY, partialTicks);
+        graphics.drawCenteredString(this.font, title, this.width / 2, guiTop, 16777215);
+        super.render(graphics, mouseX, mouseY, partialTicks);
         //groupPatterns.performForEach(x -> rendertool);
     }
 
-    private int addBookmark(PoseStack pPoseStack, int mouseX, int mouseY, float partialTicks, int bookY, int bookmarkIndex, ResourceLocation icon, int u, int v, int uW, int vH, int texW, int texH) {
+    private int addBookmark(GuiGraphics pPoseStack, int mouseX, int mouseY, float partialTicks, int bookY, int bookmarkIndex, ResourceLocation icon, int u, int v, int uW, int vH, int texW, int texH) {
         int idx = bookmarkIndex % BOOKMARK_COUNT_PER_SIDE;
         int bookmarkX = bookmarkIndex / BOOKMARK_COUNT_PER_SIDE <= 0 ? BOOKMARK_X_LEFT : BOOKMARK_X_RIGHT;
         int bookmarkV = bookmarkIndex / BOOKMARK_COUNT_PER_SIDE <= 0 ? (selectedBookmark == bookmarkIndex ? BOOKMARK_V_SELECTED_LEFT : BOOKMARK_V_UNSELECTED_LEFT) : (selectedBookmark == bookmarkIndex ? BOOKMARK_V_SELECTED_RIGHT : BOOKMARK_V_UNSELECTED_RIGHT);

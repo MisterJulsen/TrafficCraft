@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
+import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
@@ -21,6 +20,7 @@ import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightControllerPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
@@ -117,7 +117,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
                 }
             })
         );
-        addTooltip(Tooltip.of(Constants.textCopy).assignedTo(copyBtn));
+        addTooltip(DragonLibTooltip.of(Constants.textCopy).assignedTo(copyBtn));
         // paste
         pasteButton = addRenderableWidget(ModGuiUtils.createPasteButton(
             this.width / 2 + GUI_WIDTH / 2 - (IconButton.DEFAULT_BUTTON_WIDTH + 2),
@@ -137,7 +137,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
             })
         );
         pasteButton.active = false;
-        addTooltip(Tooltip.of(Constants.textPaste).assignedTo(pasteButton));
+        addTooltip(DragonLibTooltip.of(Constants.textPaste).assignedTo(pasteButton));
     }
 
     @Override
@@ -157,12 +157,12 @@ public class TrafficLightControllerScreen extends CommonScreen {
     }
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {        
+        renderBackground(graphics);
         
-        drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 0xFFFFFFFF);
+        graphics.drawCenteredString(this.font, getTitle(), this.width / 2, guiTop, 0xFFFFFFFF);
         
-        super.render(stack, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

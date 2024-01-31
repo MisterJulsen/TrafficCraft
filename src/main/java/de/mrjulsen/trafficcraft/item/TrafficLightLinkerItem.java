@@ -132,7 +132,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if (pPlayer.isShiftKeyDown()) {
-            Level level = pPlayer.getLevel();
+            Level level = pPlayer.level();
             if (!level.isClientSide) {
                 if (itemstack.getTag() != null) {
                     CompoundTag tag = itemstack.getTag();
