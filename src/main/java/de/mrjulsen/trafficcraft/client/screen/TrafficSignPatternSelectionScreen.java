@@ -154,8 +154,8 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                 }
                 }) {
                     @Override
-                    protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                        super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+                    public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
+                        super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
                         try (TrafficSignData data = PatternCatalogueItem.getPatternAt(stack, j)) {
                             DynamicTexture tex = TrafficSignTextureCacheClient.getTexture(data, data.getTexture(), false, (t) -> {
                                 data.setFromBase64(TrafficSignTextureCacheClient.textureToBase64(data));
@@ -245,7 +245,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack pPoseStack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(pPoseStack, 0);
+        renderBackground(pPoseStack);
         
         GuiUtils.blit(OVERLAY, pPoseStack, guiLeft, guiTop + 26, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT, 256, 256);
         

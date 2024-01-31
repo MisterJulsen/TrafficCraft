@@ -14,7 +14,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +80,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
         } 
 
         if (!pEntity.fireImmune() && pEntity instanceof LivingEntity && !EnchantmentHelper.hasFrostWalker((LivingEntity)pEntity) && pLevel.getBlockEntity(pPos) instanceof TrafficLightControllerBlockEntity blockEntity && blockEntity.isRunning()) {
-            pEntity.hurt(DamageSource.HOT_FLOOR, 1.0F);
+            pEntity.hurt(pLevel.damageSources().hotFloor(), 1.0F);
         }
 
         super.stepOn(pLevel, pPos, pState, pEntity);

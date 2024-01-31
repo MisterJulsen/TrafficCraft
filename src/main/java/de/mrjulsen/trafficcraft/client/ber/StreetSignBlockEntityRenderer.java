@@ -42,7 +42,7 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
             pPoseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(f4));
             pPoseStack.translate(-0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
-            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
+            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, Font.DisplayMode.NORMAL, 0, pPackedLight);
             pPoseStack.popPose();
          
             pPoseStack.pushPose();
@@ -51,8 +51,8 @@ public class StreetSignBlockEntityRenderer implements BlockEntityRenderer<Street
             pPoseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(f5));
             pPoseStack.translate(0.4D, 0.34D, 0.02D);
             pPoseStack.scale((float)scale, -0.015F, 0.015F);
-            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
-                        
+            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, Font.DisplayMode.NORMAL, 0, pPackedLight);
+
             pPoseStack.popPose();
 
             currentY += lineHeight;

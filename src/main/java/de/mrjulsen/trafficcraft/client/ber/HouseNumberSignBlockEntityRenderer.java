@@ -43,7 +43,7 @@ public class HouseNumberSignBlockEntityRenderer implements BlockEntityRenderer<H
             pPoseStack.mulPose(Axis.YP.rotationDegrees(f4));
             pPoseStack.translate(0, -0.05D + (scale * 5), -0.45D);
             pPoseStack.scale((float)scale, (float)-scale, (float)scale);
-            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, false, 0, pPackedLight);
+            this.font.drawInBatch(line, f3, (float)currentY, PaintColor.useWhiteOrBlackForeColor(pBlockEntity.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor(), false, pPoseStack.last().pose(), pBufferSource, Font.DisplayMode.NORMAL, 0, pPackedLight);
             pPoseStack.popPose();
 
             currentY += lineHeight;

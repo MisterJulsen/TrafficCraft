@@ -4,6 +4,7 @@ import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,7 +25,7 @@ public class TrafficSignWorkbenchMenu extends AbstractContainerMenu {
 
     private final Container container = new SimpleContainer(INVENTORY_SIZE);
 
-    public TrafficSignWorkbenchMenu(int pContainerId, Inventory inv) {
+    public TrafficSignWorkbenchMenu(int pContainerId, Inventory inv, FriendlyByteBuf data) {
         this(pContainerId, inv, ContainerLevelAccess.NULL);
     }
 

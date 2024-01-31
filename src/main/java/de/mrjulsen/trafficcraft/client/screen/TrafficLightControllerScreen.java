@@ -158,7 +158,7 @@ public class TrafficLightControllerScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack, 0);
+        renderBackground(stack);
         
         drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 0xFFFFFFFF);
         

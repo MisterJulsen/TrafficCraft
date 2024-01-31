@@ -227,7 +227,7 @@ public class RoadConstructionToolScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack, 0);
+        renderBackground(stack);
         
         GuiUtils.blit(GUI, stack, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
         this.font.draw(stack, title, this.width / 2 - font.width(title) / 2, guiTop + 6, 4210752);
@@ -248,8 +248,8 @@ public class RoadConstructionToolScreen extends CommonScreen {
             int slopeDisplayWidth = 20 + font.width(slopeCountText);
             int guiCenter = guiLeft + WORKING_AREA_X + WORKING_AREA_WIDTH / 2;
 
-            minecraft.getItemRenderer().renderAndDecorateItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
-            minecraft.getItemRenderer().renderAndDecorateItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
+            minecraft.getItemRenderer().renderAndDecorateItem(stack, new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
+            minecraft.getItemRenderer().renderAndDecorateItem(stack, new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
             this.font.draw(stack, blockCountText, guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB);
             this.font.draw(stack, slopeCountText, guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, guiTop + 127, 0xDBDBDB);
         }

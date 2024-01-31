@@ -25,6 +25,7 @@ import java.util.stream.IntStream;
 import org.joml.Matrix4f;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.renderer.GameRenderer;
@@ -172,13 +173,13 @@ public class WritableSignScreen extends CommonScreen {
 
                 float f3 = (float) (-this.minecraft.font.width(s) / 2);
                 this.minecraft.font.drawInBatch(s, f3, (float) (config.getLineHeightsTo(font.lineHeight, i1, s == null ? 0 : this.font.width(s), config.maxLineWidth) - this.messages.length * 5), i, false, matrix4f,
-                        multibuffersource$buffersource, false, 0, 15728880, false);
+                        multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
                 if (i1 == this.line && j >= 0 && flag1) {
                     int j1 = this.minecraft.font.width(s.substring(0, Math.max(Math.min(j, s.length()), 0)));
                     int k1 = j1 - this.minecraft.font.width(s) / 2;
                     if (j >= s.length()) {
                         this.minecraft.font.drawInBatch("_", (float) k1, (float) l, i, false, matrix4f,
-                                multibuffersource$buffersource, false, 0, 15728880, false);
+                                multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
                     }
                 }
             }
@@ -212,7 +213,6 @@ public class WritableSignScreen extends CommonScreen {
                     Tesselator tesselator = Tesselator.getInstance();
                     BufferBuilder bufferbuilder = tesselator.getBuilder();
                     RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                    RenderSystem.disableTexture();
                     RenderSystem.enableColorLogicOp();
                     RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
                     bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -222,7 +222,6 @@ public class WritableSignScreen extends CommonScreen {
                     bufferbuilder.vertex(matrix4f, (float) k2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
                     BufferUploader.drawWithShader(bufferbuilder.end());
                     RenderSystem.disableColorLogicOp();
-                    RenderSystem.enableTexture();
                 }
             }
         }

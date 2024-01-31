@@ -40,7 +40,6 @@ import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -500,8 +499,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
             }
         ) {
             @Override
-            protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+            public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
+                super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
                 fill(pPoseStack, getX() + 2, getY() + 2, getX() + 16, getY() + 16, selectedColor);
             }
         }.withAlignment(Alignment.CENTER));
@@ -522,8 +521,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 (btn) -> { }
             ) {    
                 @Override
-                protected void renderBg(PoseStack pPoseStack, Minecraft pMinecraft, int pMouseX, int pMouseY) {
-                    super.renderBg(pPoseStack, pMinecraft, pMouseX, pMouseY);
+                public void renderImage(PoseStack pPoseStack, int pMouseX, int pMouseY, float partialTicks) {
+                    super.renderImage(pPoseStack, pMouseX, pMouseY, partialTicks);
                     ItemStack stack = menu.colorSlot.getItem();
                     if (!(stack.getItem() instanceof ColorPaletteItem))
                         return;
@@ -810,7 +809,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        renderBackground(pPoseStack, pMouseY);
+        renderBackground(pPoseStack);
         super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
         renderTooltip(pPoseStack, pMouseX, pMouseY);
         

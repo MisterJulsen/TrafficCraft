@@ -5,7 +5,8 @@ import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.Wearable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -26,7 +27,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class TrafficConeBlock extends ColorableBlock implements SimpleWaterloggedBlock, Wearable {
+public class TrafficConeBlock extends ColorableBlock implements SimpleWaterloggedBlock, Equipable {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -111,5 +112,10 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
     @Override
     public int getDefaultColor() {
         return Constants.TRAFFIC_CONE_BASE_COLOR;
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.HEAD;
     }
 }

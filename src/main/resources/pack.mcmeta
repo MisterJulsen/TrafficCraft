@@ -1,8 +1,9 @@
 {
     "pack": {
-        "description": "TrafficCraft Resources",
-        "pack_format": 12,
-        "forge:resource_pack_format": 12,
-        "forge:data_pack_format": 10
+        "description": {
+            "text": "${mod_id} resources"
+        },
+        "forge:server_data_pack_format": 12,
+        "pack_format": 13
     }
 }

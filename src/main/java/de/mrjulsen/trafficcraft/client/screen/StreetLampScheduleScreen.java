@@ -117,7 +117,7 @@ public class StreetLampScheduleScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {        
-        renderBackground(stack, 0);        
+        renderBackground(stack);        
         drawCenteredString(stack, this.font, getTitle(), this.width / 2, guiTop, 16777215);
         
         String timeOnSuffix = this.getTimeSuffix(this.timeOnSlider.getValueInt());

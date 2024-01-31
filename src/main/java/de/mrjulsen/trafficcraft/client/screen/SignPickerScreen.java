@@ -206,7 +206,7 @@ public class SignPickerScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(stack, 0);
+        renderBackground(stack);
         DynamicGuiRenderer.renderWindow(stack, guiLeft, guiTop, WIDTH, HEIGHT);
         DynamicGuiRenderer.renderArea(stack, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.SUNKEN);
         

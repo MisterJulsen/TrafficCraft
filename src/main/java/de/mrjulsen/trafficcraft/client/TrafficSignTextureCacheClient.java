@@ -44,7 +44,7 @@ public class TrafficSignTextureCacheClient {
 
     public static <B extends IIdentifiable> DynamicTexture generateTexture(B id, String base64, boolean hasBg) {
         try {
-            return setTexture(id, hasBg, new DynamicTexture(NativeImage.fromBase64(base64)));
+            return setTexture(id, hasBg, new DynamicTexture(de.mrjulsen.trafficcraft.util.Utils.base64ToByteArray(base64)));
         } catch (IOException e) {
             ModMain.LOGGER.error("Unable to generate dynamic texture.", e);
             e.printStackTrace();

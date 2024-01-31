@@ -1,27 +1,27 @@
 {
-    "feature": "trafficcraft:bitumen_ore",
-    "placement": [
-      {
-        "type": "minecraft:count",
-        "count": 2
-      },
-      {
-        "type": "minecraft:in_square"
-      },
-      {
-        "type": "minecraft:height_range",
-        "height": {
-          "type": "minecraft:uniform",
-          "max_inclusive": {
-            "absolute": 75
-          },
-          "min_inclusive": {
-            "absolute": 55
-          }
+  "feature": "trafficcraft:bitumen_ore",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": 2
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "minecraft:uniform",
+        "min_inclusive": {
+          "absolute": 55
+        },
+        "max_inclusive": {
+          "absolute": 75
         }
-      },
-      {
-        "type": "minecraft:biome"
       }
-    ]
-  }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}
