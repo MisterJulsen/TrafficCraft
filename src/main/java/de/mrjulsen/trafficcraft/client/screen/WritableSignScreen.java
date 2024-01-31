@@ -1,14 +1,7 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
@@ -16,21 +9,19 @@ import de.mrjulsen.mcdragonlib.utils.ClientTools;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
-
 import java.util.stream.IntStream;
 
-import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.world.item.DyeColor;
@@ -45,9 +36,10 @@ public class WritableSignScreen extends CommonScreen {
     protected final WritableTrafficSignBlockEntity sign;
     /** Counts the number of screen updates. */
     protected int frame;
+
     /** The index of the line that is being edited. */
-    protected int line;
-    protected TextFieldHelper signField;
+    protected int selectedLine;
+    protected TextFieldHelper signTextField;
     protected final String[] messages;
     protected final int lines;
     protected final SignRenderingConfig config;
@@ -73,11 +65,11 @@ public class WritableSignScreen extends CommonScreen {
             this.onDone();
         }, null);
 
-        this.signField = new TextFieldHelper(() -> {
-            return this.messages[this.line];
+        this.signTextField = new TextFieldHelper(() -> {
+            return this.messages[this.selectedLine];
         }, (text) -> {
-            this.messages[this.line] = text;
-            this.sign.setText(text, line);
+            this.messages[this.selectedLine] = text;
+            this.sign.setText(text, selectedLine);
         }, TextFieldHelper.createClipboardGetter(this.minecraft), TextFieldHelper.createClipboardSetter(this.minecraft), (text) -> {
             return text == null || this.minecraft.font.width(text) <= config.maxLineWidth;
         });
@@ -102,7 +94,7 @@ public class WritableSignScreen extends CommonScreen {
     }
 
     public boolean charTyped(char pCodePoint, int pModifiers) {
-        this.signField.charTyped(pCodePoint);
+        this.signTextField.charTyped(pCodePoint);
         return true;
     }
 
@@ -112,124 +104,130 @@ public class WritableSignScreen extends CommonScreen {
 
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if (pKeyCode == 265) {
-            this.line = this.line - 1 & lines - 1;
-            this.signField.setCursorToEnd();
+            this.selectedLine = this.selectedLine - 1 & lines - 1;
+            this.signTextField.setCursorToEnd();
             return true;
         } else if (pKeyCode != 264 && pKeyCode != 257 && pKeyCode != 335) {
-            return this.signField.keyPressed(pKeyCode) ? true : super.keyPressed(pKeyCode, pScanCode, pModifiers);
+            return this.signTextField.keyPressed(pKeyCode) ? true : super.keyPressed(pKeyCode, pScanCode, pModifiers);
         } else {
-            this.line = this.line + 1 & lines - 1;
-            this.signField.setCursorToEnd();
+            this.selectedLine = this.selectedLine + 1 & lines - 1;
+            this.signTextField.setCursorToEnd();
             return true;
         }
     }
 
-    @Override
-    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderBackground(pPoseStack);
-        drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, 40, 16777215);
-        Lighting.setupForFlatItems();
+    private final int scale = 96;
+    private final int xOffset = 0;
+    private final int yOffset = 120;
+    private final float minScale = 1;
+    private final float maxScale = 3;
+    private final int maxWidth = (int)(scale * (1.0F / 16.0F * 8));
+    private final int textXOffset = 0;
+    private final int textYOffset = (int)(scale * (1.0F / 16.0F * 0.5f));
 
+    protected void renderSignBackground(GuiGraphics graphics) {
+        MultiBufferSource.BufferSource bufferSource = this.minecraft.renderBuffers().bufferSource();
         BlockState blockstate = this.sign.getBlockState().getBlock().defaultBlockState();
+        PoseStack poseStack = graphics.pose();
+        graphics.pose().translate((float)this.width / 2.0F - scale / 2 + xOffset, yOffset + scale / 2, 0);
+        poseStack.scale(-scale, -scale, -1);
+        poseStack.mulPose(Axis.YP.rotationDegrees(180));
 
-        // Render sign
-        pPoseStack.pushPose();
-        pPoseStack.pushPose();
-        pPoseStack.setIdentity();
-        pPoseStack.translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
-        pPoseStack.scale(config.scale, config.scale, -config.scale);
-        pPoseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(config.modelRotation));
-        MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, pPoseStack, multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
-        pPoseStack.popPose();
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        blockRenderer.renderSingleBlock(blockstate, graphics.pose(), bufferSource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+    }
 
-        // Text rendering
-        
-        int i = DyeColor.BLACK.getTextColor();
-        int j = this.signField.getCursorPos();
-        int k = this.signField.getSelectionPos();
-        String msg = this.messages[this.line];
-        int l = config.getLineHeightsTo(font.lineHeight, this.line, msg == null ? 0 : this.font.width(this.messages[this.line]), config.maxLineWidth) - this.messages.length * 5;
-        pPoseStack.setIdentity();
-        pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-        Matrix4f matrix4f = pPoseStack.last().pose();
+    public int getTextLineHeight() {
+        return 10;
+    }
 
-        // Cursor blinking        
-        boolean flag1 = this.frame / 6 % 2 == 0;
+    public Vector3f textScale(String s) {
+        float scale = (float)de.mrjulsen.trafficcraft.util.Utils.getScale(this.font.width(s), maxWidth, minScale, maxScale);            
+        return new Vector3f(scale, scale, 1);
+    }
 
-        for (int i1 = 0; i1 < this.messages.length; ++i1) {
-            String s = this.messages[i1];
-            IFontScale scaleConfig = config.getFontScale(i1);
-            float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s), config.maxLineWidth);            
-            pPoseStack.setIdentity();
-            pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-            pPoseStack.scale(scale, scale, -scale);
-            matrix4f = pPoseStack.last().pose();
+    private void renderSignText(GuiGraphics pGuiGraphics) {
+        //pGuiGraphics.pose().translate(0.0F, 0.0F, 4.0F);
+        pGuiGraphics.pose().translate((float)this.width / 2.0F + xOffset + textXOffset, yOffset + textYOffset, 5);
+        int color = DyeColor.BLACK.getTextColor();
+        boolean flag = this.frame / 6 % 2 == 0;
+        int cursorPos = this.signTextField.getCursorPos();
+        int selectionPos = this.signTextField.getSelectionPos();
+        int yCenter = this.messages.length * this.getTextLineHeight() / 2;
+        int lineY = this.selectedLine * this.getTextLineHeight() - yCenter;
+
+        for (int line = 0; line < this.messages.length; ++line) {
+            pGuiGraphics.pose().pushPose();
+            String s = this.messages[line];
+            
+            Vector3f vector3f = this.textScale(s);
+            pGuiGraphics.pose().scale(vector3f.x(), vector3f.y(), vector3f.z());
 
             if (s != null) {
                 if (this.font.isBidirectional()) {
                     s = this.font.bidirectionalShaping(s);
                 }
 
-                float f3 = (float) (-this.minecraft.font.width(s) / 2);
-                this.minecraft.font.drawInBatch(s, f3, (float) (config.getLineHeightsTo(font.lineHeight, i1, s == null ? 0 : this.font.width(s), config.maxLineWidth) - this.messages.length * 5), i, false, matrix4f,
-                        multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
-                if (i1 == this.line && j >= 0 && flag1) {
-                    int j1 = this.minecraft.font.width(s.substring(0, Math.max(Math.min(j, s.length()), 0)));
-                    int k1 = j1 - this.minecraft.font.width(s) / 2;
-                    if (j >= s.length()) {
-                        this.minecraft.font.drawInBatch("_", (float) k1, (float) l, i, false, matrix4f,
-                                multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
+                int xCenter = -this.font.width(s) / 2;
+                pGuiGraphics.drawString(this.font, s, xCenter, line * this.getTextLineHeight() - yCenter, color, false);
+                if (line == this.selectedLine && cursorPos >= 0 && flag) {
+                    int l1 = this.font.width(s.substring(0, Math.max(Math.min(cursorPos, s.length()), 0)));
+                    int i2 = l1 - this.font.width(s) / 2;
+                    if (cursorPos >= s.length()) {
+                        pGuiGraphics.drawString(this.font, "_", i2, lineY, color, false);
                     }
                 }
             }
+            pGuiGraphics.pose().popPose();
         }
 
-        multibuffersource$buffersource.endBatch();
+        for (int lineHighlight = 0; lineHighlight < this.messages.length; ++lineHighlight) {
+            String s1 = this.messages[lineHighlight];
+            pGuiGraphics.pose().pushPose();            
+            Vector3f vector3f = this.textScale(s1);
+            pGuiGraphics.pose().scale(vector3f.x(), vector3f.y(), vector3f.z());
 
-        for (int i3 = 0; i3 < this.messages.length; ++i3) {
-            String s1 = this.messages[i3];
-            IFontScale scaleConfig = config.getFontScale(i3);
-            float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s1), config.maxLineWidth);            
-            pPoseStack.setIdentity();
-            pPoseStack.translate((double)this.width / 2, config.textYOffset, 10);
-            pPoseStack.scale(scale, scale, -scale);
-            matrix4f = pPoseStack.last().pose();
-
-            if (s1 != null && i3 == this.line && j >= 0) {
-                int j3 = this.minecraft.font.width(s1.substring(0, Math.max(Math.min(j, s1.length()), 0)));
-                int k3 = j3 - this.minecraft.font.width(s1) / 2;
-                if (flag1 && j < s1.length()) {
-                    fill(pPoseStack, k3, l - 1, k3 + 1, l + 9, -16777216 | i);
+            if (s1 != null && lineHighlight == this.selectedLine && cursorPos >= 0) {
+                int l3 = this.font.width(s1.substring(0, Math.max(Math.min(cursorPos, s1.length()), 0)));
+                int i4 = l3 - this.font.width(s1) / 2;
+                if (flag && cursorPos < s1.length()) {
+                    pGuiGraphics.fill(i4, lineY - 1, i4 + 1, lineY + this.getTextLineHeight(), -16777216 | color);
                 }
 
-                if (k != j) {
-                    int l3 = Math.min(j, k);
-                    int l1 = Math.max(j, k);
-                    int i2 = this.minecraft.font.width(s1.substring(0, l3)) - this.minecraft.font.width(s1) / 2;
-                    int j2 = this.minecraft.font.width(s1.substring(0, l1)) - this.minecraft.font.width(s1) / 2;
-                    int k2 = Math.min(i2, j2);
-                    int l2 = Math.max(i2, j2);
-                    Tesselator tesselator = Tesselator.getInstance();
-                    BufferBuilder bufferbuilder = tesselator.getBuilder();
-                    RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                    RenderSystem.enableColorLogicOp();
-                    RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-                    bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-                    bufferbuilder.vertex(matrix4f, (float) k2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) l2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) l2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) k2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
-                    BufferUploader.drawWithShader(bufferbuilder.end());
-                    RenderSystem.disableColorLogicOp();
+                if (selectionPos != cursorPos) {
+                    int j4 = Math.min(cursorPos, selectionPos);
+                    int j2 = Math.max(cursorPos, selectionPos);
+                    int k2 = this.font.width(s1.substring(0, j4)) - this.font.width(s1) / 2;
+                    int l2 = this.font.width(s1.substring(0, j2)) - this.font.width(s1) / 2;
+                    int i3 = Math.min(k2, l2);
+                    int j3 = Math.max(k2, l2);
+                    pGuiGraphics.fill(RenderType.guiTextHighlight(), i3, lineY, j3, lineY + this.getTextLineHeight(), -16776961);
                 }
             }
+            pGuiGraphics.pose().popPose();
         }
 
-        pPoseStack.popPose();
-        Lighting.setupFor3DItems();
-        
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
     }
+    public void renderSign(GuiGraphics graphics) {
+        graphics.pose().setIdentity();
+        graphics.pose().pushPose();
+        graphics.pose().pushPose();
+        this.renderSignBackground(graphics);
+        graphics.pose().popPose();
+        this.renderSignText(graphics);
+        graphics.pose().popPose();
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+        Lighting.setupForFlatItems();
+        this.renderBackground(graphics);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
+        this.renderSign(graphics);
+        Lighting.setupFor3DItems();
+        super.render(graphics, pMouseX, pMouseY, pPartialTick);
+    }
+
+    public static record WritableSignConfig(BlockState state, ConfiguredLine[] lines, int x, int y, int scale) {}
+    public static record ConfiguredLine(String message, int xOffset, int yOffset, float minScale, float maxScale, int maxWidth, int color) {}
 }
