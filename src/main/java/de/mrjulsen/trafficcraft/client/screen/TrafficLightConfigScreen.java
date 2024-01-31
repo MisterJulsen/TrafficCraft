@@ -714,12 +714,12 @@ public class TrafficLightConfigScreen extends CommonScreen {
     @Override
     public void renderBg(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         super.renderBg(pPoseStack, pMouseX, pMouseY, pPartialTick);
-        Lighting.setupForFlatItems();
         this.renderBackground(pPoseStack);
-        //DynamicGuiRenderer.renderArea(pPoseStack, guiLeft, guiTop, WINDOW_WIDTH, WINDOW_HEIGHT, AreaStyle.GRAY, ButtonState.BUTTON);
         drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, guiTop, 16777215);
+        Lighting.setupForFlatItems();
 
         // Render traffic light
+        pPoseStack.pushPose();
         pPoseStack.pushPose();
         pPoseStack.setIdentity();
         pPoseStack.translate((double)guiLeft + 72, guiTop + 116, -100);

@@ -126,13 +126,14 @@ public class WritableSignScreen extends CommonScreen {
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        Lighting.setupForFlatItems();
         this.renderBackground(pPoseStack);
         drawCenteredString(pPoseStack, this.font, this.title, this.width / 2, 40, 16777215);
+        Lighting.setupForFlatItems();
 
         BlockState blockstate = this.sign.getBlockState().getBlock().defaultBlockState();
 
         // Render sign
+        pPoseStack.pushPose();
         pPoseStack.pushPose();
         pPoseStack.setIdentity();
         pPoseStack.translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
