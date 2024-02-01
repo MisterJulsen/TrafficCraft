@@ -74,9 +74,9 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
         ItemStack stack = pPlayer.getInventory().getSelected();
         Item item = stack.getItem();
 
-        if (item instanceof PatternCatalogueItem patternItem && ((item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) || PatternCatalogueItem.getSelectedPattern(stack) != null)) {
+        if (item instanceof PatternCatalogueItem && ((item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) || PatternCatalogueItem.getSelectedPattern(stack) != null)) {
             if (pLevel.getBlockEntity(pPos) instanceof TrafficSignBlockEntity blockEntity) {
-                if (item instanceof CreativePatternCatalogueItem creativeItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
+                if (item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
                     blockEntity.setAndResetTexture(CreativePatternCatalogueItem.getCustomImage(stack).getTexture());
                 } else {
                     blockEntity.setAndResetTexture(PatternCatalogueItem.getSelectedPattern(stack).getTexture());

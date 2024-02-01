@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
@@ -10,7 +11,9 @@ import org.joml.Vector2f;
 
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -29,22 +32,22 @@ public class HouseNumberSignBlockEntity extends WritableTrafficSignBlockEntity i
     @Override
     public WritableSignConfig getRenderConfig() {
         int y = 120;
+        int maxScale = 3;
         return new WritableSignConfig(new ConfiguredLineData[] {
-            new ConfiguredLineData(0, y + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 0.5f)), new Vector2f(1, 1), new Vector2f(3, 3), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 8)), 10, 0),
-            new ConfiguredLineData(0, y + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 0.5f)), new Vector2f(1, 1), new Vector2f(3, 3), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 8)), 10, 0)
-        }, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 180, 0);
+            new ConfiguredLineData(0, 1.0F / 16.0F * 0.5F, new Vector2f(1, 1), new Vector2f(maxScale, maxScale), 1.0F / 16.0F * 8, maxScale, 0)
+        }, false, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 0.0f, 0.0f, -0.45f, (blockState) -> {
+            return blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot(); 
+        }, PaintColor.useWhiteOrBlackForeColor(this.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor());
     }
 
     @Override
-    public void load(CompoundTag compound)
-    {
+    public void load(CompoundTag compound) {
         super.load(compound);
         this.color = PaintColor.byId(compound.getInt("color"));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
-    {
+    protected void saveAdditional(CompoundTag tag) {
         tag.putInt("color", color.getId());
         super.saveAdditional(tag);
     }

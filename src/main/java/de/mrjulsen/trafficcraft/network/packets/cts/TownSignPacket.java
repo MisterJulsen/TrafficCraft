@@ -9,7 +9,6 @@ import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -67,10 +66,6 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
     public void handle(TownSignPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
-            if (sender.level().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
-                
-            }
-
             if (sender.level().getBlockState(packet.pos).getBlock() instanceof TownSignBlock && sender.level().getBlockEntity(packet.pos) instanceof TownSignBlockEntity blockEntity) {
                 switch (packet.side) {
                     case BACK:

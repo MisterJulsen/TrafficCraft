@@ -26,7 +26,6 @@ public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
     
-    //public abstract SignRenderingConfig getRenderingConfig();
     public abstract WritableSignScreen.WritableSignConfig getRenderConfig();
 
     private void initTextArray() {

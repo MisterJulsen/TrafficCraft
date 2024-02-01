@@ -108,7 +108,7 @@ public class StreetLampConfigCardItem extends Item
         BlockState state = pContext.getLevel().getBlockState(pos);
         Player player = pContext.getPlayer();
 
-        if (!player.isShiftKeyDown() && state.getBlock() instanceof StreetLampBaseBlock block && level.getBlockEntity(pos) instanceof StreetLampBlockEntity blockEntity) {
+        if (!player.isShiftKeyDown() && state.getBlock() instanceof StreetLampBaseBlock && level.getBlockEntity(pos) instanceof StreetLampBlockEntity blockEntity) {
             if (!level.isClientSide) {
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
                     if (nbt.getInt(NBT_TIME_ON) == nbt.getInt(NBT_TIME_OFF)) {

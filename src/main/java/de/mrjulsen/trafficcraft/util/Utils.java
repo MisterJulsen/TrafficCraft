@@ -15,7 +15,7 @@ public class Utils {
         return Math.max(maxScale * scale, minScale);
     }
 
-    public static double getScale(int fontWidth, int lineWidth, float min, float max) {
+    public static double getScale(float fontWidth, float lineWidth, float min, float max) {
         return calcScale(min, max, lineWidth / max, fontWidth);
     }
 }

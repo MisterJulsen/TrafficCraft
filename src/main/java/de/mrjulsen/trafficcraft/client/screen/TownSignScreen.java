@@ -1,96 +1,66 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import org.joml.Matrix4f;
-
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Axis;
-
-import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
 import de.mrjulsen.mcdragonlib.utils.ClientTools;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
-import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig.IFontScale;
+import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.font.TextFieldHelper;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.data.ModelData;
 
-@OnlyIn(Dist.CLIENT)
-public class TownSignScreen extends CommonScreen {
-    /** Reference to the sign object. */
-    protected final TownSignBlockEntity sign;
-    /** Counts the number of screen updates. */
-    protected int frame;
-    /** The index of the line that is being edited. */
-    protected int line;
-    protected TextFieldHelper signField;
-    protected final String[] messages;
-    protected final int lines;
-    protected final SignRenderingConfig config;
-
+public class TownSignScreen extends WritableSignScreen {
     
     private Component textVariant = Utils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
-    private final TownSignBlock.ETownSignSide side;
+    private TownSignBlock.ETownSignSide side;
 
-    // Controls
-    protected Button btnDone;
-
-    public TownSignScreen(TownSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
-        super(Utils.translate("sign.edit"));
-
+    public TownSignScreen(WritableTrafficSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
+        this(
+            pSign,
+            getConfig(pSign, side),
+            getState(pSign, side, pSign.getBlockState().getValue(TownSignBlock.VARIANT)),
+            getMessages(pSign, getConfig(pSign, side), side)
+        );
         this.variant = pSign.getBlockState().getValue(TownSignBlock.VARIANT);
         this.side = side;
-        this.config = null;// TODO: pSign.getTownSignRenderConfig(this.side);
-        this.lines = this.config.getLines();
-        switch (side) {
-            case BACK:
-                this.messages = IntStream.range(0, lines).mapToObj((i) -> {
-                    return pSign.getBackText(i);
-                }).toArray((length) -> {
-                    return new String[length];
-                });
-                break;
-            default:
-            case FRONT:
-                this.messages = IntStream.range(0, lines).mapToObj((i) -> {
-                    return pSign.getText(i);
-                }).toArray((length) -> {
-                    return new String[length];
-                });
-                break;
-        }
-        this.sign = pSign;
     }
 
+    protected TownSignScreen(WritableTrafficSignBlockEntity pSign, WritableSignConfig config, BlockState state, ConfiguredLine[] messages) {
+        super(pSign, config, state, messages);
+    }
+
+    protected static WritableSignConfig getConfig(WritableTrafficSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
+        if (pSign instanceof TownSignBlockEntity blockEntity) {
+            switch (side) {
+                case BACK:
+                    return blockEntity.getBackRenderConfig();
+                default:
+                    break;
+            }
+        }    
+        return pSign.getRenderConfig();         
+    }
+
+    protected static BlockState getState(WritableTrafficSignBlockEntity pSign, TownSignBlock.ETownSignSide side, TownSignVariant variant) {
+        switch (side) {
+            case BACK:
+                return pSign.getBlockState().getBlock().defaultBlockState().setValue(TownSignBlock.VARIANT, TownSignVariant.BACK);
+            default:
+            case FRONT:
+                return pSign.getBlockState().getBlock().defaultBlockState().setValue(TownSignBlock.VARIANT, TownSignVariant.FRONT);
+        }
+    }
+
+    @Override
     protected void init() {
         this.btnDone = addButton(this.width / 2 - 100, this.height / 4 + 145, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
             this.onDone();
@@ -101,187 +71,55 @@ public class TownSignScreen extends CommonScreen {
             this.variant = value;            
         }, null);
 
-
-        this.signField = new TextFieldHelper(() -> {
-            return this.messages[this.line];
+        this.signTextField = new TextFieldHelper(() -> {
+            return this.messages[this.selectedLine].text;
         }, (text) -> {
-            this.messages[this.line] = text;
-            switch (side) {
-                case BACK:
-                    this.sign.setBackText(text, line);
-                    break;
-                default:
-                case FRONT:
-                    this.sign.setText(text, line);
-                    break;
+            if (this.sign instanceof TownSignBlockEntity blockEntity) {
+                this.messages[this.selectedLine].text = text;
+                switch (side) {
+                    case BACK:
+                        blockEntity.setBackText(text, selectedLine);
+                        return;
+                    default:
+                        break;
+                }
             }
-            
+            this.sign.setText(text, selectedLine);
         }, TextFieldHelper.createClipboardGetter(this.minecraft), TextFieldHelper.createClipboardSetter(this.minecraft), (text) -> {
-            return text == null || this.minecraft.font.width(text) <= config.maxLineWidth - (this.side == ETownSignSide.BACK && this.line == 0 ? 20 : 0);
+            return text == null || this.minecraft.font.width(text) <= config.lineData()[this.selectedLine].maxLineWidth() * config.scale();
         });
     }
 
-    public void removed() {
-        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
-    }
-
-    public void tick() {
-        ++this.frame;
-        if (!this.sign.getType().isValid(this.sign.getBlockState())) {
-            this.onDone();
+    protected static ConfiguredLine[] getMessages(WritableTrafficSignBlockEntity pSign, WritableSignConfig config, TownSignBlock.ETownSignSide side) {
+        if (pSign instanceof TownSignBlockEntity blockEntity) {
+            switch (side) {
+                case BACK:
+                    return IntStream.range(0, config.lineData().length).mapToObj((i) -> {
+                        return new ConfiguredLine(blockEntity.getBackText(i), config.lineData()[i]);
+                    }).toArray((length) -> {
+                        return new ConfiguredLine[length];
+                    });
+                default:
+                    break;
+            }
         }
 
+        return IntStream.range(0, config.lineData().length).mapToObj((i) -> {
+            return new ConfiguredLine(pSign.getText(i), config.lineData()[i]);
+        }).toArray((length) -> {
+            return new ConfiguredLine[length];
+        });
+    }
+
+    @Override
+    public void removed() {
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
     }
 
     @Override
     protected void onDone() {
-        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), messages, variant, side)); 
+        NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
         this.minecraft.setScreen(null);
     }
-
-    public boolean charTyped(char pCodePoint, int pModifiers) {
-        this.signField.charTyped(pCodePoint);
-        return true;
-    }
-
-    public void onClose() {
-        this.onDone();
-    }
-
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (pKeyCode == 265) {
-            this.line = this.line - 1 & lines - 1;
-            this.signField.setCursorToEnd();
-            return true;
-        } else if (pKeyCode != 264 && pKeyCode != 257 && pKeyCode != 335) {
-            return this.signField.keyPressed(pKeyCode) ? true : super.keyPressed(pKeyCode, pScanCode, pModifiers);
-        } else {
-            this.line = this.line + 1 & lines - 1;
-            this.signField.setCursorToEnd();
-            return true;
-        }
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        this.renderBackground(graphics);
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 40, 16777215);
-        Lighting.setupForFlatItems();
-
-        BlockState blockstate;
-        switch (this.side) {
-            case BACK:
-                blockstate = this.sign.getBlockState().getBlock().defaultBlockState().setValue(TownSignBlock.VARIANT, TownSignVariant.BACK);
-                break;
-            default:
-            case FRONT:
-                blockstate = this.sign.getBlockState().getBlock().defaultBlockState().setValue(TownSignBlock.VARIANT, TownSignVariant.FRONT);
-                break;
-        }
-
-        // Render sign
-        graphics.pose().pushPose();
-        graphics.pose().pushPose();
-        graphics.pose().setIdentity();
-        graphics.pose().translate((double)this.width / 2 + config.scale / 2 + config.textureXOffset, config.scale + config.textureYOffset, (double)-config.scale);
-        graphics.pose().scale(config.scale, config.scale, -config.scale);
-        graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
-        graphics.pose().mulPose(Axis.YP.rotationDegrees(config.modelRotation));
-        MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, graphics.pose(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
-        graphics.pose().popPose();
-
-        // Text rendering
-        
-        int i = DyeColor.BLACK.getTextColor();
-        int j = this.signField.getCursorPos();
-        int k = this.signField.getSelectionPos();
-        String msg = this.messages[this.line];
-        int l = config.getLineHeightsTo(font.lineHeight, this.line, msg == null ? 0 : this.font.width(this.messages[this.line]), config.maxLineWidth - (this.side == ETownSignSide.BACK && this.line == 0 ? 20 : 0));
-        graphics.pose().setIdentity();
-        graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
-        Matrix4f matrix4f = graphics.pose().last().pose();
-
-        // Cursor blinking        
-        boolean flag1 = this.frame / 6 % 2 == 0;
-
-        for (int i1 = 0; i1 < this.messages.length; ++i1) {
-            
-            final int lineXOffset = i1 == 0 && this.side == ETownSignSide.BACK ? -10 : 0;
-
-            String s = this.messages[i1];
-            IFontScale scaleConfig = config.getFontScale(i1);
-            float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s), config.maxLineWidth - (this.side == ETownSignSide.BACK && i1 == 0 ? 20 : 0));            
-            graphics.pose().setIdentity();
-            graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
-            graphics.pose().scale(scale, scale, -scale);
-            matrix4f = graphics.pose().last().pose();
-
-            if (s != null) {
-                if (this.font.isBidirectional()) {
-                    s = this.font.bidirectionalShaping(s);
-                }
-
-                float f3 = (float) (-this.minecraft.font.width(s) / 2) + (lineXOffset / scale);
-                this.minecraft.font.drawInBatch(s, f3, (float) (config.getLineHeightsTo(font.lineHeight, i1, s == null ? 0 : this.font.width(s), config.maxLineWidth - (this.side == ETownSignSide.BACK && i1 == 0 ? 20 : 0))), i, false, matrix4f,
-                        multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
-                if (i1 == this.line && j >= 0 && flag1) {
-                    int j1 = this.minecraft.font.width(s.substring(0, Math.max(Math.min(j, s.length()), 0)));
-                    int k1 = j1 - this.minecraft.font.width(s) / 2 + (int)(lineXOffset / scale);
-                    if (j >= s.length()) {
-                        this.minecraft.font.drawInBatch("_", (float) k1, (float) l, i, false, matrix4f,
-                                multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880, false);
-                    }
-                }
-            }
-        }
-
-        multibuffersource$buffersource.endBatch();
-
-        for (int i3 = 0; i3 < this.messages.length; ++i3) {
-            final int lineXOffset = i3 == 0 && this.side == ETownSignSide.BACK ? -10 : 0;
-
-            String s1 = this.messages[i3];
-            IFontScale scaleConfig = config.getFontScale(i3);
-            float scale = scaleConfig == null ? 1.0F : (float)scaleConfig.getScale(this.font.width(s1), config.maxLineWidth - (this.side == ETownSignSide.BACK && i3 == 0 ? 20 : 0));            
-            graphics.pose().setIdentity();
-            graphics.pose().translate((double)this.width / 2, config.textYOffset, 10);
-            graphics.pose().scale(scale, scale, -scale);
-            matrix4f = graphics.pose().last().pose();
-
-            if (s1 != null && i3 == this.line && j >= 0) {
-                int j3 = this.minecraft.font.width(s1.substring(0, Math.max(Math.min(j, s1.length()), 0)));
-                int k3 = j3 - this.minecraft.font.width(s1) / 2;
-                if (flag1 && j < s1.length()) {
-                    graphics.fill(k3, l - 1, k3 + 1, l + 9, -16777216 | i);
-                }
-
-                if (k != j) {
-                    int l3 = Math.min(j, k);
-                    int l1 = Math.max(j, k);
-                    int i2 = this.minecraft.font.width(s1.substring(0, l3)) - this.minecraft.font.width(s1) / 2;
-                    int j2 = this.minecraft.font.width(s1.substring(0, l1)) - this.minecraft.font.width(s1) / 2;
-                    int k2 = Math.min(i2, j2) + (int)(lineXOffset / scale);
-                    int l2 = Math.max(i2, j2) + (int)(lineXOffset / scale);
-                    Tesselator tesselator = Tesselator.getInstance();
-                    BufferBuilder bufferbuilder = tesselator.getBuilder();
-                    RenderSystem.setShader(GameRenderer::getPositionColorShader);
-                    RenderSystem.enableColorLogicOp();
-                    RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-                    bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-                    bufferbuilder.vertex(matrix4f, (float) k2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) l2, (float) (l + 9), 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) l2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
-                    bufferbuilder.vertex(matrix4f, (float) k2, (float) l, 0.0F).color(0, 0, 255, 255).endVertex();
-                    BufferUploader.drawWithShader(bufferbuilder.end());
-                    RenderSystem.disableColorLogicOp();
-                }
-            }
-        }
-
-        graphics.pose().popPose();
-        Lighting.setupFor3DItems();
-
-        super.render(graphics, pMouseX, pMouseY, pPartialTick);
-    }
+    
 }

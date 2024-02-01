@@ -179,7 +179,7 @@ public class AsphaltCurbSlope extends Block implements SimpleWaterloggedBlock {
         BlockState currentState = pContext.getLevel().getBlockState(blockpos);
 
         int layers = 1;
-        if (currentState.getBlock() instanceof AsphaltCurbSlope curbSlope) {
+        if (currentState.getBlock() instanceof AsphaltCurbSlope) {
             layers = Math.min(MAX_HEIGHT, currentState.getValue(LAYERS) + 1);
         }
 

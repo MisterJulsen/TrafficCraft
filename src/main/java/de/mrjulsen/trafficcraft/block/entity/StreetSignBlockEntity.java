@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
@@ -10,7 +11,9 @@ import org.joml.Vector2f;
 
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -28,10 +31,12 @@ public class StreetSignBlockEntity extends WritableTrafficSignBlockEntity implem
 
     @Override
     public WritableSignConfig getRenderConfig() {
-        int y = 120 + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 5));
+        float y = 120;
         return new WritableSignConfig(new ConfiguredLineData[] {
-            new ConfiguredLineData(0, y + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * (-5.0f + 0.75f))), new Vector2f(1, 1.5f), new Vector2f(1.5f, 1.5f), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 15)), 10, 0)
-        }, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 22.5f)), y, WritableSignConfig.DEFAULT_SCALE, 0, 90, 0);
+            new ConfiguredLineData(0, -1.0F / 16.0F * 4.25f, new Vector2f(1, 1.5f), new Vector2f(1.5f, 1.5f), 1.0F / 16.0F * 15, 1, 0)
+        }, true, 1.0F / 16.0F * 6.5f, y, WritableSignConfig.DEFAULT_SCALE, 90, 0.4f, 0.0f, 0.02f, (blockState) -> {
+            return 90 + (blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot()); 
+        }, PaintColor.useWhiteOrBlackForeColor(this.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor());
     }
 
     @Override
