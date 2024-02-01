@@ -10,11 +10,11 @@ import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
-import de.mrjulsen.trafficcraft.registry.ModBlocks;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import net.minecraft.client.Minecraft;
@@ -33,17 +33,16 @@ import net.minecraftforge.client.model.data.ModelData;
 
 @OnlyIn(Dist.CLIENT)
 public class WritableSignScreen extends CommonScreen {
-    /** Reference to the sign object. */
-    protected final WritableTrafficSignBlockEntity sign;
-    /** Counts the number of screen updates. */
-    protected int frame;
 
-    /** The index of the line that is being edited. */
-    protected int selectedLine;
-    protected TextFieldHelper signTextField;
+    protected final WritableTrafficSignBlockEntity sign;
+    protected final BlockState blockState;
     protected final WritableSignConfig config;
     protected final ConfiguredLine[] messages;
     protected final int lineCount;
+
+    protected int blinkFrame;
+    protected int selectedLine;
+    protected TextFieldHelper signTextField;
 
     // Controls
     protected Button btnDone;
@@ -51,9 +50,10 @@ public class WritableSignScreen extends CommonScreen {
     public WritableSignScreen(WritableTrafficSignBlockEntity pSign) {
         super(Utils.translate("sign.edit"));
 
-        this.config = new WritableSignConfig(ModBlocks.HOUSE_NUMBER_SIGN.get().defaultBlockState(), new ConfiguredLineData[] {
-            new ConfiguredLineData(0, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 0.5f)), 1, 3, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 8)), 0)
-        }, 0, 120, WritableSignConfig.DEFAULT_SCALE, 0, 180, 0);//pSign.getRenderingConfig();
+        this.config = pSign.getRenderConfig();
+
+        this.blockState = pSign.getBlockState().getBlock().defaultBlockState();
+        this.sign = pSign;
 
         this.lineCount = config.lineData.length;
         messages = IntStream.range(0, lineCount).mapToObj((i) -> {
@@ -61,7 +61,6 @@ public class WritableSignScreen extends CommonScreen {
         }).toArray((length) -> {
             return new ConfiguredLine[length];
         });
-        this.sign = pSign;
     }
 
     protected void init() {
@@ -84,7 +83,7 @@ public class WritableSignScreen extends CommonScreen {
     }
 
     public void tick() {
-        ++this.frame;
+        ++this.blinkFrame;
         if (!this.sign.getType().isValid(this.sign.getBlockState())) {
             this.onDone();
         }
@@ -122,7 +121,6 @@ public class WritableSignScreen extends CommonScreen {
 
     protected void renderSignBackground(GuiGraphics graphics) {
         MultiBufferSource.BufferSource bufferSource = this.minecraft.renderBuffers().bufferSource();
-        BlockState blockstate = config.state();
         PoseStack poseStack = graphics.pose();
         graphics.pose().translate((float)this.width / 2.0F - config.scale / 2 + config.xCenterOffset, config.y + config.scale / 2, 0);
         poseStack.scale(-config.scale, -config.scale, -1);
@@ -131,31 +129,45 @@ public class WritableSignScreen extends CommonScreen {
         poseStack.mulPose(Axis.ZP.rotationDegrees(config.zRot()));
 
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-        blockRenderer.renderSingleBlock(blockstate, graphics.pose(), bufferSource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+        blockRenderer.renderSingleBlock(blockState, graphics.pose(), bufferSource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
     }
 
-    public int getTextLineHeight() {
-        return 10;
+    public int getLineHeightsUntil(int index) {
+        return (int)IntStream.range(0, index).mapToLong(x -> config.lineData()[x].lineHeight()).sum();
+    }
+
+    public int getLineOffset(int index, float currentScaleY) {
+        float halfLineHeight = halfLineHeight(index);
+        return (int)(halfLineHeight - (halfLineHeight * currentScaleY));
+    }
+
+    public float halfLineHeight(int index) {
+        return config.lineData()[index].lineHeight() * 0.5F;
+    }
+
+    public float getHalfLineHeightScales(int index, float currentScaleY) {
+        return halfLineHeight(index) * currentScaleY;
     }
 
     public Vector3f textScale(ConfiguredLine line) {
-        float scale = (float)de.mrjulsen.trafficcraft.util.Utils.getScale(this.font.width(line.text), line.data.maxWidth(), line.data.minScale(), line.data.maxScale());            
-        return new Vector3f(scale, scale, 1);
+        float scaleX = (float)de.mrjulsen.trafficcraft.util.Utils.getScale(this.font.width(line.text), line.data.maxWidth(), line.data.minScale().x, line.data.maxScale().x);            
+        float scaleY = (float)de.mrjulsen.trafficcraft.util.Utils.getScale(this.font.width(line.text), line.data.maxWidth(), line.data.minScale().y, line.data.maxScale().y);            
+        return new Vector3f(scaleX, scaleY, 1);
     }
 
     private void renderSignText(GuiGraphics pGuiGraphics) {
-        boolean flag = this.frame / 6 % 2 == 0;
+        boolean flag = this.blinkFrame / 6 % 2 == 0;
         int cursorPos = this.signTextField.getCursorPos();
         int selectionPos = this.signTextField.getSelectionPos();
-        int yCenter = this.messages.length * this.getTextLineHeight() / 2;
-        int lineY = this.selectedLine * this.getTextLineHeight() - yCenter;
+        int yCenter = this.getLineHeightsUntil(this.messages.length) / 2;
+        int lineY = getLineHeightsUntil(selectedLine) - yCenter;
 
         for (int line = 0; line < this.messages.length; ++line) {
             pGuiGraphics.pose().pushPose();
             ConfiguredLine configuredLine = this.messages[line];
             
             Vector3f vector3f = this.textScale(configuredLine);
-            pGuiGraphics.pose().translate((float)this.width / 2.0F + config.xCenterOffset + configuredLine.data.xOffset(), config.y + configuredLine.data.yOffset(), 5);
+            pGuiGraphics.pose().translate((float)this.width / 2.0F + configuredLine.data.xOffset(), configuredLine.data.yOffset() + getLineHeightsUntil(line) + getLineOffset(line, vector3f.y), 5);
             pGuiGraphics.pose().scale(vector3f.x(), vector3f.y(), vector3f.z());
 
             if (configuredLine != null) {
@@ -164,12 +176,12 @@ public class WritableSignScreen extends CommonScreen {
                 }
 
                 int xCenter = -this.font.width(configuredLine.text) / 2;
-                pGuiGraphics.drawString(this.font, configuredLine.text, xCenter, line * this.getTextLineHeight() - yCenter, configuredLine.data.color(), false);
+                pGuiGraphics.drawString(this.font, configuredLine.text, xCenter, 0, configuredLine.data.color(), false);
                 if (line == this.selectedLine && cursorPos >= 0 && flag) {
                     int l1 = this.font.width(configuredLine.text.substring(0, Math.max(Math.min(cursorPos, configuredLine.text.length()), 0)));
                     int i2 = l1 - this.font.width(configuredLine.text) / 2;
                     if (cursorPos >= configuredLine.text.length()) {
-                        pGuiGraphics.drawString(this.font, "_", i2, lineY, configuredLine.data.color(), false);
+                        pGuiGraphics.drawString(this.font, "_", i2, 0, configuredLine.data.color(), false);
                     }
                 }
             }
@@ -180,14 +192,14 @@ public class WritableSignScreen extends CommonScreen {
             ConfiguredLine configuredLineH = this.messages[lineHighlight];
             pGuiGraphics.pose().pushPose();
             Vector3f vector3f = this.textScale(configuredLineH);
-            pGuiGraphics.pose().translate((float)this.width / 2.0F + config.xCenterOffset + configuredLineH.data.xOffset(), config.y + configuredLineH.data.yOffset, 5);
+            pGuiGraphics.pose().translate((float)this.width / 2.0F + configuredLineH.data.xOffset(), configuredLineH.data.yOffset + getLineHeightsUntil(lineHighlight + 1) - halfLineHeight(lineHighlight) + getHalfLineHeightScales(lineHighlight, vector3f.y), 5);
             pGuiGraphics.pose().scale(vector3f.x(), vector3f.y(), vector3f.z());
 
             if (configuredLineH != null && lineHighlight == this.selectedLine && cursorPos >= 0) {
                 int l3 = this.font.width(configuredLineH.text.substring(0, Math.max(Math.min(cursorPos, configuredLineH.text.length()), 0)));
                 int i4 = l3 - this.font.width(configuredLineH.text) / 2;
                 if (flag && cursorPos < configuredLineH.text.length()) {
-                    pGuiGraphics.fill(i4, lineY - 1, i4 + 1, lineY + this.getTextLineHeight(), -16777216 | configuredLineH.data.color());
+                    pGuiGraphics.fill(i4, lineY - 1, i4 + 1, 0, -16777216 | configuredLineH.data.color());
                 }
 
                 if (selectionPos != cursorPos) {
@@ -197,7 +209,7 @@ public class WritableSignScreen extends CommonScreen {
                     int l2 = this.font.width(configuredLineH.text.substring(0, j2)) - this.font.width(configuredLineH.text) / 2;
                     int i3 = Math.min(k2, l2);
                     int j3 = Math.max(k2, l2);
-                    pGuiGraphics.fill(RenderType.guiTextHighlight(), i3, lineY, j3, lineY + this.getTextLineHeight(), -16776961);
+                    pGuiGraphics.fill(RenderType.guiTextHighlight(), i3, 0, j3, lineY, -16776961);
                 }
             }
             pGuiGraphics.pose().popPose();
@@ -224,11 +236,11 @@ public class WritableSignScreen extends CommonScreen {
         super.render(graphics, pMouseX, pMouseY, pPartialTick);
     }
 
-    public static record WritableSignConfig(BlockState state, ConfiguredLineData[] lineData, int xCenterOffset, int y, int scale, int xRot, int yRot, int zRot) {
+    public static record WritableSignConfig(ConfiguredLineData[] lineData, int xCenterOffset, int y, int scale, int xRot, int yRot, int zRot) {
         public static final int DEFAULT_SCALE = 96;
     }
 
-    public static record ConfiguredLineData(int xOffset, int yOffset, float minScale, float maxScale, int maxWidth, int color) {}
+    public static record ConfiguredLineData(int xOffset, int yOffset, Vector2f minScale, Vector2f maxScale, int maxWidth, int lineHeight, int color) {}
     protected static class ConfiguredLine {
         public String text;
         public final ConfiguredLineData data;

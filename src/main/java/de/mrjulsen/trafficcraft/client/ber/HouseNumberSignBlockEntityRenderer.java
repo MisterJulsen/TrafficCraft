@@ -25,7 +25,7 @@ public class HouseNumberSignBlockEntityRenderer implements BlockEntityRenderer<H
     public void render(HouseNumberSignBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         BlockState blockstate = pBlockEntity.getBlockState();
         double currentY = 0;
-        for (int i1 = 0; i1 < pBlockEntity.getRenderingConfig().getLines(); ++i1) {
+        for (int i1 = 0; i1 < pBlockEntity.getRenderConfig().lineData().length; ++i1) {
             String line = pBlockEntity.getText(i1);
             if (line == null || this.font.width(line) == 0)
                 continue;

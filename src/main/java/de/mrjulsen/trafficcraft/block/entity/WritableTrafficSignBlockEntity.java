@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
@@ -25,18 +25,19 @@ public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
     public WritableTrafficSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
-
-    public abstract SignRenderingConfig getRenderingConfig();
+    
+    //public abstract SignRenderingConfig getRenderingConfig();
+    public abstract WritableSignScreen.WritableSignConfig getRenderConfig();
 
     private void initTextArray() {
         if (this.lines == null) {
-            this.lines = new String[this.getRenderingConfig().getLines()];
+            this.lines = new String[this.getRenderConfig().lineData().length];
             Arrays.fill(lines, "");
         }
     }
 
     public void setText(String text, int line) {
-        if (line < 0 || line > this.getRenderingConfig().getLines())
+        if (line < 0 || line > this.getRenderConfig().lineData().length)
             return;
 
         initTextArray();
@@ -61,8 +62,8 @@ public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        this.lines = new String[this.getRenderingConfig().getLines()];
-        for (int i = 0; i < this.getRenderingConfig().getLines(); i++) {
+        this.lines = new String[this.getRenderConfig().lineData().length];
+        for (int i = 0; i < this.getRenderConfig().lineData().length; i++) {
             this.lines[i] = compound.getString("line" + i);
         }
     }
@@ -71,7 +72,7 @@ public abstract class WritableTrafficSignBlockEntity extends BlockEntity {
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         if (this.lines != null) {
-            for (int i = 0; i < this.getRenderingConfig().getLines(); i++) {
+            for (int i = 0; i < this.getRenderConfig().lineData().length; i++) {
                 tag.putString("line" + i, this.lines[i]);
             }
         }

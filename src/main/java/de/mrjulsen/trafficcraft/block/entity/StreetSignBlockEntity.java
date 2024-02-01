@@ -1,9 +1,13 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+
+import org.joml.Vector2f;
+
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -23,12 +27,11 @@ public class StreetSignBlockEntity extends WritableTrafficSignBlockEntity implem
     }
 
     @Override
-    public SignRenderingConfig getRenderingConfig() {
-        SignRenderingConfig config = new SignRenderingConfig(1);
-        config.modelRotation = 90;
-        config.textureYOffset = 72;
-        config.textureXOffset = config.width() / 2 - (config.width() / 32 * 3);
-        return config;
+    public WritableSignConfig getRenderConfig() {
+        int y = 120 + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 5));
+        return new WritableSignConfig(new ConfiguredLineData[] {
+            new ConfiguredLineData(0, y + (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * (-5.0f + 0.75f))), new Vector2f(1, 1.5f), new Vector2f(1.5f, 1.5f), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 15)), 10, 0)
+        }, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 22.5f)), y, WritableSignConfig.DEFAULT_SCALE, 0, 90, 0);
     }
 
     @Override

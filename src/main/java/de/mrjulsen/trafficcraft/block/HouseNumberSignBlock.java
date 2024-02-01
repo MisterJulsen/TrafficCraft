@@ -123,6 +123,7 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
    }
 
    @Override
+   @SuppressWarnings("deprecation")
    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
       return pLevel.getBlockState(pPos.relative(pState.getValue(FACING).getOpposite())).isSolid();
    }

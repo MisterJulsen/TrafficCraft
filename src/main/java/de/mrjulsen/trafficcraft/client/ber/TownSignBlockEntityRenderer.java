@@ -25,19 +25,20 @@ public class TownSignBlockEntityRenderer implements BlockEntityRenderer<TownSign
     public void render(TownSignBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         switch (pBlockEntity.getBlockState().getValue(TownSignBlock.VARIANT)) {
             case FRONT:
-                renderFront(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
+                //renderFront(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
                 break;
             case BACK:
-                renderBack(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, false);
+                //renderBack(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, false);
                 break;
             case BOTH:
-                renderFront(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
-                renderBack(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, true);
+                //renderFront(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
+                //renderBack(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay, true);
                 break;
         }
     }
 
     public void renderFront(TownSignBlockEntity pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
+        /*
         BlockState blockstate = pBlockEntity.getBlockState();
         double currentY = 0;
         
@@ -104,6 +105,7 @@ public class TownSignBlockEntityRenderer implements BlockEntityRenderer<TownSign
                         
             pPoseStack.popPose();
         }
+        */
     }
 
     public double calcScale(double minScale, double maxScale, double maxWidth, double fontWidth) {

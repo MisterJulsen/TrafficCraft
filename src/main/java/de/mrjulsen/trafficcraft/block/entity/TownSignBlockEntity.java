@@ -2,9 +2,13 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import java.util.Arrays;
 
+import org.joml.Vector2f;
+
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
@@ -24,14 +28,26 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
 
-    @Override
-    public SignRenderingConfig getRenderingConfig() {
+    public SignRenderingConfig getRenderingConfigold() {
         SignRenderingConfig config = new SignRenderingConfig(4);
         config.lineHeightMultiplier[0] = 1.8D;
         config.lineHeightMultiplier[1] = 2.5D;
         config.textYOffset = 75;
         config.setFontScale(1, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
         return config;
+    }
+
+    @Override
+    public WritableSignConfig getRenderConfig() {
+        return new WritableSignConfig(new ConfiguredLineData[] {
+            new ConfiguredLineData(0, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 0.5f)), new Vector2f(1, 1), new Vector2f(1, 1), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 8)), 10, 0)
+        }, 0, 120, WritableSignConfig.DEFAULT_SCALE, 0, 180, 0);
+    }
+
+    public WritableSignConfig getBackRenderConfig() {
+        return new WritableSignConfig(new ConfiguredLineData[] {
+            new ConfiguredLineData(0, (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 0.5f)), new Vector2f(1, 1), new Vector2f(1, 1), (int)(WritableSignConfig.DEFAULT_SCALE * (1.0F / 16.0F * 8)), 10, 0)
+        }, 0, 120, WritableSignConfig.DEFAULT_SCALE, 0, 180, 0);
     }
 
     private SignRenderingConfig getBackRenderingConfig() {
@@ -43,27 +59,27 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
         config.setFontScale(1, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
         return config;
     }
-
-    public SignRenderingConfig getTownSignRenderConfig(TownSignBlock.ETownSignSide side) {
+    
+    public WritableSignConfig getTownSignRenderConfig(TownSignBlock.ETownSignSide side) {
         switch (side) {
             case BACK:
-                return this.getBackRenderingConfig();
+                return this.getBackRenderConfig();
             default:
             case FRONT:
-                return this.getRenderingConfig();
+                return this.getRenderConfig();
         }
     }
 
 
     private void initBackTextArray() {
         if (this.linesBack == null) {
-            this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).getLines()];
+            this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length];
             Arrays.fill(linesBack, "");
         }
     }
 
     public void setBackText(String text, int line) {
-        if (line < 0 || line > this.getTownSignRenderConfig(ETownSignSide.BACK).getLines())
+        if (line < 0 || line > this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length)
             return;
 
         initBackTextArray();
@@ -88,8 +104,8 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).getLines()];
-        for (int i = 0; i < this.getTownSignRenderConfig(ETownSignSide.BACK).getLines(); i++) {
+        this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length];
+        for (int i = 0; i < this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length; i++) {
             this.linesBack[i] = compound.getString("lineBack" + i);
         }
     }

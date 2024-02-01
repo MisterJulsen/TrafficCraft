@@ -69,7 +69,7 @@ public class TownSignScreen extends CommonScreen {
 
         this.variant = pSign.getBlockState().getValue(TownSignBlock.VARIANT);
         this.side = side;
-        this.config = pSign.getTownSignRenderConfig(this.side);
+        this.config = null;// TODO: pSign.getTownSignRenderConfig(this.side);
         this.lines = this.config.getLines();
         switch (side) {
             case BACK:
