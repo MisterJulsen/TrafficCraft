@@ -164,15 +164,6 @@ public class ModBlocks {
         return toReturn;
     }
 
-    /*
-    @SuppressWarnings("unused")
-    private static <T extends Block, I extends BlockItem>RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
-        RegistryObject<T> toReturn = BLOCKS.register(name, block);
-        registerBlockItem(name, toReturn, tab, blockItemClass);
-        return toReturn;
-    }
-    */
-
     @SuppressWarnings("unused")
     private static <T extends Block>RegistryObject<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, ModTab tab, boolean wearable) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -191,22 +182,6 @@ public class ModBlocks {
         ModCreativeModeTab.put(tab, item);
         return item;
     }
-
-    /*
-    private static <T extends Block, I extends BlockItem>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
-        return ModItems.ITEMS.register(name, () -> {
-            try {
-                I registeredItem = blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), new Item.Properties());
-                ModCreativeModeTab.put(tab, registeredItem);
-                return registeredItem;
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                e.printStackTrace();
-                ModCreativeModeTab.put(tab, block);
-                return new BlockItem(block.get(), new Item.Properties());
-            }
-        });
-    }
-    */
 
     public static void register(IEventBus eventBus) {
         BLOCKS.register(eventBus);

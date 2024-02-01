@@ -8,7 +8,6 @@ import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -29,15 +28,6 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
 
     public TownSignBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
-    }
-
-    public SignRenderingConfig getRenderingConfigold() {
-        SignRenderingConfig config = new SignRenderingConfig(4);
-        config.lineHeightMultiplier[0] = 1.8D;
-        config.lineHeightMultiplier[1] = 2.5D;
-        config.textYOffset = 75;
-        config.setFontScale(1, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
-        return config;
     }
 
     @Override
