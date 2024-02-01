@@ -13,7 +13,7 @@ import java.util.Set;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.math.Axis;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.DragonLibConstants;
 import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
@@ -58,6 +58,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -150,7 +151,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             controlTypeTabGroups.put(type, new WidgetsCollection());
         }
 
-        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock block) {            
+        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock) {            
             this.model = level.getBlockState(pos).getValue(TrafficLightBlock.MODEL);
         }
         if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
@@ -711,6 +712,17 @@ public class TrafficLightConfigScreen extends CommonScreen {
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+    protected void renderSignBackground(GuiGraphics graphics) {
+        MultiBufferSource.BufferSource bufferSource = this.minecraft.renderBuffers().bufferSource();
+        PoseStack poseStack = graphics.pose();
+        graphics.pose().translate(guiLeft + 72, guiTop + 116, 1);
+        poseStack.scale(-96, -96, -0.1F);
+        //graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
+
+        BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+        blockRenderer.renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), graphics.pose(), bufferSource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
+    }
+
     @Override
     public void renderBg(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.renderBg(graphics, pMouseX, pMouseY, pPartialTick);
@@ -719,23 +731,27 @@ public class TrafficLightConfigScreen extends CommonScreen {
         Lighting.setupForFlatItems();
 
         // Render traffic light
-        graphics.pose().pushPose();
-        graphics.pose().pushPose();
-        graphics.pose().setIdentity();
-        graphics.pose().translate((double)guiLeft + 72, guiTop + 116, -100);
-        graphics.pose().scale(96, 96, -96);
-        graphics.pose().mulPose(Axis.ZP.rotationDegrees(180));
-        MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
-        Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), graphics.pose(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, RenderType.solid());
-        graphics.pose().popPose();
-        multibuffersource$buffersource.endBatch();
+        graphics.pose().pushPose();        
+        renderSignBackground(graphics);
         graphics.pose().popPose();
         Lighting.setupFor3DItems();
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 10);
 
         // render lights
         for (int i = 0; i < colors.length && i < model.getLightsCount(); i++) {
             GuiUtils.blit(TrafficLightTextureManager.getTextureLocation(new TrafficLightTextureKey(icon, colors[i])), graphics, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
-        }        
+        }
+        
+        // render hover outline
+        GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
+        if (lightDef != null) {
+            GuiUtils.renderBoundingBox(graphics, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
+        } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
+            GuiUtils.renderBoundingBox(graphics, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
+        }
+        graphics.pose().popPose();
 
         // render settings pannels
         if (selectedPart == GLOBAL_SETTINGS_INDEX) {
@@ -746,13 +762,6 @@ public class TrafficLightConfigScreen extends CommonScreen {
             renderEmptyWindow(graphics, pMouseX, pMouseY, pPartialTick);
         }
 
-        // render hover outline
-        GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
-        if (lightDef != null) {
-            GuiUtils.renderBoundingBox(graphics, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
-        } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
-            GuiUtils.renderBoundingBox(graphics, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
-        }
 
         // render controlling window
         DynamicGuiRenderer.renderWindow(graphics, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
