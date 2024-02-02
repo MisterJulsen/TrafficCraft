@@ -51,9 +51,10 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         return maxWidth;
     }
 
-    public void renderImage(Font pFont, int pMouseX, int pMouseY, GuiGraphics graphics, ItemRenderer pItemRenderer, int pBlitOffset) {
-        int x = 0;
-        int y = -IMAGE_HEIGHT;
+    @Override
+    public void renderImage(Font pFont, int pX, int pY, GuiGraphics graphics) {
+        int x = pX;
+        int y = pY - IMAGE_HEIGHT;
         int maxW = 0;
         for (int i = 0; i < this.data.size(); i++) {
             y += IMAGE_HEIGHT;
@@ -71,7 +72,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
             int w = texture.getPixels().getWidth();
             int h = texture.getPixels().getHeight();
 
-            GuiUtils.blit(texture.getId(), graphics, pMouseX + x, pMouseY + y, 16, 16, 0, 0, w, h, w, h);
+            GuiUtils.blit(texture.getId(), graphics, x, y, 16, 16, 0, 0, w, h, w, h);
             
             if (true) { //(Screen.hasShiftDown()) {
                 String txt = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
@@ -86,8 +87,8 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 graphics.drawString(
                     pFont,
                     label.getString(),
-                    (pMouseX + 3 + IMAGE_HEIGHT + x) / FONT_SCALE,
-                    (pMouseY + y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
+                    (3 + IMAGE_HEIGHT + x) / FONT_SCALE,
+                    (y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
                     16777215,
                     false
                 );
