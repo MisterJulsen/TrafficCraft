@@ -343,8 +343,8 @@ public class TrafficLightScheduleEditor extends CommonScreen {
 
         graphics.pose().popPose();
         GuiUtils.endStencil();
-        graphics.fillGradient(200, areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 0x77000000, 0x00000000);
-        graphics.fillGradient(200, areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 0x00000000, 0x77000000);
+        graphics.fillGradient(areaWorkspace.getLeft() + 1, areaWorkspace.getTop() + 1, areaWorkspace.getRight() - 1, areaWorkspace.getTop() + 10, 200, 0x77000000, 0x00000000);
+        graphics.fillGradient(areaWorkspace.getLeft() + 1, areaWorkspace.getBottom() - 10, areaWorkspace.getRight() - 1, areaWorkspace.getBottom() - 1, 200, 0x00000000, 0x77000000);
         GuiUtils.swapAndBlitColor(GuiUtils.getFramebuffer(), minecraft.getMainRenderTarget());        
 
         super.renderBg(graphics, pMouseX, pMouseY, pPartialTick);
