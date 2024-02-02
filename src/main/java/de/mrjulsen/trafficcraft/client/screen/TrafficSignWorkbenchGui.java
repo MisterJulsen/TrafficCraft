@@ -443,7 +443,6 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                             img.close();
                             NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new TrafficSignPatternPacket(tsd, selectedIndex));
                             switchMode(TrafficSignWorkbenchMode.DEFAULT);
-                            initPreview();
                             break;
                         case 2:
                             this.minecraft.setScreen(new ConfirmScreen((b) -> {                                
@@ -635,8 +634,8 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
                 renderPatternBackground(graphics);    
 
                 // render arrow
-                GuiUtils.blit(GUI, graphics, prevButton.getX(), prevButton.getY(), prevButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174 + 13, prevButton.getWidth(), prevButton.getHeight(), 256, 256); //right
-                GuiUtils.blit(GUI, graphics, nextButton.getX(), nextButton.getY(), nextButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174, nextButton.getWidth(), nextButton.getHeight(), 256, 256); //left
+                GuiUtils.blit(OVERLAY, graphics, prevButton.getX(), prevButton.getY(), prevButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174 + 13, prevButton.getWidth(), prevButton.getHeight(), 256, 256); //right
+                GuiUtils.blit(OVERLAY, graphics, nextButton.getX(), nextButton.getY(), nextButton.isInBounds(pMouseX, pMouseY) ? 23 : 0, 174, nextButton.getWidth(), nextButton.getHeight(), 256, 256); //left
                 
                 // render pattern count            
                 String label = String.format("%s / %s", PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1, PatternCatalogueItem.getStoredPatternCount(this.getMenu().patternSlot.getItem()));
