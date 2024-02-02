@@ -7,30 +7,12 @@ public class ModCommonConfig {
         public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_MIN_HEIGHT;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_MAX_HEIGHT;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_RARITY;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_VEIN_SIZE;
-
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_ROAD_WIDTH;
     public static final ForgeConfigSpec.ConfigValue<Double> ROAD_BUILDER_MAX_SLOPE;
 
     static {
-        BUILDER.push(ModMain.MOD_ID + "_common_config");
-        
-        WORLD_BITUMEN_MIN_HEIGHT = BUILDER.comment("Min generation height for bitumen ore. Default: 55 blocks")
-            .define("world_generation.bitumen_ore_min_height", 55);
-
-        WORLD_BITUMEN_MAX_HEIGHT = BUILDER.comment("Max generation height for bitumen ore. Default: 75 blocks")
-            .define("world_generation.bitumen_ore_max_height", 75);
-
-        WORLD_BITUMEN_RARITY = BUILDER.comment("How common bitumen ore will be generated in each chunk. Default: 2")
-            .define("world_generation.bitumen_ore_rarity", 2);
-
-        WORLD_BITUMEN_VEIN_SIZE = BUILDER.comment("Max size of bitumen ore veins. Default: 25")
-            .define("world_generation.bitumen_ore_vein_size", 25);
-            
+        BUILDER.push(ModMain.MOD_ID + "_common_config");            
 
         ROAD_BUILDER_MAX_DISTANCE = BUILDER.comment("The max distance in blocks the road construction tool can be used for. Default: 32 blocks")
             .defineInRange("road_construction_tool.max_distance", 32, 0, 64);
