@@ -170,11 +170,12 @@ tasks.named('jar', Jar).configure {
     finalizedBy 'reobfJar'
 }
 
+
 task jarJarRelease {
     group = 'jarjar'
     doLast {
         tasks.jarJar {
-            classifier = ''
+            archiveClassifier  = ''
         }
     }
     finalizedBy tasks.jarJar

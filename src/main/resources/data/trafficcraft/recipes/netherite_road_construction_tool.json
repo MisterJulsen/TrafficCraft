@@ -1,12 +1,15 @@
 {
-    "type": "minecraft:smithing",
-    "base": {
-        "item": "trafficcraft:diamond_road_construction_tool"
-    },
+    "type": "minecraft:smithing_transform",
     "addition": {
-        "item": "minecraft:netherite_block"
+      "item": "minecraft:netherite_block"
+    },
+    "base": {
+      "item": "trafficcraft:diamond_road_construction_tool"
     },
     "result": {
-        "item": "trafficcraft:netherite_road_construction_tool"
+      "item": "trafficcraft:netherite_road_construction_tool"
+    },
+    "template": {
+      "item": "minecraft:netherite_upgrade_smithing_template"
     }
-}
+  }
