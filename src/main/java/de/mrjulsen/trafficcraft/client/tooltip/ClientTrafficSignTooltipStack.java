@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.MutableComponent;
@@ -57,6 +56,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         int y = pY - IMAGE_HEIGHT;
         int maxW = 0;
         for (int i = 0; i < this.data.size(); i++) {
+            graphics.pose().pushPose();
             y += IMAGE_HEIGHT;
 
             if (i % 12 == 0 && i != 0) {
@@ -86,15 +86,14 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
                 
                 graphics.drawString(
                     pFont,
-                    label.getString(),
-                    (3 + IMAGE_HEIGHT + x) / FONT_SCALE,
-                    (y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
-                    16777215,
-                    false
+                    label,
+                    (int)((3 + IMAGE_HEIGHT + x) / FONT_SCALE),
+                    (int)((y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE),
+                    16777215                    
                 );
-                graphics.pose().setIdentity();
             }
             this.data.get(j).close();
-        }
+            graphics.pose().popPose();
+        }        
     }
 }
