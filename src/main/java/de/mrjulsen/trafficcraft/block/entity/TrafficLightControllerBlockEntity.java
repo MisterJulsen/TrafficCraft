@@ -140,7 +140,7 @@ public class TrafficLightControllerBlockEntity extends BlockEntity {
                     trafficLightLocations.removeIf(a -> 
                         !level.isLoaded(a.getLocationBlockPos()) &&
                         !(level.getBlockState(a.getLocationBlockPos()).getBlock() instanceof TrafficLightBlock) ||
-                        !(level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity blockEntity)
+                        !(level.getBlockEntity(a.getLocationBlockPos()) instanceof TrafficLightBlockEntity)
                     );
 
                     trafficLightLocations.stream().filter(x -> 

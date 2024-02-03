@@ -150,7 +150,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             controlTypeTabGroups.put(type, new WidgetsCollection());
         }
 
-        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock block) {            
+        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock) {            
             this.model = level.getBlockState(pos).getValue(TrafficLightBlock.MODEL);
         }
         if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
