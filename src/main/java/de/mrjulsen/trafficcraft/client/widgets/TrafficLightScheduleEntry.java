@@ -317,7 +317,7 @@ public class TrafficLightScheduleEntry extends Button {
                 SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
                 i * SIGNAL_ICON_SIZE,
-                (parent.getPhaseTypes().containsKey(entry.getPhaseId()) ? parent.getPhaseTypes().get(entry.getPhaseId()).getIndex() : typeFrame.getIndex()) * SIGNAL_ICON_SIZE,
+                (parent.getPhaseTypes().containsKey(entry.getPhaseId()) && parent.getPhaseTypes().get(entry.getPhaseId()) != null ? parent.getPhaseTypes().get(entry.getPhaseId()).getIndex() : typeFrame.getIndex()) * SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
                 SIGNAL_ICON_SIZE,
                 TrafficLightScheduleEditor.TEXTURE_WIDTH,
