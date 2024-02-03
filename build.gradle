@@ -4,10 +4,12 @@ buildscript {
         maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public' }
 
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath "org.spongepowered:mixingradle:${mixingradle_version}"
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
@@ -18,6 +20,7 @@ plugins {
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'org.spongepowered.mixin'
 
 jarJar.enable()
 
@@ -52,6 +55,7 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg '-mixin.config=trafficcraft.mixins.json'
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -164,6 +168,7 @@ dependencies {
         jarJar.ranged(it, "[${dragonlib_version}-${minecraft_version},)")
     }
     implementation fg.deobf("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}")
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
@@ -175,6 +180,12 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 }
 
+mixin {
+    add sourceSets.main, 'trafficcraft.refmap.json'
+}
+
+// Workaround for SpongePowered/MixinGradle#38
+
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
@@ -185,7 +196,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "MrJulsen",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "trafficcraft.mixins.json"
         ])
     }
 }

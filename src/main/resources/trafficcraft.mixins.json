@@ -1,0 +1,17 @@
+{
+    "required": true,
+    "package": "de.mrjulsen.mcdragonlib.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "priority": 1100,
+    "refmap": "dragonlib.refmap.json",
+    "plugin": "de.mrjulsen.mcdragonlib.mixin.DragonLibMixinPlugin",
+    "mixins": [
+    ],
+    "client": [
+        "WindowResizeMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "minVersion": "0.8"
+}
