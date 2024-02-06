@@ -837,7 +837,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-       if ((this.shouldCloseOnEsc() && pKeyCode == InputConstants.KEY_ESCAPE) || (!(getFocused() instanceof EditBox) && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))) {
+        if ((this.shouldCloseOnEsc() && pKeyCode == InputConstants.KEY_ESCAPE) || (!(getFocused() instanceof EditBox) && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))) {
             this.onClose();
             return true;
         }
