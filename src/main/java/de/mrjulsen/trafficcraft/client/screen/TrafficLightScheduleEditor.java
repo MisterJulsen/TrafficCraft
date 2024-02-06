@@ -108,7 +108,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
                         TrafficLightType savedType = phaseIdTypes.get(phaseId);
                         if (savedType != null && savedType != type) {
                             phaseIdTypes.remove(phaseId);
-                            phaseIdTypes.put(phaseId, null);
+                            phaseIdTypes.put(phaseId, type);
                         }
                     } else {
                         phaseIdTypes.put(phaseId, type);
