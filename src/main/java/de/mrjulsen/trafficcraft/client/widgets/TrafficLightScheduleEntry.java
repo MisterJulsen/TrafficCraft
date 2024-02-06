@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -339,7 +340,7 @@ public class TrafficLightScheduleEntry extends Button {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        widgets.performForEach(x -> x.visible, x -> x.mouseClicked(pMouseX, pMouseY, pButton));
+        widgets.performForEach(x -> x.setFocused(false));
 
         for (int i = 0; i < signalAreas.length && i < signals.length; i++) {
             if (signalAreas[i].isInBounds(pMouseX, pMouseY)) {
@@ -367,25 +368,34 @@ public class TrafficLightScheduleEntry extends Button {
             return true;
         }
 
+        for (GuiEventListener guieventlistener : widgets.components) {
+            if (guieventlistener.mouseClicked(pMouseX, pMouseY, pButton)) {
+                parent.unfocusAll();
+                guieventlistener.setFocused(true);
+                return true;
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        boolean[] b = new boolean[] { false };
-        widgets.performForEach(x -> x.visible, x -> {            
-            if (b[0]) return;
-            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
-                b[0] = true;
-                return;
-            }
-        });
-        return b[0];
+        if (widgets.components.stream().filter(x -> x.visible).anyMatch(x -> x.keyPressed(pKeyCode, pScanCode, pModifiers))) {
+            return true;
+        }
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
-        widgets.performForEach(x -> x.visible, x -> x.charTyped(pCodePoint, pModifiers));
+        if (widgets.components.stream().filter(x -> x.visible).anyMatch(x -> x.charTyped(pCodePoint, pModifiers))) {
+            return true;
+        }
         return super.charTyped(pCodePoint, pModifiers);
-    }    
+    }
+
+    public void unfocusAll() {
+        widgets.performForEach(x -> x.setFocused(false));
+    }
 }

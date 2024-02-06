@@ -379,16 +379,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             return true;
         }
 
-        boolean[] b = new boolean[] { false };
-        entries.forEach(x -> {
-            if (b[0]) return;
-            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
-                b[0] = true;
-                return;
-            }
-        });
-
-        if (b[0]) {
+        if (entries.stream().anyMatch(x -> x.keyPressed(pKeyCode, pScanCode, pModifiers))) {
             return true;
         }
 
@@ -397,14 +388,15 @@ public class TrafficLightScheduleEditor extends CommonScreen {
 
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
-        entries.forEach(x -> x.charTyped(pCodePoint, pModifiers));
+        if (entries.stream().anyMatch(x -> x.charTyped(pCodePoint, pModifiers))) {
+            return true;
+        }
         return super.charTyped(pCodePoint, pModifiers);
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
 		float scrollOffset = scrollBar.getScrollValue();
-
         if (areaWorkspace.isInBounds(pMouseX, pMouseY)) {
             for (AbstractWidget w : entries) {
                 if (w.mouseClicked(pMouseX, pMouseY + scrollOffset, pButton)) {
@@ -420,10 +412,20 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     public boolean mouseScrolled(double pMouseX, double pMouseY, double pDelta) {
 		float scrollOffset = scrollBar.getScrollValue();
 
-        if (entries.stream().anyMatch(x -> x.mouseScrolled(pMouseX, pMouseY + scrollOffset, pDelta))) {
-            return true;
+        if (areaWorkspace.isInBounds(pMouseX, pMouseY)) {
+            for (AbstractWidget w : entries) {
+                if (w.mouseScrolled(pMouseY, pDelta, scrollOffset)) {
+                    return true;
+                }
+            }
         }
 
 		return super.mouseScrolled(pMouseX, pMouseY, pDelta);
+    }
+
+    public void unfocusAll() {
+        entries.forEach(x -> x.unfocusAll());
+        children().forEach(x -> x.setFocused(false));
+        setFocused(null);
     }
 }
