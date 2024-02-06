@@ -1,7 +1,7 @@
 {
   "promos": {
-    "1.20.1-latest": "1.0.0-1.20.1",
-    "1.20.1-recommended": "1.0.0-1.20.1"
+    "1.20.1-latest": "1.0.2-1.20.1",
+    "1.20.1-recommended": "1.0.2-1.20.1"
   },
   "homepage": "https://modrinth.com/mod/trafficcraft"
 }
