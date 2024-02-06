@@ -1,33 +1,32 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:concrete_barrier"
-      },
-      "title": {
-        "translate": "advancement.trafficcraft.crash_course"
-      },
-      "description": {
-        "translate": "advancement.trafficcraft.crash_course.description"
-      },
-      "frame": "task",
-      "show_toast": true,
-      "announce_to_chat": true
+  "display": {
+    "icon": {
+      "item": "trafficcraft:concrete_barrier"
     },
-    "parent": "trafficcraft:delineator",
-    "criteria": {
-      "requirement": {
-        "trigger": "minecraft:inventory_changed",
-        "conditions": {
-          "items": [
-            {
-              "tag": "trafficcraft:barriers"
-            }
-          ]
-        }
+    "title": {
+      "translate": "advancement.trafficcraft.crash_course"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.crash_course.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:delineator",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "trafficcraft:barriers"
+          }
+        ]
       }
-    },
-    "rewards": {
-      "experience": 20
     }
+  },
+  "rewards": {
+    "experience": 20
   }
-  
+}

@@ -1,33 +1,32 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:white_delineator"
-      },
-      "title": {
-        "translate": "advancement.trafficcraft.delineator"
-      },
-      "description": {
-        "translate": "advancement.trafficcraft.delineator.description"
-      },
-      "frame": "task",
-      "show_toast": true,
-      "announce_to_chat": true
+  "display": {
+    "icon": {
+      "item": "trafficcraft:white_delineator"
     },
-    "parent": "trafficcraft:craft_road",
-    "criteria": {
-      "requirement": {
-        "trigger": "minecraft:inventory_changed",
-        "conditions": {
-          "items": [
-            {
-              "tag": "trafficcraft:delineators"
-            }
-          ]
-        }
+    "title": {
+      "translate": "advancement.trafficcraft.delineator"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.delineator.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:craft_road",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "trafficcraft:delineators"
+          }
+        ]
       }
-    },
-    "rewards": {
-      "experience": 20
     }
+  },
+  "rewards": {
+    "experience": 20
   }
-  
+}

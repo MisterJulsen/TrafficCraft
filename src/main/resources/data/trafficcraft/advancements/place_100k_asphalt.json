@@ -38,7 +38,12 @@
             }
           }
         ],
-        "block": "trafficcraft:asphalt"
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "trafficcraft:asphalt"
+          }
+        ]
       }
     }
   },

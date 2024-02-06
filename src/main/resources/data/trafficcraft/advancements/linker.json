@@ -18,18 +18,26 @@
     "req": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "item": {
-          "items": [
-            "trafficcraft:traffic_light_linker"
-          ]
-        },
-        "location": {
-          "block": {
-            "blocks": [
-              "trafficcraft:traffic_light"
-            ]
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "trafficcraft:traffic_light_linker"
+              ]
+            }
+          },
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "trafficcraft:traffic_light"
+                ]
+              }
+            }
           }
-        }
+        ]
       }
     }
   },

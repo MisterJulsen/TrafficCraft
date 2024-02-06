@@ -1,38 +1,45 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:paint_brush"
-      },
-      "title": {
-        "translate": "advancement.trafficcraft.paint_road"
-      },
-      "description": {
-        "translate": "advancement.trafficcraft.paint_road.description"
-      },
-      "frame": "task",
-      "show_toast": true,
-      "announce_to_chat": true
+  "display": {
+    "icon": {
+      "item": "trafficcraft:paint_brush"
     },
-    "parent": "trafficcraft:craft_road",
-    "criteria": {
-      "req": {
-        "trigger": "minecraft:item_used_on_block",
-        "conditions": {
-          "item": {
-            "items": [
-              "trafficcraft:paint_brush"
-            ]
+    "title": {
+      "translate": "advancement.trafficcraft.paint_road"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.paint_road.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:craft_road",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "trafficcraft:paint_brush"
+              ]
+            }
           },
-          "location": {
-            "block": {
-              "tag": "trafficcraft:road"
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "tag": "trafficcraft:road"
+              }
             }
           }
-        }
+        ]
       }
-    },
-    "rewards": {
-      "experience": 20
     }
+  },
+  "rewards": {
+    "experience": 20
   }
-  
+}

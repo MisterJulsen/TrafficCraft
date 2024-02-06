@@ -18,16 +18,24 @@
     "req": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "item": {
-          "tag": "trafficcraft:pattern_catalogues"
-        },
-        "location": {
-          "block": {
-            "blocks": [
-              "trafficcraft:traffic_sign"
-            ]
+        "location": [
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "tag": "trafficcraft:pattern_catalogues"
+            }
+          },
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "trafficcraft:traffic_sign"
+                ]
+              }
+            }
           }
-        }
+        ]
       }
     }
   },
