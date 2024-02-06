@@ -277,7 +277,14 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     }
 
     private void move(TrafficLightScheduleEntryData entry, int offset) {
-        int index = schedule.getEntries().indexOf(entry);
+        int index = -1;
+        List<TrafficLightScheduleEntryData> entries = schedule.getEntries();
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i) == entry) {
+                index = i;
+                break;
+            }
+        }
         int newIndex = index + offset;
 
         if (newIndex < 0 || newIndex >= schedule.getEntries().size()) {

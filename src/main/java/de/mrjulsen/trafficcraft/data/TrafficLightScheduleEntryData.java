@@ -12,7 +12,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
 public class TrafficLightScheduleEntryData implements IClipboardData {
-
+    
     private static final String NBT_ID = "id";
     private static final String NBT_TICKS = "ticks";
     private static final String NBT_COLOR = "color";
