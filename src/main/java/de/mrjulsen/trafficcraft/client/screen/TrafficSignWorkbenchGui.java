@@ -584,6 +584,7 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         }
     }
 
+    @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         return (getFocused() instanceof EditBox && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) ? true : super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }

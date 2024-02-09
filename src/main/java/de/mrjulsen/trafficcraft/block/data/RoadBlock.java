@@ -73,7 +73,7 @@ public abstract class RoadBlock extends ColorableBlock {
         ItemStack stack = pContext.getItemInHand();
         Player player = pContext.getPlayer();
         
-        if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity) {
+        if (level.getBlockEntity(pos) instanceof IColorBlockEntity) {
             if (state.getBlock() instanceof PaintedAsphaltBlock)
                 id = this.getDefaultRoadType().getRoadType() + "_pattern_" + BrushItem.getPatternId(stack);
             else if (state.getBlock() instanceof PaintedAsphaltSlope)

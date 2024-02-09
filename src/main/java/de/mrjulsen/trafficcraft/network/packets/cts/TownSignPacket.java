@@ -67,7 +67,7 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
     public void handle(TownSignPacket packet, Supplier<NetworkEvent.Context> context) {
         NetworkManagerBase.handlePacket(packet, context, () -> {
             ServerPlayer sender = context.get().getSender();
-            if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
+            if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity) {
                 
             }
 
