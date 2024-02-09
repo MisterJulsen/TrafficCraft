@@ -4,13 +4,18 @@ import java.util.Arrays;
 
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
-import de.mrjulsen.trafficcraft.client.ber.SignRenderingConfig;
+import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
+import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
+import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 
 public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
     
@@ -24,46 +29,54 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
         super(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), pos, state);
     }
 
-    @Override
-    public SignRenderingConfig getRenderingConfig() {
-        SignRenderingConfig config = new SignRenderingConfig(4);
-        config.lineHeightMultiplier[0] = 1.8D;
-        config.lineHeightMultiplier[1] = 2.5D;
-        config.textYOffset = 75;
-        config.setFontScale(1, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
-        return config;
+     @Override
+    public de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig getRenderConfig() {
+        float y = 120;
+        float scaleA = 1;
+        float scaleB = 2f;
+        float scaleBLine = 3;
+        return new WritableSignConfig(new ConfiguredLineData[] {
+            new ConfiguredLineData(0, -1.0F / 16.0F * 6.0f, new Vec2(1, 1), new Vec2(scaleA, scaleA), 1.0F / 16.0F * 15, scaleA, 0),
+            new ConfiguredLineData(0, -1.0F / 16.0F * 6.0f, new Vec2(1, 1), new Vec2(scaleB, scaleB), 1.0F / 16.0F * 14, scaleBLine, 0),
+            new ConfiguredLineData(0, -1.0F / 16.0F * 6.0f, new Vec2(1, 1), new Vec2(scaleA, scaleA), 1.0F / 16.0F * 15, scaleA, 0),
+            new ConfiguredLineData(0, -1.0F / 16.0F * 6.0f, new Vec2(1, 1), new Vec2(scaleA, scaleA), 1.0F / 16.0F * 15, scaleA, 0)
+        }, false, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 0.0f, 0.0f, 0.1f, (blockState) -> {
+            return blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot(); 
+        }, 0);
     }
 
-    private SignRenderingConfig getBackRenderingConfig() {
-        SignRenderingConfig config = new SignRenderingConfig(2);
-        config.lineHeightMultiplier[0] = 4.0D;
-        config.lineHeightMultiplier[1] = 4.0D;
-        config.textYOffset = 79;
-        config.setFontScale(0, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
-        config.setFontScale(1, new SignRenderingConfig.AutomaticFontScaleConfig(1.0D, 2.0D));
-        return config;
+    public WritableSignConfig getBackRenderConfig() {
+        float y = 120;
+        float scale = 2F;
+        float lineScale = 3;
+        return new WritableSignConfig(new ConfiguredLineData[] {
+            new ConfiguredLineData(-1.0F / 16.0F * 1.5F, -1.0F / 16.0F * 4f, new Vec2(1, 1), new Vec2(scale, scale), 1.0F / 16.0F * 12, lineScale, 0),
+            new ConfiguredLineData(0, -1.0F / 16.0F * 3.5f, new Vec2(1, 1), new Vec2(scale, scale), 1.0F / 16.0F * 14, lineScale, 0)
+        }, false, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 0.0f, 0.0f, 0.1f, (blockState) -> {
+            return (blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot()) + (blockState.getValue(TownSignBlock.VARIANT) == TownSignVariant.BOTH ? 180 : 0); 
+        }, 0);
     }
-
-    public SignRenderingConfig getTownSignRenderConfig(TownSignBlock.ETownSignSide side) {
+    
+    public WritableSignConfig getTownSignRenderConfig(TownSignBlock.ETownSignSide side) {
         switch (side) {
             case BACK:
-                return this.getBackRenderingConfig();
+                return this.getBackRenderConfig();
             default:
             case FRONT:
-                return this.getRenderingConfig();
+                return this.getRenderConfig();
         }
     }
 
 
     private void initBackTextArray() {
         if (this.linesBack == null) {
-            this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).getLines()];
+            this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length];
             Arrays.fill(linesBack, "");
         }
     }
 
     public void setBackText(String text, int line) {
-        if (line < 0 || line > this.getTownSignRenderConfig(ETownSignSide.BACK).getLines())
+        if (line < 0 || line > this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length)
             return;
 
         initBackTextArray();
@@ -88,8 +101,8 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
     @Override
     public void load(CompoundTag compound) {
         super.load(compound);
-        this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).getLines()];
-        for (int i = 0; i < this.getTownSignRenderConfig(ETownSignSide.BACK).getLines(); i++) {
+        this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length];
+        for (int i = 0; i < this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length; i++) {
             this.linesBack[i] = compound.getString("lineBack" + i);
         }
     }
