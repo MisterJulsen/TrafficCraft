@@ -341,7 +341,9 @@ public class TrafficLightScheduleEntry extends Button {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        widgets.performForEach(x -> x.visible, x -> x.mouseClicked(pMouseX, pMouseY, pButton));
+        if (widgets.components.stream().anyMatch(x -> x.mouseClicked(pMouseX, pMouseY, pButton))) {
+            return true;
+        }
 
         for (int i = 0; i < signalAreas.length && i < signals.length; i++) {
             if (signalAreas[i].isInBounds(pMouseX, pMouseY)) {
@@ -374,20 +376,18 @@ public class TrafficLightScheduleEntry extends Button {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        boolean[] b = new boolean[] { false };
-        widgets.performForEach(x -> x.visible, x -> {            
-            if (b[0]) return;
-            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
-                b[0] = true;
-                return;
-            }
-        });
-        return b[0];
+        if (widgets.components.stream().anyMatch(x -> x.keyPressed(pKeyCode, pScanCode, pModifiers))) {
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
-        widgets.performForEach(x -> x.visible, x -> x.charTyped(pCodePoint, pModifiers));
+        if (widgets.components.stream().anyMatch(x -> x.charTyped(pCodePoint, pModifiers))) {
+            return true;
+        }
+        
         return super.charTyped(pCodePoint, pModifiers);
     }    
 }

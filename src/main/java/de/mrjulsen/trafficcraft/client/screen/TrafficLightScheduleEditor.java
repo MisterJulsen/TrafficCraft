@@ -385,17 +385,8 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             this.onClose();
             return true;
         }
-
-        boolean[] b = new boolean[] { false };
-        entries.forEach(x -> {
-            if (b[0]) return;
-            if (x.keyPressed(pKeyCode, pScanCode, pModifiers)) {
-                b[0] = true;
-                return;
-            }
-        });
-
-        if (b[0]) {
+        
+        if (entries.stream().anyMatch(x -> x.keyPressed(pKeyCode, pScanCode, pModifiers))) {
             return true;
         }
 
@@ -404,7 +395,10 @@ public class TrafficLightScheduleEditor extends CommonScreen {
 
     @Override
     public boolean charTyped(char pCodePoint, int pModifiers) {
-        entries.forEach(x -> x.charTyped(pCodePoint, pModifiers));
+        if (entries.stream().anyMatch(x -> x.charTyped(pCodePoint, pModifiers))) {
+            return true;
+        }
+
         return super.charTyped(pCodePoint, pModifiers);
     }
 
