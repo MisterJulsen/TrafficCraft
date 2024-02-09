@@ -585,13 +585,9 @@ public class TrafficSignWorkbenchGui extends AbstractContainerScreen<TrafficSign
         }
     }
 
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_) {
-        if (this.shouldCloseOnEsc() && p_keyPressed_1_ == 256 || this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_))) {
-            this.onClose();
-            return true;
-        } else {
-            return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-        }
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        return (getFocused() instanceof EditBox && this.minecraft.options.keyInventory.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) ? true : super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
