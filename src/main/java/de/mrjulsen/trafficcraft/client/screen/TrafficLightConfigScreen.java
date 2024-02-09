@@ -150,7 +150,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             controlTypeTabGroups.put(type, new WidgetsCollection());
         }
 
-        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock block) {            
+        if (level.getBlockState(pos).getBlock() instanceof TrafficLightBlock) {            
             this.model = level.getBlockState(pos).getValue(TrafficLightBlock.MODEL);
         }
         if (level.getBlockEntity(pos) instanceof TrafficLightBlockEntity blockEntity) {
@@ -656,7 +656,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             null
         );
         box.setFilter(GuiUtils::editBoxNumberFilter);
-        box.setMaxLength(3);
+        box.setMaxLength(4);
         controlTypeTabGroups.get(TrafficLightControlType.REMOTE).add(box);
         controlTypeTabGroups.get(TrafficLightControlType.REMOTE).setVisible(controlType == TrafficLightControlType.REMOTE);
 
