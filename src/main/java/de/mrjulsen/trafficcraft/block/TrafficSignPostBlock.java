@@ -146,7 +146,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     }
 
     private static boolean needsBottomExtension(BlockState pState, BlockState belowBlock) {
-        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock slab && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM));
+        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM));
     }
 
     @Override
