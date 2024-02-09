@@ -1,14 +1,13 @@
 package de.mrjulsen.trafficcraft.client.tooltip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
 import de.mrjulsen.mcdragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -53,11 +52,13 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         return maxWidth;
     }
 
-    public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset) {
-        int x = 0;
-        int y = -IMAGE_HEIGHT;
+    @Override
+    public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer) {
+        int x = pMouseX;
+        int y = pMouseY - IMAGE_HEIGHT;
         int maxW = 0;
         for (int i = 0; i < this.data.size(); i++) {
+            pPoseStack.pushPose();
             y += IMAGE_HEIGHT;
 
             if (i % 12 == 0 && i != 0) {
@@ -67,34 +68,36 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
             }
 
             final int j = i;
-            DynamicTexture texture = TrafficSignTextureCacheClient.getTexture(this.data.get(j), this.data.get(j).getTexture(), false, (tex) -> {
-                this.data.get(j).setFromBase64(TrafficSignTextureCacheClient.textureToBase64(this.data.get(j)));
-            });
+            DynamicTexture texture = TrafficSignTextureCacheClient.getTexture(this.data.get(j),
+                    this.data.get(j).getTexture(), false, (tex) -> {
+                        this.data.get(j).setFromBase64(TrafficSignTextureCacheClient.textureToBase64(this.data.get(j)));
+                    });
             int w = texture.getPixels().getWidth();
             int h = texture.getPixels().getHeight();
 
-            RenderSystem.setShaderTexture(0, texture.getId());
-            GuiComponent.blit(pPoseStack, pMouseX + x, pMouseY + y, 16, 16, 0, 0, w, h, w, h);
-            
-            if (true) { //(Screen.hasShiftDown()) {
-                String txt = (selectedIndex == i ?"> " : "") + this.data.get(i).getName();
-                MutableComponent label = Utils.text(txt).withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET).withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
-                int fW = (int)(pFont.width(label) * FONT_SCALE);
+            GuiUtils.blit(texture.getId(), pPoseStack, x, y, 16, 16, 0, 0, w, h, w, h);
+
+            if (true) { // (Screen.hasShiftDown()) {
+                String txt = (selectedIndex == i ? "> " : "") + this.data.get(i).getName();
+                MutableComponent label = Utils.text(txt)
+                        .withStyle(selectedIndex == i ? ChatFormatting.BOLD : ChatFormatting.RESET)
+                        .withStyle(selectedIndex == i ? ChatFormatting.WHITE : ChatFormatting.GRAY);
+                int fW = (int) (pFont.width(label) * FONT_SCALE);
                 if (maxW < fW) {
                     maxW = fW;
                 }
                 pPoseStack.scale(FONT_SCALE, FONT_SCALE, FONT_SCALE);
-                pPoseStack.translate(0, 0, 1000);
-                
-                pFont.draw(pPoseStack,
-                    label,
-                    (pMouseX + 3 + IMAGE_HEIGHT + x) / FONT_SCALE,
-                    (pMouseY + y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE,
-                    16777215
-                );
-                pPoseStack.setIdentity();
+                pPoseStack.translate(0, 0, 100);
+
+                pFont.draw(
+                        pPoseStack,
+                        label,
+                        (int) ((3 + IMAGE_HEIGHT + x) / FONT_SCALE),
+                        (int) ((y + IMAGE_HEIGHT / 2 - pFont.lineHeight / 2) / FONT_SCALE),
+                        16777215);
             }
             this.data.get(j).close();
+            pPoseStack.popPose();
         }
     }
 }
