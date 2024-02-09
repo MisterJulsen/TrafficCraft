@@ -34,7 +34,7 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
     public WritableSignConfig getRenderConfig() {
         float y = 120;
         float scaleA = 1;
-        float scaleB = 2.5f;
+        float scaleB = 2f;
         float scaleBLine = 3;
         return new WritableSignConfig(new ConfiguredLineData[] {
             new ConfiguredLineData(0, -1.0F / 16.0F * 6.0f, new Vector2f(1, 1), new Vector2f(scaleA, scaleA), 1.0F / 16.0F * 15, scaleA, 0),
@@ -48,13 +48,13 @@ public class TownSignBlockEntity extends WritableTrafficSignBlockEntity {
 
     public WritableSignConfig getBackRenderConfig() {
         float y = 120;
-        float scale = 2.5F;
+        float scale = 2F;
         float lineScale = 3;
         return new WritableSignConfig(new ConfiguredLineData[] {
             new ConfiguredLineData(-1.0F / 16.0F * 1.5F, -1.0F / 16.0F * 4f, new Vector2f(1, 1), new Vector2f(scale, scale), 1.0F / 16.0F * 12, lineScale, 0),
             new ConfiguredLineData(0, -1.0F / 16.0F * 3.5f, new Vector2f(1, 1), new Vector2f(scale, scale), 1.0F / 16.0F * 14, lineScale, 0)
         }, false, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 0.0f, 0.0f, 0.1f, (blockState) -> {
-            return blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot() + (blockState.getValue(TownSignBlock.VARIANT) == TownSignVariant.BOTH ? 180 : 0); 
+            return (blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot()) + (blockState.getValue(TownSignBlock.VARIANT) == TownSignVariant.BOTH ? 180 : 0); 
         }, 0);
     }
     
