@@ -7,11 +7,12 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.mrjulsen.mcdragonlib.utils.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.client.ber.HouseNumberSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.client.ber.StreetSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ber.TownSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TrafficLightBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.ber.TrafficSignBlockEntityRenderer;
+import de.mrjulsen.trafficcraft.client.ber.WritableSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -55,8 +56,8 @@ public class ClientInit {
 
         /* BLOCK ENTITY RENDERERS */
         BlockEntityRenderers.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), StreetSignBlockEntityRenderer::new);
-        BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), HouseNumberSignBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<StreetSignBlockEntity>::new);
+        BlockEntityRenderers.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<HouseNumberSignBlockEntity>::new);
         BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntityRenderer::new);
         
