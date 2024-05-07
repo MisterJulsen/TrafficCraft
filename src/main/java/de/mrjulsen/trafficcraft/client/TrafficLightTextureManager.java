@@ -9,10 +9,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
+import de.mrjulsen.trafficcraft.util.ClientTools;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.block.model.BakedQuad;

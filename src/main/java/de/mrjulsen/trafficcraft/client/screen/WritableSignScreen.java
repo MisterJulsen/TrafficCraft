@@ -60,7 +60,7 @@ public class WritableSignScreen extends CommonScreen {
     }
 
     protected WritableSignScreen(WritableTrafficSignBlockEntity pSign, WritableSignConfig config, BlockState state, ConfiguredLine[] messages) {
-        super(Utils.translate("sign.edit"));
+        super(TextUtils.translate("sign.edit"));
 
         this.config = config;
         this.blockState = state;

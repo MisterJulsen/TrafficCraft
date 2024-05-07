@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.mcdragonlib.block.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;

@@ -154,8 +154,13 @@ repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
+    maven { // DragonLib
+        name = "MrJulsen's Mod Resources"
+        url = "https://raw.githubusercontent.com/MisterJulsen/modsrepo/main/maven"
+    }
     maven {
-        url "https://cursemaven.com"
+        name = "Architectury API"
+        url "https://maven.architectury.dev/"
     }
 }
 
@@ -164,10 +169,10 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    jarJar("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}") {
-        jarJar.ranged(it, "[${dragonlib_version}-${minecraft_version},)")
+    jarJar("de.mrjulsen.mcdragonlib:dragonlib-forge:${minecraft_version}-${dragonlib_version}") {
+        jarJar.ranged(it, "[${minecraft_version}-${dragonlib_version},)")
     }
-    implementation fg.deobf("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}")
+    implementation("de.mrjulsen.mcdragonlib:dragonlib-forge:${minecraft_version}-${dragonlib_version}")
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

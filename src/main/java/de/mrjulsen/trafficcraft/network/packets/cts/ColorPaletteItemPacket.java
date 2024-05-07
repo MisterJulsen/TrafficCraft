@@ -2,17 +2,16 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class ColorPaletteItemPacket implements IPacketBase<ColorPaletteItemPacket> {
     
@@ -39,11 +38,11 @@ public class ColorPaletteItemPacket implements IPacketBase<ColorPaletteItemPacke
 
         return new ColorPaletteItemPacket(color, index);
     }
-
+    
     @Override
-    public void handle(ColorPaletteItemPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(ColorPaletteItemPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
             if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
                 final ItemStack stack = menu.colorSlot.getItem();
                 if (!(stack.getItem() instanceof ColorPaletteItem))
@@ -54,13 +53,8 @@ public class ColorPaletteItemPacket implements IPacketBase<ColorPaletteItemPacke
                 menu.colorSlot.setChanged();
                 menu.broadcastChanges();
                 
-                Utils.giveAdvancement(sender, ModMain.MOD_ID, "store_color_palette", "requirement");
+                DLUtils.giveAdvancement((ServerPlayer)sender, ModMain.MOD_ID, "store_color_palette", "requirement");
             }
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

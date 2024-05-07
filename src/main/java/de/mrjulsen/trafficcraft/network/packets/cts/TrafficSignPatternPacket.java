@@ -2,20 +2,18 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficSignPatternPacket implements IPacketBase<TrafficSignPatternPacket> {
     
@@ -46,11 +44,11 @@ public class TrafficSignPatternPacket implements IPacketBase<TrafficSignPatternP
 
         return new TrafficSignPatternPacket(data, index);
     }
-
+    
     @Override
-    public void handle(TrafficSignPatternPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(TrafficSignPatternPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
             if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
                 final ItemStack stack = menu.patternSlot.getItem();
                 if (!(stack.getItem() instanceof PatternCatalogueItem))
@@ -65,15 +63,10 @@ public class TrafficSignPatternPacket implements IPacketBase<TrafficSignPatternP
                 menu.patternSlot.setChanged();
                 menu.broadcastChanges();
 
-                Utils.giveAdvancement(sender, ModMain.MOD_ID, "create_traffic_sign_pattern", "requirement");
+                DLUtils.giveAdvancement((ServerPlayer)sender, ModMain.MOD_ID, "create_traffic_sign_pattern", "requirement");
 
-                NetworkManager.getInstance().sendToClient(new TrafficSignWorkbenchUpdateClientPacket(), sender);
+                ModMain.net().CHANNEL.sendToPlayer((ServerPlayer)sender, new TrafficSignWorkbenchUpdateClientPacket());
             }
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

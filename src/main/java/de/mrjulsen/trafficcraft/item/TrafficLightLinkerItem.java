@@ -3,16 +3,14 @@ package de.mrjulsen.trafficcraft.item;
 import java.util.List;
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.common.IIterableEnum;
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.core.IIterableEnum;
+import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
-import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
@@ -39,10 +37,10 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
     public static final String NBT_MODE = "Mode";
     public static final String NBT_BLOCK = "Block";
 
-    private static final Component textNoLink = Utils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink").withStyle(ChatFormatting.GRAY);
-    private static final Component textNotLoaded = Utils.translate("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED);
-    private static final Component textClear = Utils.translate("item.trafficcraft.traffic_light_linker.use.clear");
-    private static final Component textTooltipInstruction = Utils.translate("item.trafficcraft.traffic_light_linker.tooltip_instruction").withStyle(ChatFormatting.ITALIC);
+    private static final Component textNoLink = TextUtils.translate("item.trafficcraft.traffic_light_linker.tooltip.nolink").withStyle(ChatFormatting.GRAY);
+    private static final Component textNotLoaded = TextUtils.translate("item.trafficcraft.traffic_light_linker.use.target_not_loaded").withStyle(ChatFormatting.RED);
+    private static final Component textClear = TextUtils.translate("item.trafficcraft.traffic_light_linker.use.clear");
+    private static final Component textTooltipInstruction = TextUtils.translate("item.trafficcraft.traffic_light_linker.tooltip_instruction").withStyle(ChatFormatting.ITALIC);
     private static final String keySet = "item.trafficcraft.traffic_light_linker.use.set";
     private static final String keyWrongDim = "item.trafficcraft.traffic_light_linker.use.wrong_dimension";
     private static final String keySetLink = "item.trafficcraft.traffic_light_linker.use.link";
@@ -70,7 +68,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
                     compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
                     compound.putString(NBT_BLOCK, clickedBlock.getRegistryName().toString());
-                    player.displayClientMessage(Utils.translate(keySet, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.AQUA), true);
+                    player.displayClientMessage(TextUtils.translate(keySet, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.AQUA), true);
                 }
                 return InteractionResult.SUCCESS;
             } else if (isTargetBlockAccepted(clickedBlock)) {                        
@@ -82,19 +80,19 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 LinkerMode mode = LinkerMode.getByIndex(nbt.getInt(NBT_MODE));
                 
                 if (!pContext.getLevel().dimension().location().toString().equals(linkLoc.dimension)) {
-                    player.displayClientMessage(Utils.translate(keyWrongDim).withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(TextUtils.translate(keyWrongDim).withStyle(ChatFormatting.RED), true);
                 }
 
                 if (clickedBlock instanceof TrafficLightRequestButtonBlock && pContext.getLevel().getBlockEntity(clickedPos) instanceof TrafficLightRequestButtonBlockEntity blockEntity) {
                     switch (mode) {
                         case UNLINK:
                             blockEntity.clearLink();
-                            player.displayClientMessage(Utils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
+                            player.displayClientMessage(TextUtils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
                             break;
                         case LINK:
                         default:
                             blockEntity.linkTo(linkLoc);
-                            player.displayClientMessage(Utils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                            player.displayClientMessage(TextUtils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                             break;
                     }
                 } else {                        
@@ -106,12 +104,12 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                             switch (mode) {
                                 case UNLINK:                                
                                     blockEntity.removeTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                                    player.displayClientMessage(Utils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
+                                    player.displayClientMessage(TextUtils.translate(keyRemoveLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.RED), true);
                                     break;
                                 case LINK:
                                 default:
                                     blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
-                                    player.displayClientMessage(Utils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
+                                    player.displayClientMessage(TextUtils.translate(keySetLink, linkLoc.getLocationBlockPos().toShortString(), level.dimension().location()).withStyle(ChatFormatting.GREEN), true);
                                     break;
                             }
                         }
@@ -152,7 +150,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
         CompoundTag tag = null;
         if ((tag = doesContainValidLinkData(pStack)) != null) {
             Location loc = Location.fromNbt(tag.getCompound(NBT_LINK_TARGET));
-            pTooltipComponents.add(Utils.translate(keyTooltipLocation, Integer.toString((int)loc.x), Integer.toString((int)loc.y), Integer.toString((int)loc.z), loc.dimension));            
+            pTooltipComponents.add(TextUtils.translate(keyTooltipLocation, Integer.toString((int)loc.x), Integer.toString((int)loc.y), Integer.toString((int)loc.z), loc.dimension));            
         } else {
             pTooltipComponents.add(textNoLink);
         }
@@ -160,9 +158,9 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
         CompoundTag nbt = pStack.getOrCreateTag();
         LinkerMode mode = LinkerMode.getByIndex(nbt.getInt(NBT_MODE));
         if (nbt.contains(NBT_BLOCK)) {
-            pTooltipComponents.add(Utils.translate(keyTooltipBlock, Registry.BLOCK.get(new ResourceLocation(nbt.getString(NBT_BLOCK))).getName().getString()));
+            pTooltipComponents.add(TextUtils.translate(keyTooltipBlock, Registry.BLOCK.get(new ResourceLocation(nbt.getString(NBT_BLOCK))).getName().getString()));
         }
-        pTooltipComponents.add(Utils.translate(keyTooltipMode, Utils.translate(mode.getValueTranslationKey(ModMain.MOD_ID)), Utils.translate(mode.getValueTranslationKey(ModMain.MOD_ID))));
+        pTooltipComponents.add(TextUtils.translate(keyTooltipMode, TextUtils.translate(mode.getValueTranslationKey(ModMain.MOD_ID)), TextUtils.translate(mode.getValueTranslationKey(ModMain.MOD_ID))));
         pTooltipComponents.add(textTooltipInstruction);
     }
 
@@ -197,8 +195,8 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 mode = LinkerMode.getByIndex(compound.getInt(NBT_MODE)).previous();
             }
             setMode(itemStack, mode);
-            NetworkManager.getInstance().sendToServer(ClientTools.getConnection(), new LinkerModePacket(mode));
-            player.displayClientMessage(Utils.translate(keyTooltipMode, Utils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID)), Utils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID))), true);
+            ModMain.net().CHANNEL.sendToServer(new LinkerModePacket(mode));
+            player.displayClientMessage(TextUtils.translate(keyTooltipMode, TextUtils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID)), TextUtils.translate(LinkerMode.getByIndex(compound.getInt(NBT_MODE)).getValueTranslationKey(ModMain.MOD_ID))), true);
             return true;
         }
         return false;

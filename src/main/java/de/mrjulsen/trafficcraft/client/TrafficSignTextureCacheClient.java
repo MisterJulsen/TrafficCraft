@@ -6,8 +6,9 @@ import java.util.function.Consumer;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.core.IIdentifiable;
+import de.mrjulsen.mcdragonlib.util.ColorUtils;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import net.minecraft.client.Minecraft;
@@ -111,7 +112,7 @@ public class TrafficSignTextureCacheClient {
     }
 
     public static String textureToBase64(NativeImage image)  {
-        return Utils.textureToBase64(image);
+        return DLUtils.textureToBase64(image);
     }
 
     public static <B extends IIdentifiable> int[][] textureToIntArray(B id, boolean flipRgb) {
@@ -120,7 +121,7 @@ public class TrafficSignTextureCacheClient {
         for (int x = 0; x < tex.getPixels().getWidth(); x++) {
             a[x] = new int[tex.getPixels().getHeight()];
             for (int y = 0; y < tex.getPixels().getHeight(); y++) {
-                a[x][y] = flipRgb ? Utils.swapRedBlue(tex.getPixels().getPixelRGBA(x, y)) : tex.getPixels().getPixelRGBA(x, y);
+                a[x][y] = flipRgb ? ColorUtils.swapRedBlue(tex.getPixels().getPixelRGBA(x, y)) : tex.getPixels().getPixelRGBA(x, y);
             }
         }
         return a;

@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -71,15 +71,15 @@ public class BrushItem extends Item {
         
         if (stack.hasTag()) {
             PaintColor paintColor = PaintColor.byId(stack.getTag().getInt(NBT_COLOR));
-            String color = Utils.translate(paintColor.getTranslatableString()).getString();
+            String color = TextUtils.translate(paintColor.getTranslatableString()).getString();
     
-            list.add(Utils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));            
+            list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));            
             if (stack.getTag().getInt(NBT_PAINT) == 0) {
-                list.add(Utils.translate("item.trafficcraft.paint_brush.tooltip.color", Utils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
+                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
             } else {
-                list.add(Utils.translate("item.trafficcraft.paint_brush.tooltip.color", Utils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
+                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
             }
-            list.add(Utils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt(NBT_PAINT))).withStyle(ChatFormatting.GRAY));
+            list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt(NBT_PAINT))).withStyle(ChatFormatting.GRAY));
         }
         
     }

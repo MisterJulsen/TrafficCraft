@@ -3,14 +3,12 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
 
 public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     private String[] messages;
@@ -50,17 +48,12 @@ public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     }
 
     @Override
-    public void handle(WritableSignPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(WritableSignPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
             if (sender.getLevel().getBlockEntity(packet.pos) instanceof WritableTrafficSignBlockEntity blockEntity) {
                 blockEntity.setTexts(packet.messages);
             }
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

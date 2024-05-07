@@ -7,8 +7,8 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.core.IIdentifiable;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
@@ -55,7 +55,7 @@ public class TrafficSignData implements Closeable, IIdentifiable {
     }
 
     public String getName() {
-        return name == null || name.isEmpty() ? Utils.translate("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString(): name;
+        return name == null || name.isEmpty() ? TextUtils.translate("gui.trafficcraft.trafficsignworkbench.pattern.name_unknown").getString(): name;
     }
 
     public void setName(String name) {

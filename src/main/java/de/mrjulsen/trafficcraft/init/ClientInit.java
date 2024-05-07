@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.utils.Wikipedia;
+import de.mrjulsen.mcdragonlib.util.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;

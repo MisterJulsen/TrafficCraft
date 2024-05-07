@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
 public enum TownSignVariant implements StringRepresentable, ITranslatableEnum {

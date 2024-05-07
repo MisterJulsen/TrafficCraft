@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSchedulePacket> {
     private BlockPos pos;
@@ -47,11 +45,11 @@ public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSched
 
         return new TrafficLightSchedulePacket(pos, schedules);
     }
-
+    
     @Override
-    public void handle(TrafficLightSchedulePacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer player = context.get().getSender();
+    public void handle(TrafficLightSchedulePacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player player = contextSupplier.get().getPlayer();
             if (player != null) {
                 Level level = player.getLevel();
                 if (level.isLoaded(packet.pos)) {
@@ -63,10 +61,5 @@ public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSched
                 }
             }
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

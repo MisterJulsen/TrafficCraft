@@ -123,15 +123,15 @@ public class TrafficLightConfigScreen extends CommonScreen {
     private boolean scheduleEnabled = true;
 
     // text    
-    private static final Component textEmpty = Utils.translate("gui.trafficcraft.trafficlight.empty");
-    private static final Component textGeneralSettings = Utils.translate("gui.trafficcraft.trafficlight.general_settings");
-    private static final Component textSetSignal = Utils.translate("gui.trafficcraft.trafficlight.set_signal");
-    private static final Component textAreaTrafficLight = Utils.translate("gui.trafficcraft.trafficlight.edit_traffic_light");
-    private static final Component textCustomizeSchedule = Utils.translate("gui.trafficcraft.trafficlight.edit_schedule");
-    private static final Component textSetEnabledColors = Utils.translate("gui.trafficcraft.trafficlight.set_enabled_colors");
-    private static final Component textSetPhaseId = Utils.translate("gui.trafficcraft.trafficlight.set_phase_id");
-    private static final Component textPhaseIdDescription = Utils.translate("gui.trafficcraft.trafficlight.set_phase_id.description");
-    private static final String textStatus = Utils.translate("gui.trafficcraft.trafficlight.schedule_status").getString();
+    private static final Component textEmpty = TextUtils.translate("gui.trafficcraft.trafficlight.empty");
+    private static final Component textGeneralSettings = TextUtils.translate("gui.trafficcraft.trafficlight.general_settings");
+    private static final Component textSetSignal = TextUtils.translate("gui.trafficcraft.trafficlight.set_signal");
+    private static final Component textAreaTrafficLight = TextUtils.translate("gui.trafficcraft.trafficlight.edit_traffic_light");
+    private static final Component textCustomizeSchedule = TextUtils.translate("gui.trafficcraft.trafficlight.edit_schedule");
+    private static final Component textSetEnabledColors = TextUtils.translate("gui.trafficcraft.trafficlight.set_enabled_colors");
+    private static final Component textSetPhaseId = TextUtils.translate("gui.trafficcraft.trafficlight.set_phase_id");
+    private static final Component textPhaseIdDescription = TextUtils.translate("gui.trafficcraft.trafficlight.set_phase_id.description");
+    private static final String textStatus = TextUtils.translate("gui.trafficcraft.trafficlight.schedule_status").getString();
     private static final String keyAreaTrafficLightSignal = "gui.trafficcraft.trafficlight.edit_signal_";
     
     private static final String keyhelpTrafficLight = "gui.trafficcraft.trafficlight.help.traffic_light";
@@ -140,7 +140,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
     private static final String keyhelpTramTrafficLightDescription = "gui.trafficcraft.trafficlight.helpdesc.traffic_light_tram";
 
     public TrafficLightConfigScreen(Level level, BlockPos pos) {
-        super(Utils.translate("gui.trafficcraft.trafficlight.title"));
+        super(TextUtils.translate("gui.trafficcraft.trafficlight.title"));
         this.level = level;
         this.blockPos = pos;
 
@@ -209,7 +209,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
                 guiTop + 21 + INNER_TOP_PADDING,
                 typeButtonWidth,
                 18,
-                Utils.translate(type.getTranslationKey()),
+                TextUtils.translate(type.getTranslationKey()),
                 (btn) -> {
                     this.type = type;
                     initIconButtons();
@@ -225,7 +225,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             ).withAlignment(Alignment.LEFT));
 
             addTooltip(Tooltip
-                .of(List.of(Utils.translate(type.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(type.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                .of(List.of(TextUtils.translate(type.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), TextUtils.translate(type.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                 .withMaxWidth(width / 4)
                 .assignedTo(b)
             );
@@ -252,7 +252,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             ));
 
             addTooltip(Tooltip
-                .of(List.of(Utils.translate(model.getValueTranslationKey(ModMain.MOD_ID))))
+                .of(List.of(TextUtils.translate(model.getValueTranslationKey(ModMain.MOD_ID))))
                 .withMaxWidth(width / 4)
                 .assignedTo(b)
             );
@@ -310,13 +310,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                         break;
                 }
                 iconTooltips.add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .of(List.of(TextUtils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), TextUtils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, TrafficLightColor.NONE.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {                
                 iconTooltips.add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(icon.getValueTranslationKey(ModMain.MOD_ID))))
+                    .of(List.of(TextUtils.translate(icon.getValueTranslationKey(ModMain.MOD_ID))))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
@@ -333,12 +333,12 @@ public class TrafficLightConfigScreen extends CommonScreen {
 
         if (type == TrafficLightType.TRAM && Locale.getDefault().getLanguage().equals(Constants.GERMAN_LOCAL_CODE)) { // For german players only because that article only exists in germany
             url = Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID;
-            helpTitle = Utils.translate(keyhelpTramTrafficLight).withStyle(ChatFormatting.BOLD);
-            helpDescription.add(Utils.translate(keyhelpTramTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+            helpTitle = TextUtils.translate(keyhelpTramTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(TextUtils.translate(keyhelpTramTrafficLightDescription).withStyle(ChatFormatting.GRAY));
         } else {    
             url = Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID;
-            helpTitle = Utils.translate(keyhelpTrafficLight).withStyle(ChatFormatting.BOLD);
-            helpDescription.add(Utils.translate(keyhelpTrafficLightDescription).withStyle(ChatFormatting.GRAY));
+            helpTitle = TextUtils.translate(keyhelpTrafficLight).withStyle(ChatFormatting.BOLD);
+            helpDescription.add(TextUtils.translate(keyhelpTrafficLightDescription).withStyle(ChatFormatting.GRAY));
         }
 
         HelpButtonComponents data = ModGuiUtils.createHelpButton(
@@ -401,13 +401,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                         break;
                 }
                 colorTooltips.add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .of(List.of(TextUtils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), TextUtils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {
                 colorTooltips.add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                    .of(List.of(TextUtils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), TextUtils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
@@ -438,7 +438,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
             trafficLightLightAreas[i] = new GuiAreaDefinition((int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE);
             
             modelTooltips.add(addTooltip(Tooltip
-                .of(List.of(Utils.translate(keyAreaTrafficLightSignal + i)))
+                .of(List.of(TextUtils.translate(keyAreaTrafficLightSignal + i)))
                 .withMaxWidth(width / 4)
                 .assignedTo(trafficLightLightAreas[i])
             ));
@@ -472,13 +472,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
             ctrlButtonsArea.getTop() + 1,
             ctrlBtnW,                
             ctrlButtonsArea.getHeight() - 2,
-            Utils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)),
+            TextUtils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)),
             (btn) -> {
                 ItemButton ibtn = (ItemButton)btn;
                 controlType = controlType.next();
                 switchControlType(controlType);
                 ibtn.withItem(controlType.getIconStack());
-                btn.setMessage(Utils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)));
+                btn.setMessage(TextUtils.translate(controlType.getValueTranslationKey(ModMain.MOD_ID)));
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
@@ -546,13 +546,13 @@ public class TrafficLightConfigScreen extends CommonScreen {
                         break;
                 }
                 controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), Utils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
+                    .of(List.of(TextUtils.translate(String.format("enum.%s.%s.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.BOLD), TextUtils.translate(String.format("enum.%s.%s.info.%s", ModMain.MOD_ID, color.getEnumName(), signalName)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
             } else {
                 controlTypeTabTooltips.get(TrafficLightControlType.STATIC).add(addTooltip(Tooltip
-                    .of(List.of(Utils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), Utils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
+                    .of(List.of(TextUtils.translate(color.getValueTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.BOLD), TextUtils.translate(color.getValueInfoTranslationKey(ModMain.MOD_ID)).withStyle(ChatFormatting.GRAY)))
                     .withMaxWidth(width / 4)
                     .assignedTo(b)
                 ));
@@ -627,10 +627,10 @@ public class TrafficLightConfigScreen extends CommonScreen {
             ctrlSettingsArea.getTop() + 1 + IconButton.DEFAULT_BUTTON_HEIGHT,
             ctrlSettingsArea.getWidth() - 2,
             IconButton.DEFAULT_BUTTON_HEIGHT,
-            Utils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
+            TextUtils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
             (btn) -> {
                 scheduleEnabled = !scheduleEnabled;
-                btn.setMessage(Utils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
+                btn.setMessage(TextUtils.text(textStatus + ": " + (scheduleEnabled ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
             }
         ));
         controlTypeTabGroups.get(TrafficLightControlType.OWN_SCHEDULE).setVisible(controlType == TrafficLightControlType.OWN_SCHEDULE);
@@ -758,7 +758,7 @@ public class TrafficLightConfigScreen extends CommonScreen {
         DynamicGuiRenderer.renderWindow(pPoseStack, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
         DynamicGuiRenderer.renderArea(pPoseStack, ctrlButtonsArea.getLeft(), ctrlButtonsArea.getTop(), ctrlButtonsArea.getWidth(), ctrlButtonsArea.getHeight(), AreaStyle.GRAY, ButtonState.SUNKEN);
         DynamicGuiRenderer.renderContainerBackground(pPoseStack, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight());
-        font.draw(pPoseStack, Utils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(ModMain.MOD_ID)), ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
+        font.draw(pPoseStack, TextUtils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(ModMain.MOD_ID)), ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, DragonLibConstants.DEFAULT_UI_FONT_COLOR);
 
         // render controltype tab
         switch (controlType) {

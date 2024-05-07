@@ -1,22 +1,20 @@
 package de.mrjulsen.trafficcraft.client;
 
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
-import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
+import de.mrjulsen.mcdragonlib.client.render.Sprite;
+import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.trafficcraft.block.data.IIconEnum;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -24,16 +22,16 @@ import net.minecraft.network.chat.FormattedText;
 
 public class ModGuiUtils {
 
-    public static IconButton createCopyButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
-        return createCopyButton(x, y, IconButton.DEFAULT_BUTTON_WIDTH, IconButton.DEFAULT_BUTTON_HEIGHT, collection, style, onClick);
+    public static DLIconButton createCopyButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<DLIconButton> onClick) {
+        return createCopyButton(x, y, DLIconButton.DEFAULT_BUTTON_WIDTH, DLIconButton.DEFAULT_BUTTON_HEIGHT, collection, style, onClick);
     }
 
-    public static IconButton createPasteButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
-        return createPasteButton(x, y, IconButton.DEFAULT_BUTTON_WIDTH, IconButton.DEFAULT_BUTTON_HEIGHT, collection, style, onClick);
+    public static DLIconButton createPasteButton(int x, int y, WidgetsCollection collection, AreaStyle style, Consumer<DLIconButton> onClick) {
+        return createPasteButton(x, y, DLIconButton.DEFAULT_BUTTON_WIDTH, DLIconButton.DEFAULT_BUTTON_HEIGHT, collection, style, onClick);
     }
 
-    public static IconButton createCopyButton(int x, int y, int width, int height, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
-        return new IconButton(
+    public static DLIconButton createCopyButton(int x, int y, int width, int height, WidgetsCollection collection, AreaStyle style, Consumer<DLIconButton> onClick) {
+        return new DLIconButton(
             ButtonType.DEFAULT,
             style,
             new Sprite(IIconEnum.ICON_TEXTURE_LOCATION, IIconEnum.TEXTURE_SIZE, IIconEnum.TEXTURE_SIZE,
@@ -49,8 +47,8 @@ public class ModGuiUtils {
         );
     }
 
-    public static IconButton createPasteButton(int x, int y, int width, int height, WidgetsCollection collection, AreaStyle style, Consumer<Button> onClick) {
-        return new IconButton(
+    public static DLIconButton createPasteButton(int x, int y, int width, int height, WidgetsCollection collection, AreaStyle style, Consumer<DLIconButton> onClick) {
+        return new DLIconButton(
             ButtonType.DEFAULT,
             style,
             new Sprite(IIconEnum.ICON_TEXTURE_LOCATION, IIconEnum.TEXTURE_SIZE, IIconEnum.TEXTURE_SIZE,
@@ -67,7 +65,7 @@ public class ModGuiUtils {
     }
 
     public static HelpButtonComponents createHelpButton(Screen parent, int x, int y, int width, int height, WidgetsCollection collection, AreaStyle style, String url, Component title, Collection<Component> description) {
-        IconButton btn = new IconButton(
+        DLIconButton btn = new DLIconButton(
             ButtonType.DEFAULT,
             style,
             new Sprite(IIconEnum.ICON_TEXTURE_LOCATION, IIconEnum.TEXTURE_SIZE, IIconEnum.TEXTURE_SIZE,
@@ -92,7 +90,7 @@ public class ModGuiUtils {
         List<FormattedText> list = new ArrayList<>(List.of(title));
         list.addAll(description);
 
-        Tooltip tooltip = Tooltip
+        DLTooltip tooltip = DLTooltip
             .of(list)
             .withMaxWidth(parent.width / 4)
             .assignedTo(btn)
@@ -127,5 +125,5 @@ public class ModGuiUtils {
         }
     }
 
-    public static record HelpButtonComponents(IconButton helpButton, Tooltip tooltip) {}
+    public static record HelpButtonComponents(DLIconButton helpButton, DLTooltip tooltip) {}
 }

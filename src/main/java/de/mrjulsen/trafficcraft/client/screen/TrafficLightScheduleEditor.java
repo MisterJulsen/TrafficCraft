@@ -83,13 +83,13 @@ public class TrafficLightScheduleEditor extends CommonScreen {
     private final TrafficLightSchedule schedule;
 
     //texts
-    private static final Component textStart = Utils.translate("gui.trafficcraft.trafficlightschedule.start");
-    private static final Component textEnd = Utils.translate("gui.trafficcraft.trafficlightschedule.end");
-    private static final Component textAddEntry = Utils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
-    private static final String textLoop = Utils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
+    private static final Component textStart = TextUtils.translate("gui.trafficcraft.trafficlightschedule.start");
+    private static final Component textEnd = TextUtils.translate("gui.trafficcraft.trafficlightschedule.end");
+    private static final Component textAddEntry = TextUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
+    private static final String textLoop = TextUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
 
     protected TrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
-        super(Utils.translate("gui.trafficcraft.trafficlightschedule.title"));
+        super(TextUtils.translate("gui.trafficcraft.trafficlightschedule.title"));
         this.last = last;
         this.pos = pos;
         this.level = level;
@@ -187,12 +187,12 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            Utils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)),
+            TextUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)),
             (btn) -> {
                 ItemButton ibtn = (ItemButton)btn;
                 schedule.setTrigger(schedule.getTrigger().next());
                 ibtn.withItem(schedule.getTrigger().getIconStack());
-                btn.setMessage(Utils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)));
+                btn.setMessage(TextUtils.translate(schedule.getTrigger().getValueTranslationKey(ModMain.MOD_ID)));
             }
         ).withAlignment(Alignment.LEFT).withDefaultItemTooltip(false));
 
@@ -212,10 +212,10 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             areaHeader.getTop() + 1,
             headerW,                
             areaHeader.getHeight() - 2,
-            Utils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
+            TextUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
             (btn) -> {
                 schedule.setLoop(!schedule.isLoop());
-                btn.setMessage(Utils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
+                btn.setMessage(TextUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
             }
         ));
 
@@ -225,7 +225,7 @@ public class TrafficLightScheduleEditor extends CommonScreen {
             guiTop + WINDOW_HEIGHT - PADDING - 20,
             20,
             20,
-            Utils.text("+"),
+            TextUtils.text("+"),
             (btn) -> {
                 createNewEntry();
             },

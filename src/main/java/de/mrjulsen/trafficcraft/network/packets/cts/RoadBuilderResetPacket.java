@@ -2,13 +2,11 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
 
 public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacket> {
     
@@ -21,11 +19,11 @@ public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacke
     public RoadBuilderResetPacket decode(FriendlyByteBuf buffer) {
         return new RoadBuilderResetPacket();
     }
-
+    
     @Override
-    public void handle(RoadBuilderResetPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(RoadBuilderResetPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
 
             if (sender.getMainHandItem().getItem() instanceof RoadConstructionTool) {
                 RoadConstructionTool.reset(sender.getMainHandItem());
@@ -34,10 +32,5 @@ public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacke
             }
             sender.getInventory().setChanged();
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

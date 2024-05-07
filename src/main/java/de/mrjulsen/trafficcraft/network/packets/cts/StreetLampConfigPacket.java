@@ -2,15 +2,13 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
 
 public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacket> {
 
@@ -39,13 +37,13 @@ public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacke
         int turnOffTime = buffer.readInt();
         int timeFormat = buffer.readInt();
 
-        return new StreetLampConfigPacket(turnOnTime, turnOffTime, TimeFormat.getFormatByIndex(timeFormat));
+        return new StreetLampConfigPacket(turnOnTime, turnOffTime, TimeFormat.getFormatByIndex((byte)timeFormat));
     }
-
+    
     @Override
-    public void handle(StreetLampConfigPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(StreetLampConfigPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
 
             if (sender.getMainHandItem().getItem() instanceof StreetLampConfigCardItem) {
                 CompoundTag nbt = sender.getMainHandItem().getOrCreateTag();
@@ -61,10 +59,5 @@ public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacke
             
             sender.getInventory().setChanged();
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }
