@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.network;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;

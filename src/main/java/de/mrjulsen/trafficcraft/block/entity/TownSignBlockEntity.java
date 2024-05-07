@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.joml.Vector2f;
 
+import de.mrjulsen.legacydragonlib.common.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
@@ -11,7 +12,6 @@ import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.WritableSignConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

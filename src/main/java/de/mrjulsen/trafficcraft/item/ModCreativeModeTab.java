@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.registries.Registries;

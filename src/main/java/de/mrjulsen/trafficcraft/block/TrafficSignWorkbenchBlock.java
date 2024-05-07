@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

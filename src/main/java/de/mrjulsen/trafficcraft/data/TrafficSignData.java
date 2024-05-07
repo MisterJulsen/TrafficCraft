@@ -6,9 +6,9 @@ import java.nio.charset.StandardCharsets;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.gui.GuiUtils;
+import de.mrjulsen.legacydragonlib.common.IIdentifiable;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;

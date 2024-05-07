@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;

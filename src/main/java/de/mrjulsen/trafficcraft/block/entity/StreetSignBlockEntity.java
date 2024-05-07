@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import de.mrjulsen.legacydragonlib.common.BlockEntityUtil;
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen.ConfiguredLineData;
@@ -9,7 +10,6 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 
 import org.joml.Vector2f;
 
-import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.client.screen;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.ClientTools;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;

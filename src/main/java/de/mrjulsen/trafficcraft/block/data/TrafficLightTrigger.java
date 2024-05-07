@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.common.IIterableEnum;
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.legacydragonlib.common.IIterableEnum;
+import de.mrjulsen.legacydragonlib.common.ITranslatableEnum;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Items;

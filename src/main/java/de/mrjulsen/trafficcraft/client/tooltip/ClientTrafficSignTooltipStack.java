@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.client.tooltip;
 
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.gui.GuiUtils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;

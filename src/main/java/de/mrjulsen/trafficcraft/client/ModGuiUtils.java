@@ -1,18 +1,17 @@
 package de.mrjulsen.trafficcraft.client;
 
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.legacydragonlib.client.gui.DragonLibTooltip;
+import de.mrjulsen.legacydragonlib.client.gui.Sprite;
+import de.mrjulsen.legacydragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.legacydragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.AbstractImageButton.ButtonType;
 import de.mrjulsen.trafficcraft.block.data.IIconEnum;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;

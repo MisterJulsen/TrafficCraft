@@ -5,14 +5,14 @@ import java.util.Optional;
 
 import com.mojang.blaze3d.platform.InputConstants;
 
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.gui.DragonLibTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.IconButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
-import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.Clipboard;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.gui.DragonLibTooltip;
+import de.mrjulsen.legacydragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.IconButton;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.ResizableCycleButton;
+import de.mrjulsen.legacydragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.legacydragonlib.utils.ClientTools;
+import de.mrjulsen.legacydragonlib.utils.Clipboard;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;

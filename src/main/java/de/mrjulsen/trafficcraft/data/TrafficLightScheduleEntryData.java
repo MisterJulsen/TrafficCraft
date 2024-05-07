@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.DragonLibConstants;
-import de.mrjulsen.mcdragonlib.utils.IClipboardData;
+import de.mrjulsen.legacydragonlib.DragonLibConstants;
+import de.mrjulsen.legacydragonlib.utils.IClipboardData;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

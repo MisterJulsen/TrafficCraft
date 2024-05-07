@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.legacydragonlib.common.IIdentifiable;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
