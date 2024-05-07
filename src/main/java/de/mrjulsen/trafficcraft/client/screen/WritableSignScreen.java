@@ -15,9 +15,9 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.legacydragonlib.utils.ClientTools;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;

@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.client.gui.Sprite;
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
+import de.mrjulsen.legacydragonlib.client.gui.Sprite;
+import de.mrjulsen.legacydragonlib.common.ITranslatableEnum;
 import net.minecraft.util.StringRepresentable;
 
 public enum TrafficLightIcon implements StringRepresentable, ITranslatableEnum, IIconEnum {

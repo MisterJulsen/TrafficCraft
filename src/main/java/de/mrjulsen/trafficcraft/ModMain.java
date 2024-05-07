@@ -36,7 +36,7 @@ public class ModMain {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.addListener(ServerInit::setup);
         eventBus.addListener(ClientInitWrapper::tooltipSetup);
-        eventBus.addListener(ClientInitWrapper::setup);
+        eventBus.addListener(ClientInitWrapper::setup);        
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
         ConfigTracker.INSTANCE.loadConfigs(ModConfig.Type.COMMON, FMLPaths.CONFIGDIR.get());

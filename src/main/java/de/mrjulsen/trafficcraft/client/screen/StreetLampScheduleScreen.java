@@ -2,15 +2,15 @@ package de.mrjulsen.trafficcraft.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.DragonLibConstants;
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableCycleButton;
-import de.mrjulsen.mcdragonlib.client.gui.wrapper.CommonScreen;
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils;
-import de.mrjulsen.mcdragonlib.utils.Utils;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.legacydragonlib.DragonLibConstants;
+import de.mrjulsen.legacydragonlib.client.gui.GuiUtils;
+import de.mrjulsen.legacydragonlib.client.gui.Tooltip;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.ResizableCycleButton;
+import de.mrjulsen.legacydragonlib.client.gui.wrapper.CommonScreen;
+import de.mrjulsen.legacydragonlib.utils.ClientTools;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
 import net.minecraft.network.chat.CommonComponents;

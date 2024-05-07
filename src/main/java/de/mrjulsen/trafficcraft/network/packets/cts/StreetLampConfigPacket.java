@@ -2,9 +2,9 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

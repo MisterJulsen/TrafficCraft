@@ -7,16 +7,16 @@ import java.util.function.Consumer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer;
-import de.mrjulsen.mcdragonlib.client.gui.GuiAreaDefinition;
-import de.mrjulsen.mcdragonlib.client.gui.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.gui.Tooltip;
-import de.mrjulsen.mcdragonlib.client.gui.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.gui.DynamicGuiRenderer.ButtonState;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.ResizableButton;
-import de.mrjulsen.mcdragonlib.utils.Math;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.gui.DynamicGuiRenderer;
+import de.mrjulsen.legacydragonlib.client.gui.GuiAreaDefinition;
+import de.mrjulsen.legacydragonlib.client.gui.GuiUtils;
+import de.mrjulsen.legacydragonlib.client.gui.Tooltip;
+import de.mrjulsen.legacydragonlib.client.gui.WidgetsCollection;
+import de.mrjulsen.legacydragonlib.client.gui.DynamicGuiRenderer.AreaStyle;
+import de.mrjulsen.legacydragonlib.client.gui.DynamicGuiRenderer.ButtonState;
+import de.mrjulsen.legacydragonlib.client.gui.widgets.ResizableButton;
+import de.mrjulsen.legacydragonlib.utils.Math;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;

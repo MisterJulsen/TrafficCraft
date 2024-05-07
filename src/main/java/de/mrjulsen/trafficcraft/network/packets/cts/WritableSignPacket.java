@@ -3,8 +3,8 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.block.entity.WritableTrafficSignBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

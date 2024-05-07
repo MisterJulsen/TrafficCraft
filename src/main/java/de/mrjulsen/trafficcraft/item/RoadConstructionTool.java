@@ -10,9 +10,9 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.utils.StatusResult;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.common.Location;
+import de.mrjulsen.legacydragonlib.utils.StatusResult;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
@@ -154,7 +154,7 @@ public class RoadConstructionTool extends Item {
 
     private static StatusResult isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
-        boolean flag2 = de.mrjulsen.mcdragonlib.utils.Math.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
+        boolean flag2 = de.mrjulsen.legacydragonlib.utils.Math.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
         int status = 0;
 
         if (!flag1) {

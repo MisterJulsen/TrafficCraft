@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.NetworkManager;

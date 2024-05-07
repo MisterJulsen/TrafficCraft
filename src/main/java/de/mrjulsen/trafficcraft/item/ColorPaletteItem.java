@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.client.ColorObject;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.client.ColorObject;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

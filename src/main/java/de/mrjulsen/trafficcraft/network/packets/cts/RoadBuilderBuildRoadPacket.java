@@ -1,13 +1,14 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
+import java.util.Optional;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.ScheduledTask;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.common.Location;
+import de.mrjulsen.legacydragonlib.network.IPacketBase;
+import de.mrjulsen.legacydragonlib.network.NetworkManagerBase;
+import de.mrjulsen.legacydragonlib.utils.ScheduledTask;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
@@ -111,7 +112,12 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                             level.destroyBlock(block.getKey(), !isPlayerCreative(data.player));
                             level.setBlockAndUpdate(block.getKey(), data.roadType.getSlope().defaultBlockState().setValue(AsphaltSlope.LAYERS, Math.min(block.getValue(), isPlayerCreative(data.player) ? Integer.MAX_VALUE : data.player.getInventory().countItem(data.roadType.getSlope().asItem()))));
                             if (!isPlayerCreative(data.player)) {
-                                data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getSlope().asItem())).findFirst().get().shrink(block.getValue());
+                                Optional<ItemStack> stack = data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getSlope().asItem())).findFirst();
+                                if (stack.isPresent()) {
+                                    stack.get().shrink(1);
+                                } else {
+                                    canContinue[0] = false;
+                                }
                                 data.item.hurtAndBreak(1, data.player, (player) -> {
                                     player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                                     canContinue[0] = false;
@@ -121,7 +127,12 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                             level.destroyBlock(block.getKey(), !isPlayerCreative(data.player));
                             level.setBlockAndUpdate(block.getKey(), data.roadType.getBlock().defaultBlockState());
                             if (!isPlayerCreative(data.player)) {
-                                data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getBlock().asItem())).findFirst().get().shrink(1);
+                                Optional<ItemStack> stack = data.player.getInventory().items.stream().filter(x -> x.is(data.roadType.getBlock().asItem())).findFirst();
+                                if (stack.isPresent()) {
+                                    stack.get().shrink(1);
+                                } else {
+                                    canContinue[0] = false;
+                                }
                                 data.item.hurtAndBreak(1, data.player, (player) -> {
                                     player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                                     canContinue[0] = false;

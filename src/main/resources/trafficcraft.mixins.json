@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "package": "de.mrjulsen.legacydragonlib.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "trafficcraft.refmap.json",
+    "plugin": "de.mrjulsen.legacydragonlib.mixin.DragonLibMixinPlugin",
+    "mixins": [
+    ],
+    "client": [
+        "WindowResizeMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "minVersion": "0.8"
+}

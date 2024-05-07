@@ -3,11 +3,11 @@ package de.mrjulsen.trafficcraft.item;
 import java.util.List;
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.common.IIterableEnum;
-import de.mrjulsen.mcdragonlib.common.ITranslatableEnum;
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.utils.ClientTools;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.common.IIterableEnum;
+import de.mrjulsen.legacydragonlib.common.ITranslatableEnum;
+import de.mrjulsen.legacydragonlib.common.Location;
+import de.mrjulsen.legacydragonlib.utils.ClientTools;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;

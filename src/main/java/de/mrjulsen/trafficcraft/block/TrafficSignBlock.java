@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
+import de.mrjulsen.legacydragonlib.common.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;

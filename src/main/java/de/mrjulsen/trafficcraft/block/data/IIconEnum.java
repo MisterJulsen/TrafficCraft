@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import de.mrjulsen.mcdragonlib.client.gui.Sprite;
+import de.mrjulsen.legacydragonlib.client.gui.Sprite;
 import de.mrjulsen.trafficcraft.ModMain;
 import net.minecraft.resources.ResourceLocation;
 
