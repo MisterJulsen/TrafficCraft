@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.init.ClientInit;
 import net.minecraft.client.renderer.texture.DynamicTexture;

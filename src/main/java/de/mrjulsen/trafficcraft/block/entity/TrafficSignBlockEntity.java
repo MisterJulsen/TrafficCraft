@@ -2,12 +2,12 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
+import de.mrjulsen.legacydragonlib.common.BlockEntityUtil;
+import de.mrjulsen.legacydragonlib.common.IIdentifiable;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.network.NetworkManager;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;

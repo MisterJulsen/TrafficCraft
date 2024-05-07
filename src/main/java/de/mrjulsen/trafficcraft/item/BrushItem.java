@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.PaintColor;

@@ -5,14 +5,14 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import de.mrjulsen.mcdragonlib.common.Location;
+import de.mrjulsen.legacydragonlib.common.BlockEntityUtil;
+import de.mrjulsen.legacydragonlib.common.Location;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.mcdragonlib.common.BlockEntityUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

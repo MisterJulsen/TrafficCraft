@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.block.entity;
 
 import javax.annotation.Nullable;
 
-import de.mrjulsen.mcdragonlib.DragonLibConstants;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils;
+import de.mrjulsen.legacydragonlib.DragonLibConstants;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;

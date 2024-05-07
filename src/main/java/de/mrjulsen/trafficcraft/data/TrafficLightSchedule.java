@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.utils.IClipboardData;
+import de.mrjulsen.legacydragonlib.utils.IClipboardData;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import net.minecraft.nbt.CompoundTag;

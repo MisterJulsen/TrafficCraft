@@ -46,7 +46,8 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'parchment', version: "${parchment_version}"
+    //mappings channel: 'parchment', version: "${parchment_version}"
+    mappings channel: 'official', version: "1.18.2"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
@@ -164,10 +165,10 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    jarJar("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}") {
-        jarJar.ranged(it, "[${dragonlib_version}-${minecraft_version},)")
-    }
-    implementation fg.deobf("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}")
+    //jarJar("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}") {
+    //    jarJar.ranged(it, "[${dragonlib_version}-${minecraft_version},)")
+    //}
+    //implementation fg.deobf("curse.maven:dragonlib-${dragonlib_curseforge_projectid}:${dragonlib_curseforge_fileid}")
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

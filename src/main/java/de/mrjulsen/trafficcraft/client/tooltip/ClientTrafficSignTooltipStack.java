@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.client.tooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
 import de.mrjulsen.trafficcraft.client.TrafficSignTextureCacheClient;
 import de.mrjulsen.trafficcraft.data.TrafficSignData;
 import net.minecraft.ChatFormatting;

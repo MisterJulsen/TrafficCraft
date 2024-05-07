@@ -2,13 +2,13 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.List;
 
+import de.mrjulsen.legacydragonlib.utils.TimeUtils;
+import de.mrjulsen.legacydragonlib.utils.Utils;
+import de.mrjulsen.legacydragonlib.utils.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils;
-import de.mrjulsen.mcdragonlib.utils.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

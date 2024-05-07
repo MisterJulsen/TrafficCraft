@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.utils.Wikipedia;
+import de.mrjulsen.legacydragonlib.client.gui.GuiUtils;
+import de.mrjulsen.legacydragonlib.utils.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
@@ -59,6 +60,7 @@ public class ClientInit {
 
     public static void setup(final FMLClientSetupEvent event) {
         
+        GuiUtils.init();
         Wikipedia.addArticle(Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID, Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID);
 
         ItemModelGenerator.LAYERS.add("layer5");
