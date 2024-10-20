@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "trafficcraft",
+  "version": "${version}",
+  "name": "TrafficCraft",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Me!"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "CC0-1.0",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "de.mrjulsen.trafficcraft.fabric.TrafficCraftFabric"
+    ]
+  },
+  "mixins": [
+    "trafficcraft.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "minecraft": "~1.18.2",
+    "java": ">=17",
+    "architectury": ">=4.11.93",
+    "dragonlib": ">=1.18.2-2.2.0",
+    "fabric-api": "*"
+  }
+}

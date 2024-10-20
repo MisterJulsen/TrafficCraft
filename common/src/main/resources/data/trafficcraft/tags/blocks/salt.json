@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "values": [
+        "trafficcraft:salt",
+        "trafficcraft:rock_salt",
+        "trafficcraft:road_salt"
+    ]
+}

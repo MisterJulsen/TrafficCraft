@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RWR",
+        "RWR",
+        "BBB"
+    ],
+    "key": {
+        "R": [
+            {
+                "item": "minecraft:red_dye"
+            }
+        ],
+        "W": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "B": [
+            {
+                "item": "trafficcraft:raw_bitumen"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:road_barrier_fence",
+        "count": 3
+    }
+}
