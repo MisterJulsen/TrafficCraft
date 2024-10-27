@@ -4,9 +4,9 @@ import java.util.Map;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLRenderable;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLScrollableWidgetContainer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLVerticalScrollBar;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.ScrollableWidgetContainer;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.WidgetContainer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLWidgetContainer;
 import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
 import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.ButtonState;
@@ -26,7 +26,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TrafficLightScheduleContainer extends WidgetContainer {
+public class TrafficLightScheduleContainer extends DLWidgetContainer {
     
     public static final int LEFT_PADDING = 8;
     public static final int SPACING = 8;
@@ -81,7 +81,7 @@ public class TrafficLightScheduleContainer extends WidgetContainer {
         return false;
     }
 
-    private static class TrafficLightScheduleInnerContainer extends ScrollableWidgetContainer {
+    private static class TrafficLightScheduleInnerContainer extends DLScrollableWidgetContainer {
 
         private static final Component textStart = TextUtils.translate("gui.trafficcraft.trafficlightschedule.start");
         private static final Component textEnd = TextUtils.translate("gui.trafficcraft.trafficlightschedule.end");

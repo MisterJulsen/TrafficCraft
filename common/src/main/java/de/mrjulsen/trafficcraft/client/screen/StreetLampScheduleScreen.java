@@ -92,7 +92,7 @@ public class StreetLampScheduleScreen extends DLScreen {
     }
 
     private String getTimeSuffix(int value) {        
-        value = value % DragonLib.TICKS_PER_DAY;
+        value = value % (int)DragonLib.ticksPerDay();
         switch (value) {
             case 0:
                 return "gui.trafficcraft.daytime.midnight";                

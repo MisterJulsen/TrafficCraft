@@ -19,7 +19,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     @Deprecated private static final String NBT_MODE = "mode";
 
     public static final int MAX_SECONDS = 999;
-    public static final int MAX_TICKS = MAX_SECONDS * DragonLib.TPS;
+    public static final int MAX_TICKS = MAX_SECONDS * 20;
 
     private List<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private int ticks = 0;
@@ -46,7 +46,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     }
 
     public double getDurationSeconds() {
-        return (double)this.ticks / DragonLib.TPS;
+        return (double)this.ticks / DragonLib.tps();
     }
 
     public int getPhaseId() {
@@ -82,7 +82,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     }
 
     public void setDurationSeconds(double seconds) {
-        this.setDurationTicks((int)(seconds * DragonLib.TPS));
+        this.setDurationTicks((int)(seconds * 20));
     }
 
     public void addDurationTicks(int amount) {
@@ -90,7 +90,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     }
 
     public void addDurationSeconds(int amount) {
-        this.addDurationTicks((int)(amount * DragonLib.TPS));
+        this.addDurationTicks((int)(amount * 20));
     }
 
     public void subDurationTicks(int amount) {
@@ -98,7 +98,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     }
 
     public void subDurationSeconds(int amount) {
-        this.subDurationTicks((int)(amount * DragonLib.TPS));
+        this.subDurationTicks((int)(amount * 20));
     }
 
     public void setPhaseId(int id) {

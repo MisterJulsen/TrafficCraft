@@ -49,7 +49,7 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
             return;
         }
 
-        if (TimeUtils.isInRange((int)(level.getDayTime() % DragonLib.TICKS_PER_DAY), onTimeTicks, offTimeTicks)) {
+        if (TimeUtils.isInRange((int)(level.getDayTime() % DragonLib.ticksPerDay()), onTimeTicks, offTimeTicks)) {
             if (!state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, true));
             }
@@ -73,12 +73,12 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
     }
 
     public void setOnTime(int time) {
-        this.onTimeTicks = Mth.clamp(time, 0, DragonLib.TICKS_PER_DAY - 1);
+        this.onTimeTicks = Mth.clamp(time, 0, (int)DragonLib.ticksPerDay() - 1);
         notifyUpdate();
     }
 
     public void setOffTime(int time) {
-        this.offTimeTicks = Mth.clamp(time, 0, DragonLib.TICKS_PER_DAY - 1);
+        this.offTimeTicks = Mth.clamp(time, 0, (int)DragonLib.ticksPerDay() - 1);
         notifyUpdate();
     }
 }
