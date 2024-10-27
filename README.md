@@ -29,8 +29,3 @@ _Below is the content currently included in the mod. This list is not complete a
 
 ## ⚠️ **Please note!**
 To protect your world from damage, you should always create a backup of your world before installing an update of this mod. Alpha versions in particular may contain critical bugs!
-
-## 🧩 **Dependencies**
-This mod uses **DragonLib** as a library mod that contains useful code shared accross all my mods. DragonLib is embedded in all builds of TrafficCraft since version `0.6.0-beta-1.18.2`, so you don't need to install DragonLib manually. If you are developer and are interested in this library you can find more information about it on [GitHub](https://github.com/MisterJulsen/MC-DragonLib "DragonLib on GitHub").
-
-[![DragonLib](https://i.imgur.com/4d8BF5J.png)](https://github.com/MisterJulsen/MC-DragonLib "DragonLib on GitHub")
