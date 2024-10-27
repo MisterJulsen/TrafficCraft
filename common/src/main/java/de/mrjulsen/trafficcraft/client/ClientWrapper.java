@@ -16,8 +16,10 @@ import de.mrjulsen.trafficcraft.client.screen.TrafficLightControllerScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.data.PaintColor;
+import de.mrjulsen.trafficcraft.init.ClientInit;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -70,5 +72,14 @@ public class ClientWrapper {
 
     public static void showRoadConstructionToolScreen(ItemStack itemstack, int blocksCount, int slopesCount) {
         Minecraft.getInstance().setScreen(new RoadConstructionToolScreen(itemstack, blocksCount, slopesCount));
+    }
+
+    
+	public static DynamicTexture getShapeTexture(int index) {
+		return ClientInit.SHAPE_TEXTURES[index];
+	}
+
+    public static int getShapeTextureId(int index) {
+        return getShapeTexture(index).getId();
     }
 }

@@ -35,6 +35,8 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import dev.architectury.networking.NetworkChannel;
+import dev.architectury.platform.Platform;
+import net.fabricmc.api.EnvType;
 
 public final class TrafficCraft {
     public static final String MOD_ID = "trafficcraft";
@@ -45,14 +47,16 @@ public final class TrafficCraft {
 
     public static void init() {
         ServerInit.init();
-        ClientInitWrapper.init();
+        if (Platform.getEnv() == EnvType.CLIENT) {
+            ClientInitWrapper.init();
+            AgingManager.init();
+        }
 
         ModBlocks.register();
         ModItems.register();
         ModBlockEntities.register();
         ModMenuTypes.register();
         ModAccessorTypes.init();
-        AgingManager.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
 

@@ -4,8 +4,7 @@ import java.util.stream.IntStream;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.init.ClientInit;
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -66,12 +65,8 @@ public enum TrafficSignShape implements StringRepresentable {
 		return TrafficSignShape.CIRCLE;
 	}
 
-	public DynamicTexture getShapeTexture() {
-		return ClientInit.SHAPE_TEXTURES[this.getIndex()];
-	}
-
 	public int getShapeTextureId() {
-		return this.getShapeTexture().getId();
+		return ClientWrapper.getShapeTextureId(getIndex());
 	}
 
 	public final ResourceLocation getIconResourceLocation() {

@@ -19,6 +19,8 @@ import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -301,6 +303,7 @@ public class RoadConstructionTool extends Item {
     }
 
     @SuppressWarnings("resource")
+    @Environment(EnvType.CLIENT)
 	public static void clientTick() {
         clientTicks++;
         if (clientTicks > (Minecraft.useFancyGraphics() ? FANCY_GRAPHICS_CLIENT_TICK_DELAY : FAST_GRAPHICS_CLIENT_TICK_DELAY)) {

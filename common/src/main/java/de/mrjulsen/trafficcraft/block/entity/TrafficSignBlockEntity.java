@@ -3,8 +3,6 @@ package de.mrjulsen.trafficcraft.block.entity;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.codec.binary.Base64;
-
 import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
@@ -23,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class TrafficSignBlockEntity extends SyncedBlockEntity {
 
     private static final String NBT_LEGACY_TEXTURE = "texture";
-    private static final String NBT_TEXTURE = "Texture";
+    private static final String NBT_TEXTURE = "SignTexture";
 
     private String textureId;
     private TrafficSignClientTexture texture;
@@ -55,8 +53,9 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
                 try { TimeUnit.SECONDS.sleep(1); } catch (InterruptedException e) { }
             }
             if (getLevel().isClientSide) return;
+            
             BlockState state = getLevel().getBlockState(getBlockPos());
-            TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), Base64.decodeBase64(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
+            TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), java.util.Base64.getDecoder().decode(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
             data.save();
             setTextureId(data.getHash().toString());
         }, "Traffic Sign Migration").start();
