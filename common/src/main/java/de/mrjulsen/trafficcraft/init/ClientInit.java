@@ -111,7 +111,6 @@ public class ClientInit {
             CrossPlatform.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
             CrossPlatform.setRenderLayer(ModBlocks.TRAFFIC_SIGN_WORKBENCH.get(), RenderType.cutout());
             CrossPlatform.setRenderLayer(ModBlocks.ROAD_SALT.get(), RenderType.translucent());
-            CrossPlatform.setRenderLayer(ModBlocks.ROCK_SALT_LAMP.get(), RenderType.translucent());
 
             for (RegistrySupplier<Block> block : ModBlocks.COLORED_BLOCKS) {
                 if (block.getId().toString().contains("pattern")) {

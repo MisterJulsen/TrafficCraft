@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ModCreativeModeTab {
 
-    public static final CreativeModeTab MOD_TAB = CreativeTabRegistry.create(new ResourceLocation(TrafficCraft.MOD_ID, "trafficcrafttab"), () -> new ItemStack(ModBlocks.TRAFFIC_CONE.get()));
+    public static final CreativeModeTab MOD_TAB = CreativeTabRegistry.create(new ResourceLocation(TrafficCraft.MOD_ID, "trafficcrafttab"), () -> new ItemStack(ModBlocks.TRAFFIC_LIGHT.get()));
     public static void init() { } 
 
 }

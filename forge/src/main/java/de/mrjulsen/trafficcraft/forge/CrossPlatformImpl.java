@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.forge;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import de.mrjulsen.trafficcraft.config.ModServerConfig;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +15,6 @@ public final class CrossPlatformImpl {
     }
 
     public static void registerConfig() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, TrafficCraft.MOD_ID + "-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ModServerConfig.SPEC, TrafficCraft.MOD_ID + "-server.toml");
     }
 }

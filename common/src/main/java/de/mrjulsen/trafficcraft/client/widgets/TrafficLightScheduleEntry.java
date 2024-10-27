@@ -14,7 +14,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.DLContextMenuItem.ContextMenuI
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLNumberSelector;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.WidgetContainer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.DLWidgetContainer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
 import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
 import de.mrjulsen.mcdragonlib.client.render.Sprite;
@@ -36,7 +36,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class TrafficLightScheduleEntry extends WidgetContainer {
+public class TrafficLightScheduleEntry extends DLWidgetContainer {
 
     private static final int LEFT_PADDING = TrafficLightScheduleContainer.LEFT_PADDING;
     private static final int TIMELINE_WIDTH = TrafficLightScheduleContainer.TIMELINE_WIDTH;

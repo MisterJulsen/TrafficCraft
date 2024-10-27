@@ -7,7 +7,7 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.core.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
-import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import de.mrjulsen.trafficcraft.config.ModServerConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -103,12 +103,12 @@ public class RoadSaltBlock extends BaseEntityBlock {
         if (!pLevel.isClientSide) {
             return (level, pos, state, blockEntity) -> {
                 int randTicks = level.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).get();
-                if (randTicks <= 0 || level.getRandom().nextInt(ModCommonConfig.ROAD_SALT_SPEED.get() * GameRules.DEFAULT_RANDOM_TICK_SPEED * (pState.getValue(QUALITY).getIndex() + 1) / randTicks) != 0) {
+                if (randTicks <= 0 || level.getRandom().nextInt(ModServerConfig.ROAD_SALT_SPEED.get() * GameRules.DEFAULT_RANDOM_TICK_SPEED * (pState.getValue(QUALITY).getIndex() + 1) / randTicks) != 0) {
                     return;
                 }                
         
                 List<BlockPos> blocks = new ArrayList<>();
-                BlockPos.betweenClosed(pos.offset(-ModCommonConfig.ROAD_SALT_RANGE.get(), -ModCommonConfig.ROAD_SALT_RANGE.get(), -ModCommonConfig.ROAD_SALT_RANGE.get()), pos.offset(ModCommonConfig.ROAD_SALT_RANGE.get(), 1, ModCommonConfig.ROAD_SALT_RANGE.get())).iterator().forEachRemaining(a -> {
+                BlockPos.betweenClosed(pos.offset(-ModServerConfig.ROAD_SALT_RANGE.get(), -ModServerConfig.ROAD_SALT_RANGE.get(), -ModServerConfig.ROAD_SALT_RANGE.get()), pos.offset(ModServerConfig.ROAD_SALT_RANGE.get(), 1, ModServerConfig.ROAD_SALT_RANGE.get())).iterator().forEachRemaining(a -> {
                     blocks.add(new BlockPos(a));
                 });
                 Collections.shuffle(blocks);
@@ -117,14 +117,14 @@ public class RoadSaltBlock extends BaseEntityBlock {
                 do {
                     BlockPos blockpos = iterator.next();
 
-                    if (blockpos.distManhattan(pos) > ModCommonConfig.ROAD_SALT_RANGE.get()) {
+                    if (blockpos.distManhattan(pos) > ModServerConfig.ROAD_SALT_RANGE.get()) {
                         continue;
                     }
 
                     if (level.getBlockState(blockpos).is(Blocks.SNOW) || level.getBlockState(blockpos).is(Blocks.ICE)) {                        
                         Block.dropResources(state, level, blockpos);
                         level.removeBlock(blockpos, false);
-                        if (ModCommonConfig.ROAD_SALT_PRESERVATION.get() >= 0 && level.getRandom().nextInt(ModCommonConfig.ROAD_SALT_PRESERVATION.get() * (pState.getValue(QUALITY).getIndex() + 1)) == 0) {
+                        if (ModServerConfig.ROAD_SALT_PRESERVATION.get() >= 0 && level.getRandom().nextInt(ModServerConfig.ROAD_SALT_PRESERVATION.get() * (pState.getValue(QUALITY).getIndex() + 1)) == 0) {
                             RoadSaltQuality quality = level.getBlockState(pos).getValue(QUALITY).next();
                             if (quality.getIndex() == 0) {
                                 level.removeBlock(pos, false);
