@@ -1,17 +1,19 @@
 modLoader = "javafml"
 loaderVersion = "[40,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/MisterJulsen/TrafficCraft/issues"
+license = "GNU General Public License v3.0"
 
 [[mods]]
 modId = "trafficcraft"
 version = "${version}"
 displayName = "TrafficCraft"
-authors = "Me!"
+displayUrl="https://www.curseforge.com/minecraft/mc-mods/trafficcraft"
+authors = "MrJulsen"
+credits="This mod is inspired by Mapper's RoadStuff mod."
 description = '''
-This is an example description! Tell everyone what your mod is about!
+A Minecraft mod that brings roads, traffic signs, traffic lights and much more to your Minecraft world. Build your own cities and roads according to your wishes. Feel free to join my Discord server for more information about my mods or to send bug reports, suggestions or to exchange with the community! https://discord.gg/AeSbNgvc7f
 '''
-#logoFile = ""
+logoFile = "mod_icon.png"
 
 [[dependencies.trafficcraft]]
 modId = "forge"
@@ -28,8 +30,8 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.trafficcraft]]
-modId = "architectury"
+modId = "dragonlib"
 mandatory = true
-versionRange = "[4.12.94,)"
+versionRange = "[1.18.2-2.2.19,)"
 ordering = "AFTER"
 side = "BOTH"

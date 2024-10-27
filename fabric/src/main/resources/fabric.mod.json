@@ -3,16 +3,17 @@
   "id": "trafficcraft",
   "version": "${version}",
   "name": "TrafficCraft",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "A Minecraft mod that brings roads, traffic signs, traffic lights and much more to your Minecraft world. Build your own cities and roads according to your wishes. Feel free to join my Discord server for more information about my mods or to send bug reports, suggestions or to exchange with the community! https://discord.gg/AeSbNgvc7f",
   "authors": [
-    "Me!"
+    "MrJulsen"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft",
+    "issues": "https://github.com/MisterJulsen/TrafficCraft/issues",
+    "sources": "https://github.com/MisterJulsen/TrafficCraft"
   },
-  "license": "CC0-1.0",
-  "icon": "icon.png",
+  "license": "GNU General Public License v3.0",
+  "icon": "mod_icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -26,8 +27,8 @@
     "fabricloader": ">=0.15.11",
     "minecraft": "~1.18.2",
     "java": ">=17",
-    "architectury": ">=4.11.93",
-    "dragonlib": ">=1.18.2-2.2.0",
+    "dragonlib": ">=1.18.2-2.2.19",
     "fabric-api": "*"
-  }
+  },
+  "accessWidener": "trafficcraft.accesswidener"
 }
