@@ -11,16 +11,18 @@ import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.level.biome.Biome.BiomeCategory;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
@@ -51,10 +53,12 @@ public class ModWorldEvents {
         Feature.ORE, new OreConfiguration(OVERWORLD_ROCK_SALT, 64));
     */
 
+
     public static final Holder<ConfiguredFeature<DiskConfiguration, ?>> SALT = FeatureUtils.register(TrafficCraft.MOD_ID + ":salt",
-        Feature.DISK, new DiskConfiguration(ModBlocks.SALT.get().defaultBlockState(), UniformInt.of(ModCommonConfig.WORLD_SALT_DISK_MIN_RADIUS.get(), ModCommonConfig.WORLD_SALT_DISK_MAX_RADIUS.get()), ModCommonConfig.WORLD_SALT_DISK_HALF_HEIGHT.get(), List.of(Blocks.GRAVEL.defaultBlockState(), Blocks.SAND.defaultBlockState())));
+        Feature.DISK, new DiskConfiguration(RuleBasedBlockStateProvider.simple(ModBlocks.SALT.get()), BlockPredicate.matchesBlocks(List.of(Blocks.GRAVEL, Blocks.SAND)), UniformInt.of(ModCommonConfig.WORLD_SALT_DISK_MIN_RADIUS.get(), ModCommonConfig.WORLD_SALT_DISK_MAX_RADIUS.get()), ModCommonConfig.WORLD_SALT_DISK_HALF_HEIGHT.get()));
 
     public static void init() {
+        
            
         MutableSingle<Holder<PlacedFeature>> bitumenOrePlacedFeature = new MutableSingle<Holder<PlacedFeature>>(null);
         if (ModCommonConfig.BITUMEN_GENERATION.get()) { 
@@ -99,8 +103,8 @@ public class ModWorldEvents {
         BiomeModifications.addProperties((ctx, mutable) -> {
             if (ModCommonConfig.BITUMEN_GENERATION.get() && bitumenOrePlacedFeature.getFirst() != null) { 
                 mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bitumenOrePlacedFeature.getFirst());
-            }
-            if (ModCommonConfig.SALT_GENERATION.get() && ctx.getProperties().getCategory() == BiomeCategory.OCEAN && saltDiskPlacedFeature.getFirst() != null) {                
+            }            
+            if (ModCommonConfig.SALT_GENERATION.get() && ctx.hasTag(BiomeTags.IS_OCEAN) && saltDiskPlacedFeature.getFirst() != null) {                
                 mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, saltDiskPlacedFeature.getFirst());
             }
             //mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rockSaltOrePlacedFeature);            

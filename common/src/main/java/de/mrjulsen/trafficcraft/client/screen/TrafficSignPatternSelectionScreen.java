@@ -173,10 +173,10 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
                 int a = 1;
                 ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
                 List<TrafficSignTextureMetadata> locs = new ArrayList<>();
-                while (Minecraft.getInstance().getResourceManager().hasResource(path)) {
+                while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
                     short width = 32;
                     short height = 32;
-                    try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(path).getInputStream())) {
+                    try (NativeImage img = NativeImage.read(this.minecraft.getResourceManager().getResource(path).get().open())) {
                         width = (short)img.getWidth();
                         height = (short)img.getHeight();
                     } catch (IOException e) {

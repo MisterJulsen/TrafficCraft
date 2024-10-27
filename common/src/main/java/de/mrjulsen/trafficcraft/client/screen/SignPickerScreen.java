@@ -80,7 +80,7 @@ public class SignPickerScreen extends DLScreen {
         int i = 1;
         ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
         List<ResourceLocation> locs = new ArrayList<>();
-        while (Minecraft.getInstance().getResourceManager().hasResource(path)) {
+        while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
             locs.add(path);
             i++;
             path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
@@ -167,7 +167,7 @@ public class SignPickerScreen extends DLScreen {
                 }
 
                 try {
-                    preview = new DynamicTexture(NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).getInputStream()));
+                    preview = new DynamicTexture(NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).get().open()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

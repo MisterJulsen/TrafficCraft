@@ -26,6 +26,7 @@ public class ModCommonConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_PRESERVATION;
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_RANGE;
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_SPEED;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ROAD_SALT_DAMAGE;
 
     static {
         BUILDER.push(TrafficCraft.MOD_ID + "_common_config");
@@ -44,13 +45,13 @@ public class ModCommonConfig {
         
         SALT_GENERATION = BUILDER.comment("Whether salt should generate in the world or not. (Default: ON)")
             .define("world_generation.salt.enabled", true);
-        WORLD_SALT_DISK_MIN_RADIUS = BUILDER.comment("Min generation height for bitumen ore. (Default: 5)")
+        WORLD_SALT_DISK_MIN_RADIUS = BUILDER.comment("Min generation radius for salt. (Default: 5)")
             .define("world_generation.salt.disk_min_radius", 5);
-        WORLD_SALT_DISK_MAX_RADIUS = BUILDER.comment("Max generation height for bitumen ore. (Default: 8)")
+        WORLD_SALT_DISK_MAX_RADIUS = BUILDER.comment("Max generation radius for salt. (Default: 8)")
             .define("world_generation.salt.disk_max_radius", 8);
-        WORLD_SALT_DISK_HALF_HEIGHT = BUILDER.comment("How common bitumen ore will be generated in each chunk. (Default: 1)")
+        WORLD_SALT_DISK_HALF_HEIGHT = BUILDER.comment("Half height of each salt disk. (Default: 1)")
             .define("world_generation.salt.disk_half_height", 1);
-        WORLD_SALT_RARITY = BUILDER.comment("Max size of bitumen ore veins. (Default: 25)")
+        WORLD_SALT_RARITY = BUILDER.comment("Max size of salt disks. (Default: 25)")
             .define("world_generation.salt.rarity", 15);
             
 
@@ -69,7 +70,9 @@ public class ModCommonConfig {
         ROAD_SALT_RANGE = BUILDER.comment("The range of road salt in which snow melts. (Default: 3)")
             .defineInRange("gameplay.road_salt.range", 3, 1, 8);
         ROAD_SALT_SPEED = BUILDER.comment("The base speed of the road salt. (Default: 100)")
-            .defineInRange("gameplay.road_salt.speed", 100, 1, Short.MAX_VALUE);
+            .defineInRange("gameplay.road_salt.speed", 100, 1, Short.MAX_VALUE);            
+        ROAD_SALT_DAMAGE = BUILDER.comment("Whether road salt should damage the environment. (Default: ON)")
+            .define("gameplay.road_salt.enable_environmental_damage", true);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

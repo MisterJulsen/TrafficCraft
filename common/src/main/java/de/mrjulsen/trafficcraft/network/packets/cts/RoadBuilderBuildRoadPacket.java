@@ -24,7 +24,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
 public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildRoadPacket> {
 
@@ -151,9 +151,9 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
         }
 
         if (context.iteration() >= data.blocks.size() - 1) {
-            if (context.level().dimension().location().equals(DimensionType.NETHER_LOCATION.location())) {
+            if (context.level().dimension().location().equals(BuiltinDimensionTypes.NETHER.location())) {
                 DLUtils.giveAdvancement((ServerPlayer)data.player, TrafficCraft.MOD_ID, "highway_to_hell", "req");
-            } else if (context.level().dimension().location().equals(DimensionType.END_LOCATION.location())) {
+            } else if (context.level().dimension().location().equals(BuiltinDimensionTypes.END.location())) {
                 DLUtils.giveAdvancement((ServerPlayer)data.player, TrafficCraft.MOD_ID, "final_destination", "req");
             }
         }

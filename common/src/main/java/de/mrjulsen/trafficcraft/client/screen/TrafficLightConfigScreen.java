@@ -749,7 +749,7 @@ public class TrafficLightConfigScreen extends DLScreen {
         // render controlling window
         DynamicGuiRenderer.renderWindow(graphics, ctrlWindowArea.getLeft(), ctrlWindowArea.getTop(), ctrlWindowArea.getWidth(), ctrlWindowArea.getHeight());
         DynamicGuiRenderer.renderArea(graphics, ctrlButtonsArea.getLeft(), ctrlButtonsArea.getTop(), ctrlButtonsArea.getWidth(), ctrlButtonsArea.getHeight(), AreaStyle.GRAY, ButtonState.DOWN);
-        DynamicGuiRenderer.renderContainerBackground(graphics, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight());
+        DynamicGuiRenderer.renderContainerBackground(graphics, ctrlSettingsArea.getLeft(), ctrlSettingsArea.getTop(), ctrlSettingsArea.getWidth(), ctrlSettingsArea.getHeight(), DynamicGuiRenderer.CONTAINER_BACKGROUND_COLOR);
         GuiUtils.drawString(graphics, font, ctrlWindowArea.getLeft() + INNER_PADDING, ctrlWindowArea.getTop() + 7, TextUtils.translate(TrafficLightControlType.STATIC.getEnumTranslationKey(TrafficCraft.MOD_ID)), DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
 
         // render controltype tab

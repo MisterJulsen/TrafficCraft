@@ -57,7 +57,7 @@ public class HammerItem extends DiggerItem {
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {        
         ItemStack container = stack.copy();
-        if (container.hurt(1, Constants.RANDOM, null))
+        if (container.hurt(1, Constants.RANDOM_SOURCE, null))
             return ItemStack.EMPTY;
         else
             return container;

@@ -63,8 +63,8 @@ public class TrafficLightScheduleContainer extends DLWidgetContainer {
     }
 
     @Override
-    public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-        DynamicGuiRenderer.renderContainerBackground(graphics, area);
+    public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {        
+        DynamicGuiRenderer.renderContainerBackground(graphics, area, DynamicGuiRenderer.CONTAINER_BACKGROUND_COLOR);
         super.renderMainLayer(graphics, mouseX, mouseY, partialTicks);
     }
 

@@ -44,7 +44,7 @@ public class RoadSaltBlock extends BaseEntityBlock {
             .instabreak()
             .noOcclusion()
             .noCollission()
-            .noDrops()
+            .noLootTable()
             .sound(SoundType.GRAVEL)
         );
 
@@ -133,19 +133,21 @@ public class RoadSaltBlock extends BaseEntityBlock {
                             }
                         } 
                         return;
-                    } else if (level.getBlockState(blockpos).is(BlockTags.DIRT) && !level.getBlockState(blockpos).is(Blocks.COARSE_DIRT)) {
-                        level.setBlockAndUpdate(blockpos, Blocks.COARSE_DIRT.defaultBlockState());
-                        return;
-                    } else if (
-                            level.getBlockState(blockpos).is(BlockTags.SMALL_FLOWERS) ||
-                            level.getBlockState(blockpos).is(BlockTags.CROPS) ||
-                            level.getBlockState(blockpos).is(BlockTags.REPLACEABLE_PLANTS)
-                    ) {
-                        level.removeBlock(blockpos, false);
-                        return;
-                    } else if (!level.getBlockState(blockpos).is(Blocks.DEAD_BUSH) && level.getBlockState(blockpos).is(BlockTags.SAPLINGS)) {
-                        level.setBlockAndUpdate(blockpos, Blocks.DEAD_BUSH.defaultBlockState());
-                        return;
+                    } else if (ModCommonConfig.ROAD_SALT_DAMAGE.get()) {
+                        if (level.getBlockState(blockpos).is(BlockTags.DIRT) && !level.getBlockState(blockpos).is(Blocks.COARSE_DIRT)) {
+                            level.setBlockAndUpdate(blockpos, Blocks.COARSE_DIRT.defaultBlockState());
+                            return;
+                        } else if (
+                                level.getBlockState(blockpos).is(BlockTags.SMALL_FLOWERS) ||
+                                level.getBlockState(blockpos).is(BlockTags.CROPS) ||
+                                level.getBlockState(blockpos).is(BlockTags.REPLACEABLE_PLANTS)
+                        ) {
+                            level.removeBlock(blockpos, false);
+                            return;
+                        } else if (!level.getBlockState(blockpos).is(Blocks.DEAD_BUSH) && level.getBlockState(blockpos).is(BlockTags.SAPLINGS)) {
+                            level.setBlockAndUpdate(blockpos, Blocks.DEAD_BUSH.defaultBlockState());
+                            return;
+                        }
                     }
                 } while (iterator.hasNext());                
             };

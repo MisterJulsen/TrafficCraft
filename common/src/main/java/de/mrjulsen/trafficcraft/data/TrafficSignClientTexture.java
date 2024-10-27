@@ -93,7 +93,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
             if (isBuiltIn()) {
                 BuildInTrafficSignCodec codec = BuildInTrafficSignCodec.decode(textureId);
                 idSuffix = "" + codec.id() + "_bg";
-                originalTexture = new DynamicTexture(NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(getTextureLocation()).getInputStream()));
+                originalTexture = new DynamicTexture(NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(getTextureLocation()).get().open()));
             } else {
                 idSuffix = "_bg";
                 originalTexture = texture;
@@ -102,7 +102,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
             if (originalTexture == null || originalTexture == EMPTY_TEXTURE) {
                 return;
             }
-            NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).getInputStream());            
+            NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).get().open());            
             final int width = Math.min(bg.getWidth(), TrafficSignShape.MAX_WIDTH);
             final int height = Math.min(bg.getHeight(), TrafficSignShape.MAX_HEIGHT);
             for (int x = 0; x < width; x++) {

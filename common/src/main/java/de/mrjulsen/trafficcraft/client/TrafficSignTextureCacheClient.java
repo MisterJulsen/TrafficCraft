@@ -25,7 +25,7 @@ public class TrafficSignTextureCacheClient {
     
         if (texture != null && hasBg) {
             try {
-                NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).getInputStream());
+                NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).get().open());
                 for (int x = 0; x < TrafficSignShape.MAX_WIDTH; x++) {
                     for (int y = 0; y < TrafficSignShape.MAX_HEIGHT; y++) {
                         if (texture.getPixels().getPixelRGBA(x, y) != 0)
