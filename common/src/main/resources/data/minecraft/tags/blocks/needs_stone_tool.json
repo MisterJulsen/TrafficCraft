@@ -1309,8 +1309,6 @@
     "trafficcraft:asphalt_curb_slope",
     "trafficcraft:concrete_curb",
     "trafficcraft:concrete_curb_slope",
-    "trafficcraft:rock_salt",
-    "trafficcraft:salt",
-    "trafficcraft:rock_salt_lamp"
+    "trafficcraft:salt"
   ]
 }

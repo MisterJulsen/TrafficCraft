@@ -1,7 +1,7 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"base": "block/anvil",
+		"base": "trafficcraft:block/anvil",
 		"back": "trafficcraft:block/traffic_light/background",
 		"front": "trafficcraft:block/traffic_light/front",
 		"particle": "trafficcraft:block/sign",

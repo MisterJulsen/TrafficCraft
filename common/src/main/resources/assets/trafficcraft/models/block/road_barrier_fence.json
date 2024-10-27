@@ -2,10 +2,10 @@
 	"credit": "Made with Blockbench",
 	"render_type": "cutout",
 	"textures": {
-		"0": "block/anvil",
+		"0": "trafficcraft:block/anvil",
 		"2": "trafficcraft:block/sign_blank",
 		"3": "block/white_concrete",
-		"particle": "block/anvil"
+		"particle": "trafficcraft:block/anvil"
 	},
 	"elements": [
 		{

@@ -1323,8 +1323,6 @@
     "trafficcraft:house_number_sign",
     "trafficcraft:street_light",
     "trafficcraft:fluorescent_tube_lamp",
-    "trafficcraft:rock_salt",
-    "trafficcraft:salt",
-    "trafficcraft:rock_salt_lamp"
+    "trafficcraft:salt"
   ]
 }
