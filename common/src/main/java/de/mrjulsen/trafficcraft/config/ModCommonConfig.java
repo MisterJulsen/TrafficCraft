@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.config;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ModServerConfig {
+public class ModCommonConfig {
         public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
@@ -28,7 +28,7 @@ public class ModServerConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_SPEED;
 
     static {
-        BUILDER.push(TrafficCraft.MOD_ID + "_server_config");
+        BUILDER.push(TrafficCraft.MOD_ID + "_common_config");
         
         BITUMEN_GENERATION = BUILDER.comment("Whether bitumen ore should generate in the world or not. (Default: ON)")
             .define("world_generation.bitumen.enabled", true);

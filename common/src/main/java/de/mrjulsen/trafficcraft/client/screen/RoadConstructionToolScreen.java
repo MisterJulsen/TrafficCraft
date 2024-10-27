@@ -20,7 +20,7 @@ import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
-import de.mrjulsen.trafficcraft.config.ModServerConfig;
+import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
@@ -159,7 +159,7 @@ public class RoadConstructionToolScreen extends DLScreen {
             }
         }, DLTooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
 
-        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, TextUtils.text(""), 1, ModServerConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
+        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, TextUtils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
         (slider, value) -> {
             roadWidth = value.byteValue();
             if (pos1 != null && pos2 != null) {

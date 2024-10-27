@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.data.Single.MutableSingle;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.config.ModServerConfig;
+import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import dev.architectury.registry.level.biome.BiomeModifications;
 import net.minecraft.core.Holder;
@@ -44,7 +44,7 @@ public class ModWorldEvents {
 
 
     public static final Holder<ConfiguredFeature<OreConfiguration, ?>> BITUMEN_ORE = FeatureUtils.register(TrafficCraft.MOD_ID + ":bitumen_ore",
-        Feature.ORE, new OreConfiguration(OVERWORLD_BITUMEN_ORES, ModServerConfig.WORLD_BITUMEN_VEIN_SIZE.get()));
+        Feature.ORE, new OreConfiguration(OVERWORLD_BITUMEN_ORES, ModCommonConfig.WORLD_BITUMEN_VEIN_SIZE.get()));
     
     /* 
     public static final Holder<ConfiguredFeature<OreConfiguration, ?>> ROCK_SALT = FeatureUtils.register(TrafficCraft.MOD_ID + ":rock_salt",
@@ -52,31 +52,31 @@ public class ModWorldEvents {
     */
 
     public static final Holder<ConfiguredFeature<DiskConfiguration, ?>> SALT = FeatureUtils.register(TrafficCraft.MOD_ID + ":salt",
-        Feature.DISK, new DiskConfiguration(ModBlocks.SALT.get().defaultBlockState(), UniformInt.of(ModServerConfig.WORLD_SALT_DISK_MIN_RADIUS.get(), ModServerConfig.WORLD_SALT_DISK_MAX_RADIUS.get()), ModServerConfig.WORLD_SALT_DISK_HALF_HEIGHT.get(), List.of(Blocks.GRAVEL.defaultBlockState(), Blocks.SAND.defaultBlockState())));
+        Feature.DISK, new DiskConfiguration(ModBlocks.SALT.get().defaultBlockState(), UniformInt.of(ModCommonConfig.WORLD_SALT_DISK_MIN_RADIUS.get(), ModCommonConfig.WORLD_SALT_DISK_MAX_RADIUS.get()), ModCommonConfig.WORLD_SALT_DISK_HALF_HEIGHT.get(), List.of(Blocks.GRAVEL.defaultBlockState(), Blocks.SAND.defaultBlockState())));
 
     public static void init() {
            
         MutableSingle<Holder<PlacedFeature>> bitumenOrePlacedFeature = new MutableSingle<Holder<PlacedFeature>>(null);
-        if (ModServerConfig.BITUMEN_GENERATION.get()) { 
+        if (ModCommonConfig.BITUMEN_GENERATION.get()) { 
             bitumenOrePlacedFeature.setFirst(PlacementUtils.register(
                 TrafficCraft.MOD_ID + ":bitumen_ores",
                 BITUMEN_ORE,                
                 List.of(
-                    CountPlacement.of(ModServerConfig.WORLD_BITUMEN_RARITY.get()),
+                    CountPlacement.of(ModCommonConfig.WORLD_BITUMEN_RARITY.get()),
                     InSquarePlacement.spread(),
-                    HeightRangePlacement.triangle(VerticalAnchor.absolute(ModServerConfig.WORLD_BITUMEN_MIN_HEIGHT.get()), VerticalAnchor.absolute(ModServerConfig.WORLD_BITUMEN_MAX_HEIGHT.get())),
+                    HeightRangePlacement.triangle(VerticalAnchor.absolute(ModCommonConfig.WORLD_BITUMEN_MIN_HEIGHT.get()), VerticalAnchor.absolute(ModCommonConfig.WORLD_BITUMEN_MAX_HEIGHT.get())),
                     BiomeFilter.biome()
                 )
             ));
         }
 
         MutableSingle<Holder<PlacedFeature>> saltDiskPlacedFeature = new MutableSingle<Holder<PlacedFeature>>(null);
-        if (ModServerConfig.BITUMEN_GENERATION.get()) { 
+        if (ModCommonConfig.BITUMEN_GENERATION.get()) { 
             saltDiskPlacedFeature.setFirst(PlacementUtils.register(
                 TrafficCraft.MOD_ID + ":disk_salt",
                 SALT,
                 List.of(
-                    RarityFilter.onAverageOnceEvery(ModServerConfig.WORLD_SALT_RARITY.get()),
+                    RarityFilter.onAverageOnceEvery(ModCommonConfig.WORLD_SALT_RARITY.get()),
                     InSquarePlacement.spread(),
                     HeightmapPlacement.onHeightmap(Types.OCEAN_FLOOR_WG),
                     BiomeFilter.biome()
@@ -97,10 +97,10 @@ public class ModWorldEvents {
         */
                         
         BiomeModifications.addProperties((ctx, mutable) -> {
-            if (ModServerConfig.BITUMEN_GENERATION.get() && bitumenOrePlacedFeature.getFirst() != null) { 
+            if (ModCommonConfig.BITUMEN_GENERATION.get() && bitumenOrePlacedFeature.getFirst() != null) { 
                 mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, bitumenOrePlacedFeature.getFirst());
             }
-            if (ModServerConfig.SALT_GENERATION.get() && ctx.getProperties().getCategory() == BiomeCategory.OCEAN && saltDiskPlacedFeature.getFirst() != null) {                
+            if (ModCommonConfig.SALT_GENERATION.get() && ctx.getProperties().getCategory() == BiomeCategory.OCEAN && saltDiskPlacedFeature.getFirst() != null) {                
                 mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, saltDiskPlacedFeature.getFirst());
             }
             //mutable.getGenerationProperties().addFeature(GenerationStep.Decoration.UNDERGROUND_ORES, rockSaltOrePlacedFeature);            
