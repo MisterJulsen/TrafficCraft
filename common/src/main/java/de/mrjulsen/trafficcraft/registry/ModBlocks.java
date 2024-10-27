@@ -26,7 +26,6 @@ import de.mrjulsen.trafficcraft.block.PaintedAsphaltSlope;
 import de.mrjulsen.trafficcraft.block.ReflectorBlock;
 import de.mrjulsen.trafficcraft.block.RoadBarrierFenceBlock;
 import de.mrjulsen.trafficcraft.block.RoadSaltBlock;
-import de.mrjulsen.trafficcraft.block.RockSaltLampBlock;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.StreetLightBlock;
 import de.mrjulsen.trafficcraft.block.StreetSignBlock;
@@ -78,12 +77,6 @@ public class ModBlocks {
 
     public static final RegistrySupplier<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
         .strength(1.5f)
-        .requiresCorrectToolForDrops()
-    ), ModCreativeModeTab.MOD_TAB, false);
-
-    public static final RegistrySupplier<Block> ROCK_SALT = registerBlock("rock_salt", () -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.RAW_IRON)
-        .strength(4f)
-        .sound(SoundType.POLISHED_DEEPSLATE)
         .requiresCorrectToolForDrops()
     ), ModCreativeModeTab.MOD_TAB, false);
 
@@ -140,7 +133,6 @@ public class ModBlocks {
     public static final RegistrySupplier<Block> SMALL_DOUBLE_STREET_LAMP = registerBlock("small_double_street_lamp", () -> new StreetLampBaseBlock(LampType.SMALL_DOUBLE), ModCreativeModeTab.MOD_TAB, true);
     public static final RegistrySupplier<Block> STREET_LIGHT = registerBlock("street_light", () -> new StreetLightBlock(), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> FLUORESCENT_TUBE_LAMP = registerBlock("fluorescent_tube_lamp", () -> new FluorescentTubeLampBlock(), ModCreativeModeTab.MOD_TAB, false);
-    public static final RegistrySupplier<Block> ROCK_SALT_LAMP = registerBlock("rock_salt_lamp", () -> new RockSaltLampBlock(), ModCreativeModeTab.MOD_TAB, false);
     
     public static final RegistrySupplier<Block> WHITE_DELINEATOR = registerBlock("white_delineator", () -> new DelineatorBlock(false), ModCreativeModeTab.MOD_TAB, false);
     public static final RegistrySupplier<Block> YELLOW_DELINEATOR = registerBlock("yellow_delineator", () -> new DelineatorBlock(false), ModCreativeModeTab.MOD_TAB, false);
