@@ -121,13 +121,10 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
         if (selectedBookmark >= bookmarks.length) {
             TrafficCraft.net().sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
         } else {
-            /*
-            if (data != null) {                
-                data.close();
-            }
-                */
             NamedTrafficSignTextureReference data = CreativePatternCatalogueItem.getCustomImage(stack);
-            TrafficCraft.net().sendToServer(new CreativePatternCataloguePacket(data));
+            if (data != null) {
+                TrafficCraft.net().sendToServer(new CreativePatternCataloguePacket(data));
+            }
         }
         cachedTextures.values().forEach(x -> x.close());
         super.onClose();
