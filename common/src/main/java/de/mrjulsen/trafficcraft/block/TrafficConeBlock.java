@@ -4,7 +4,8 @@ import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.Wearable;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -18,14 +19,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class TrafficConeBlock extends ColorableBlock implements SimpleWaterloggedBlock, Wearable {
+public class TrafficConeBlock extends ColorableBlock implements SimpleWaterloggedBlock, Equipable {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -41,7 +42,8 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
     private static final VoxelShape COLLISION = Block.box(3, 0, 3, 13, 24, 13);
     
     public TrafficConeBlock() {
-        super(BlockBehaviour.Properties.of(Material.BAMBOO)
+        super(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_RED)
             .strength(0.2f)
             .sound(SoundType.BAMBOO)
         );
@@ -105,5 +107,10 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
     @Override
     public int getDefaultColor() {
         return Constants.TRAFFIC_CONE_BASE_COLOR;
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.HEAD;
     }
 }

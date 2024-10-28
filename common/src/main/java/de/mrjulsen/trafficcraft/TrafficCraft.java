@@ -33,7 +33,9 @@ import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateCl
 import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
+import de.mrjulsen.trafficcraft.registry.ModCreativeModeTab;
 import de.mrjulsen.trafficcraft.registry.ModItems;
+import de.mrjulsen.trafficcraft.world.ModWorldGen;
 import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
@@ -57,6 +59,8 @@ public final class TrafficCraft {
         ModBlockEntities.register();
         ModMenuTypes.register();
         ModAccessorTypes.init();
+        ModCreativeModeTab.init();
+        ModWorldGen.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
 

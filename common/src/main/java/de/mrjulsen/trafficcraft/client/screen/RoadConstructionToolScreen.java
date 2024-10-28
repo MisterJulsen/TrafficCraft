@@ -143,7 +143,7 @@ public class RoadConstructionToolScreen extends DLScreen {
             this.onDone();
         }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
-        buildButtonArea = new GuiAreaDefinition(buildButton.x, buildButton.y, buildButton.getWidth(), buildButton.getHeight());
+        buildButtonArea = new GuiAreaDefinition(buildButton.x(), buildButton.y(), buildButton.getWidth(), buildButton.getHeight());
 
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 2) + 4, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, CommonComponents.GUI_DONE, (p) -> {
             this.onDone();
@@ -237,8 +237,8 @@ public class RoadConstructionToolScreen extends DLScreen {
             int slopeDisplayWidth = 20 + font.width(slopeCountText);
             int guiCenter = guiLeft + WORKING_AREA_X + WORKING_AREA_WIDTH / 2;
 
-            minecraft.getItemRenderer().renderAndDecorateItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
-            minecraft.getItemRenderer().renderAndDecorateItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
+            graphics.graphics().renderItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
+            graphics.graphics().renderItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
             GuiUtils.drawString(graphics, font, guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, guiTop + 127, blockCountText, 0xFFDBDBDB, EAlignment.LEFT, false);
             GuiUtils.drawString(graphics, font, guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, guiTop + 127, slopeCountText, 0xFFDBDBDB, EAlignment.LEFT, false);
         }

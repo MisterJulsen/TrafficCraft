@@ -46,14 +46,27 @@ public class StreetSignBlockEntity extends WritableSignBlockEntity implements IC
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
-        tag.putInt(NBT_COLOR, color.getIndex());
         super.saveAdditional(tag);
+        tag.putInt(NBT_COLOR, color.getIndex());
     }
 
     @Override
     public void setColor(PaintColor color) {
         this.color = color;
         notifyUpdate();
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 512);        
+    }
+
+    @Override
+    public void setText(String text, int line) {
+        super.setText(text, line);
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 512);
+    }
+
+    @Override
+    public void setTexts(String[] messages) {
+        super.setTexts(messages);
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 512);
     }
 
     @Override

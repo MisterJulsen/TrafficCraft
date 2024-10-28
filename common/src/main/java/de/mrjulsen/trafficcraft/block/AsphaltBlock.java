@@ -13,8 +13,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 
 public class AsphaltBlock extends Block implements IPaintableBlock {
 
@@ -27,16 +26,17 @@ public class AsphaltBlock extends Block implements IPaintableBlock {
     }
 
     public static Properties properties(RoadType type) {
-        Properties props = Properties.of(Material.STONE)
+        Properties props = Properties.of()
+            .mapColor(MapColor.STONE)
             .strength(1.5f)
             .requiresCorrectToolForDrops();
 
         switch (type) {
             case ASPHALT:
-                props.color(MaterialColor.COLOR_GRAY);
+                props.mapColor(MapColor.COLOR_GRAY);
                 break;
             case CONCRETE:
-                props.color(MaterialColor.CLAY);
+                props.mapColor(MapColor.CLAY);
                 break;
             default:
                 break;

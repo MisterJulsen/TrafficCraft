@@ -4,8 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
@@ -42,9 +41,10 @@ import de.mrjulsen.trafficcraft.block.TrafficSignWorkbenchBlock;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock.LampType;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.WearableBlockItem;
+import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -52,35 +52,31 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
-import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.material.MapColor;
 
 public class ModBlocks {
-
-    public static final Material ROAD_SALT_MATERIAL = new Material(MaterialColor.NONE, false, false, false, false, false, true, PushReaction.DESTROY);
     
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TrafficCraft.MOD_ID, Registry.BLOCK_REGISTRY);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.BLOCK);
     public static List<RegistrySupplier<Block>> COLORED_BLOCKS = new ArrayList<>();
     public static HashMap<String, RegistrySupplier<Block>> ROAD_BLOCKS = new HashMap<>();    
     
-    public static final RegistrySupplier<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistrySupplier<Block> BITUMEN_ORE = registerBlock("bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
         .strength(3f)
         .requiresCorrectToolForDrops()
     ), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistrySupplier<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistrySupplier<Block> DEEPSLATE_BITUMEN_ORE = registerBlock("deepslate_bitumen_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE)
         .strength(4.5f)
         .requiresCorrectToolForDrops()
         .sound(SoundType.DEEPSLATE)
     ), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistrySupplier<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)
+    public static final RegistrySupplier<Block> BITUMEN_BLOCK = registerBlock("bitumen_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE)
         .strength(1.5f)
         .requiresCorrectToolForDrops()
     ), ModCreativeModeTab.MOD_TAB, false);
 
-    public static final RegistrySupplier<Block> SALT = registerBlock("salt", () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.METAL)
+    public static final RegistrySupplier<Block> SALT = registerBlock("salt", () -> new DropExperienceBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)
         .strength(3f)
         .sound(SoundType.BASALT)
         .requiresCorrectToolForDrops()
@@ -164,47 +160,47 @@ public class ModBlocks {
         return toReturn;
     }
     
-    private static <T extends Block>RegistrySupplier<Block> registerColoredBlock(String name, Supplier<Block> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistrySupplier<Block> registerColoredBlock(String name, Supplier<Block> block, RegistrySupplier<CreativeModeTab> tab, boolean wearable) {
         RegistrySupplier<Block> toReturn = registerBlock(name, block, tab, wearable);
         COLORED_BLOCKS.add(toReturn);
         return toReturn;
     }
 
-    private static <T extends Block>RegistrySupplier<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistrySupplier<T> registerBlock(String name, Supplier<T> block, RegistrySupplier<CreativeModeTab> tab, boolean wearable) {
         RegistrySupplier<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab, wearable);
         return toReturn;
     }
 
     @SuppressWarnings("unused")
-    private static <T extends Block, I extends BlockItem>RegistrySupplier<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
+    private static <T extends Block, I extends BlockItem>RegistrySupplier<T> registerBlock(String name, Supplier<T> block, RegistrySupplier<CreativeModeTab> tab, Class<I> blockItemClass) {
         RegistrySupplier<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn, tab, blockItemClass);
         return toReturn;
     }
 
     @SuppressWarnings("unused")
-    private static <T extends Block>RegistrySupplier<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistrySupplier<T> registerBlockWithCustomItemId(String name, String itemId, Supplier<T> block, RegistrySupplier<CreativeModeTab> tab, boolean wearable) {
         RegistrySupplier<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(itemId, toReturn, tab, wearable);
         return toReturn;
     }
 
-    private static <T extends Block>RegistrySupplier<Item> registerBlockItem(String name, RegistrySupplier<T> block, CreativeModeTab tab, boolean wearable) {
+    private static <T extends Block>RegistrySupplier<Item> registerBlockItem(String name, RegistrySupplier<T> block, RegistrySupplier<CreativeModeTab> tab, boolean wearable) {
         if (wearable) {
-            return ModItems.ITEMS.register(name, () -> new WearableBlockItem(block.get(), new Item.Properties().tab(tab)));
+            return ModItems.ITEMS.register(name, () -> new WearableBlockItem(block.get(), ((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(tab)));
         }
 
-        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+        return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), ((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(tab)));
     }
 
-    private static <T extends Block, I extends BlockItem>RegistrySupplier<Item> registerBlockItem(String name, RegistrySupplier<T> block, CreativeModeTab tab, Class<I> blockItemClass) {
+    private static <T extends Block, I extends BlockItem>RegistrySupplier<Item> registerBlockItem(String name, RegistrySupplier<T> block, RegistrySupplier<CreativeModeTab> tab, Class<I> blockItemClass) {
         return ModItems.ITEMS.register(name, () -> {
             try {
-                return blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), new Item.Properties().tab(tab));
+                return blockItemClass.getDeclaredConstructor(Block.class, Item.Properties.class).newInstance(block.get(), ((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(tab));
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
                 e.printStackTrace();
-                return new BlockItem(block.get(), new Item.Properties().tab(tab));
+                return new BlockItem(block.get(), ((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(tab));
             }
         });
     }

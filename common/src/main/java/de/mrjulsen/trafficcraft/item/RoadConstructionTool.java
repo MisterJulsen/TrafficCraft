@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.joml.Vector3f;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
-import com.mojang.math.Vector3f;
 
 import de.mrjulsen.mcdragonlib.core.Location;
 import de.mrjulsen.mcdragonlib.data.StatusResult;
@@ -257,7 +259,7 @@ public class RoadConstructionTool extends Item {
         if (lastY < (int)pos.y + slopeHeight) {
             for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
-                BlockPos bPos = new BlockPos(vec.x, vec.y - 1, vec.z);
+                BlockPos bPos = new BlockPos((int)vec.x, (int)vec.y - 1, (int)vec.z);
 
                 if (!replaceBlocks && !pLevel.isEmptyBlock(bPos)) {
                     continue;
@@ -273,7 +275,7 @@ public class RoadConstructionTool extends Item {
         if (height >= slopeHeight * 8 + pixel) {
             for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
-                BlockPos bPos = new BlockPos(vec);
+                BlockPos bPos = new BlockPos((int)vec.x, (int)vec.y, (int)vec.z);
                 
                 if (!replaceBlocks && !pLevel.isEmptyBlock(bPos)) {
                     continue;
@@ -287,7 +289,7 @@ public class RoadConstructionTool extends Item {
         } else if (height >= slopeHeight) {
             for (double i = -(halfWidth); i < halfWidth + step; i += step) {
                 Vec3 vec = pos.add(normalizedRightVec.scale(i));
-                BlockPos bPos = new BlockPos(vec);
+                BlockPos bPos = new BlockPos((int)vec.x, (int)vec.y, (int)vec.z);
                 
                 if (!replaceBlocks && !pLevel.isEmptyBlock(bPos)) {
                     continue;
@@ -338,8 +340,8 @@ public class RoadConstructionTool extends Item {
             HitResult lookingAt = player.pick(4.5f /* TODO */, 0, false);
             Vec3 lookAtVec = lookingAt.getLocation();
 
-            if (!level.isEmptyBlock(new BlockPos(lookAtVec)) || !level.isEmptyBlock(new BlockPos(lookAtVec.x, lookAtVec.y - 0.5d, lookAtVec.z))) {
-                double blockHeight = level.getBlockFloorHeight(new BlockPos(lookAtVec));
+            if (!level.isEmptyBlock(new BlockPos((int)lookAtVec.x, (int)lookAtVec.y, (int)lookAtVec.z)) || !level.isEmptyBlock(new BlockPos((int)lookAtVec.x, (int)(lookAtVec.y - 0.5d), (int)lookAtVec.z))) {
+                double blockHeight = level.getBlockFloorHeight(new BlockPos((int)lookAtVec.x, (int)lookAtVec.y, (int)lookAtVec.z));
                 int vX = lookAtVec.x() > 0 ? 1 : -1;
                 int vZ = lookAtVec.z() > 0 ? 1 : -1;
                 end = new Vec3((int)lookAtVec.x() + (vX * 0.5d), (int)lookAtVec.y() + (blockHeight <= 0 ? 0 : blockHeight), (int)lookAtVec.z() + (vZ * 0.5d));

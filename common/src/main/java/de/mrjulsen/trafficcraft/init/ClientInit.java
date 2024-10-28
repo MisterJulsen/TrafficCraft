@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
+
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.mcdragonlib.util.ColorUtils;
@@ -13,8 +14,6 @@ import de.mrjulsen.mcdragonlib.util.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.CrossPlatform;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
-import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
@@ -39,7 +38,6 @@ import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientRawInputEvent;
-import dev.architectury.event.events.client.ClientTextureStitchEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
@@ -55,7 +53,6 @@ import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -64,8 +61,8 @@ public class ClientInit {
 
 	private static final int CHECKERBOARD_COLOR_A = 0xFFE9E9E9;
 	private static final int CHECKERBOARD_COLOR_B = 0xFFD9D9D9;
-    private static final String TEXTURE_PATH = "block/traffic_light";
     private static final Map<Class<? extends TooltipComponent>, Function<TooltipComponent, ClientTooltipComponent>> tooltipComponentFactories = new ConcurrentHashMap<>();
+
 
     /**
      * Register a factory for ClientTooltipComponents.
@@ -95,9 +92,10 @@ public class ClientInit {
     }
 
     public static final DynamicTexture[] SHAPE_TEXTURES = new DynamicTexture[TrafficSignShape.values().length];
-
+    
     public static void init() {
         ClientLifecycleEvent.CLIENT_SETUP.register(mc -> {
+            
             Wikipedia.addArticle(Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID, Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID);
             
             ItemModelGenerator.LAYERS.add("layer5");
@@ -117,8 +115,7 @@ public class ClientInit {
                     CrossPlatform.setRenderLayer(block.get(), RenderType.cutout());
                 }
             }
-
-
+            
             /* BLOCK ENTITY RENDERERS */
             BlockEntityRendererRegistry.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<StreetSignBlockEntity>::new);
@@ -175,6 +172,23 @@ public class ClientInit {
                 ModBlocks.CONCRETE_BARRIER.get(),
                 ModItems.COLOR_PALETTE.get()
             );
+
+            DynamicTexture[] textures = Arrays.stream(TrafficSignShape.values()).map(v -> {
+                NativeImage image = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
+                for (int x = 0; x < image.getWidth(); x++) {
+                    for (int y = 0; y < image.getHeight(); y++) {
+                        if (v.isPixelValid(x, y)) {
+                            image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? CHECKERBOARD_COLOR_A : CHECKERBOARD_COLOR_B) : (y % 2 == 0 ? CHECKERBOARD_COLOR_B : CHECKERBOARD_COLOR_A));
+                        } else {
+                            image.setPixelRGBA(x, y, 0);
+                        }
+                    }
+                }
+                return new DynamicTexture(image);
+            }).toArray(DynamicTexture[]::new);
+            for (int i = 0; i < textures.length; i++) {
+                SHAPE_TEXTURES[i] = textures[i];
+            }
         });
 
         ClientTickEvent.CLIENT_LEVEL_POST.register(level -> {            
@@ -195,43 +209,6 @@ public class ClientInit {
                 }
             }
             return EventResult.pass();
-        });
-
-        ClientTextureStitchEvent.PRE.register((atlas, spriteAdder) -> {
-            if (!atlas.location().equals(InventoryMenu.BLOCK_ATLAS)) {
-                return;
-            }
-            
-            Arrays.stream(TrafficLightIcon.values())
-                .forEach(
-                    x -> Arrays.stream(TrafficLightColor.values())
-                        .filter(y -> x.isApplicableToColor(y))
-                        .forEach(y -> {
-                            ResourceLocation loc = null;
-                            if (x == TrafficLightIcon.NONE && y == TrafficLightColor.NONE) {
-                                loc = new ResourceLocation(TrafficCraft.MOD_ID, String.format("%s/off", TEXTURE_PATH));
-                            } else {
-                                loc = new ResourceLocation(TrafficCraft.MOD_ID, String.format("%s/%s_%s", TEXTURE_PATH, x.getName(), y.getName()));
-                            }
-                            spriteAdder.accept(loc);
-                        }));
-
-            DynamicTexture[] textures = Arrays.stream(TrafficSignShape.values()).map(v -> {
-                NativeImage image = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
-                for (int x = 0; x < image.getWidth(); x++) {
-                    for (int y = 0; y < image.getHeight(); y++) {
-                        if (v.isPixelValid(x, y)) {
-                            image.setPixelRGBA(x, y, x % 2 == 0 ? (y % 2 == 0 ? CHECKERBOARD_COLOR_A : CHECKERBOARD_COLOR_B) : (y % 2 == 0 ? CHECKERBOARD_COLOR_B : CHECKERBOARD_COLOR_A));
-                        } else {
-                            image.setPixelRGBA(x, y, 0);
-                        }
-                    }
-                }
-                return new DynamicTexture(image);
-            }).toArray(DynamicTexture[]::new);
-            for (int i = 0; i < textures.length; i++) {
-                SHAPE_TEXTURES[i] = textures[i];
-            }
         });
 
         ClientGuiEvent.DEBUG_TEXT_LEFT.register(list -> {

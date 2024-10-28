@@ -25,9 +25,9 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.11",
-    "minecraft": "~1.19.2",
+    "minecraft": "~1.20.1",
     "java": ">=17",
-    "dragonlib": ">=1.19.2-2.2.19",
+    "dragonlib": ">=1.20.1-2.2.19",
     "fabric-api": "*"
   },
   "accessWidener": "trafficcraft.accesswidener"

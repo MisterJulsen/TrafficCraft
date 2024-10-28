@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:disk",
+    "config": {
+      "state_provider": {
+        "fallback": {
+          "type": "minecraft:simple_state_provider",
+          "state": {
+            "Name": "trafficcraft:salt"
+          }
+        },
+        "rules": []
+      },
+      "target": {
+        "type": "minecraft:matching_blocks",
+        "blocks": [
+          "minecraft:sand",
+          "minecraft:gravel"
+        ]
+      },
+      "radius": {
+        "type": "minecraft:uniform",
+        "value": {
+          "min_inclusive": 5,
+          "max_inclusive": 8
+        }
+      },
+      "half_height": 1
+    }
+  }
+  

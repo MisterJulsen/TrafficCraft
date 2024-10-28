@@ -14,14 +14,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 public class PaintedAsphaltBlock extends RoadBlock {
 
     private Block pickupBlock;
 
     public PaintedAsphaltBlock(RoadType type, Block pickupBlock) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
+            .mapColor(MapColor.STONE)
             .strength(1.5f)
             .requiresCorrectToolForDrops()
         , type);

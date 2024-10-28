@@ -2,9 +2,7 @@ package de.mrjulsen.trafficcraft.client;
 
 import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen;
-import de.mrjulsen.mcdragonlib.core.IIdentifiable;
 import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
@@ -59,14 +57,6 @@ public class ClientWrapper {
     public static void handleTrafficSignWorkbenchUpdateClientPacket(TrafficSignWorkbenchUpdateClientPacket packet) { 
         if (Minecraft.getInstance().screen instanceof TrafficSignWorkbenchGui screen) {
             screen.updatePreview();
-        }
-    }
-
-    public synchronized static <B extends IIdentifiable> void clearTexture(B id) {
-        try {
-            TrafficSignTextureCacheClient.clear(id);
-        } catch (Exception e) {
-            TrafficCraft.LOGGER.warn("Unable to clear texture.", e);
         }
     }
 

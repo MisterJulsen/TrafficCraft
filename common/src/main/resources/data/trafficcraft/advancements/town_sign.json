@@ -18,7 +18,12 @@
     "req": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "trafficcraft:town_sign"
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "trafficcraft:town_sign"
+          }
+        ]
       }
     }
   },

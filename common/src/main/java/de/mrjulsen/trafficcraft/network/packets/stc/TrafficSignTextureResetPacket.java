@@ -39,7 +39,7 @@ public class TrafficSignTextureResetPacket implements IPacketBase<TrafficSignTex
         contextSupplier.get().queue(() -> {
             EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {                
                 Player player = contextSupplier.get().getPlayer();                
-                Level level = player.level;
+                Level level = player.level();
                 BlockEntity entity = level.getBlockEntity(packet.pos);
                 if (entity instanceof TrafficSignBlockEntity be) {
                     be.resetTexture();

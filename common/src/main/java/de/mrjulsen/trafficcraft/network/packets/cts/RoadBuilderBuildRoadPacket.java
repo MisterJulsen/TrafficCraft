@@ -68,7 +68,7 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
     public void handle(RoadBuilderBuildRoadPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {
             ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-            final Level level = sender.getLevel();
+            final Level level = sender.level();
             ItemStack item = null;
             InteractionHand hand = null;
 

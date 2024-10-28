@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 public class AsphaltCurb extends Block {
 
@@ -25,7 +25,8 @@ public class AsphaltCurb extends Block {
     public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
     
     public AsphaltCurb(RoadType type) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
+            .mapColor(MapColor.STONE)
             .strength(1.5f)
             .requiresCorrectToolForDrops()
         );

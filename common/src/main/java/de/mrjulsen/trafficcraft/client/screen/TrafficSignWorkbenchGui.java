@@ -9,7 +9,6 @@ import java.util.Map;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.NativeImage.Format;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.gui.DLColorPickerScreen;
@@ -50,7 +49,8 @@ import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
@@ -517,7 +517,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
         ) {
             @Override
             public void renderImage(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-                GuiUtils.fill(graphics, x + 2, y + 2, 14, 14, selectedColor);
+                GuiUtils.fill(graphics, x() + 2, y() + 2, 14, 14, selectedColor);
                 super.renderImage(graphics, mouseX, mouseY, partialTicks);
             }
         }.withAlignment(EAlignment.CENTER));
@@ -544,7 +544,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                     if (!(stack.getItem() instanceof ColorPaletteItem))
                         return;
                     
-                    GuiUtils.fill(graphics, x + 2, y + 2, 14, 14, ColorPaletteItem.getColorAt(stack, j));  
+                    GuiUtils.fill(graphics, x() + 2, y() + 2, 14, 14, ColorPaletteItem.getColorAt(stack, j));  
                     super.renderImage(graphics, mouseX, mouseY, partialTicks); 
                 }
 
@@ -724,9 +724,9 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
 
     @Override
     public void renderFrontLayer(Graphics graphics, int mouseX, int mouseY, float partialTick) {
-        Iterator<Widget> w = children().stream().map(x -> (Widget)x).iterator();
+        Iterator<Renderable> w = children().stream().map(x -> (Renderable)x).iterator();
         while (w.hasNext()) {
-            Widget widget = (Widget)w.next();
+            Renderable widget = (Renderable)w.next();
             if (widget instanceof IDragonLibWidget layeredWidget && layeredWidget.visible() && (!checkWidgetBounds() || DLUtils.rectanglesIntersecting(layeredWidget.x(), layeredWidget.y(), layeredWidget.width(), layeredWidget.height(), this.x() + checkWidgetBoundsOffset().getFirst(), this.y() + checkWidgetBoundsOffset().getSecond(), this.width(), this.height()))) {
                 layeredWidget.renderFrontLayer(graphics, mouseX, mouseY, partialTick);
             }
@@ -844,11 +844,11 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     }
 
     @Override
-    public void render(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        Graphics graphics = new Graphics(poseStack);
-        renderBackground(poseStack, pMouseY);
-        super.render(poseStack, pMouseX, pMouseY, pPartialTick);
-        renderTooltip(poseStack, pMouseX, pMouseY);
+    public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        Graphics graphics = new Graphics(guiGraphics, guiGraphics.pose());
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
+        renderTooltip(guiGraphics, pMouseX, pMouseY);
         
         switch (this.mode) {
             case DEFAULT:
@@ -1067,9 +1067,8 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
             return ButtonIcons.values()[index];
         }
 
-        public void render(PoseStack pPoseStack, int x, int y) {   
-            RenderSystem.setShaderTexture(0, OVERLAY);         
-            blit(pPoseStack, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        public void render(GuiGraphics graphics, int x, int y) {   
+            graphics.blit(OVERLAY, x, y, this.getU(), this.getV(), ICON_SIZE, ICON_SIZE, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
 
         public Sprite getSprite() {

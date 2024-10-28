@@ -1,36 +1,40 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:traffic_light_request_button"
-      },
-      "title": {
-        "translate": "advancement.trafficcraft.traffic_light_request_button"
-      },
-      "description": {
-        "translate": "advancement.trafficcraft.traffic_light_request_button.description"
-      },
-      "frame": "challenge",
-      "show_toast": true,
-      "announce_to_chat": true,
-      "hidden": true
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_light_request_button"
     },
-    "parent": "trafficcraft:linker",
-    "criteria": {
-      "requirement": {
-        "trigger": "minecraft:item_used_on_block",
-        "conditions": {
-          "location": {
-            "block": {
-              "blocks": [
-                "trafficcraft:traffic_light_request_button"
-              ]
+    "title": {
+      "translate": "advancement.trafficcraft.traffic_light_request_button"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.traffic_light_request_button.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "parent": "trafficcraft:linker",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "trafficcraft:traffic_light_request_button"
+                ]
+              }
             }
           }
-        }
+        ]
       }
-    },
-    "rewards": {
-      "experience": 30
     }
+  },
+  "rewards": {
+    "experience": 30
   }
-  
+}

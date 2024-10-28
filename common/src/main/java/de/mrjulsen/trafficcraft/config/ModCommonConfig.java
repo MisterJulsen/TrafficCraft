@@ -8,16 +8,8 @@ public class ModCommonConfig {
     public static final ForgeConfigSpec SPEC;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> BITUMEN_GENERATION;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_MIN_HEIGHT;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_MAX_HEIGHT;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_RARITY;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_BITUMEN_VEIN_SIZE;
     
     public static final ForgeConfigSpec.ConfigValue<Boolean> SALT_GENERATION;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_SALT_DISK_MIN_RADIUS;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_SALT_DISK_MAX_RADIUS;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_SALT_DISK_HALF_HEIGHT;
-    public static final ForgeConfigSpec.ConfigValue<Integer> WORLD_SALT_RARITY;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_ROAD_WIDTH;
@@ -33,26 +25,10 @@ public class ModCommonConfig {
         
         BITUMEN_GENERATION = BUILDER.comment("Whether bitumen ore should generate in the world or not. (Default: ON)")
             .define("world_generation.bitumen.enabled", true);
-        WORLD_BITUMEN_MIN_HEIGHT = BUILDER.comment("Min generation height for bitumen ore. (Default: 55)")
-            .define("world_generation.bitumen.min_height", 55);
-        WORLD_BITUMEN_MAX_HEIGHT = BUILDER.comment("Max generation height for bitumen ore. (Default: 75)")
-            .define("world_generation.bitumen.max_height", 75);
-        WORLD_BITUMEN_RARITY = BUILDER.comment("How common bitumen ore will be generated in each chunk. (Default: 2)")
-            .define("world_generation.bitumen.rarity", 2);
-        WORLD_BITUMEN_VEIN_SIZE = BUILDER.comment("Max size of bitumen ore veins. (Default: 25)")
-            .define("world_generation.bitumen.vein_size", 25);
             
         
         SALT_GENERATION = BUILDER.comment("Whether salt should generate in the world or not. (Default: ON)")
             .define("world_generation.salt.enabled", true);
-        WORLD_SALT_DISK_MIN_RADIUS = BUILDER.comment("Min generation radius for salt. (Default: 5)")
-            .define("world_generation.salt.disk_min_radius", 5);
-        WORLD_SALT_DISK_MAX_RADIUS = BUILDER.comment("Max generation radius for salt. (Default: 8)")
-            .define("world_generation.salt.disk_max_radius", 8);
-        WORLD_SALT_DISK_HALF_HEIGHT = BUILDER.comment("Half height of each salt disk. (Default: 1)")
-            .define("world_generation.salt.disk_half_height", 1);
-        WORLD_SALT_RARITY = BUILDER.comment("Max size of salt disks. (Default: 25)")
-            .define("world_generation.salt.rarity", 15);
             
 
         ROAD_BUILDER_MAX_DISTANCE = BUILDER.comment("The max distance in blocks the road construction tool can be used for. (Default: 32)")

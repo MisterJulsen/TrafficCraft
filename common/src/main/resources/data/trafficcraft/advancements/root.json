@@ -1,20 +1,19 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:traffic_light"
-      },
-      "title": "TrafficCraft",
-      "description": "Thank you for playing with TrafficCraft by MrJulsen!",
-      "background": "trafficcraft:textures/block/asphalt.png",
-      "frame": "challenge",
-      "show_toast": false,
-      "announce_to_chat": false,
-      "hidden": false
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_light"
     },
-    "criteria": {
-      "requirement": {
-        "trigger": "minecraft:tick"
-      }
+    "title": "TrafficCraft",
+    "description": "Thank you for playing with TrafficCraft by MrJulsen!",
+    "background": "trafficcraft:textures/block/asphalt.png",
+    "frame": "challenge",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:tick"
     }
   }
-  
+}

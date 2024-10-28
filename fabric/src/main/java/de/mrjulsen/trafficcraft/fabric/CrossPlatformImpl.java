@@ -2,10 +2,10 @@ package de.mrjulsen.trafficcraft.fabric;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import fuzs.forgeconfigapiport.impl.config.ForgeConfigRegistryImpl;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
 public final class CrossPlatformImpl {
@@ -15,6 +15,6 @@ public final class CrossPlatformImpl {
     }
 
     public static void registerConfig() {
-        ModLoadingContext.registerConfig(TrafficCraft.MOD_ID, ModConfig.Type.COMMON, ModCommonConfig.SPEC, TrafficCraft.MOD_ID + "-common.toml");
+        ForgeConfigRegistryImpl.INSTANCE.register(TrafficCraft.MOD_ID, ModConfig.Type.COMMON, ModCommonConfig.SPEC, TrafficCraft.MOD_ID + "-common.toml");
     }
 }

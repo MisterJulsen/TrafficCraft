@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.client.ber;
 
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
 import de.mrjulsen.mcdragonlib.client.ber.RotatableBlockEntityRenderer;
@@ -52,7 +52,7 @@ public class TrafficSignBlockEntityRenderer extends RotatableBlockEntityRenderer
             graphics.poseStack().pushPose();
             graphics.poseStack().scale(16, 16, 16);
             graphics.poseStack().translate(0.5f, 0.5f, 0.5f);
-            graphics.poseStack().mulPose(Vector3f.YP.rotationDegrees(180));
+            graphics.poseStack().mulPose(Axis.YP.rotationDegrees(180));
             graphics.poseStack().translate(-0.5d, -0.5d, -(p * 2) + z - 0.002d);
             
             BERUtils.renderTexture(tex.getBackgroundTextureLocation(), graphics, true, 0, 0, 0, 1, 1, 0, 0, 1, 1, blockstate.getValue(TrafficSignBlock.FACING).getOpposite(), 0xFFFFFFFF, graphics.packedLight());

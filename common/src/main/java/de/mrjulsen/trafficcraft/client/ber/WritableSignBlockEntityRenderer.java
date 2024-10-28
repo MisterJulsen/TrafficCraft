@@ -2,7 +2,9 @@ package de.mrjulsen.trafficcraft.client.ber;
 
 import java.util.function.Function;
 
-import com.mojang.math.Vector3f;
+import org.joml.Vector3f;
+
+import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
@@ -45,7 +47,7 @@ public class WritableSignBlockEntityRenderer<T extends WritableSignBlockEntity> 
             ConfiguredLineData data = config.lineData()[lineIndex];
             graphics.poseStack().pushPose();
             graphics.poseStack().translate(0.5D, 0.5f, 0.5F);
-            graphics.poseStack().mulPose(Vector3f.YP.rotationDegrees(config.blockEntityRendererRotation().apply(blockState) + (isOpposite ? 180 : 0)));
+            graphics.poseStack().mulPose(Axis.YP.rotationDegrees(config.blockEntityRendererRotation().apply(blockState) + (isOpposite ? 180 : 0)));
             graphics.poseStack().translate((isOpposite ? -1 : 1) * config.berX(), config.berY(), config.berZ());
             float xCenter = (float)(-this.font.width(line) / 2);
 

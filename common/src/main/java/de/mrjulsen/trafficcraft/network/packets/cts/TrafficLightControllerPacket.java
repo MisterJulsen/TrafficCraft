@@ -40,7 +40,7 @@ public class TrafficLightControllerPacket implements IPacketBase<TrafficLightCon
         contextSupplier.get().queue(() -> {
             ServerPlayer player = (ServerPlayer)contextSupplier.get().getPlayer();
             if (player != null) {
-                Level level = player.getLevel();
+                Level level = player.level();
                 if (level.isLoaded(packet.pos)) {
                     if (level.getBlockEntity(packet.pos) instanceof TrafficLightControllerBlockEntity blockEntity) {
                         blockEntity.setRunning(packet.status);

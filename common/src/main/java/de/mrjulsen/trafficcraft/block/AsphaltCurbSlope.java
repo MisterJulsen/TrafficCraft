@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.StairsShape;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -54,7 +54,8 @@ public class AsphaltCurbSlope extends Block implements SimpleWaterloggedBlock {
     public static final int HEIGHT_IMPASSABLE = 5;
 
     public AsphaltCurbSlope(RoadType type) {
-        super(Properties.of(Material.STONE)
+        super(Properties.of()
+            .mapColor(MapColor.STONE)
             .strength(1.5f)
             .requiresCorrectToolForDrops()
         );
@@ -86,7 +87,7 @@ public class AsphaltCurbSlope extends Block implements SimpleWaterloggedBlock {
             level.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
         } else {
             if (!(player.isCreative() || player.isSpectator())) {
-                dropResources(state.getBlock().defaultBlockState(), level, pos.offset(0, 1f / 8f * (state.getValue(BlockStateProperties.LAYERS) + 1), 0));
+                dropResources(state.getBlock().defaultBlockState(), level, pos.offset(0, (int)(1f / 8f * (state.getValue(BlockStateProperties.LAYERS) + 1)), 0));
             }
             tool.hurtAndBreak(1, player, (p) -> {
                 player.broadcastBreakEvent(player.getItemInHand(InteractionHand.MAIN_HAND) == tool ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);

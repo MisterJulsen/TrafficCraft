@@ -15,7 +15,6 @@ import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -67,7 +66,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 if (!level.isClientSide) {
                     CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
                     compound.put(NBT_LINK_TARGET, new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString()).toNbt());
-                    compound.putString(NBT_BLOCK, Registry.BLOCK.getKey(clickedBlock).toString());
+                    compound.putString(NBT_BLOCK, ModBlocks.BLOCKS.getRegistrar().getId(clickedBlock).toString());
                     player.displayClientMessage(TextUtils.translate(keySet, clickedPos.toShortString(), level.dimension().location()).withStyle(ChatFormatting.AQUA), true);
                 }
                 return InteractionResult.SUCCESS;
@@ -129,7 +128,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
         if (pPlayer.isShiftKeyDown()) {
-            Level level = pPlayer.getLevel();
+            Level level = pPlayer.level();
             if (!level.isClientSide) {
                 if (itemstack.getTag() != null) {
                     CompoundTag tag = itemstack.getTag();
@@ -159,7 +158,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
         if (nbt.contains(NBT_BLOCK)) {
             try {
                 ResourceLocation location = new ResourceLocation(nbt.getString(NBT_BLOCK));
-                pTooltipComponents.add(TextUtils.translate(keyTooltipBlock, Registry.BLOCK.get(location).getName().getString()));
+                pTooltipComponents.add(TextUtils.translate(keyTooltipBlock, ModBlocks.BLOCKS.getRegistrar().get(location).getName().getString()));
             } catch (Exception e) {
                 pTooltipComponents.add(TextUtils.translate(keyTooltipBlock, TextUtils.text("ERROR").withStyle(ChatFormatting.RED)));
             }

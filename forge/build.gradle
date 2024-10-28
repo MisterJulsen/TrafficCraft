@@ -40,7 +40,7 @@ dependencies {
 
     modCompileOnly("dev.architectury:architectury-forge:${rootProject.architectury_api_version}")
     modImplementation(include("de.mrjulsen.mcdragonlib:dragonlib-forge:${rootProject.minecraft_version}-${rootProject.dragonlib_version}"))
-    modImplementation("net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}")
+    //modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}")
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')

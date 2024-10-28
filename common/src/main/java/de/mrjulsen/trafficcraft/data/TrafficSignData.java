@@ -10,10 +10,7 @@ import de.mrjulsen.mcdragonlib.core.IIdentifiable;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
-import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
 import net.minecraft.nbt.CompoundTag;
 
 @Deprecated
@@ -132,7 +129,6 @@ public class TrafficSignData implements Closeable, IIdentifiable {
     
     @Override
     public void close() {
-        EnvExecutor.runInEnv(Env.CLIENT, () -> () -> ClientWrapper.clearTexture(this));
     }
 
     @Override

@@ -1,33 +1,32 @@
 {
-    "display": {
-      "icon": {
-        "item": "trafficcraft:traffic_cone"
-      },
-      "title": {
-        "translate": "advancement.trafficcraft.accessibility"
-      },
-      "description": {
-        "translate": "advancement.trafficcraft.accessibility.description"
-      },
-      "frame": "task",
-      "show_toast": true,
-      "announce_to_chat": true
+  "display": {
+    "icon": {
+      "item": "trafficcraft:traffic_cone"
     },
-    "parent": "trafficcraft:craft_road",
-    "criteria": {
-      "requirement": {
-        "trigger": "minecraft:inventory_changed",
-        "conditions": {
-          "items": [
-            {
-              "tag": "trafficcraft:traffic_cones"
-            }
-          ]
-        }
+    "title": {
+      "translate": "advancement.trafficcraft.accessibility"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.accessibility.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:craft_road",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "trafficcraft:traffic_cones"
+          }
+        ]
       }
-    },
-    "rewards": {
-      "experience": 20
     }
+  },
+  "rewards": {
+    "experience": 20
   }
-  
+}

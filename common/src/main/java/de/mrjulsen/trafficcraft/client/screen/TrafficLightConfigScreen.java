@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.math.Vector3f;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
@@ -715,19 +714,31 @@ public class TrafficLightConfigScreen extends DLScreen {
         // Render traffic light
         graphics.poseStack().pushPose();
         graphics.poseStack().setIdentity();
-        graphics.poseStack().translate((double)guiLeft + 72, guiTop + 116, -100);
-        graphics.poseStack().scale(96, 96, -96);
-        graphics.poseStack().mulPose(Vector3f.ZP.rotationDegrees(180));
+        graphics.poseStack().translate(guiLeft + 72, guiTop + 116, 1);
+        graphics.poseStack().scale(-96, -96, -0.1F);
+        //graphics.poseStack().mulPose(Axis.ZP.rotationDegrees(180));
         MultiBufferSource.BufferSource multibuffersource$buffersource = this.minecraft.renderBuffers().bufferSource();
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(ModBlocks.TRAFFIC_LIGHT.get().defaultBlockState().setValue(TrafficLightBlock.MODEL, model), graphics.poseStack(), multibuffersource$buffersource, 15728880, OverlayTexture.NO_OVERLAY);
         multibuffersource$buffersource.endBatch();
         graphics.poseStack().popPose();
         Lighting.setupFor3DItems();
 
+        graphics.poseStack().pushPose();
+        graphics.poseStack().translate(0, 0, 10);
+
         // render lights
         for (int i = 0; i < colors.length && i < model.getLightsCount(); i++) {
             GuiUtils.drawTexture(TrafficLightTextureManager.getResourceLocation(new TrafficLightTextureKey(icon, colors[i])), graphics, (int)(12 + guiLeft), (int)(9 + (6 + TRAFFIC_LIGHT_LIGHT_SIZE) * i + guiTop + 20), TRAFFIC_LIGHT_LIGHT_SIZE, TRAFFIC_LIGHT_LIGHT_SIZE, 0, 0, 16, 16, 16, 16);
         }        
+
+        // render hover outline
+        GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
+        if (lightDef != null) {
+            GuiUtils.drawBox(graphics, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
+        } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
+            GuiUtils.drawBox(graphics, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
+        }
+        graphics.poseStack().popPose();
 
         // render settings pannels
         if (selectedPart == GLOBAL_SETTINGS_INDEX) {
@@ -736,14 +747,6 @@ public class TrafficLightConfigScreen extends DLScreen {
             renderPartEditor(graphics, pMouseX, pMouseY, pPartialTick);
         } else {
             renderEmptyWindow(graphics, pMouseX, pMouseY, pPartialTick);
-        }
-
-        // render hover outline
-        GuiAreaDefinition lightDef = Arrays.stream(trafficLightLightAreas).filter(x -> x.isInBounds(pMouseX, pMouseY)).findFirst().orElse(null);
-        if (lightDef != null) {
-            GuiUtils.drawBox(graphics, lightDef, 0x55FFFFFF, 0xFFFFFFFF);
-        } else if (trafficLightArea.isInBounds(pMouseX, pMouseY)) {
-            GuiUtils.drawBox(graphics, trafficLightArea, 0x55FFFFFF, 0xFFFFFFFF);
         }
 
         // render controlling window
@@ -776,7 +779,7 @@ public class TrafficLightConfigScreen extends DLScreen {
     }
 
     public void renderEmptyWindow(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        emptyLabel.renderCentered(graphics.poseStack(), guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
+        emptyLabel.renderCentered(graphics.graphics(), guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
     }   
 
     public void renderGlobalWindow(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
@@ -799,7 +802,7 @@ public class TrafficLightConfigScreen extends DLScreen {
         GuiUtils.drawTexture(WIDGETS_LOCATION, graphics, guiLeft + WINDOW_PADDING_LEFT - 9, y + windowHeight / 2 - 9, 12, 18, 0, 0, 12, 18, 32, 32);
 
         colorGroup.performForEach(x -> {
-            x.y = y + INNER_TOP_PADDING + 1;
+            x.setY(y + INNER_TOP_PADDING + 1);
         });
         DynamicGuiRenderer.renderArea(graphics, guiLeft + WINDOW_PADDING_LEFT + INNER_PADDING, y + INNER_TOP_PADDING, TrafficLightColor.getAllowedForType(type, true).length * 18 + 2, 20, AreaStyle.GRAY, ButtonState.DOWN);
 
@@ -816,7 +819,7 @@ public class TrafficLightConfigScreen extends DLScreen {
         float scale = 0.75f;
         graphics.poseStack().pushPose();
         graphics.poseStack().scale(scale, scale, scale);
-        phaseIdDescriptionLabel.renderLeftAlignedNoShadow(graphics.poseStack(), (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + DLIconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xFFCBCBCB);
+        phaseIdDescriptionLabel.renderLeftAlignedNoShadow(graphics.graphics(), (int)((ctrlSettingsArea.getLeft() + 4) / SMALL_SCALE_VALUE), (int)((ctrlSettingsArea.getTop() + DLIconButton.DEFAULT_BUTTON_HEIGHT + 10) / SMALL_SCALE_VALUE), 10, 0xFFCBCBCB);
         graphics.poseStack().popPose();
     }
 }

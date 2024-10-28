@@ -1,10 +1,8 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.mcdragonlib.core.IIdentifiable;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
 import de.mrjulsen.trafficcraft.data.TrafficSignTextureManager;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
@@ -40,7 +38,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -53,7 +51,8 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     public static final EnumProperty<TrafficSignShape> SHAPE = EnumProperty.create("shape", TrafficSignShape.class);
 
     public TrafficSignBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
+            .mapColor(MapColor.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()
             .noOcclusion()
@@ -157,16 +156,5 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new TrafficSignBlockEntity(pPos, pState);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pLevel.isClientSide) {
-            if (pLevel.getBlockEntity(pPos) instanceof IIdentifiable id) {
-                ClientWrapper.clearTexture(id);
-            }
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
     }
 }

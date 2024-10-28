@@ -8,7 +8,6 @@ import java.util.List;
 import de.mrjulsen.mcdragonlib.core.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
-import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
@@ -32,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -40,10 +40,12 @@ public class RoadSaltBlock extends BaseEntityBlock {
     public static final EnumProperty<RoadSaltQuality> QUALITY = EnumProperty.create("quality", RoadSaltQuality.class);
 
     public RoadSaltBlock() {
-        super(BlockBehaviour.Properties.of(ModBlocks.ROAD_SALT_MATERIAL)
+        super(BlockBehaviour.Properties.of()
             .instabreak()
             .noOcclusion()
             .noCollission()
+            .instabreak()
+            .pushReaction(PushReaction.DESTROY)
             .noLootTable()
             .sound(SoundType.GRAVEL)
         );
@@ -139,8 +141,7 @@ public class RoadSaltBlock extends BaseEntityBlock {
                             return;
                         } else if (
                                 level.getBlockState(blockpos).is(BlockTags.SMALL_FLOWERS) ||
-                                level.getBlockState(blockpos).is(BlockTags.CROPS) ||
-                                level.getBlockState(blockpos).is(BlockTags.REPLACEABLE_PLANTS)
+                                level.getBlockState(blockpos).is(BlockTags.CROPS)
                         ) {
                             level.removeBlock(blockpos, false);
                             return;

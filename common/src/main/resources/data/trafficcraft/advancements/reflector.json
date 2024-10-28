@@ -18,7 +18,12 @@
     "req": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "trafficcraft:reflector"
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "trafficcraft:reflector"
+          }
+        ]
       }
     }
   },

@@ -54,6 +54,7 @@ public class HouseNumberSignBlockEntity extends WritableSignBlockEntity implemen
     public void setColor(PaintColor color) {
         this.color = color;
         notifyUpdate();
+        getLevel().sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 512);
     }
 
     @Override

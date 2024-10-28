@@ -121,13 +121,10 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
         if (selectedBookmark >= bookmarks.length) {
             TrafficCraft.net().sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
         } else {
-            /*
-            if (data != null) {                
-                data.close();
-            }
-                */
             NamedTrafficSignTextureReference data = CreativePatternCatalogueItem.getCustomImage(stack);
-            TrafficCraft.net().sendToServer(new CreativePatternCataloguePacket(data));
+            if (data != null) {
+                TrafficCraft.net().sendToServer(new CreativePatternCataloguePacket(data));
+            }
         }
         cachedTextures.values().forEach(x -> x.close());
         super.onClose();
@@ -157,7 +154,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
                     public void renderImage(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
                         NamedTrafficSignTextureReference data = PatternCatalogueItem.getPatternAt(stack, j);
                         TrafficSignClientTexture tex = cachedTextures.computeIfAbsent(data, x -> TrafficSignClientTexture.load(data.getTextureId(), false));
-                        GuiUtils.drawTexture(tex.getTextureLocation(), graphics, x + 1, y + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), tex.getRawData().getWidth(), tex.getRawData().getHeight());
+                        GuiUtils.drawTexture(tex.getTextureLocation(), graphics, x() + 1, y() + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), tex.getRawData().getWidth(), tex.getRawData().getHeight());
                     }
                 }.withAlignment(EAlignment.CENTER);
                 addTooltip(DLTooltip.of(TextUtils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
@@ -290,7 +287,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
     @Override
     public void renderFrontLayer(Graphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderFrontLayer(graphics, mouseX, mouseY, partialTick);        
-        groupPatterns.performForEach(x -> x.renderToolTip(graphics.poseStack(), mouseX, mouseY));
+        //groupPatterns.performForEach(x -> graphics.graphics().renderTooltip(font, x.getMessage(), mouseX, mouseY));
     }
 
     private int addBookmark(Graphics graphics, int mouseX, int mouseY, float partialTicks, int bookY, int bookmarkIndex, ResourceLocation icon, int u, int v, int uW, int vH, int texW, int texH) {
