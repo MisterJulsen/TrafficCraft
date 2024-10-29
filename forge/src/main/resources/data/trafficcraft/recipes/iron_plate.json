@@ -1,5 +1,5 @@
 {
-    "type": "minecraft:crafting_shapeless",
+    "type": "trafficcraft:damageable_item_recipe",
     "ingredients": [
       {
         "tag": "forge:ingots/iron"
