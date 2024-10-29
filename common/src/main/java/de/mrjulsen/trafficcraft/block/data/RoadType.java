@@ -1,39 +1,27 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import com.mojang.serialization.Codec;
-
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
-import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;
 
 public enum RoadType implements StringRepresentable {
-    NONE("none", 0, 0xFFFFFFFF, ModBlocks.ASPHALT),
-    ASPHALT("asphalt", 1, 0xFF373432, ModBlocks.ASPHALT),
-	CONCRETE("concrete", 2, 0xFFB9B3A7, ModBlocks.CONCRETE);
+    NONE("none", 0, 0xFFFFFFFF),
+    ASPHALT("asphalt", 1, 0xFF373432),
+	CONCRETE("concrete", 2, 0xFFB9B3A7);
 	
 	private String roadType;
 	private int index;
 	private int color;
-    private RegistrySupplier<Block> pickupBlock;
-
-    public static final Codec<RoadType> CODEC = ExtraCodecs.idResolverCodec(RoadType::getIndex, RoadType::getRoadTypeByIndex, 0);
 	
-	private RoadType(String roadType, int index, int color, RegistrySupplier<Block> pickupBlock) {
+	private RoadType(String roadType, int index, int color) {
 		this.roadType = roadType;
 		this.index = index;
         this.color = color;
-        this.pickupBlock = pickupBlock;
 	}
 	
 	public String getRoadType() {
 		return this.roadType;
 	}
-
-    public RegistrySupplier<Block> getPickupBlock() {
-        return pickupBlock;
-    }
 
 	public int getIndex() {
 		return this.index;

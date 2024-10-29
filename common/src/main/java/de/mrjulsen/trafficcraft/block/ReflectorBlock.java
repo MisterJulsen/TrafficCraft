@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import net.minecraft.core.BlockPos;
@@ -9,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -30,13 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class ReflectorBlock extends ColorableBlock implements SimpleWaterloggedBlock {
-        
-    public static final MapCodec<ReflectorBlock> CODEC = simpleCodec(ReflectorBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -44,8 +34,8 @@ public class ReflectorBlock extends ColorableBlock implements SimpleWaterloggedB
     private static final VoxelShape SHAPE_SN = Block.box(4, 0, 5, 12, 2, 11);
     private static final VoxelShape SHAPE_EW = Block.box(5, 0, 4, 11, 2, 12);
     
-    public ReflectorBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public ReflectorBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
             .strength(2f)
             .sound(SoundType.METAL)  

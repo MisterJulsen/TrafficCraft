@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
@@ -26,7 +24,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -54,13 +51,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TrafficLightBlock extends ColorableBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
-        
-    public static final MapCodec<TrafficLightBlock> CODEC = simpleCodec(TrafficLightBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -85,8 +75,8 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
         });
     }
 
-    public TrafficLightBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public TrafficLightBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
             .strength(5f)
             .requiresCorrectToolForDrops()

@@ -3,7 +3,6 @@ package de.mrjulsen.trafficcraft.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -19,8 +18,8 @@ public class TrafficBollardBlock extends TrafficConeBlock {
 
     private static final VoxelShape COLLISION = Block.box(6, 0, 6, 10, 24, 10);
     
-    public TrafficBollardBlock(BlockBehaviour.Properties properties) {
-        super(properties);
+    public TrafficBollardBlock() {
+        super();
     }    
 
     @Override

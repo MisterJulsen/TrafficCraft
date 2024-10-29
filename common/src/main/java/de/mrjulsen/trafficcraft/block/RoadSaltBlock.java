@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.mcdragonlib.core.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
@@ -38,18 +36,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class RoadSaltBlock extends BaseEntityBlock {
-        
-   public static final MapCodec<RoadSaltBlock> CODEC = simpleCodec(RoadSaltBlock::new);
-
-   @Override
-   protected MapCodec<? extends BaseEntityBlock> codec() {
-      return CODEC;
-   }
 
     public static final EnumProperty<RoadSaltQuality> QUALITY = EnumProperty.create("quality", RoadSaltQuality.class);
 
-    public RoadSaltBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public RoadSaltBlock() {
+        super(BlockBehaviour.Properties.of()
             .instabreak()
             .noOcclusion()
             .noCollission()

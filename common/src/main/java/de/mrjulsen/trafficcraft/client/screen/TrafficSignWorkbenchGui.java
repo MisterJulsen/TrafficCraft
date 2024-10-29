@@ -48,7 +48,6 @@ import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
-import dev.architectury.platform.Platform;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -107,7 +106,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     // data
     private TrafficSignShape shape;
     private int[][] pixels; // image
-    private String name = "";
+    private String name;
     private TrafficSignWorkbenchEditorTool tool = TrafficSignWorkbenchEditorTool.DRAW;
     private int selectedColor = 0xFF000000;
     private int selectedIndex = -1;
@@ -323,7 +322,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
             TextUtils.empty(),
             false,
             (txt) -> {
-                this.name = txt == null ? "" : txt;
+                this.name = txt;
             },
             null
         );
@@ -847,14 +846,25 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     @Override
     public void render(GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         Graphics graphics = new Graphics(guiGraphics, guiGraphics.pose());
-        if (Platform.isFabric()) {
-            renderBackground(guiGraphics, pMouseX, pMouseY, pPartialTick);
-        }
+        renderBackground(guiGraphics);
         super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
         renderTooltip(guiGraphics, pMouseX, pMouseY);
         
         switch (this.mode) {
+            case DEFAULT:
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(0), () -> isFull() ? List.of(tooltipDefaultNewFull1.withStyle(ChatFormatting.RED).getVisualOrderText(), tooltipDefaultNewFull2.withStyle(ChatFormatting.GRAY).getVisualOrderText()) : List.of(tooltipDefaultNew.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(1), () -> List.of(tooltipDefaultEdit.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                //Utils.renderTooltip(this, groupDefaultModeButtons.components.get(2), () -> List.of(tooltipDefaultDelete.getVisualOrderText()), pPoseStack, pMouseX, pMouseY);
+                break;
+            case CREATE_NEW:
+
+                break;
             case EDITOR:
+                for (int i = 0; i < groupEditorToolbar1.components.size(); i++) {
+                    //final int j = i;
+                    //Utils.renderTooltip(this, groupEditorToolbar1.components.get(j), () -> List.of(editorToolbar1Tooltips[j]), pPoseStack, pMouseX, pMouseY);
+                }
+
                 //Color tooltips
                 for (int i = 0; i < groupColors.components.size(); i++) {
                     final int j = i;

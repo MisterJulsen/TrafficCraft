@@ -1,13 +1,9 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import de.mrjulsen.trafficcraft.block.data.RoadBlock;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -20,11 +16,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -39,20 +32,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PaintedAsphaltSlope extends RoadBlock implements SimpleWaterloggedBlock {
-        
-    public static final MapCodec<PaintedAsphaltSlope> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
-        return instance.group(
-            propertiesCodec(),
-            RoadType.CODEC.fieldOf("road_type").forGetter(PaintedAsphaltSlope::getDefaultRoadType)
-        ).apply(instance, PaintedAsphaltSlope::new);
-    });
 
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
-    private RegistrySupplier<Block> pickupBlock;
+    private Block pickupBlock;
     public static final int MAX_HEIGHT = 8;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
@@ -63,19 +44,19 @@ public class PaintedAsphaltSlope extends RoadBlock implements SimpleWaterloggedB
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 14.0D, 16.0D), Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D) };
     public static final int HEIGHT_IMPASSABLE = 5;
 
-    public PaintedAsphaltSlope(BlockBehaviour.Properties properties, RoadType type) {
-        super(properties
+    public PaintedAsphaltSlope(RoadType type, Block pickupBlock) {
+        super(Properties.of()
             .mapColor(MapColor.STONE)
                 .strength(1.5f)
                 .requiresCorrectToolForDrops(), type);
 
-        this.pickupBlock = type.getPickupBlock();
+        this.pickupBlock = pickupBlock;
         this.registerDefaultState(this.stateDefinition.any().setValue(LAYERS, 1).setValue(WATERLOGGED, false));
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
-        return pickupBlock == null || pickupBlock == this ? super.getCloneItemStack(level, pos, state) : this.pickupBlock.get().getCloneItemStack(level, pos, state);
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        return pickupBlock == null || pickupBlock == this ? super.getCloneItemStack(level, pos, state) : this.pickupBlock.getCloneItemStack(level, pos, state);
     }
 
     @Override

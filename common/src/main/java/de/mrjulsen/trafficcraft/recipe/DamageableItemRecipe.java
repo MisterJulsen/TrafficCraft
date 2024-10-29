@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.recipe;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -11,8 +12,8 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 public class DamageableItemRecipe extends ShapelessRecipe {
 
-    public DamageableItemRecipe(String group, CraftingBookCategory category, ItemStack result, NonNullList<Ingredient> ingredients) {
-        super(group, category, result, ingredients);
+    public DamageableItemRecipe(ResourceLocation id, String group, CraftingBookCategory category, ItemStack result, NonNullList<Ingredient> ingredients) {
+        super(id, group, category, result, ingredients);
     }
 
     @Override

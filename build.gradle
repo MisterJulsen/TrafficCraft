@@ -31,6 +31,10 @@ subprojects {
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
     }
 
+    loom {
+        silentMojangMappingsLicense()
+    }
+
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
         mappings loom.layered() {

@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.core.BlockPos;
@@ -11,7 +9,6 @@ import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -30,13 +27,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class TrafficConeBlock extends ColorableBlock implements SimpleWaterloggedBlock, Equipable {
-        
-    public static final MapCodec<TrafficConeBlock> CODEC = simpleCodec(TrafficConeBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -51,8 +41,8 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
 
     private static final VoxelShape COLLISION = Block.box(3, 0, 3, 13, 24, 13);
     
-    public TrafficConeBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public TrafficConeBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.COLOR_RED)
             .strength(0.2f)
             .sound(SoundType.BAMBOO)

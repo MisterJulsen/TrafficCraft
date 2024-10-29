@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,13 +29,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLike {
-        
-    public static final MapCodec<TownSignBlock> CODEC = simpleCodec(TownSignBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     private static final VoxelShape SHAPE_COMMON = Block.box(7, 0, 7, 9, 16, 9);
     private static final VoxelShape SHAPE_SOUTH = Shapes.or(SHAPE_COMMON, Block.box(0, 4, 9, 16, 16, 9.5D));    
@@ -48,8 +38,8 @@ public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLi
 
     public static final EnumProperty<TownSignVariant> VARIANT = EnumProperty.create("variant", TownSignVariant.class);
 
-    public TownSignBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public TownSignBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()

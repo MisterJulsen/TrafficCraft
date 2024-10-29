@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
@@ -39,18 +37,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class TrafficLightControllerBlock extends BaseEntityBlock {
-        
-    public static final MapCodec<TrafficLightControllerBlock> CODEC = simpleCodec(TrafficLightControllerBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
     
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public TrafficLightControllerBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public TrafficLightControllerBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
             .strength(1.5f)
             .requiresCorrectToolForDrops()

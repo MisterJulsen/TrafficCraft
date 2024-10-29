@@ -1,8 +1,0 @@
-{
-    "type": "minecraft:stonecutting",
-    "ingredient": {
-        "item": "minecraft:smooth_stone"
-    },
-    "result": "trafficcraft:concrete_barrier",
-    "count": 2
-}

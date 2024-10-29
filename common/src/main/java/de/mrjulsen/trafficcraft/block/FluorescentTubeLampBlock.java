@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -15,8 +14,8 @@ public class FluorescentTubeLampBlock extends StreetLightBlock {
     private static final VoxelShape SHAPE_BASE_SN = Block.box(6, 5.75D, 0, 10, 9.3D, 16);
     private static final VoxelShape SHAPE_BASE_EW = Block.box(0, 5.75D, 6, 16, 9.3D, 10);
     
-    public FluorescentTubeLampBlock(BlockBehaviour.Properties properties) {
-        super(properties);
+    public FluorescentTubeLampBlock() {
+        super();
     }
 
     @Override

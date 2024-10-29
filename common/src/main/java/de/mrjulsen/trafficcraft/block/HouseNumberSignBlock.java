@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -18,7 +16,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -32,21 +29,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class HouseNumberSignBlock extends WritableTrafficSign implements IPaintableBlock {
-        
-   public static final MapCodec<HouseNumberSignBlock> CODEC = simpleCodec(HouseNumberSignBlock::new);
-
-   @Override
-   protected MapCodec<? extends BaseEntityBlock> codec() {
-      return CODEC;
-   }
 
    public static final VoxelShape SHAPE_NORTH = Block.box(3, 5, 15, 13, 11, 16);
    public static final VoxelShape SHAPE_SOUTH = Block.box(3, 5, 0, 13, 11, 1);
    public static final VoxelShape SHAPE_WEST = Block.box(15, 5, 3, 16, 11, 13);
    public static final VoxelShape SHAPE_EAST = Block.box(0, 5, 3, 1, 11, 13);
 
-   public HouseNumberSignBlock(BlockBehaviour.Properties properties) {      
-      super(properties
+   public HouseNumberSignBlock() {      
+      super(BlockBehaviour.Properties.of()
          .mapColor(MapColor.SNOW)
          .strength(0.2f)
          .sound(SoundType.BAMBOO)

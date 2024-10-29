@@ -2,8 +2,6 @@ package de.mrjulsen.trafficcraft.block;
 
 import java.util.Map;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -11,7 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -34,13 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class ConcreteBarrierBlock extends ColorableBlock implements SimpleWaterloggedBlock {
-        
-    public static final MapCodec<ConcreteBarrierBlock> CODEC = simpleCodec(ConcreteBarrierBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -90,8 +80,8 @@ public class ConcreteBarrierBlock extends ColorableBlock implements SimpleWaterl
     private static final VoxelShape COLLISION_NORTH = Shapes.or(Block.box(3, 0, 0, 13, 4, 8), Block.box(4.75, 4, 0, 11.25, 24, 8));
     private static final VoxelShape COLLISION_BASE = Shapes.or(Block.box(3, 0, 3, 13, 4, 13), Block.box(6, 4, 6, 10, 24, 10));
     
-    public ConcreteBarrierBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public ConcreteBarrierBlock() {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.STONE)
             .strength(3f) 
             .sound(SoundType.STONE)  

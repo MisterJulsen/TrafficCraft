@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.block;
 
-import com.mojang.serialization.MapCodec;
-
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
@@ -24,7 +22,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -46,14 +43,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class PaintBucketBlock extends ColorableBlock implements SimpleWaterloggedBlock {
-            
-    public static final MapCodec<PaintBucketBlock> CODEC = simpleCodec(PaintBucketBlock::new);
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
+    
     public static final int MAX_PAINT = 8;
 
     public static final IntegerProperty PAINT = IntegerProperty.create("paint", 0, MAX_PAINT);
@@ -62,8 +52,9 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
 
     private static final VoxelShape PAINT_BUCKET = Block.box(4, 0, 4, 12, 10, 12);
 
-    public PaintBucketBlock(BlockBehaviour.Properties properties) {
-        super(properties
+    public PaintBucketBlock()
+    {
+        super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
             .strength(2f)
             .noOcclusion()

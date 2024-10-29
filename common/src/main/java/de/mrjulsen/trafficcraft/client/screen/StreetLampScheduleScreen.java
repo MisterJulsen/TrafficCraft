@@ -108,7 +108,7 @@ public class StreetLampScheduleScreen extends DLScreen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {        
-        renderTransparentBackground(graphics);        
+        renderBackground(graphics);        
         graphics.drawCenteredString(this.font, getTitle(), this.width / 2, guiTop, 16777215);
         
         String timeOnSuffix = this.getTimeSuffix(this.timeOnSlider.getValueInt());

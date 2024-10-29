@@ -1,5 +1,5 @@
 {
-  "type": "trafficcraft:damageable_item_recipe",
+    "type": "trafficcraft:damageable_item_recipe",
     "ingredients": [
       {
         "tag": "forge:ingots/iron"
