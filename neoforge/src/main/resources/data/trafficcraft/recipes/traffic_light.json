@@ -1,0 +1,49 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RTI",
+        "YLC",
+        "GTI"
+    ],
+    "key": {
+        "R": [
+            {
+                "tag": "forge:glass_panes/red"
+            }
+        ],
+        "Y": [
+            {
+                "tag": "forge:glass_panes/yellow"
+            }
+        ],
+        "G": [
+            {
+                "tag": "forge:glass_panes/green"
+            }
+        ],
+        "T": [
+            {
+                "tag": "forge:dusts/redstone"
+            }
+        ],
+        "L": [
+            {
+                "item": "minecraft:redstone_lamp"
+            }
+        ],
+        "I": [
+            {
+                "tag": "forge:ingots/iron"
+            }
+        ],
+        "C": [
+            {
+                "item": "minecraft:comparator"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:traffic_light",
+        "count": 1
+    }
+}

@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
+import com.mojang.serialization.MapCodec;
+
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
@@ -45,13 +47,20 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
+        
+    public static final MapCodec<TrafficSignBlock> CODEC = simpleCodec(TrafficSignBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<TrafficSignShape> SHAPE = EnumProperty.create("shape", TrafficSignShape.class);
 
-    public TrafficSignBlock() {
-        super(BlockBehaviour.Properties.of()
+    public TrafficSignBlock(BlockBehaviour.Properties properties) {
+        super(properties
             .mapColor(MapColor.METAL)
             .strength(1.0f)
             .requiresCorrectToolForDrops()

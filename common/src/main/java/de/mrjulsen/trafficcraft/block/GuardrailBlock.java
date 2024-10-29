@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
+import com.mojang.serialization.MapCodec;
+
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
@@ -8,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
@@ -31,6 +34,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
+        
+    public static final MapCodec<GuardrailBlock> CODEC = simpleCodec(GuardrailBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<StairsShape> SHAPE = BlockStateProperties.STAIRS_SHAPE;
@@ -65,8 +75,8 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
     private static final VoxelShape COLLISION_WEST = Block.box(9, 8.5D, 5.5D, 10.5D, 24, 10.5D);
 
 
-    public GuardrailBlock() {
-        super(BlockBehaviour.Properties.of()
+    public GuardrailBlock(BlockBehaviour.Properties properties) {
+        super(properties
             .mapColor(MapColor.METAL)
             .strength(2f)
             .sound(SoundType.LANTERN)  

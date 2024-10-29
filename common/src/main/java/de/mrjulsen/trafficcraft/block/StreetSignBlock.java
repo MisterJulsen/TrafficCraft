@@ -2,6 +2,8 @@ package de.mrjulsen.trafficcraft.block;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.mojang.serialization.MapCodec;
+
 import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
@@ -13,6 +15,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -26,14 +29,21 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class StreetSignBlock extends WritableTrafficSign implements ITrafficPostLike, IPaintableBlock {
+        
+   public static final MapCodec<StreetSignBlock> CODEC = simpleCodec(StreetSignBlock::new);
+
+   @Override
+   protected MapCodec<? extends BaseEntityBlock> codec() {
+      return CODEC;
+   }
 
    public static final VoxelShape SHAPE_NORTH = Block.box(7.5, 10.5, 6, 8.5, 14.5, 23);
    public static final VoxelShape SHAPE_SOUTH = Block.box(7.5, 10.5, -7, 8.5, 14.5, 10);
    public static final VoxelShape SHAPE_WEST = Block.box(6, 10.5, 7.5, 23, 14.5, 8.5);
    public static final VoxelShape SHAPE_EAST = Block.box(-7, 10.5, 7.5, 10, 14.5, 8.5);
 
-   public StreetSignBlock() {
-      super(BlockBehaviour.Properties.of()
+   public StreetSignBlock(BlockBehaviour.Properties properties) {
+      super(properties
             .mapColor(MapColor.SNOW)
             .strength(0.2f)
             .sound(SoundType.BAMBOO));

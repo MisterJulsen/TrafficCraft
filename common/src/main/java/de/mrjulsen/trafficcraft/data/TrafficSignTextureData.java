@@ -1,8 +1,8 @@
 package de.mrjulsen.trafficcraft.data;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -139,9 +139,9 @@ public class TrafficSignTextureData {
         }
 
         try {
-            File file = new File(GameInstance.getServer().getWorldPath(TrafficSignTextureManager.getResource(getHash().toString())).toString());
-            file.getParentFile().mkdirs();
-            NbtIo.writeCompressed(serializeNbt(), file);
+            Path path = GameInstance.getServer().getWorldPath(TrafficSignTextureManager.getResource(getHash().toString()));
+            path.toFile().getParentFile().mkdirs();
+            NbtIo.writeCompressed(serializeNbt(), path);
         } catch (IOException e) {
             TrafficCraft.LOGGER.error("Unable to save traffic sign texture file.", e);
         }
