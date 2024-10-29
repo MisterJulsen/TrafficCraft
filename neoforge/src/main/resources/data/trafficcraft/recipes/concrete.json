@@ -1,0 +1,23 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OX ",
+        "XO "
+    ],
+    "key": {
+        "O": [
+            {
+                "tag": "forge:gravel"
+            }
+        ],
+        "X": [
+            {
+                "tag": "forge:sand"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:concrete",
+        "count": 4
+    }
+}

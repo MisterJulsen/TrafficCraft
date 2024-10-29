@@ -1,0 +1,6 @@
+{
+    "type": "neoforge:add_features",
+    "biomes": "#is_ocean",
+    "features": "trafficcraft:disk_salt_placed",
+    "step": "underground_ores"
+  }

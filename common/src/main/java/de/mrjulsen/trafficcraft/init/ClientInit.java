@@ -195,16 +195,16 @@ public class ClientInit {
             RoadConstructionTool.clientTick();
         });
 
-        ClientRawInputEvent.MOUSE_SCROLLED.register((mc, delta) -> {
+        ClientRawInputEvent.MOUSE_SCROLLED.register((mc, deltaX, deltaY) -> {
             LocalPlayer player = mc.player;
 
-            if (player == null || delta == 0) {
+            if (player == null || (deltaY == 0)) {
                 return EventResult.pass();
             }
 
             ItemStack stack = player.getMainHandItem() == null ? player.getOffhandItem() : player.getMainHandItem();
             if (stack != null && stack.getItem() instanceof IScrollEventItem item) {
-                if (item.mouseScroll(player, stack, delta)) {
+                if (item.mouseScroll(player, stack, deltaY)) {
                     return EventResult.interruptFalse();
                 }
             }

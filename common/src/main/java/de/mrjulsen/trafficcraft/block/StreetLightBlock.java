@@ -11,6 +11,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -36,8 +37,8 @@ public class StreetLightBlock extends StreetLampBaseBlock {
     protected static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
     protected static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
     
-    public StreetLightBlock() {
-        super(LampType.SINGLE_LIGHT);
+    public StreetLightBlock(BlockBehaviour.Properties properties) {
+        super(properties, LampType.SINGLE_LIGHT);
 
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(NORTH, false)

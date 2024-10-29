@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OXO",
+        "XOX",
+        "OXO"
+    ],
+    "key": {
+        "O": [
+            {
+                "tag": "forge:bitumen"
+            }
+        ],
+        "X": [
+            {
+                "tag": "forge:gravel"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:asphalt",
+        "count": 8
+    }
+}

@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
@@ -65,8 +66,8 @@ public class RoadBarrierFenceBlock extends TrafficConeBlock {
         Block.box(9, 5, 0, 10, 24, 16)
     );
     
-    public RoadBarrierFenceBlock() {
-        super();
+    public RoadBarrierFenceBlock(BlockBehaviour.Properties properties) {
+        super(properties);
         this.registerDefaultState(this.stateDefinition.any()
             .setValue(FACING, Direction.NORTH)  
             .setValue(WATERLOGGED, false)        

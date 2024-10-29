@@ -1,5 +1,11 @@
 package de.mrjulsen.trafficcraft.block;
 
+import java.util.Arrays;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
@@ -8,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -45,6 +52,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
+        
+    public static final MapCodec<StreetLampBaseBlock> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
+        return instance.group(
+            propertiesCodec(),
+            LampType.CODEC.fieldOf("lamp_type").forGetter(StreetLampBaseBlock::getLampType)
+        ).apply(instance, StreetLampBaseBlock::new);
+    });
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = RedstoneTorchBlock.LIT;
@@ -72,8 +91,8 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
 
     private LampType lampType;
     
-    public StreetLampBaseBlock(LampType type) {
-        super(BlockBehaviour.Properties.of()
+    public StreetLampBaseBlock(BlockBehaviour.Properties properties, LampType type) {
+        super(properties
             .mapColor(MapColor.METAL)
             .strength(2f)
             .requiresCorrectToolForDrops()
@@ -87,6 +106,10 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
             .setValue(FACING, Direction.NORTH)
             .setValue(LIT, false)
         );
+    }
+
+    public LampType getLampType() {
+        return lampType;
     }
 
     @Override
@@ -202,11 +225,27 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     }   
 
     public enum LampType {
-        NORMAL,
-        SMALL,
-        DOUBLE,
-        SMALL_DOUBLE,
-        SINGLE_LIGHT
+        NORMAL(0),
+        SMALL(1),
+        DOUBLE(2),
+        SMALL_DOUBLE(3),
+        SINGLE_LIGHT(4);
+
+        private int id;
+
+        public static final Codec<LampType> CODEC = ExtraCodecs.idResolverCodec(LampType::getId, LampType::getFromId, 0);
+
+        private LampType(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public static LampType getFromId(int id) {
+            return Arrays.stream(values()).filter(x -> x.getId() == id).findFirst().orElse(NORMAL);
+        }
     }
 
     /* BLOCK ENTITY */

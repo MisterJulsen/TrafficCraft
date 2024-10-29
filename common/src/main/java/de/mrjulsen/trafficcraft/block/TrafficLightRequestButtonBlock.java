@@ -1,5 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
+import com.mojang.serialization.MapCodec;
+
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -44,6 +46,13 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
+        
+    public static final MapCodec<TrafficLightRequestButtonBlock> CODEC = simpleCodec(TrafficLightRequestButtonBlock::new);
+
+    @Override
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");
@@ -59,8 +68,8 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     public static final VoxelShape SHAPE_EAST = Shapes.or(Block.box(8, 1, 5, 13, 10, 11), SHAPE_COMMON);
     public static final VoxelShape SHAPE_WEST = Shapes.or(Block.box(3, 1, 5, 8, 10, 11), SHAPE_COMMON);
     
-    public TrafficLightRequestButtonBlock() {
-        super(BlockBehaviour.Properties.of()
+    public TrafficLightRequestButtonBlock(BlockBehaviour.Properties properties) {
+        super(properties
             .mapColor(MapColor.METAL)
             .strength(2f)
             .requiresCorrectToolForDrops()
