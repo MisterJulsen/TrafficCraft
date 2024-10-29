@@ -1,15 +1,13 @@
 package de.mrjulsen.trafficcraft.item;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.trafficcraft.Constants;
+import de.mrjulsen.trafficcraft.recipe.IDamageableCraftingItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DiggerItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -19,7 +17,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class HammerItem extends DiggerItem {
+public class HammerItem extends DiggerItem implements IDamageableCraftingItem {
 
     private static final float ATTACK_DAMAGE = 1.0f;
     private static final float ATTACK_SPEED = -3.0f;
@@ -47,19 +45,5 @@ public class HammerItem extends DiggerItem {
         }
 
         return super.useOn(pContext);
-    }
-
-    @Override
-    public boolean hasCraftingRemainingItem() {
-        return true;
-    }
-
-    @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {        
-        ItemStack container = stack.copy();
-        if (container.hurt(1, Constants.RANDOM_SOURCE, null))
-            return ItemStack.EMPTY;
-        else
-            return container;
     }
 }

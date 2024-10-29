@@ -10,11 +10,13 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
+import de.mrjulsen.trafficcraft.recipe.DamageableItemRecipeSerializer;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 
 public class ModItems {
@@ -41,8 +43,14 @@ public class ModItems {
     public static final RegistrySupplier<Item> CREATIVE_PATTERN_CATALOGUE = ITEMS.register("creative_pattern_catalogue", () -> new CreativePatternCatalogueItem(((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(ModCreativeModeTab.MOD_TAB)));
 
 
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.RECIPE_SERIALIZER);
+    public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE = RECIPES.register("damageable_item_recipe", DamageableItemRecipeSerializer::new);
+
+
+
     public static void register() {
-        ITEMS.register(); 
+        ITEMS.register();
+        RECIPES.register();
     }
 
 }
