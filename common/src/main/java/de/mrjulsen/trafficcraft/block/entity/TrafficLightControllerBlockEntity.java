@@ -13,6 +13,7 @@ import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -46,15 +47,15 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
 
-        this.ticks = compound.getInt(NBT_TICKS);
-        this.running = compound.getBoolean(NBT_RUNNING);
-        this.totalTicks = compound.getLong(NBT_TOTAL_TICKS);
-        this.powered = compound.getBoolean(NBT_POWERED);
+        this.ticks = tag.getInt(NBT_TICKS);
+        this.running = tag.getBoolean(NBT_RUNNING);
+        this.totalTicks = tag.getLong(NBT_TOTAL_TICKS);
+        this.powered = tag.getBoolean(NBT_POWERED);
 
-        ListTag listTag = compound.getList(NBT_SCHEDULES, Tag.TAG_COMPOUND);
+        ListTag listTag = tag.getList(NBT_SCHEDULES, Tag.TAG_COMPOUND);
         schedules.clear();
         for (int i = 0; i < listTag.size(); i++) {
             TrafficLightSchedule data = new TrafficLightSchedule();
@@ -62,18 +63,17 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
             schedules.add(data);
         }
 
-        ListTag trafficLightsList = compound.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
+        ListTag trafficLightsList = tag.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
         trafficLightLocations.clear();
         for (int i = 0; i < trafficLightsList.size(); i++) {
             Location loc = Location.fromNbt(trafficLightsList.getCompound(i));
             trafficLightLocations.add(loc);
         }
-
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag)
-    {       
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);   
         ListTag listTag = new ListTag();
         for (TrafficLightSchedule data : schedules) {
             listTag.add(data.toNbt());
@@ -89,9 +89,7 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
         tag.putBoolean(NBT_POWERED, powered);
         tag.putBoolean(NBT_RUNNING, running);
         tag.put(NBT_SCHEDULES, listTag);
-        //tag.put("modes", modesTag);
         tag.put(NBT_TRAFFIC_LIGHT_LOCATIONS, trafficLightsList);
-        super.saveAdditional(tag);
     }
 
     private void instanceTick(Level level, BlockPos pos, BlockState state) {

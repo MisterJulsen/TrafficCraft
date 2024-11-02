@@ -1,0 +1,10 @@
+{
+    "type": "minecraft:stonecutting",
+    "ingredient": {
+        "item": "minecraft:iron_block"
+    },
+    "result": {
+        "id": "trafficcraft:traffic_sign_post",
+        "count": 32
+    }
+}

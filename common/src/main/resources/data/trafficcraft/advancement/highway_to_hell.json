@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "trafficcraft:gold_road_construction_tool"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.highway_to_hell"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.highway_to_hell.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "parent": "trafficcraft:road_construction_tool",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}

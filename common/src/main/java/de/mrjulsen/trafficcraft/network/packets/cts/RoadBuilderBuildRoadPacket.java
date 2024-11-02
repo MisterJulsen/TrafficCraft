@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 import java.util.Optional;
 
 import de.mrjulsen.mcdragonlib.core.Location;
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.ScheduledTask;
 import de.mrjulsen.mcdragonlib.util.ScheduledTask.ScheduledTaskContext;
@@ -16,7 +16,8 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuildingData;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,7 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
-public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildRoadPacket> {
+public class RoadBuilderBuildRoadPacket extends BaseNetworkPacket<RoadBuilderBuildRoadPacket> {
 
     private Location pos1;
     private Location pos2;
@@ -45,7 +46,7 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
     }
 
     @Override
-    public void encode(RoadBuilderBuildRoadPacket packet, FriendlyByteBuf buffer) {
+    public void encode(RoadBuilderBuildRoadPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeNbt(packet.pos1.toNbt());
         buffer.writeNbt(packet.pos2.toNbt());
         buffer.writeByte(packet.roadWidth);
@@ -54,7 +55,7 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
     }
 
     @Override
-    public RoadBuilderBuildRoadPacket decode(FriendlyByteBuf buffer) {
+    public RoadBuilderBuildRoadPacket decode(RegistryFriendlyByteBuf buffer) {
         Location pos1 = Location.fromNbt(buffer.readNbt());
         Location pos2 = Location.fromNbt(buffer.readNbt());
         byte roadWidth = buffer.readByte();
@@ -99,6 +100,8 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
     }
 
     private boolean run(RoadBuildingData data, ScheduledTaskContext context) {
+        ServerLevel serverLevel = (ServerLevel)data.player.level();
+        ServerPlayer serverPlayer = (ServerPlayer)data.player;
         boolean[] canContinue = new boolean[] { true };
         for (Entry<BlockPos, Integer> block : data.blocks.get(context.iteration()).entrySet()) {
             
@@ -122,8 +125,8 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                             int removeCount = countLeft;
                             countLeft -= Math.min(countLeft, stack.get().getCount());
                             stack.get().shrink(removeCount);
-                            data.item.hurtAndBreak(1, data.player, (player) -> {
-                                player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                            data.item.hurtAndBreak(1, serverLevel, serverPlayer, (item) -> {
+                                serverPlayer.onEquippedItemBroken(item, data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                                 canContinue[0] = false;
                             });
                         }
@@ -141,8 +144,8 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                         } else {
                             canContinue[0] = false;
                         }
-                        data.item.hurtAndBreak(1, data.player, (player) -> {
-                            player.broadcastBreakEvent(data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+                        data.item.hurtAndBreak(1, serverLevel, serverPlayer, (item) -> {
+                            serverPlayer.onEquippedItemBroken(item, data.hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
                             canContinue[0] = false;
                         });                             
                     }

@@ -18,7 +18,7 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -110,7 +110,6 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -120,7 +119,6 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
@@ -153,24 +151,21 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
         return false;
     }   
     
-    
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        
-        ItemStack stack = pPlayer.getInventory().getSelected();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Item item = stack.getItem();
 
         if (item instanceof BrushItem) {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
 
-        if (pLevel.isClientSide && item instanceof WrenchItem) {
-            if (!pPlayer.isShiftKeyDown())
-                ClientWrapper.showTrafficLightConfigScreen(pLevel, pPos);
+        if (level.isClientSide && item instanceof WrenchItem) {
+            if (!player.isShiftKeyDown())
+                ClientWrapper.showTrafficLightConfigScreen(level, pos);
                 
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         
     }
 

@@ -1,0 +1,39 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "TPT",
+        "RCR",
+        " I "
+    ],
+    "key": {
+        "T": [
+            {
+                "item": "minecraft:redstone_torch"
+            }
+        ],
+        "P": [
+            {
+                "item": "minecraft:light_weighted_pressure_plate"
+            }
+        ],
+        "R": [
+            {
+                "tag": "c:dusts/redstone"
+            }
+        ],
+        "C": [
+            {
+                "tag": "c:ingots/copper"
+            }
+        ],
+        "I": [
+            {
+                "item": "trafficcraft:traffic_sign_post"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:traffic_light_request_button",
+        "count": 1
+    }
+}

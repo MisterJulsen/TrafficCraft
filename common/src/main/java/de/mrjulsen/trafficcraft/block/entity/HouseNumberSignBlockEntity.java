@@ -9,6 +9,7 @@ import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -39,15 +40,15 @@ public class HouseNumberSignBlockEntity extends WritableSignBlockEntity implemen
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        this.color = PaintColor.getByIndex(compound.getInt(NBT_COLOR));
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.color = PaintColor.getByIndex(tag.getInt(NBT_COLOR));
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putInt(NBT_COLOR, color.getIndex());
-        super.saveAdditional(tag);
     }
 
     @Override

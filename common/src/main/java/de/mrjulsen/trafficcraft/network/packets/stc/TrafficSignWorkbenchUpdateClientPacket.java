@@ -2,24 +2,24 @@ package de.mrjulsen.trafficcraft.network.packets.stc;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
-public class TrafficSignWorkbenchUpdateClientPacket implements IPacketBase<TrafficSignWorkbenchUpdateClientPacket> {
+public class TrafficSignWorkbenchUpdateClientPacket extends BaseNetworkPacket<TrafficSignWorkbenchUpdateClientPacket> {
 
     public TrafficSignWorkbenchUpdateClientPacket() {}
 
     @Override
-    public void encode(TrafficSignWorkbenchUpdateClientPacket packet, FriendlyByteBuf buffer) {
+    public void encode(TrafficSignWorkbenchUpdateClientPacket packet, RegistryFriendlyByteBuf buffer) {
         
     }
 
     @Override
-    public TrafficSignWorkbenchUpdateClientPacket decode(FriendlyByteBuf buffer) {
+    public TrafficSignWorkbenchUpdateClientPacket decode(RegistryFriendlyByteBuf buffer) {
         return new TrafficSignWorkbenchUpdateClientPacket();
     }
     

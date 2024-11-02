@@ -12,6 +12,7 @@ import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -97,22 +98,21 @@ public class TownSignBlockEntity extends WritableSignBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
         this.linesBack = new String[this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length];
         for (int i = 0; i < this.getTownSignRenderConfig(ETownSignSide.BACK).lineData().length; i++) {
-            this.linesBack[i] = compound.getString("lineBack" + i);
+            this.linesBack[i] = tag.getString("lineBack" + i);
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         if (this.linesBack != null) {
             for (int i = 0; i < this.linesBack.length; i++) {
                 tag.putString("lineBack" + i, this.linesBack[i]);
             }
         }
     }
-
 }

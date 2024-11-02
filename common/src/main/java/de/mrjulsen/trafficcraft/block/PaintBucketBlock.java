@@ -6,6 +6,7 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
+import de.mrjulsen.trafficcraft.components.BrushComponent;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import net.minecraft.ChatFormatting;
@@ -15,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -115,20 +117,17 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
-    {
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (state.getValue(WATERLOGGED)) {
             player.displayClientMessage(TextUtils.translate("block.trafficcraft.paint_bucket.message.underwater").withStyle(ChatFormatting.RED), true);
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
 
         if (!(level.getBlockEntity(pos) instanceof ColoredBlockEntity)) {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
 
         IColorBlockEntity blockEntity = (IColorBlockEntity)level.getBlockEntity(pos);
-
-        ItemStack stack = player.getItemInHand(hand);
 
         if (stack.getItem() instanceof BrushItem item) {
             int paint = state.getValue(PAINT);
@@ -137,26 +136,23 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
             if (paint <= 0) {
                 if(!level.isClientSide)
                     player.displayClientMessage(TextUtils.translate("block.trafficcraft.paint_bucket.message.empty").withStyle(ChatFormatting.RED), true);
-                return InteractionResult.FAIL;
+                return ItemInteractionResult.FAIL;
             }
 
-            // Generate tags if item has no nbt
-            if (!stack.hasTag())
-                stack.setTag(BrushItem.checkNbt(stack));
+            BrushComponent comp = item.getComponent(stack);
 
             // Set brush color
-            if ((stack.getTag().getInt("paint") < item.getMaxPaint() && paint > 0) || (stack.getTag().getInt("paint") == item.getMaxPaint() && stack.getTag().getInt("color") != blockEntity.getColor().getIndex())) {
+            if ((comp.paintAmount() < item.getMaxPaint() && paint > 0) || (comp.paintAmount() == item.getMaxPaint() && comp.colorId() != blockEntity.getColor().getIndex())) {
                 
                 if(!level.isClientSide) {
                     
                     if(!player.isCreative())
                         level.setBlockAndUpdate(pos, state.setValue(PAINT, state.getValue(PAINT) - 1));
 
-                    stack.getTag().putInt("paint", item.getMaxPaint());
-                    stack.getTag().putInt("color", blockEntity.getColor().getIndex());
+                    item.setComponent(stack, new BrushComponent(comp.patternId(), item.getMaxPaint(), blockEntity.getColor().getIndex()));
                     level.playSound(player, pos, SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.BLOCKS, 0.8F, 1.0F);
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         } else if (stack.getItem() instanceof DyeItem dye) { 
 
@@ -165,7 +161,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
                     if (!level.isClientSide) {
                         player.displayClientMessage(TextUtils.translate("block.trafficcraft.paint_bucket.message.wrong_color").withStyle(ChatFormatting.RED), true);
                     }
-                    return InteractionResult.FAIL;
+                    return ItemInteractionResult.FAIL;
                 }
             }
 
@@ -173,7 +169,7 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
                 if (!level.isClientSide) {
                     player.displayClientMessage(TextUtils.translate("block.trafficcraft.paint_bucket.message.full").withStyle(ChatFormatting.YELLOW), true);
                 }
-                return InteractionResult.FAIL;
+                return ItemInteractionResult.FAIL;
             }
 
             if (state.getValue(PAINT) < MAX_PAINT) {
@@ -186,15 +182,14 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
                     level.playSound(null, pos, SoundEvents.BUCKET_FILL_LAVA, SoundSource.BLOCKS, .8F, 0.9F);
                 }
 
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.FAIL;
+        return ItemInteractionResult.FAIL;
     }
 
     
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -204,7 +199,6 @@ public class PaintBucketBlock extends ColorableBlock implements SimpleWaterlogge
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

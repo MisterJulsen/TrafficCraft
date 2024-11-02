@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface IIconEnum {
 
-	public static final ResourceLocation ICON_TEXTURE_LOCATION = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/icons.png");
+	public static final ResourceLocation ICON_TEXTURE_LOCATION = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/icons.png");
 	public static final int TEXTURE_SIZE = 128;
 	public static final int DEFAULT_SPRITE_SIZE = 16;
 

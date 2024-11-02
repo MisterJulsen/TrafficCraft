@@ -17,6 +17,7 @@ import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
@@ -63,12 +64,12 @@ public class PaintBrushScreen extends DLScreen {
         this.color = color;
         this.diffuseColor = color.getTextureColor();
 
-        ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/sign_blank.png");
+        ResourceLocation path = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/block/sign_blank.png");
         List<ResourceLocation> locs = new ArrayList<>();
 
         for (int i = 1; i <= Constants.MAX_ASPHALT_PATTERNS + 1; i++) {
             locs.add(path);
-            path = new ResourceLocation(TrafficCraft.MOD_ID, "textures/block/patterns/" + i + ".png");
+            path = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/block/patterns/" + i + ".png");
         }
         this.resources = locs.toArray(ResourceLocation[]::new);
         this.count = this.resources.length;
@@ -76,7 +77,7 @@ public class PaintBrushScreen extends DLScreen {
 
     @Override
     public void onClose() {
-        TrafficCraft.net().sendToServer(new PaintBrushPacket(patternId));
+        DLNetworkManager.sendToServer(new PaintBrushPacket(patternId));
         super.onClose();
     }
 

@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -100,14 +99,14 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pResult) {
-        if (!pState.getValue(POWERED) && !pState.getValue(ACTIVATED)) {
-            Direction direction = pResult.getDirection();
-            BlockPos blockpos = pResult.getBlockPos();
-            boolean flag = this.isProperHit(pState, direction, pResult.getLocation().y - (double)blockpos.getY());
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!state.getValue(POWERED) && !state.getValue(ACTIVATED)) {
+            Direction direction = hitResult.getDirection();
+            BlockPos blockpos = hitResult.getBlockPos();
+            boolean flag = this.isProperHit(state, direction, hitResult.getLocation().y - (double)blockpos.getY());
             if (flag) {
-                this.press(pState, pLevel, pPos);
-                pLevel.gameEvent(pPlayer, GameEvent.BLOCK_ACTIVATE, pPos);
+                this.press(state, level, pos);
+                level.gameEvent(player, GameEvent.BLOCK_ACTIVATE, pos);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -149,7 +148,6 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
 
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -159,7 +157,6 @@ public class TrafficLightRequestButtonBlock extends BaseEntityBlock implements S
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

@@ -32,6 +32,7 @@ import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.ColorUtils;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -132,8 +133,8 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
 
 
     // gui textures
-    private static final ResourceLocation GUI = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench.png");
-    private static final ResourceLocation OVERLAY = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench_overlay.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench.png");
+    private static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench_overlay.png");
 
     public TrafficSignWorkbenchGui(TrafficSignWorkbenchMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -212,7 +213,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                 shape = getPrevievTexture().getRawData().getShape();
                 pixels = ClientInit.textureToIntArray(getPrevievTexture().getTexture(), true);
                 nameBox.setValue(preview.getName());
-                selectedIndex = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
+                selectedIndex = (this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item) ? item.getSelectedIndex(this.getMenu().patternSlot.getItem()) : -1;
             }
         )).withAlignment(EAlignment.CENTER);
         this.tooltips.get(TrafficSignWorkbenchMode.DEFAULT).add(DLTooltip.of(tooltipDefaultEdit).assignedTo(btnEdit));
@@ -234,9 +235,9 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                 }
                 
                 this.minecraft.setScreen(new ConfirmScreen((b) -> {
-                    if (b) {
-                        int idx = PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem());
-                        TrafficCraft.net().sendToServer(new PatternCatalogueDeletePacket(idx));
+                    if (b && this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item) {
+                        int idx = item.getSelectedIndex(this.getMenu().patternSlot.getItem());
+                        DLNetworkManager.sendToServer(new PatternCatalogueDeletePacket(idx));
                     }
                     this.minecraft.setScreen(this);
                 },
@@ -459,7 +460,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                             
                             TrafficSignTextureData data = TrafficSignClientTexture.createNew(shape, img, null);
                             NamedTrafficSignTextureReference ref = NamedTrafficSignTextureReference.of(data, name);
-                            TrafficCraft.net().sendToServer(new TrafficSignPatternPacket(ref, selectedIndex));
+                            DLNetworkManager.sendToServer(new TrafficSignPatternPacket(ref, selectedIndex));
                             img.close();
                             switchMode(TrafficSignWorkbenchMode.DEFAULT);
                             initPreview();
@@ -569,11 +570,13 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                             int color = ColorPaletteItem.getColorAt(stack, j);
                             selectedColor = color == 0 ? selectedColor : color;
                             break;
-                        case 1:
-                            TrafficCraft.net().sendToServer(new ColorPaletteItemPacket(selectedColor, j));
+                        case 1:                        
+                            ColorPaletteItem.setColor(stack, j, selectedColor);
+                            DLNetworkManager.sendToServer(new ColorPaletteItemPacket(selectedColor, j));
                             break;
                         case 2:
-                            TrafficCraft.net().sendToServer(new ColorPaletteItemPacket(0, j));
+                            ColorPaletteItem.setColor(stack, j, 0);
+                            DLNetworkManager.sendToServer(new ColorPaletteItemPacket(0, j));
                             break;
                         default:
                             break;
@@ -633,7 +636,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     }
 
     private boolean isFull() {
-        return this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem && PatternCatalogueItem.getStoredPatternCount(this.getMenu().patternSlot.getItem()) >= ((PatternCatalogueItem)this.getMenu().patternSlot.getItem().getItem()).getMaxPatterns();
+        return this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item && item.getStoredPatternCount(this.getMenu().patternSlot.getItem()) >= ((PatternCatalogueItem)this.getMenu().patternSlot.getItem().getItem()).getMaxPatterns();
     }
 
     @Override
@@ -650,7 +653,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
                 GuiUtils.drawTexture(OVERLAY, graphics, nextButton.getX(), nextButton.getY(), nextButton.getWidth(), nextButton.getHeight(), nextButton.isInBounds(mouseX, mouseY) ? 23 : 0, 174, nextButton.getWidth(), nextButton.getHeight(), 256, 256); //left
                 
                 // render pattern count            
-                String label = String.format("%s / %s", PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1, PatternCatalogueItem.getStoredPatternCount(this.getMenu().patternSlot.getItem()));
+                String label = (this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item) ? String.format("%s / %s", item.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1, item.getStoredPatternCount(this.getMenu().patternSlot.getItem())) : "";
                 GuiUtils.drawString(graphics, font, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 170 - font.lineHeight / 2, label, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
                 label = preview == null ? "" : preview.getName();
                 GuiUtils.drawString(graphics, font, guiLeft + WIDTH / 2 - font.width(label) / 2, guiTop + 155 - font.lineHeight / 2, label, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
@@ -823,13 +826,19 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     }
 
     private void switchPreview(int index) {
-        PatternCatalogueItem.setSelectedIndex(this.getMenu().patternSlot.getItem(), index);
-        TrafficCraft.net().sendToServer(new PatternCatalogueIndexPacketGui(index));
+        if (!(this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item)) {
+            return;
+        }
+        item.setSelectedIndex(this.getMenu().patternSlot.getItem(), index);
+        DLNetworkManager.sendToServer(new PatternCatalogueIndexPacketGui(index));
         initPreview();
     }
 
     private void initPreview() {
-        this.preview = PatternCatalogueItem.getSelectedPattern(this.getMenu().patternSlot.getItem());
+        if (!(this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item)) {
+            return;
+        }
+        this.preview = item.getSelectedPattern(this.getMenu().patternSlot.getItem());
         getPrevievTexture();
     }
 
@@ -887,13 +896,18 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        
+        if (!(this.getMenu().patternSlot.getItem().getItem() instanceof PatternCatalogueItem item)) {
+            return super.mouseClicked(pMouseX, pMouseY, pButton);
+        }
+
         switch (mode) {
             case DEFAULT:
                 if (nextButton.isInBounds(pMouseX, pMouseY)) {
-                    switchPreview(PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1);
+                    switchPreview(item.getSelectedIndex(this.getMenu().patternSlot.getItem()) + 1);
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
                 } else if (prevButton.isInBounds(pMouseX, pMouseY)) {
-                    switchPreview(Math.max(PatternCatalogueItem.getSelectedIndex(this.getMenu().patternSlot.getItem()) - 1, 0));
+                    switchPreview(Math.max(item.getSelectedIndex(this.getMenu().patternSlot.getItem()) - 1, 0));
                     minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.2F));
                 }
                 break;

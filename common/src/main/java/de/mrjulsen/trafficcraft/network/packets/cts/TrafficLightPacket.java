@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
@@ -14,12 +14,12 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
+public class TrafficLightPacket extends BaseNetworkPacket<TrafficLightPacket> {
 
     private BlockPos pos;
     private Collection<TrafficLightColor> enabledColors;
@@ -46,7 +46,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
     }
 
     @Override
-    public void encode(TrafficLightPacket packet, FriendlyByteBuf buffer) {
+    public void encode(TrafficLightPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         TrafficLightColor[] enabledColorsArr = packet.enabledColors.toArray(TrafficLightColor[]::new);        
         buffer.writeBoolean(enabledColorsArr.length > 0);
@@ -75,7 +75,7 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
     }
 
     @Override
-    public TrafficLightPacket decode(FriendlyByteBuf buffer) {
+    public TrafficLightPacket decode(RegistryFriendlyByteBuf buffer) {
         
         BlockPos pos = buffer.readBlockPos();
         Collection<TrafficLightColor> enabledColors = new ArrayList<>();

@@ -6,6 +6,7 @@ import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,22 +30,21 @@ public class TrafficLightRequestButtonBlockEntity extends SyncedBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-
-        this.listening = compound.getBoolean(NBT_LISTENING);
-        if (compound.contains(NBT_LINKED_TO)) {
-            this.linkLocation = Location.fromNbt(compound.getCompound(NBT_LINKED_TO));
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.listening = tag.getBoolean(NBT_LISTENING);
+        if (tag.contains(NBT_LINKED_TO)) {
+            this.linkLocation = Location.fromNbt(tag.getCompound(NBT_LINKED_TO));
         }
     }
-
+    
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putBoolean(NBT_LISTENING, this.listening);
         if (this.linkLocation != null) {
             tag.put(NBT_LINKED_TO, linkLocation.toNbt());
         }
-        super.saveAdditional(tag);
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {

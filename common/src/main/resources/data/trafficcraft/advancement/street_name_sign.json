@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "id": "trafficcraft:street_sign"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.street_name_sign"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.street_name_sign.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:traffic_sign",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "trafficcraft:street_sign"
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

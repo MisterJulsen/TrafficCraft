@@ -1,0 +1,12 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "item": "trafficcraft:traffic_sign"
+      }
+    ],
+    "result": {
+      "id": "trafficcraft:town_sign",
+      "count": 1
+    }
+  }

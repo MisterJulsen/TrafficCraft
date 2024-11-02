@@ -2,15 +2,15 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
-public class TrafficLightControllerPacket implements IPacketBase<TrafficLightControllerPacket> {
+public class TrafficLightControllerPacket extends BaseNetworkPacket<TrafficLightControllerPacket> {
     private BlockPos pos;
     private boolean status;
 
@@ -22,15 +22,16 @@ public class TrafficLightControllerPacket implements IPacketBase<TrafficLightCon
     }
 
     @Override
-    public void encode(TrafficLightControllerPacket packet, FriendlyByteBuf buffer) {
+    public void encode(TrafficLightControllerPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeBoolean(packet.status);
     }
 
     @Override
-    public TrafficLightControllerPacket decode(FriendlyByteBuf buffer) {
+    public TrafficLightControllerPacket decode(RegistryFriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         boolean status = buffer.readBoolean();
+        System.out.println("AJKDhsljkgsl");
 
         return new TrafficLightControllerPacket(pos, status);
     }

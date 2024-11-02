@@ -2,15 +2,16 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
+import de.mrjulsen.trafficcraft.components.RoadConstructionToolComponent;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
-public class RoadBuilderDataPacket implements IPacketBase<RoadBuilderDataPacket> {
+public class RoadBuilderDataPacket extends BaseNetworkPacket<RoadBuilderDataPacket> {
 
     private boolean replaceBlocks;
     private byte roadWidth;
@@ -25,14 +26,14 @@ public class RoadBuilderDataPacket implements IPacketBase<RoadBuilderDataPacket>
     }
 
     @Override
-    public void encode(RoadBuilderDataPacket packet, FriendlyByteBuf buffer) {
+    public void encode(RoadBuilderDataPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBoolean(packet.replaceBlocks);
         buffer.writeByte(packet.roadWidth);
         buffer.writeEnum(packet.roadType);
     }
 
     @Override
-    public RoadBuilderDataPacket decode(FriendlyByteBuf buffer) {
+    public RoadBuilderDataPacket decode(RegistryFriendlyByteBuf buffer) {
         boolean replaceBlocks = buffer.readBoolean();
         byte roadWidth = buffer.readByte();
         RoadType roadType = buffer.readEnum(RoadType.class);
@@ -43,17 +44,14 @@ public class RoadBuilderDataPacket implements IPacketBase<RoadBuilderDataPacket>
     public void handle(RoadBuilderDataPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {
             ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
+            ItemStack stack;
 
-            if (sender.getMainHandItem().getItem() instanceof RoadConstructionTool) {
-                CompoundTag nbt = sender.getMainHandItem().getOrCreateTag();
-                nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, packet.roadWidth);
-                nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, packet.replaceBlocks);
-                nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, packet.roadType.getIndex());
-            } else if (sender.getOffhandItem().getItem() instanceof RoadConstructionTool) {             
-                CompoundTag nbt = sender.getOffhandItem().getOrCreateTag();
-                nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, packet.roadWidth);
-                nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, packet.replaceBlocks);
-                nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, packet.roadType.getIndex());
+            if ((stack = sender.getMainHandItem()).getItem() instanceof RoadConstructionTool item) {
+                RoadConstructionToolComponent comp = item.getComponent(stack);
+                item.setComponent(stack, new RoadConstructionToolComponent(comp.start(), comp.end(), packet.roadType, packet.roadWidth, packet.replaceBlocks));
+            } else if ((stack = sender.getOffhandItem()).getItem() instanceof RoadConstructionTool item) { 
+                RoadConstructionToolComponent comp = item.getComponent(stack);
+                item.setComponent(stack, new RoadConstructionToolComponent(comp.start(), comp.end(), packet.roadType, packet.roadWidth, packet.replaceBlocks));
             }
             sender.getInventory().setChanged();
         });

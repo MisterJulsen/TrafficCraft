@@ -14,9 +14,9 @@ import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
 import de.mrjulsen.mcdragonlib.data.Clipboard;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.ModGuiUtils;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
@@ -116,7 +116,7 @@ public class TrafficLightControllerScreen extends DLScreen {
             (btn) ->  {
                 Optional<TrafficLightSchedule> schedule = Clipboard.get(TrafficLightSchedule.class);
                 if (schedule.isPresent()) {
-                    TrafficCraft.net().sendToServer(new TrafficLightSchedulePacket(
+                    DLNetworkManager.sendToServer(new TrafficLightSchedulePacket(
                         blockPos,
                         List.of(schedule.get())
                     ));
@@ -129,7 +129,7 @@ public class TrafficLightControllerScreen extends DLScreen {
 
     @Override
     protected void onDone() {
-        TrafficCraft.net().sendToServer(new TrafficLightControllerPacket(
+        DLNetworkManager.sendToServer(new TrafficLightControllerPacket(
             blockPos,
             status
         ));

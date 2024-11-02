@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "II",
+        "PP",
+        "PP"
+    ],
+    "key": {
+        "I": [
+            {
+                "tag": "c:nuggets/iron"
+            }
+        ],
+        "P": [
+            {
+                "item": "minecraft:paper"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:pattern_catalogue",
+        "count": 1
+    }
+}

@@ -2,14 +2,15 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.trafficcraft.components.BrushComponent;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
-public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
+public class PaintBrushPacket extends BaseNetworkPacket<PaintBrushPacket> {
 
     private int pattern;
 
@@ -20,12 +21,12 @@ public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
     }
 
     @Override
-    public void encode(PaintBrushPacket packet, FriendlyByteBuf buffer) {
+    public void encode(PaintBrushPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(packet.pattern);
     }
 
     @Override
-    public PaintBrushPacket decode(FriendlyByteBuf buffer) {
+    public PaintBrushPacket decode(RegistryFriendlyByteBuf buffer) {
         int pattern = buffer.readInt();
 
         return new PaintBrushPacket(pattern);
@@ -35,14 +36,15 @@ public class PaintBrushPacket implements IPacketBase<PaintBrushPacket> {
     public void handle(PaintBrushPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {
             ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-
-            if(sender.getMainHandItem().getItem() instanceof BrushItem) {
-                CompoundTag nbt = sender.getMainHandItem().getTag();
-                nbt.putInt(BrushItem.NBT_PATTERN, packet.pattern);
-            } else if (sender.getOffhandItem().getItem() instanceof BrushItem) {
-             
-                CompoundTag nbt = sender.getOffhandItem().getTag();
-                nbt.putInt(BrushItem.NBT_PATTERN, packet.pattern);
+            
+            if (sender.getMainHandItem().getItem() instanceof BrushItem brush) {
+                ItemStack stack = sender.getMainHandItem();
+                BrushComponent comp = brush.getComponent(stack);
+                brush.setComponent(stack, new BrushComponent(packet.pattern, comp.paintAmount(), comp.colorId()));
+            } else if (sender.getOffhandItem().getItem() instanceof BrushItem brush) {
+                ItemStack stack = sender.getOffhandItem();
+                BrushComponent comp = brush.getComponent(stack);
+                brush.setComponent(stack, new BrushComponent(packet.pattern, comp.paintAmount(), comp.colorId()));
             }
             sender.getInventory().setChanged();
         });

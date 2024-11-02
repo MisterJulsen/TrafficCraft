@@ -2,18 +2,18 @@ package de.mrjulsen.trafficcraft.network.packets.stc;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class TrafficSignTextureResetPacket implements IPacketBase<TrafficSignTextureResetPacket> {
+public class TrafficSignTextureResetPacket extends BaseNetworkPacket<TrafficSignTextureResetPacket> {
     public BlockPos pos;
 
     public TrafficSignTextureResetPacket() {}
@@ -23,12 +23,12 @@ public class TrafficSignTextureResetPacket implements IPacketBase<TrafficSignTex
     }
 
     @Override
-    public void encode(TrafficSignTextureResetPacket packet, FriendlyByteBuf buffer) {
+    public void encode(TrafficSignTextureResetPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
     }
 
     @Override
-    public TrafficSignTextureResetPacket decode(FriendlyByteBuf buffer) {
+    public TrafficSignTextureResetPacket decode(RegistryFriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
 
         return new TrafficSignTextureResetPacket(pos);

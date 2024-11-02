@@ -37,8 +37,8 @@ public interface IPaintableBlock {
         BlockPos pos = pContext.getClickedPos();
         ItemStack stack = pContext.getItemInHand();
 
-        if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity) {
-            blockEntity.setColor(BrushItem.getColor(stack));
+        if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity && stack.getItem() instanceof BrushItem item) {
+            blockEntity.setColor(item.getColor(stack));
             if (!level.isClientSide) {                
                 level.playSound(null, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.8F, 2.0F);
             }

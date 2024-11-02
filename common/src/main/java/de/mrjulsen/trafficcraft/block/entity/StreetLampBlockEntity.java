@@ -6,6 +6,7 @@ import de.mrjulsen.mcdragonlib.util.TimeUtils;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -30,18 +31,18 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
 
-        this.onTimeTicks = compound.getInt(NBT_TURN_ON_TIME);
-        this.offTimeTicks = compound.getInt(NBT_TURN_OFF_TIME);
+        this.onTimeTicks = tag.getInt(NBT_TURN_ON_TIME);
+        this.offTimeTicks = tag.getInt(NBT_TURN_OFF_TIME);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putInt(NBT_TURN_ON_TIME, onTimeTicks);
         tag.putInt(NBT_TURN_OFF_TIME, offTimeTicks);
-        super.saveAdditional(tag);
     }
 
     public void tick(Level level, BlockPos pos, BlockState state) {

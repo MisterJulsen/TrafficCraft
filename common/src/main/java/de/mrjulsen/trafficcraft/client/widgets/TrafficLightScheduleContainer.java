@@ -179,7 +179,7 @@ public class TrafficLightScheduleContainer extends DLWidgetContainer {
 
         private final Font font = Minecraft.getInstance().font;
 
-        private static final ResourceLocation WIDGETS = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
+        private static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
         private static final int TEXTURE_WIDTH = 64;
         private static final int TEXTURE_HEIGHT = 64;
 

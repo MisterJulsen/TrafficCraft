@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 
 import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
@@ -112,12 +113,12 @@ public class TownSignScreen extends WritableSignScreen {
 
     @Override
     public void removed() {
-        TrafficCraft.net().sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
+        DLNetworkManager.sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
     }
 
     @Override
     protected void onDone() {
-        TrafficCraft.net().sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
+        DLNetworkManager.sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
         this.minecraft.setScreen(null);
     }
     

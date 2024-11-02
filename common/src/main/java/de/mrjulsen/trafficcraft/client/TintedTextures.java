@@ -42,9 +42,9 @@ public class TintedTextures {
                 if (blockItem.getBlock() instanceof IPaintableBlock coloredBlock) {
                     return coloredBlock.getDefaultColor();
                 }
-            } else if (pStack.getItem() instanceof BrushItem) {                
+            } else if (pStack.getItem() instanceof BrushItem item) {                
                 if (pTintIndex == 1) {
-                    return BrushItem.getColor(pStack).getTextureColor();
+                    return (0xFF << 24) | (PaintColor.getByIndex(item.getComponent(pStack).colorId()).getTextureColor() & 0x00FFFFFF);
                 } else {
                     return 0xFFFFFFFF;
                 }

@@ -16,10 +16,12 @@ import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
 import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
+import de.mrjulsen.trafficcraft.components.RoadConstructionToolComponent;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult;
@@ -27,7 +29,6 @@ import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderResetPacket;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -36,7 +37,7 @@ import net.minecraft.world.item.ItemStack;
 public class RoadConstructionToolScreen extends DLScreen {
     public static final Component title = TextUtils.translate("gui.trafficcraft.road_builder.title");
 
-    private static final ResourceLocation GUI = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/road_construction_tool.png");
+    private static final ResourceLocation GUI = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/road_construction_tool.png");
     private static final int GUI_WIDTH = 244;
     private static final int GUI_HEIGHT = 179;
     private static final int WORKING_AREA_X = 7;
@@ -89,16 +90,17 @@ public class RoadConstructionToolScreen extends DLScreen {
     public RoadConstructionToolScreen(ItemStack stack, int blocksCount, int slopesCount) {
         super(title);
 
-        if (!(stack.getItem() instanceof RoadConstructionTool)) {
+        if (!(stack.getItem() instanceof RoadConstructionTool item)) {
             throw new IllegalArgumentException(stack.getDisplayName().getString() + " is not a valid item for screen 'RoadBuilderToolScreen'.");
         }
 
-        CompoundTag nbt = stack.getOrCreateTag();
-        pos1 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1));
-        pos2 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION2));
-        roadWidth = nbt.getByte(RoadConstructionTool.NBT_ROAD_WIDTH);
-        replaceExistingBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
-        roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
+        RoadConstructionToolComponent comp = item.getComponent(stack);
+
+        pos1 = comp.start().orElse(null);
+        pos2 = comp.end().orElse(null);
+        roadWidth = comp.roadWidth();
+        replaceExistingBlocks = comp.replaceBlocks();
+        roadType = comp.type();
 
         this.stack = stack;
         this.blocksCount = blocksCount;
@@ -123,23 +125,25 @@ public class RoadConstructionToolScreen extends DLScreen {
         int btnWidth = btnSpace - 2;
 
         addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
-            TrafficCraft.net().sendToServer(new RoadBuilderResetPacket());
+            DLNetworkManager.sendToServer(new RoadBuilderResetPacket());
             this.onClose();
         }, DLTooltip.of(tooltipReset).withMaxWidth(width / 4));
 
         this.buildButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
             updateStackData();
-            CompoundTag nbt = this.stack.getOrCreateTag();
-            Location pos1 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1));
-            Location pos2 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION2));
-            byte roadWidth = nbt.getByte(RoadConstructionTool.NBT_ROAD_WIDTH);
-            boolean replaceBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
-            RoadType roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
+            RoadConstructionTool item = (RoadConstructionTool)stack.getItem();
+            RoadConstructionToolComponent comp = item.getComponent(stack);
 
-            TrafficCraft.net().sendToServer(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
+            Location pos1 = comp.start().get();
+            Location pos2 =  comp.end().get();
+            byte roadWidth = comp.roadWidth();
+            boolean replaceBlocks = comp.replaceBlocks();
+            RoadType roadType = comp.type();
+
+            DLNetworkManager.sendToServer(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
 
             RoadConstructionTool.reset(stack);
-            TrafficCraft.net().sendToServer(new RoadBuilderResetPacket());
+            DLNetworkManager.sendToServer(new RoadBuilderResetPacket());
             this.onDone();
         }, null);
         buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
@@ -201,11 +205,18 @@ public class RoadConstructionToolScreen extends DLScreen {
 
     private void updateStackData() {
         roadWidth = (byte)this.widthSlider.getValue();
-        CompoundTag nbt = this.stack.getOrCreateTag();
-        nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, roadWidth);
-        nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, replaceExistingBlocks);
-        nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, roadType.getIndex());
-        TrafficCraft.net().sendToServer(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
+        if (!(stack.getItem() instanceof RoadConstructionTool item)) {
+            return;
+        }
+        RoadConstructionToolComponent comp = item.getComponent(stack);
+        item.setComponent(stack, new RoadConstructionToolComponent(
+            comp.start(),
+            comp.end(),
+            roadType,
+            roadWidth,
+            replaceExistingBlocks
+        ));
+        DLNetworkManager.sendToServer(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
     }
 
     @Override

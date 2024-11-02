@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
-public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSchedulePacket> {
+public class TrafficLightSchedulePacket extends BaseNetworkPacket<TrafficLightSchedulePacket> {
     private BlockPos pos;
     private List<TrafficLightSchedule> schedules = new ArrayList<>();
 
@@ -26,7 +26,7 @@ public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSched
     }
 
     @Override
-    public void encode(TrafficLightSchedulePacket packet, FriendlyByteBuf buffer) {
+    public void encode(TrafficLightSchedulePacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.schedules.size());
         for (TrafficLightSchedule schedule : packet.schedules) {
@@ -35,7 +35,7 @@ public class TrafficLightSchedulePacket implements IPacketBase<TrafficLightSched
     }
 
     @Override
-    public TrafficLightSchedulePacket decode(FriendlyByteBuf buffer) {
+    public TrafficLightSchedulePacket decode(RegistryFriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         int size = buffer.readInt();
         List<TrafficLightSchedule> schedules = new ArrayList<>();

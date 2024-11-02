@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " I ",
+        "IOI",
+        " I "
+    ],
+    "key": {
+        "O": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "I": [
+            {
+                "tag": "c:nuggets/iron"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:house_number_sign",
+        "count": 1
+    }
+}

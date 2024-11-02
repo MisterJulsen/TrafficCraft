@@ -6,13 +6,15 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.components.BrushComponent;
 import de.mrjulsen.trafficcraft.data.PaintColor;
+import de.mrjulsen.trafficcraft.registry.ModDataComponents;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.block.data.IPaintableBlock;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
@@ -28,12 +30,8 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class BrushItem extends Item {
-
-    public static final String NBT_PATTERN = "pattern";
-    public static final String NBT_PAINT = "paint";
-    public static final String NBT_COLOR = "color";
-
+public class BrushItem extends Item implements IUseDataComponent<BrushComponent> {
+    
     private int paintAmount = 0;
 
     public BrushItem(Properties properties, int paintAmount) {
@@ -56,38 +54,38 @@ public class BrushItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        CompoundTag nbt = checkNbt(stack);
-        stack.setTag(nbt);
 
         if (level.isClientSide) {
-            ClientWrapper.showPaintBrushScreen(nbt.getInt(NBT_PATTERN), nbt.getInt(NBT_PAINT), PaintColor.getByIndex(nbt.getInt(NBT_COLOR)));
+            BrushComponent comp = getComponent(stack);
+            ClientWrapper.showPaintBrushScreen(comp.patternId(), comp.paintAmount(), PaintColor.getByIndex(comp.colorId()));
         }
 
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
-        super.appendHoverText(stack, player, list, flag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
         
-        if (stack.hasTag()) {
-            PaintColor paintColor = PaintColor.getByIndex(stack.getTag().getInt(NBT_COLOR));
+        if (hasComponent(stack)) {
+            BrushComponent comp = getComponent(stack);
+            PaintColor paintColor = PaintColor.getByIndex(comp.colorId());
             String color = TextUtils.translate(paintColor.getValueTranslationKey(TrafficCraft.MOD_ID)).getString();
     
-            list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));            
-            if (stack.getTag().getInt(NBT_PAINT) == 0) {
-                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + comp.patternId()).withStyle(ChatFormatting.GRAY));            
+            if (comp.paintAmount() == 0) {
+                tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
             } else {
-                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
             }
-            list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt(NBT_PAINT))).withStyle(ChatFormatting.GRAY));
+            tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * comp.paintAmount())).withStyle(ChatFormatting.GRAY));
         }
         
     }
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-        if(checkNbt(stack).getInt(NBT_PAINT) > 0)
+        if (hasComponent(stack) && getComponent(stack).paintAmount() > 0)
             return true;
         else
             return false;
@@ -95,43 +93,28 @@ public class BrushItem extends Item {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return (checkNbt(stack).getInt(NBT_PAINT) * 13) / Constants.MAX_PAINT;
+        return hasComponent(stack) ? (getComponent(stack).paintAmount() * 13) / Constants.MAX_PAINT : 0;
     }
 
     @Override
     public int getBarColor(ItemStack pStack) {
-        return getColor(pStack).getTextureColor();
-    }
-
-    public static CompoundTag checkNbt(ItemStack stack) {
-        CompoundTag nbt;
-
-        if (stack.hasTag()) {
-            nbt = stack.getTag();
-        } else {
-            nbt = new CompoundTag();
-            nbt.putInt(NBT_PAINT, 0);
-            nbt.putInt(NBT_PATTERN, 0);
-            nbt.putInt(NBT_COLOR, 0xFFFFFFFF);
-        }
-
-        return nbt;
+        return hasComponent(pStack) ? getColor(pStack).getTextureColor() : 0;
     }
 
     public int getPaintAmount() {
         return this.paintAmount;
     }
 
-    public static PaintColor getColor(ItemStack stack) {
-        return PaintColor.getByIndex(checkNbt(stack).getInt(NBT_COLOR));
+    public PaintColor getColor(ItemStack stack) {
+        return PaintColor.getByIndex(getComponent(stack).colorId());
     }
 
-    public static int getPatternId(ItemStack stack) {
-        return checkNbt(stack).getInt(NBT_PATTERN);
+    public int getPatternId(ItemStack stack) {
+        return getComponent(stack).patternId();
     }
 
-    public static int getPaint(ItemStack stack) {
-        return checkNbt(stack).getInt(NBT_PAINT);
+    public int getPaint(ItemStack stack) {
+        return getComponent(stack).paintAmount();
     }
 
     public int getMaxPaint() {
@@ -141,10 +124,15 @@ public class BrushItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
-        CompoundTag nbt = checkNbt(pContext.getItemInHand());
-        pContext.getItemInHand().setTag(nbt);
+        ItemStack stack = pContext.getItemInHand();
 
-        if (nbt.getInt(NBT_PAINT) <= 0) {
+        if (!hasComponent(stack)) {
+            return InteractionResult.FAIL;
+        }
+
+        BrushComponent comp = getComponent(stack);
+
+        if (comp.paintAmount() <= 0) {
             return InteractionResult.FAIL;
         }
 
@@ -157,10 +145,10 @@ public class BrushItem extends Item {
             return InteractionResult.SUCCESS;
         } else {
             if (state.getBlock() instanceof IPaintableBlock block) {
-                if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity && blockEntity.getColor() == PaintColor.getByIndex(nbt.getInt(NBT_COLOR))) { 
+                if (level.getBlockEntity(pos) instanceof IColorBlockEntity blockEntity && blockEntity.getColor() == PaintColor.getByIndex(comp.colorId())) { 
                     InteractionResult res = block.update(pContext);
                     if (res == InteractionResult.CONSUME) {
-                        this.removePaint(player, nbt);
+                        this.removePaint(player, stack, comp);
                         res = InteractionResult.SUCCESS;
                     }
                     return res;
@@ -168,7 +156,7 @@ public class BrushItem extends Item {
 
                 InteractionResult res = block.onSetColor(pContext);
                 if (res == InteractionResult.CONSUME) {
-                    this.removePaint(player, nbt);
+                    this.removePaint(player, stack, comp);
                     res = InteractionResult.SUCCESS;
                 }
                 return res;
@@ -177,9 +165,25 @@ public class BrushItem extends Item {
         return InteractionResult.PASS;
     }
 
-    private void removePaint(Player player, CompoundTag nbt) {
-        if (!player.isCreative()) {                    
-            nbt.putInt(NBT_PAINT, nbt.getInt(NBT_PAINT) - 1);
+    private void removePaint(Player player, ItemStack stack, BrushComponent component) {
+        if (!player.isCreative()) {
+            stack.set(ModDataComponents.BRUSH_COMPONENT.get(), new BrushComponent(
+                component.patternId(),
+                component.paintAmount() - 1,
+                component.colorId()
+            ));
         }
+    }
+
+
+    @Override
+    public DataComponentType<BrushComponent> getComponentType() {
+        return ModDataComponents.BRUSH_COMPONENT.get();
+    }
+
+
+    @Override
+    public BrushComponent emptyComponent() {
+        return BrushComponent.empty();
     }
 }

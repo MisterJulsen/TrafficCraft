@@ -40,9 +40,9 @@ public class TrafficLightTextureManager {
 
     public static ResourceLocation getResourceLocation(TrafficLightTextureKey key) {
         if (key.isOffState()) {
-            return new ResourceLocation(TrafficCraft.MOD_ID, String.format("textures/%s/off.png", TEXTURE_PATH));
+            return ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, String.format("textures/%s/off.png", TEXTURE_PATH));
         }
-        return new ResourceLocation(TrafficCraft.MOD_ID, String.format("textures/%s/%s_%s.png",
+        return ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, String.format("textures/%s/%s_%s.png",
             TEXTURE_PATH,
             (key.getIcon().isApplicableToColor(key.getColor()) ? key.getIcon() : TrafficLightIcon.NONE).getName(),
             key.getColor().getName()

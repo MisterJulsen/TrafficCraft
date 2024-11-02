@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " Q ",
+        "QPQ",
+        " Q "
+    ],
+    "key": {
+        "Q": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "P": [
+            {
+                "tag": "c:plates/iron"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:color_palette",
+        "count": 1
+    }
+}

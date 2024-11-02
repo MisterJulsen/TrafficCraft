@@ -16,7 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -151,34 +151,32 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack stack = pPlayer.getInventory().getSelected();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Item item = stack.getItem();
 
         if (item instanceof WrenchItem) {
-            if (!pLevel.isClientSide) {
-                if (pLevel.getBlockEntity(pPos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
-                    if (!pLevel.isClientSide) {
-                        pPlayer.displayClientMessage(TextUtils.translate("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
-                        return InteractionResult.FAIL;
+            if (!level.isClientSide) {
+                if (level.getBlockEntity(pos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
+                    if (!level.isClientSide) {
+                        player.displayClientMessage(TextUtils.translate("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
+                        return ItemInteractionResult.FAIL;
                     }
                 } else {                    
-                    pLevel.setBlockAndUpdate(pPos, pState.setValue(LIT, !pState.getValue(LIT)));
+                    level.setBlockAndUpdate(pos, state.setValue(LIT, !state.getValue(LIT)));
                 }
             } else {            
-                pLevel.playSound(pPlayer, pPos, SoundEvents.COMPARATOR_CLICK, SoundSource.BLOCKS, 0.3F, 0.5f);
+                level.playSound(player, pos, SoundEvents.COMPARATOR_CLICK, SoundSource.BLOCKS, 0.3F, 0.5f);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }  
 
         
         
-        return InteractionResult.FAIL;
+        return ItemInteractionResult.FAIL;
     }
 
     
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -188,7 +186,6 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

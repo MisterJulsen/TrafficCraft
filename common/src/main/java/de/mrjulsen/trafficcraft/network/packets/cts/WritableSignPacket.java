@@ -4,13 +4,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
+public class WritableSignPacket extends BaseNetworkPacket<WritableSignPacket> {
     private String[] messages;
     private BlockPos pos;
 
@@ -22,7 +22,7 @@ public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     }
 
     @Override
-    public void encode(WritableSignPacket packet, FriendlyByteBuf buffer) {
+    public void encode(WritableSignPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.messages.length);
         for (int i = 0; i < packet.messages.length; i++) {
@@ -34,7 +34,7 @@ public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
     }
 
     @Override
-    public WritableSignPacket decode(FriendlyByteBuf buffer) {
+    public WritableSignPacket decode(RegistryFriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         int messagesCount = buffer.readInt();
         String[] messages = new String[messagesCount];

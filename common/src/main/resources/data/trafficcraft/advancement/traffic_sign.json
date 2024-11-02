@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "trafficcraft:traffic_sign"
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.craft_traffic_sign"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.craft_traffic_sign.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "parent": "trafficcraft:wrench",
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "trafficcraft:traffic_sign"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 20
+  }
+}

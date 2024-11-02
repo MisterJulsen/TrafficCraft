@@ -7,10 +7,9 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'TrafficCraft 1.20.4'
+rootProject.name = 'TrafficCraft 1.21.1'
 
 include 'common'
 include 'fabric'
-include 'forge'
 include 'neoforge'
 

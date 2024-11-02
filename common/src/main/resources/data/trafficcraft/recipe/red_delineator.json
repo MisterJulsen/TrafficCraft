@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "XR",
+        "S ",
+        "S "
+    ],
+    "key": {
+        "X": [
+            {
+                "item": "trafficcraft:reflector"
+            }
+        ],
+        "S": [
+            {
+                "tag": "c:rods/wooden"
+            }
+        ],
+        "R": [
+            {
+                "tag": "c:dyes/red"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:red_delineator",
+        "count": 2
+    }
+}

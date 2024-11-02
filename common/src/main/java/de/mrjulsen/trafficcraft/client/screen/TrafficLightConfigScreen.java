@@ -30,6 +30,7 @@ import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
 import de.mrjulsen.mcdragonlib.data.Clipboard;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
@@ -64,7 +65,7 @@ import net.minecraft.world.level.Level;
 
 public class TrafficLightConfigScreen extends DLScreen {
 
-    private static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/window_arrow.png");
+    private static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/window_arrow.png");
     private static final int WINDOW_WIDTH = 241;
     private static final int WINDOW_HEIGHT = 230;
     private static final int WINDOW_PADDING_LEFT = 69;
@@ -165,7 +166,7 @@ public class TrafficLightConfigScreen extends DLScreen {
 
     @Override
     public void onClose() {
-        TrafficCraft.net().sendToServer(new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled));
+        DLNetworkManager.sendToServer(new TrafficLightPacket(blockPos, enabledColors, type, model, icon, controlType, colors, phaseId, scheduleEnabled));
         super.onClose();
     }
 
@@ -256,7 +257,7 @@ public class TrafficLightConfigScreen extends DLScreen {
             }
         }
         
-        emptyLabel = MultiLineLabel.create(this.font, textEmpty, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 10);
+        emptyLabel = MultiLineLabel.create(this.font, WINDOW_WIDTH - WINDOW_PADDING_LEFT, 10, textEmpty);
 
         initIconButtons();
         initModelButtonAreas();
@@ -600,7 +601,7 @@ public class TrafficLightConfigScreen extends DLScreen {
                 Optional<TrafficLightSchedule> schedule = Clipboard.get(TrafficLightSchedule.class);
                 if (schedule.isPresent()) {
                     if (schedule.get() != null) {
-                        TrafficCraft.net().sendToServer(new TrafficLightSchedulePacket(
+                        DLNetworkManager.sendToServer(new TrafficLightSchedulePacket(
                             blockPos,
                             List.of(schedule.get())
                         ));
@@ -654,7 +655,7 @@ public class TrafficLightConfigScreen extends DLScreen {
         controlTypeTabGroups.get(TrafficLightControlType.REMOTE).add(box);
         controlTypeTabGroups.get(TrafficLightControlType.REMOTE).setVisible(controlType == TrafficLightControlType.REMOTE);
 
-        phaseIdDescriptionLabel = MultiLineLabel.create(this.font, textPhaseIdDescription, (int)((ctrlSettingsArea.getWidth() - 8) / SMALL_SCALE_VALUE), 10);
+        phaseIdDescriptionLabel = MultiLineLabel.create(this.font, (int)((ctrlSettingsArea.getWidth() - 8) / SMALL_SCALE_VALUE), 3, textPhaseIdDescription);
     }
 
     private void switchPartEditor(int partIndex) {
@@ -779,7 +780,7 @@ public class TrafficLightConfigScreen extends DLScreen {
     }
 
     public void renderEmptyWindow(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        emptyLabel.renderCentered(graphics.graphics(), guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 10, 0xDBDBDB);
+        emptyLabel.renderCentered(graphics.graphics(), guiLeft + WINDOW_PADDING_LEFT + (WINDOW_WIDTH - WINDOW_PADDING_LEFT) / 2, guiTop + 20 + 96 / 2 - emptyLabel.getLineCount() * 5, 12, 0xDBDBDB);
     }   
 
     public void renderGlobalWindow(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {

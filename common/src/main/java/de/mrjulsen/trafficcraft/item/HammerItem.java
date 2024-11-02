@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -19,15 +20,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class HammerItem extends DiggerItem implements IDamageableCraftingItem {
 
-    private static final float ATTACK_DAMAGE = 1.0f;
-    private static final float ATTACK_SPEED = -3.0f;
-
     public HammerItem(Properties properties) {
-        super(ATTACK_DAMAGE, ATTACK_SPEED, Tiers.IRON, BlockTags.MINEABLE_WITH_PICKAXE, properties
+        super(Tiers.IRON, BlockTags.MINEABLE_WITH_PICKAXE, properties
             .stacksTo(1)
-            .durability(Tiers.IRON.getUses()));
+            .durability(Tiers.IRON.getUses())
+            .attributes(PickaxeItem.createAttributes(Tiers.IRON, 1.0F, -2.8F))
+        );
     }
-    
 
     @Override
     public InteractionResult useOn(UseOnContext pContext) {

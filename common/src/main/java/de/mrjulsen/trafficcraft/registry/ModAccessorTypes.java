@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ModAccessorTypes {
     
-    public static final DataAccessorType<TrafficSignTextureData, Void, Void> CREATE_NEW_TRAFFIC_SIGN_TEXTURE = DataAccessorType.register(new ResourceLocation(TrafficCraft.MOD_ID, "create_new_traffic_sign_texture"), DataAccessorType.Builder.createEmptyResponse(
+    public static final DataAccessorType<TrafficSignTextureData, Void, Void> CREATE_NEW_TRAFFIC_SIGN_TEXTURE = DataAccessorType.register(ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "create_new_traffic_sign_texture"), DataAccessorType.Builder.createEmptyResponse(
         (input, nbt) -> {
             nbt.put(DataAccessorType.DEFAULT_NBT_DATA, input.serializeNbt());
         }, (nbt) -> {
@@ -18,7 +18,7 @@ public class ModAccessorTypes {
             return false;
         }));
 
-    public static final DataAccessorType<String, TrafficSignTextureData, TrafficSignTextureData> GET_TRAFFIC_SIGN_TEXTURE = DataAccessorType.register(new ResourceLocation(TrafficCraft.MOD_ID, "get_traffic_sign_texture"), DataAccessorType.Builder.create(
+    public static final DataAccessorType<String, TrafficSignTextureData, TrafficSignTextureData> GET_TRAFFIC_SIGN_TEXTURE = DataAccessorType.register(ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "get_traffic_sign_texture"), DataAccessorType.Builder.create(
         (input, nbt) -> {
             nbt.putString(DataAccessorType.DEFAULT_NBT_DATA, input);
         }, (nbt) -> {

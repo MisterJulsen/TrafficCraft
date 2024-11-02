@@ -78,12 +78,12 @@ public class SignPickerScreen extends DLScreen {
         this.result = result;
 
         int i = 1;
-        ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
+        ResourceLocation path = ResourceLocation.parse(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
         List<ResourceLocation> locs = new ArrayList<>();
         while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
             locs.add(path);
             i++;
-            path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
+            path = ResourceLocation.parse(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
         }
         this.resources = locs.toArray(ResourceLocation[]::new);
         this.count = this.resources.length;

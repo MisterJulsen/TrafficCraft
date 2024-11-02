@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:smelting",
+    "group": "bitumen",
+    "ingredient": {
+      "item": "trafficcraft:bitumen_ore"
+    },
+    "result": {
+        "id": "trafficcraft:raw_bitumen",
+        "count": 1
+    },
+    "experience": 0.1,
+    "cookingtime": 200
+  }

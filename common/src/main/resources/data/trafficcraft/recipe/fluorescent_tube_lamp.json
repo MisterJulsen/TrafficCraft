@@ -1,0 +1,34 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NIN",
+        "LLL",
+        "GGG"
+    ],
+    "key": {
+        "I": [
+            {
+                "tag": "c:ingots/iron"
+            }
+        ],
+        "N": [
+            {
+                "tag": "c:nuggets/iron"
+            }
+        ],
+        "L": [
+            {
+                "tag": "c:dusts/glowstone"
+            }
+        ],
+        "G": [
+            {
+                "tag": "c:glass_panes/colorless"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:fluorescent_tube_lamp",
+        "count": 3
+    }
+}

@@ -5,10 +5,10 @@ import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLSlider;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.TimeUtils;
 import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
@@ -86,7 +86,7 @@ public class StreetLampScheduleScreen extends DLScreen {
 
     @Override
     protected void onDone() {
-        TrafficCraft.net().sendToServer(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat));
+        DLNetworkManager.sendToServer(new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat));
         this.onClose();
     }
 

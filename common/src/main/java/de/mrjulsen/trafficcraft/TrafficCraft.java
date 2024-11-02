@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.data.AgingManager;
 import de.mrjulsen.trafficcraft.init.ClientInitWrapper;
@@ -34,9 +34,9 @@ import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModCreativeModeTab;
+import de.mrjulsen.trafficcraft.registry.ModDataComponents;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import de.mrjulsen.trafficcraft.world.ModWorldGen;
-import dev.architectury.networking.NetworkChannel;
 import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
 
@@ -44,8 +44,6 @@ public final class TrafficCraft {
     public static final String MOD_ID = "trafficcraft";
     public static final String MOD_NAME = "TrafficCraft";
     public static final Logger LOGGER = LogUtils.getLogger();
-
-    private static NetworkManagerBase networkManager;
 
     public static void init() {
         ServerInit.init();
@@ -57,15 +55,15 @@ public final class TrafficCraft {
         ModBlocks.register();
         ModItems.register();
         ModBlockEntities.register();
-        ModMenuTypes.register();
+        ModMenuTypes.init();
         ModAccessorTypes.init();
         ModCreativeModeTab.init();
         ModWorldGen.init();
+        ModDataComponents.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
 
-        networkManager = new NetworkManagerBase(MOD_ID, "trafficcraft_network", List.of(
-            // cts
+        DLNetworkManager.registerPackets(MOD_ID, List.of(
             ColorPaletteItemPacket.class,
             CreativePatternCataloguePacket.class,
             PaintBrushPacket.class,
@@ -82,17 +80,12 @@ public final class TrafficCraft {
             TrafficLightSchedulePacket.class,
             TrafficSignPatternPacket.class,
             WritableSignPacket.class,
-            LinkerModePacket.class,
-
-            // stc
+            LinkerModePacket.class
+        ), List.of(
             TrafficSignTextureResetPacket.class,
             TrafficSignWorkbenchUpdateClientPacket.class
         ));
 
         CrossPlatform.registerConfig();
-    }
-
-    public static final NetworkChannel net() {
-        return networkManager.CHANNEL;
     }
 }

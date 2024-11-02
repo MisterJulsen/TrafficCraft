@@ -164,7 +164,6 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

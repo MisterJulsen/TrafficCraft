@@ -1,24 +1,24 @@
 package de.mrjulsen.trafficcraft.config;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ModCommonConfig {
-        public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec SPEC;
+        public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    public static final ModConfigSpec SPEC;
 
-    public static final ForgeConfigSpec.ConfigValue<Boolean> BITUMEN_GENERATION;
+    public static final ModConfigSpec.ConfigValue<Boolean> BITUMEN_GENERATION;
     
-    public static final ForgeConfigSpec.ConfigValue<Boolean> SALT_GENERATION;
+    public static final ModConfigSpec.ConfigValue<Boolean> SALT_GENERATION;
 
-    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_DISTANCE;
-    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_ROAD_WIDTH;
-    public static final ForgeConfigSpec.ConfigValue<Double> ROAD_BUILDER_MAX_SLOPE;
+    public static final ModConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_DISTANCE;
+    public static final ModConfigSpec.ConfigValue<Integer> ROAD_BUILDER_MAX_ROAD_WIDTH;
+    public static final ModConfigSpec.ConfigValue<Double> ROAD_BUILDER_MAX_SLOPE;
 
-    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_PRESERVATION;
-    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_RANGE;
-    public static final ForgeConfigSpec.ConfigValue<Integer> ROAD_SALT_SPEED;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> ROAD_SALT_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<Integer> ROAD_SALT_PRESERVATION;
+    public static final ModConfigSpec.ConfigValue<Integer> ROAD_SALT_RANGE;
+    public static final ModConfigSpec.ConfigValue<Integer> ROAD_SALT_SPEED;
+    public static final ModConfigSpec.ConfigValue<Boolean> ROAD_SALT_DAMAGE;
 
     static {
         BUILDER.push(TrafficCraft.MOD_ID + "_common_config");

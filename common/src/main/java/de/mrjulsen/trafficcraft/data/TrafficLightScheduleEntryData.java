@@ -8,7 +8,7 @@ import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.data.INBTSerializable;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 
 public class TrafficLightScheduleEntryData implements INBTSerializable {
@@ -145,7 +145,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
         return nbt.contains(NBT_MODE);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeInt(id);
         buf.writeInt(ticks);
         TrafficLightColor[] cArr = this.getEnabledColors().toArray(TrafficLightColor[]::new);
@@ -156,7 +156,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
         buf.writeByteArray(bArr);
     }
 
-    public static TrafficLightScheduleEntryData fromBytes(FriendlyByteBuf buf) {
+    public static TrafficLightScheduleEntryData fromBytes(RegistryFriendlyByteBuf buf) {
         TrafficLightScheduleEntryData data = new TrafficLightScheduleEntryData();
         data.setPhaseId(buf.readInt());
         data.setDurationTicks(buf.readInt());

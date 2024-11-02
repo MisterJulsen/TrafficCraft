@@ -5,6 +5,7 @@ import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,14 +24,14 @@ public class ColoredBlockEntity extends SyncedBlockEntity implements IColorBlock
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        this.color = PaintColor.getByIndex(compound.getInt(NBT_COLOR));
-    }    
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
+        this.color = PaintColor.getByIndex(tag.getInt(NBT_COLOR));
+    }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putInt(NBT_COLOR, color.getIndex());
     }
 

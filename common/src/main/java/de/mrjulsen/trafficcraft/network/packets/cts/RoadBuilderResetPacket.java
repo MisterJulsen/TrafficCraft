@@ -2,21 +2,21 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacket> {
+public class RoadBuilderResetPacket extends BaseNetworkPacket<RoadBuilderResetPacket> {
     
     public RoadBuilderResetPacket() {}
 
     @Override
-    public void encode(RoadBuilderResetPacket packet, FriendlyByteBuf buffer) {}
+    public void encode(RoadBuilderResetPacket packet, RegistryFriendlyByteBuf buffer) {}
 
     @Override
-    public RoadBuilderResetPacket decode(FriendlyByteBuf buffer) {
+    public RoadBuilderResetPacket decode(RegistryFriendlyByteBuf buffer) {
         return new RoadBuilderResetPacket();
     }
     

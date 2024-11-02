@@ -59,10 +59,14 @@ public class AsphaltBlock extends Block implements IPaintableBlock {
         ItemStack stack = pContext.getItemInHand();
         Player player = pContext.getPlayer();
 
+        if (!(stack.getItem() instanceof BrushItem item)) {
+            return InteractionResult.FAIL;
+        }
+
         if (state.getBlock() instanceof AsphaltSlope)
-            id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + BrushItem.getPatternId(stack);
+            id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + item.getComponent(stack).patternId();
         else if (state.getBlock() instanceof AsphaltBlock)
-            id = this.getDefaultRoadType().getRoadType() + "_pattern_" + BrushItem.getPatternId(stack);
+            id = this.getDefaultRoadType().getRoadType() + "_pattern_" + item.getComponent(stack).patternId();
 
         if (!ModBlocks.ROAD_BLOCKS.containsKey(id) || !(ModBlocks.ROAD_BLOCKS.get(id).get() instanceof RoadBlock)) {
             return InteractionResult.FAIL;

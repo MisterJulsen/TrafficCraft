@@ -12,9 +12,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -82,25 +83,25 @@ public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLi
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {        
-        Item item = pPlayer.getInventory().getSelected().getItem();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        Item item = stack.getItem();
 
         if (item instanceof BrushItem) {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
 
         ETownSignSide editSide;
-        switch (pState.getValue(VARIANT)) {
+        switch (state.getValue(VARIANT)) {
             case BACK:
                 editSide = ETownSignSide.BACK;
                 break;
             case BOTH:
-                if (pHit.getDirection() == pState.getValue(FACING))
+                if (hitResult.getDirection() == state.getValue(FACING))
                     editSide = ETownSignSide.FRONT;
-                else if (pHit.getDirection() == pState.getValue(FACING).getOpposite())
+                else if (hitResult.getDirection() == state.getValue(FACING).getOpposite())
                     editSide = ETownSignSide.BACK;
                 else
-                    return InteractionResult.FAIL;
+                    return ItemInteractionResult.FAIL;
                 break;
             case FRONT:
             default:
@@ -108,15 +109,15 @@ public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLi
                 break;
         }
 
-        if(pLevel.isClientSide) {
-            if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof TownSignBlockEntity blockEntity) {
-                if(!pPlayer.isShiftKeyDown()) {                
+        if(level.isClientSide) {
+            if (item instanceof WrenchItem && level.getBlockEntity(pos) instanceof TownSignBlockEntity blockEntity) {
+                if(!player.isShiftKeyDown()) {                
                     ClientWrapper.showTownSignScreen(blockEntity, editSide);
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.FAIL;
+        return ItemInteractionResult.FAIL;
 
     }
 

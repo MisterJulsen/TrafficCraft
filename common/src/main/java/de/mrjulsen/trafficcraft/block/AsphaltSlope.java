@@ -4,6 +4,8 @@ import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -48,10 +50,10 @@ public class AsphaltSlope extends AsphaltBlock implements SimpleWaterloggedBlock
     }
 
     @Override
-    public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
-        switch (pType) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
+        switch (pathComputationType) {
             case LAND:
-                return pState.getValue(LAYERS) < 5;
+                return state.getValue(LAYERS) < 5;
             case WATER:
                 return false;
             case AIR:
@@ -78,8 +80,8 @@ public class AsphaltSlope extends AsphaltBlock implements SimpleWaterloggedBlock
             if (!(player.isCreative() || player.isSpectator())) {
                 dropResources(state.getBlock().defaultBlockState(), level, pos.offset(0, (int)(1f / 8f * (state.getValue(BlockStateProperties.LAYERS) + 1)), 0));
             }
-            tool.hurtAndBreak(1, player, (p) -> {
-                player.broadcastBreakEvent(player.getItemInHand(InteractionHand.MAIN_HAND) == tool ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+            tool.hurtAndBreak(1, (ServerLevel)level, (ServerPlayer)player, (item) -> {
+                player.onEquippedItemBroken(item, player.getItemInHand(InteractionHand.MAIN_HAND) == tool ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             });
         }
 
@@ -154,7 +156,6 @@ public class AsphaltSlope extends AsphaltBlock implements SimpleWaterloggedBlock
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -164,7 +165,6 @@ public class AsphaltSlope extends AsphaltBlock implements SimpleWaterloggedBlock
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

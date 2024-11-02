@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "id": "trafficcraft:netherite_road_construction_tool",
+      "components": {
+        "minecraft:enchantments": {
+          "minecraft:mending": 0
+        }
+      }
+    },
+    "title": {
+      "translate": "advancement.trafficcraft.final_destination"
+    },
+    "description": {
+      "translate": "advancement.trafficcraft.final_destination.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": true
+  },
+  "parent": "trafficcraft:highway_to_hell",
+  "criteria": {
+    "req": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}

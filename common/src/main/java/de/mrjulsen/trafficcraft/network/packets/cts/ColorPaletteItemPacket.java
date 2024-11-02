@@ -2,17 +2,17 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class ColorPaletteItemPacket implements IPacketBase<ColorPaletteItemPacket> {
+public class ColorPaletteItemPacket extends BaseNetworkPacket<ColorPaletteItemPacket> {
     
     private int color;
     private byte index;
@@ -25,13 +25,13 @@ public class ColorPaletteItemPacket implements IPacketBase<ColorPaletteItemPacke
     }
 
     @Override
-    public void encode(ColorPaletteItemPacket packet, FriendlyByteBuf buffer) {
+    public void encode(ColorPaletteItemPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(packet.color);
         buffer.writeByte(packet.index);
     }
 
     @Override
-    public ColorPaletteItemPacket decode(FriendlyByteBuf buffer) {
+    public ColorPaletteItemPacket decode(RegistryFriendlyByteBuf buffer) {
         int color = buffer.readInt();
         byte index = buffer.readByte();
 

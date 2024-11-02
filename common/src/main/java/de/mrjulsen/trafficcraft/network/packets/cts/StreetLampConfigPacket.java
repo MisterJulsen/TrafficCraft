@@ -2,15 +2,16 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
+import de.mrjulsen.trafficcraft.components.StreetLampComponent;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
-public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacket> {
+public class StreetLampConfigPacket extends BaseNetworkPacket<StreetLampConfigPacket> {
 
     private int turnOnTime;
     private int turnOffTime;
@@ -25,14 +26,14 @@ public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacke
     }
 
     @Override
-    public void encode(StreetLampConfigPacket packet, FriendlyByteBuf buffer) {
+    public void encode(StreetLampConfigPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(packet.turnOnTime);
         buffer.writeInt(packet.turnOffTime);
         buffer.writeInt(packet.timeFormat.getIndex());
     }
 
     @Override
-    public StreetLampConfigPacket decode(FriendlyByteBuf buffer) {
+    public StreetLampConfigPacket decode(RegistryFriendlyByteBuf buffer) {
         int turnOnTime = buffer.readInt();
         int turnOffTime = buffer.readInt();
         int timeFormat = buffer.readInt();
@@ -44,17 +45,12 @@ public class StreetLampConfigPacket implements IPacketBase<StreetLampConfigPacke
     public void handle(StreetLampConfigPacket packet, Supplier<PacketContext> contextSupplier) {
         contextSupplier.get().queue(() -> {
             ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
+            ItemStack stack;
 
-            if (sender.getMainHandItem().getItem() instanceof StreetLampConfigCardItem) {
-                CompoundTag nbt = sender.getMainHandItem().getOrCreateTag();
-                nbt.putInt("turnOnTime", packet.turnOnTime);
-                nbt.putInt("turnOffTime", packet.turnOffTime);
-                nbt.putInt("timeFormat", packet.timeFormat.getIndex());
-            } else if (sender.getOffhandItem().getItem() instanceof StreetLampConfigCardItem) {             
-                CompoundTag nbt = sender.getOffhandItem().getOrCreateTag();
-                nbt.putInt("turnOnTime", packet.turnOnTime);
-                nbt.putInt("turnOffTime", packet.turnOffTime);
-                nbt.putInt("timeFormat", packet.timeFormat.getIndex());
+            if ((stack = sender.getMainHandItem()).getItem() instanceof StreetLampConfigCardItem item) {
+                item.setComponent(stack, new StreetLampComponent(packet.turnOnTime, packet.turnOffTime, packet.timeFormat));
+            } else if ((stack = sender.getOffhandItem()).getItem() instanceof StreetLampConfigCardItem item) {   
+                item.setComponent(stack, new StreetLampComponent(packet.turnOnTime, packet.turnOffTime, packet.timeFormat));
             }
             
             sender.getInventory().setChanged();

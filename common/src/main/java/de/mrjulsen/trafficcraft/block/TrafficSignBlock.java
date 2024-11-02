@@ -14,7 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -81,30 +81,29 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
-        ItemStack stack = pPlayer.getInventory().getSelected();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Item item = stack.getItem();
 
-        if (item instanceof PatternCatalogueItem && ((item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) || PatternCatalogueItem.getSelectedPattern(stack) != null)) {
-            if (pLevel.getBlockEntity(pPos) instanceof TrafficSignBlockEntity blockEntity) {
-                if (item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack)) {
-                    blockEntity.setAndResetTexture(CreativePatternCatalogueItem.getCustomImage(stack));
+        if (item instanceof PatternCatalogueItem catalog && ((item instanceof CreativePatternCatalogueItem creativeCatalog && creativeCatalog.shouldUseCustomPattern(stack)) || catalog.getSelectedPattern(stack) != null)) {
+            if (level.getBlockEntity(pos) instanceof TrafficSignBlockEntity blockEntity) {
+                if (item instanceof CreativePatternCatalogueItem creativeCatalog && creativeCatalog.shouldUseCustomPattern(stack)) {
+                    blockEntity.setAndResetTexture(creativeCatalog.getCustomImage(stack));
                 } else {
-                    blockEntity.setAndResetTexture(PatternCatalogueItem.getSelectedPattern(stack));
+                    blockEntity.setAndResetTexture(catalog.getSelectedPattern(stack));
                 }
             }
             
-            if (pLevel.isClientSide) {
-                pLevel.playSound(pPlayer, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
+            if (level.isClientSide) {
+                level.playSound(player, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
             } else {
-                TrafficSignTextureData data = TrafficSignTextureManager.load(item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getTextureId() : PatternCatalogueItem.getSelectedPattern(stack).getTextureId());
-                pLevel.setBlockAndUpdate(pPos, pState.setValue(SHAPE, data.getShape()));
+                TrafficSignTextureData data = TrafficSignTextureManager.load(item instanceof CreativePatternCatalogueItem creativeCatalog && creativeCatalog.shouldUseCustomPattern(stack) ? creativeCatalog.getCustomImage(stack).getTextureId() : catalog.getSelectedPattern(stack).getTextureId());
+                level.setBlockAndUpdate(pos, state.setValue(SHAPE, data.getShape()));
             }
             
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
-        return InteractionResult.FAIL;
+        return ItemInteractionResult.FAIL;
     }
 
     @Override
@@ -132,7 +131,6 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -142,7 +140,6 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }

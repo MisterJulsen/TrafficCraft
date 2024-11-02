@@ -3,18 +3,18 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.TownSignBlock.ETownSignSide;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TownSignPacket implements IPacketBase<TownSignPacket> {
+public class TownSignPacket extends BaseNetworkPacket<TownSignPacket> {
 
     private String[] messages;
     private TownSignVariant variant;
@@ -31,7 +31,7 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
     }
 
     @Override
-    public void encode(TownSignPacket packet, FriendlyByteBuf buffer) {
+    public void encode(TownSignPacket packet, RegistryFriendlyByteBuf buffer) {
         buffer.writeBlockPos(packet.pos);
         buffer.writeInt(packet.variant.getIndex());
         buffer.writeInt(packet.side.getIndex());
@@ -45,7 +45,7 @@ public class TownSignPacket implements IPacketBase<TownSignPacket> {
     }
 
     @Override
-    public TownSignPacket decode(FriendlyByteBuf buffer) {
+    public TownSignPacket decode(RegistryFriendlyByteBuf buffer) {
         BlockPos pos = buffer.readBlockPos();
         TownSignVariant variant = TownSignVariant.getVariantByIndex(buffer.readInt());
         TownSignBlock.ETownSignSide side = ETownSignSide.getSideByIndex(buffer.readInt());

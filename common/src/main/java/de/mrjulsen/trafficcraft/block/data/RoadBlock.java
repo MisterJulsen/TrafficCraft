@@ -71,12 +71,16 @@ public abstract class RoadBlock extends ColorableBlock {
         BlockState state = level.getBlockState(pos);
         ItemStack stack = pContext.getItemInHand();
         Player player = pContext.getPlayer();
+
+        if (!(stack.getItem() instanceof BrushItem item)) {
+            return InteractionResult.FAIL;
+        }
         
         if (level.getBlockEntity(pos) instanceof IColorBlockEntity) {
             if (state.getBlock() instanceof PaintedAsphaltBlock)
-                id = this.getDefaultRoadType().getRoadType() + "_pattern_" + BrushItem.getPatternId(stack);
+                id = this.getDefaultRoadType().getRoadType() + "_pattern_" + item.getPatternId(stack);
             else if (state.getBlock() instanceof PaintedAsphaltSlope)
-                id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + BrushItem.getPatternId(stack);
+                id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + item.getPatternId(stack);
 
             if (!ModBlocks.ROAD_BLOCKS.containsKey(id)) {
                 return InteractionResult.FAIL;
@@ -103,11 +107,15 @@ public abstract class RoadBlock extends ColorableBlock {
         BlockState state = level.getBlockState(pos);
         ItemStack stack = pContext.getItemInHand();
 
+        if (!(stack.getItem() instanceof BrushItem item)) {
+            return InteractionResult.FAIL;
+        }
+
         String id = "";
         if (state.getBlock() instanceof PaintedAsphaltBlock)
-            id = this.getDefaultRoadType().getRoadType() + "_pattern_" + BrushItem.getPatternId(stack);
+            id = this.getDefaultRoadType().getRoadType() + "_pattern_" + item.getPatternId(stack);
         else if (state.getBlock() instanceof PaintedAsphaltSlope)
-            id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + BrushItem.getPatternId(stack);
+            id = this.getDefaultRoadType().getRoadType() + "_slope_pattern_" + item.getPatternId(stack);
 
         if (ModBlocks.ROAD_BLOCKS.containsKey(id) && state.getBlock() != ModBlocks.ROAD_BLOCKS.get(id).get()) {
             return this.onSetColor(pContext);

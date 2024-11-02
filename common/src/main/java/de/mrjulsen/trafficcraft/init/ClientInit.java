@@ -27,8 +27,10 @@ import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
 import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
 import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
+import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.IScrollEventItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
+import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.mixin.MinecraftAccessor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
@@ -45,13 +47,11 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -128,24 +128,33 @@ public class ClientInit {
             });
 
             /* REGISTER MENUS */
-            MenuScreens.register(ModMenuTypes.TRAFFIC_SIGN_WORKBENCH_MENU.get(), TrafficSignWorkbenchGui::new);
+
+            CrossPlatform.registerScreenFactory(ModMenuTypes.TRAFFIC_SIGN_WORKBENCH_MENU.get(), TrafficSignWorkbenchGui::new);
 
             /* REGISTER CUSTOM ITEM PROPERTIES */
 
-            ItemPropertiesRegistry.register(ModItems.PAINT_BRUSH.get(), new ResourceLocation(TrafficCraft.MOD_ID, "paint"), (itemStack, world, entity, id) -> { 
-                CompoundTag nbt = itemStack.getTag();
-                if (nbt != null) {
-                    return nbt.getInt("paint");
+            ItemPropertiesRegistry.register(ModItems.PAINT_BRUSH.get(), ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "paint"), (itemStack, world, entity, id) -> { 
+                if (!(itemStack.getItem() instanceof BrushItem item)) {
+                    return 0;
                 }
-                return 0;
+
+                if (!item.hasComponent(itemStack)) {
+                    return 0;
+                }
+
+                return item.getComponent(itemStack).paintAmount();
             });
 
-            ItemPropertiesRegistry.register(ModItems.TRAFFIC_LIGHT_LINKER.get(), new ResourceLocation(TrafficCraft.MOD_ID, "mode"), (itemStack, world, entity, id) -> { 
-                CompoundTag nbt = itemStack.getTag();
-                if (nbt != null) {
-                    return nbt.getInt("Mode");
+            ItemPropertiesRegistry.register(ModItems.TRAFFIC_LIGHT_LINKER.get(), ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "mode"), (itemStack, world, entity, id) -> { 
+                if (!(itemStack.getItem() instanceof TrafficLightLinkerItem item)) {
+                    return 0;
                 }
-                return 0;
+
+                if (!item.hasComponent(itemStack)) {
+                    return 0;
+                }
+
+                return item.getComponent(itemStack).mode().getIndex();
             });
         });
 
@@ -164,12 +173,12 @@ public class ClientInit {
             ItemColors itemColors = ((MinecraftAccessor)Minecraft.getInstance()).getItemColors();
             itemColors.register(new TintedTextures.TintedItem(),
                 ModBlocks.GUARDRAIL.get(),
-                ModItems.PAINT_BRUSH.get(),
                 ModBlocks.TRAFFIC_CONE.get(),
                 ModBlocks.TRAFFIC_BOLLARD.get(),
                 ModBlocks.TRAFFIC_BARREL.get(),
                 ModBlocks.ROAD_BARRIER_FENCE.get(),
                 ModBlocks.CONCRETE_BARRIER.get(),
+                ModItems.PAINT_BRUSH.get(),
                 ModItems.COLOR_PALETTE.get()
             );
 

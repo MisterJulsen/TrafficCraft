@@ -16,6 +16,7 @@ import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -69,28 +70,28 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
 
-        this.phaseId = compound.getInt(NBT_PHASE_ID);
-        this.controlType = TrafficLightControlType.getControlTypeByIndex(compound.getTagType(NBT_COLOR_SLOTS) == Tag.TAG_INT ? (byte)compound.getInt(NBT_CONTROL_TYPE) : compound.getByte(NBT_CONTROL_TYPE));
-        this.powered = compound.getBoolean(NBT_POWERED);
-        this.ticker = compound.getInt(NBT_TICKS);
-        this.totalTicks = compound.getLong(NBT_TOTAL_TICKS);
-        this.running = compound.getBoolean(NBT_RUNNING);
+        this.phaseId = tag.getInt(NBT_PHASE_ID);
+        this.controlType = TrafficLightControlType.getControlTypeByIndex(tag.getTagType(NBT_COLOR_SLOTS) == Tag.TAG_INT ? (byte)tag.getInt(NBT_CONTROL_TYPE) : tag.getByte(NBT_CONTROL_TYPE));
+        this.powered = tag.getBoolean(NBT_POWERED);
+        this.ticker = tag.getInt(NBT_TICKS);
+        this.totalTicks = tag.getLong(NBT_TOTAL_TICKS);
+        this.running = tag.getBoolean(NBT_RUNNING);
         this.schedule = new TrafficLightSchedule();
-        this.schedule.fromNbt(compound.getCompound(NBT_SCHEDULE));
-        this.icon = TrafficLightIcon.getIconByIndex(compound.getByte(NBT_ICON));
-        this.type = TrafficLightType.getTypeByIndex(compound.getByte(NBT_TYPE));
-        int[] colorSlots = compound.getIntArray(NBT_COLOR_SLOTS);
+        this.schedule.fromNbt(tag.getCompound(NBT_SCHEDULE));
+        this.icon = TrafficLightIcon.getIconByIndex(tag.getByte(NBT_ICON));
+        this.type = TrafficLightType.getTypeByIndex(tag.getByte(NBT_TYPE));
+        int[] colorSlots = tag.getIntArray(NBT_COLOR_SLOTS);
         for (int i = 0; i < colorSlots.length && i < this.colorSlots.length; i++) {
             this.colorSlots[i] = TrafficLightColor.getColorByIndex((byte)colorSlots[i]);
         }
         this.enabledColors.clear();
-        this.enabledColors.addAll(compound.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getColorByIndex(((ByteTag)x).getAsByte())).toList());
+        this.enabledColors.addAll(tag.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getColorByIndex(((ByteTag)x).getAsByte())).toList());
 
         // backwards compatibility
-        linkMigration(compound);
+        linkMigration(tag);
     }
 
     @SuppressWarnings("deprecation")
@@ -105,7 +106,8 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         tag.putInt(NBT_PHASE_ID, phaseId);
         tag.putBoolean(NBT_POWERED, powered);
         tag.putByte(NBT_CONTROL_TYPE, controlType.getIndex());
@@ -124,7 +126,6 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
         if (!linkMigrated && this.linkLocation != null) {
             tag.put(NBT_LINKED_TO, linkLocation.toNbt());
         }
-        super.saveAdditional(tag);
     }
 
     private void tick(Level level, BlockPos pos, BlockState state) {

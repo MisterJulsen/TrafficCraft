@@ -15,7 +15,7 @@ public class ModCreativeModeTab {
 
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.CREATIVE_MODE_TAB);
     
-    public static final RegistrySupplier<CreativeModeTab> MOD_TAB = TABS.register(new ResourceLocation(TrafficCraft.MOD_ID, "trafficcrafttab"), 
+    public static final RegistrySupplier<CreativeModeTab> MOD_TAB = TABS.register(ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "trafficcrafttab"), 
             () -> CreativeTabRegistry.create(
                     TextUtils.translate("itemGroup.trafficcraft.trafficcrafttab"),
                     () -> new ItemStack(ModBlocks.TRAFFIC_LIGHT.get())

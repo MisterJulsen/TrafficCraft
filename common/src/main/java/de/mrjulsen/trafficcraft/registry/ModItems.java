@@ -10,13 +10,14 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import de.mrjulsen.trafficcraft.recipe.DamageableItemRecipeSerializer;
+import de.mrjulsen.trafficcraft.recipe.DamageableItemRecipe;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import dev.architectury.extensions.injected.InjectedItemPropertiesExtension;
 
 public class ModItems {
@@ -43,10 +44,26 @@ public class ModItems {
     public static final RegistrySupplier<Item> CREATIVE_PATTERN_CATALOGUE = ITEMS.register("creative_pattern_catalogue", () -> new CreativePatternCatalogueItem(((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(ModCreativeModeTab.MOD_TAB)));
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.RECIPE_SERIALIZER);
-    public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE = RECIPES.register("damageable_item_recipe", DamageableItemRecipeSerializer::new);
+    public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE_SERIALIZER = RECIPES.register("damageable_item_recipe", () -> new DamageableItemRecipe.Serializer());
+    
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.RECIPE_TYPE);
+    public static final RegistrySupplier<RecipeType<?>> DAMAGEABLE_ITEM_RECIPE_TYPE = RECIPE_TYPES.register("damageable_recipe_type", () -> RecipeType.register(TrafficCraft.MOD_ID + "_damageable_recipe_type"));
+
+    /*
+    public static final RecipeType<DamageableItemRecipe> DAMAGEABLE_RECIPE_TYPE = Registry.register(BuiltInRegistries.RECIPE_TYPE,
+        ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "damageable_item_recipe_type"), new RecipeType<DamageableItemRecipe>() {
+            @Override
+            public String toString() {
+                return "damageable_item_recipe_type";
+            }
+        });
+        */
+    
 
     public static void register() {
-        ITEMS.register(); 
+        ITEMS.register();
+        //RecipeType.register(TrafficCraft.MOD_ID + "_damageable_recipe_type");
+        RECIPE_TYPES.register();
         RECIPES.register();
     }
 

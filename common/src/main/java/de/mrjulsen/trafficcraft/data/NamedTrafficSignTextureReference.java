@@ -2,14 +2,22 @@ package de.mrjulsen.trafficcraft.data;
 
 import java.util.Objects;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class NamedTrafficSignTextureReference {
 
-    private static final String NBT_NAME = "Name";
-    private static final String NBT_ID = "TextureId";
+    public static final MapCodec<NamedTrafficSignTextureReference> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
+        return instance.group(
+            Codec.STRING.fieldOf("texture_id").forGetter(NamedTrafficSignTextureReference::getTextureId),
+            Codec.STRING.fieldOf("name").forGetter(NamedTrafficSignTextureReference::getName)
+        ).apply(instance, NamedTrafficSignTextureReference::new);
+    });
 
     private final String textureId;
     private final String name;
@@ -26,19 +34,16 @@ public class NamedTrafficSignTextureReference {
     public String getName() {
         return name;
     }
-
-    public CompoundTag toNbt() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putString(NBT_ID, textureId);
-        nbt.putString(NBT_NAME, name);
-        return nbt;
+    
+    public static NamedTrafficSignTextureReference fromNetwork(RegistryFriendlyByteBuf buffer) {
+        String textureId = buffer.readUtf();
+        String name = buffer.readUtf();
+        return new NamedTrafficSignTextureReference(textureId, name);
     }
 
-    public static NamedTrafficSignTextureReference fromNbt(CompoundTag nbt) {
-        return new NamedTrafficSignTextureReference(
-            nbt.getString(NBT_ID),
-            nbt.getString(NBT_NAME)
-        );
+    public static void toNetwork(RegistryFriendlyByteBuf buffer, NamedTrafficSignTextureReference ref) {
+        buffer.writeUtf(ref.getTextureId());
+        buffer.writeUtf(ref.getName());
     }
 
     public static NamedTrafficSignTextureReference of(TrafficSignTextureData data, String name) {

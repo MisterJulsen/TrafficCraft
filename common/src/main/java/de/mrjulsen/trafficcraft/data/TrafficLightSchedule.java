@@ -10,7 +10,7 @@ import de.mrjulsen.trafficcraft.util.OrderedArrayList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class TrafficLightSchedule implements INBTSerializable {
 
@@ -140,7 +140,7 @@ public class TrafficLightSchedule implements INBTSerializable {
         
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(RegistryFriendlyByteBuf buf) {
         buf.writeBoolean(loop);
         buf.writeByte(trigger.getIndex());
         buf.writeInt(entries.size());
@@ -149,7 +149,7 @@ public class TrafficLightSchedule implements INBTSerializable {
         }
     }
 
-    public static TrafficLightSchedule fromBytes(FriendlyByteBuf buf) {
+    public static TrafficLightSchedule fromBytes(RegistryFriendlyByteBuf buf) {
         TrafficLightSchedule schedule = new TrafficLightSchedule();
         schedule.setLoop(buf.readBoolean());
         schedule.setTrigger(TrafficLightTrigger.getTriggerByIndex(buf.readByte()));

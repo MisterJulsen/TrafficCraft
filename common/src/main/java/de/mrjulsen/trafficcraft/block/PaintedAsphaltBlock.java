@@ -9,6 +9,7 @@ import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -52,12 +53,12 @@ public class PaintedAsphaltBlock extends RoadBlock {
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         if (pickupBlock == null || pickupBlock == this) {
             ItemStack stack = super.getCloneItemStack(level, pos, state);
-            stack.setTag(null);
+            stack.remove(DataComponents.BLOCK_ENTITY_DATA);
             return stack;
         }
 
         ItemStack stack = this.pickupBlock.get().getCloneItemStack(level, pos, state);
-        stack.setTag(null);
+        stack.remove(DataComponents.BLOCK_ENTITY_DATA);
         return stack;
     }
 

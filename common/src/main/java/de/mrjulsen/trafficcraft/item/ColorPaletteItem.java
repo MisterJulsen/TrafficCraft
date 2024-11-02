@@ -1,22 +1,20 @@
 package de.mrjulsen.trafficcraft.item;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
-
 import de.mrjulsen.mcdragonlib.core.ColorObject;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.trafficcraft.registry.ModDataComponents;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
-public class ColorPaletteItem extends Item {
+public class ColorPaletteItem extends Item implements IUseDataComponent<List<Integer>> {
 
     public static final int MAX_COLORS = 7;
     public static final String COLORS_TAG = "colors";
@@ -26,42 +24,40 @@ public class ColorPaletteItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Level player, List<Component> list, TooltipFlag flag) {
-        super.appendHoverText(stack, player, list, flag);
-        if (!stack.hasTag()) {
-            list.add(TextUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
+        if (!(stack.getItem() instanceof ColorPaletteItem item)) {
             return;
         }
 
-        CompoundTag tag = checkNbt(stack);
+        if (!item.hasComponent(stack)) {
+            tooltipComponents.add(TextUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+            return;
+        }
 
-        if (!IntStream.of(tag.getIntArray(COLORS_TAG)).anyMatch(x -> x != 0)) {
-            list.add(TextUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
+        List<Integer> colors = item.getComponent(stack);
+
+        if (!colors.stream().anyMatch(x -> x != 0)) {
+            tooltipComponents.add(TextUtils.translate("item.trafficcraft.color_palette.no_color").withStyle(ChatFormatting.GRAY));
         } else {
-            for (int i : tag.getIntArray(COLORS_TAG)) {
+            for (int i : colors) {
                 if (i == 0) {
-                    list.add(TextUtils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
+                    tooltipComponents.add(TextUtils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
                 } else {                
                     ColorObject c = ColorObject.fromInt(i);
-                    list.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
+                    tooltipComponents.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
                 }
             } 
         }
     }
 
-    public static CompoundTag checkNbt(ItemStack stack) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        if (!nbt.contains(COLORS_TAG)) {
-            int[] c = new int[7];
-            Arrays.fill(c, 0);
-            nbt.putIntArray(COLORS_TAG, c);
+    public static int getColorAt(ItemStack stack, int index) {
+        if (!(stack.getItem() instanceof ColorPaletteItem item)) {
+            return 0;
         }
 
-        return nbt;
-    }
-
-    public static int getColorAt(ItemStack stack, int index) {
-        if (!stack.hasTag()) {
+        if (!item.hasComponent(stack)) {
             return 0;
         }
 
@@ -69,17 +65,36 @@ public class ColorPaletteItem extends Item {
             return 0;
         }
 
-        return checkNbt(stack).getIntArray(COLORS_TAG)[index];
+        return item.getComponent(stack).get(index);
     }
 
     public static boolean setColor(ItemStack stack, int index, int color) {
+
+        if (!(stack.getItem() instanceof ColorPaletteItem item)) {
+            return false;
+        }
+
         if (index < 0 || index >= MAX_COLORS) {
             return false;
         }
         
-        int[] a = checkNbt(stack).getIntArray(COLORS_TAG);
-        a[index] = color;
-        checkNbt(stack).putIntArray(COLORS_TAG, a);
+        List<Integer> colors = new ArrayList<>(item.getComponent(stack));
+        colors.set(index, color);
+        item.setComponent(stack, colors);
         return true;
+    }
+
+    @Override
+    public DataComponentType<List<Integer>> getComponentType() {
+        return ModDataComponents.COLOR_PALETTE_COMPONENT.get();
+    }
+
+    @Override
+    public List<Integer> emptyComponent() {
+        List<Integer> list =  new ArrayList<>(MAX_COLORS);
+        for (int i = 0; i < MAX_COLORS; i++) {
+            list.add(0);
+        }
+        return list;
     }
 }

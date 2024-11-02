@@ -4,8 +4,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
 import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
@@ -13,6 +13,7 @@ import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -36,13 +37,13 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
+    protected void loadAdditional(CompoundTag tag, Provider registries) {
+        super.loadAdditional(tag, registries);
 
-        if (compound.contains(NBT_LEGACY_TEXTURE)) {
-            migrate(compound.getString(NBT_LEGACY_TEXTURE));
-        } else if (compound.contains(NBT_TEXTURE)) {
-            setTextureId(compound.getString(NBT_TEXTURE));
+        if (tag.contains(NBT_LEGACY_TEXTURE)) {
+            migrate(tag.getString(NBT_LEGACY_TEXTURE));
+        } else if (tag.contains(NBT_TEXTURE)) {
+            setTextureId(tag.getString(NBT_TEXTURE));
         }
     }
 
@@ -62,11 +63,11 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void saveAdditional(CompoundTag tag, Provider registries) {
+        super.saveAdditional(tag, registries);
         if (textureId != null) {
             tag.putString(NBT_TEXTURE, getTextureId());
         }
-        super.saveAdditional(tag);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
         setTextureId(texture.getTextureId());
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                TrafficCraft.net().sendToPlayer(player, new TrafficSignTextureResetPacket(getBlockPos()));
+                DLNetworkManager.sendToPlayer(player, new TrafficSignTextureResetPacket(getBlockPos()));
             }
         }
     }

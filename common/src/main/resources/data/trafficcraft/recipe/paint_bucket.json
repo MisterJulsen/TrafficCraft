@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " I ",
+        "IBI",
+        " I "
+    ],
+    "key": {
+        "B": [
+            {
+                "item": "minecraft:bucket"
+            }
+        ],
+        "I": [
+            {
+                "tag": "c:nuggets/iron"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:paint_bucket",
+        "count": 1
+    }
+}

@@ -5,12 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.joml.Vector3f;
-
-import com.google.common.collect.Multimap;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
 
 import de.mrjulsen.mcdragonlib.core.Location;
 import de.mrjulsen.mcdragonlib.data.StatusResult;
@@ -20,44 +17,42 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.components.RoadConstructionToolComponent;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
+import de.mrjulsen.trafficcraft.registry.ModDataComponents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class RoadConstructionTool extends Item {
-
-    public static final String NBT_LOCATION1 = "Location1";
-    public static final String NBT_LOCATION2 = "Location2";
-    public static final String NBT_ROAD_WIDTH = "RoadWidth";    
-    public static final String NBT_REPLACE_BLOCKS = "ReplaceBlocks";
-    public static final String NBT_ROAD_TYPE = "RoadType";
+public class RoadConstructionTool extends Item implements IUseDataComponent<RoadConstructionToolComponent> {
 
     public static final boolean DEFAULT_REPLACE_BLOCKS = true;
     public static final byte DEFAULT_ROAD_WIDTH = 7;
     public static final RoadType DEFAULT_ROAD_TYPE = RoadType.ASPHALT;
+    private static final float ATTACK_DAMAGE_MULTIPLIER = 0.5f;
+
 
     private static final int ERROR_TOO_FAR = 1;
     private static final int ERROR_SLOPE_TOO_STEEP = 2;
@@ -68,18 +63,12 @@ public class RoadConstructionTool extends Item {
     private static final byte FAST_GRAPHICS_CLIENT_TICK_DELAY = 8;
     private static final byte FANCY_GRAPHICS_CLIENT_TICK_DELAY = 4;
 
-    
-    private final float attackDamage;
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-
     public RoadConstructionTool(Tiers tier, Properties properties) {
-        super(properties.stacksTo(1).durability(tier.getUses() * 6));
-        float attackDamageModifier = 0.5f;
-        this.attackDamage = tier.getAttackDamageBonus() + attackDamageModifier;
-        Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", (double)this.attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", -3.0D, AttributeModifier.Operation.ADDITION));
-        this.defaultModifiers = builder.build();
+        super(properties.stacksTo(1).durability(tier.getUses() * 6).attributes(createAttributes(tier, (int)(tier.getAttackDamageBonus() * ATTACK_DAMAGE_MULTIPLIER), -3.0f)));
+    }
+
+    public static int getDefaultRoadWidth() {
+        return Math.min(DEFAULT_ROAD_WIDTH, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get());
     }
 
     @Override
@@ -88,71 +77,46 @@ public class RoadConstructionTool extends Item {
         BlockPos clickedPos = pContext.getClickedPos();
         Vec3 clickedVec = pContext.getClickLocation();
         Player player = pContext.getPlayer();
-        
+        ItemStack stack = pContext.getItemInHand();
+
         if (!player.isShiftKeyDown()) {            
             if (!level.isClientSide) {
-                CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
+                RoadConstructionToolComponent comp = getComponent(stack);
 
                 Location location = new Location(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location().toString());
-                
-                if (compound.contains(NBT_LOCATION1)) {
-                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).result()) {
-                        compound.put(NBT_LOCATION2, location.toNbt());
+                Optional<Location> startLoc = comp.start();
+                Optional<Location> endLoc = comp.end();
+
+                if (startLoc.isPresent()) {
+                    if (isLineValid(comp.start().get().getLocationVec3(), location.getLocationVec3()).result()) {
+                        endLoc = Optional.of(location);
                     }
                 } else {
-                    compound.put(NBT_LOCATION1, location.toNbt());
+                    startLoc = Optional.of(location);
                 }
+                setComponent(stack, new RoadConstructionToolComponent(startLoc, endLoc, comp.type(), comp.roadWidth(), comp.replaceBlocks()));
             }
             return InteractionResult.SUCCESS;
         }
 
         return super.useOn(pContext);
     }
-
-    @Override
-    public void appendHoverText(ItemStack pStack, Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        
-    }
-
-    @Override
-    public boolean canBeDepleted() {
-        return true;
-    }
-
-    public float getAttackDamage() {
-        return attackDamage;
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pSlot) {
-        return pSlot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getDefaultAttributeModifiers(pSlot);
+    
+    public static ItemAttributeModifiers createAttributes(Tier tier, int attackDamage, float attackSpeed) {
+        return ItemAttributeModifiers.builder().add(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, (double)((float)attackDamage + tier.getAttackDamageBonus()), Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, (double)attackSpeed, Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).build();
     }
 
     @Override
     public boolean isFoil(ItemStack pStack) {
-        CompoundTag tag = pStack.getTag();
-        return (tag != null && (tag.contains(NBT_LOCATION1) || tag.contains(NBT_LOCATION2))) || super.isFoil(pStack);
+        if (!hasComponent(pStack)) {
+            return false;
+        }
+        RoadConstructionToolComponent comp = getComponent(pStack);
+        return (comp != null && (comp.start().isPresent() || comp.end().isPresent())) || super.isFoil(pStack);
     }
 
     public static void reset(ItemStack stack) {
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.remove(RoadConstructionTool.NBT_LOCATION1);
-        nbt.remove(RoadConstructionTool.NBT_LOCATION2);
-        nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, DEFAULT_REPLACE_BLOCKS);
-        nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, DEFAULT_ROAD_WIDTH);
-        nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, DEFAULT_ROAD_TYPE.getIndex());
-    }
-
-    public static void initStackTag(ItemStack stack) {
-        if (!stack.getTag().contains(NBT_ROAD_WIDTH)) {
-            stack.getTag().putByte(NBT_ROAD_WIDTH, DEFAULT_ROAD_WIDTH);
-        }
-        if (!stack.getTag().contains(NBT_ROAD_TYPE)) {
-            stack.getTag().putInt(NBT_ROAD_TYPE, DEFAULT_ROAD_TYPE.getIndex());
-        }
-        if (!stack.getTag().contains(NBT_REPLACE_BLOCKS)) {
-            stack.getTag().putBoolean(NBT_REPLACE_BLOCKS, DEFAULT_REPLACE_BLOCKS);
-        }
+        stack.remove(ModDataComponents.ROAD_CONSTRUCTION_TOOL_COMPONENT.get());
     }
 
     private static StatusResult isLineValid(Vec3 a, Vec3 b) {
@@ -170,19 +134,18 @@ public class RoadConstructionTool extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);   
-        
-        initStackTag(itemstack);
-        
-        Location startLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION1));
-        Location endLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION2));
+        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
+
+        RoadConstructionToolComponent comp = getComponent(itemstack);
+        Optional<Location> startLoc = comp.start();
+        Optional<Location> endLoc = comp.end();
         Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
 
-        if (endLoc != null && startLoc != null) {
-            Vec3 start = startLoc.getLocationVec3();
-            Vec3 end = endLoc.getLocationVec3();
-            byte roadWidth = itemstack.getTag().getByte(NBT_ROAD_WIDTH);
-            boolean replaceBlocks = true;
+        if (endLoc.isPresent() && startLoc.isPresent()) {
+            Vec3 start = startLoc.get().getLocationVec3();
+            Vec3 end = endLoc.get().getLocationVec3();
+            byte roadWidth = comp.roadWidth();
+            boolean replaceBlocks = comp.replaceBlocks();
             blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks); 
         }
 
@@ -324,19 +287,24 @@ public class RoadConstructionTool extends Item {
             return;
         }
 
-        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool ? player.getItemInHand(InteractionHand.MAIN_HAND) : player.getItemInHand(InteractionHand.OFF_HAND);
-        CompoundTag nbt = stack.getOrCreateTag();
 
-        initStackTag(stack);
+
+        ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool ? player.getItemInHand(InteractionHand.MAIN_HAND) : player.getItemInHand(InteractionHand.OFF_HAND);
         
-        if (!nbt.contains(NBT_LOCATION1)) {
+        if (!(stack.getItem() instanceof RoadConstructionTool item) || !item.hasComponent(stack)) {
+            return;
+        }
+        
+        RoadConstructionToolComponent comp = item.getComponent(stack);
+        
+        if (!comp.start().isPresent()) {
             return;
         }
 
-        Vec3 start = Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationVec3().add(0.5d, 0, 0.5d);
+        Vec3 start = comp.start().get().getLocationVec3().add(0.5d, 0, 0.5d);
         Vec3 end = null;
 
-        if (nbt.contains(NBT_LOCATION1) && !nbt.contains(NBT_LOCATION2)) {
+        if (comp.start().isPresent() && !comp.end().isPresent()) {
             HitResult lookingAt = player.pick(4.5f /* TODO */, 0, false);
             Vec3 lookAtVec = lookingAt.getLocation();
 
@@ -350,14 +318,14 @@ public class RoadConstructionTool extends Item {
             }
 
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos1",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
+                comp.start().get().getLocationBlockPos().toShortString()
             ), true);
 
-        } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
-            end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
+        } else if (comp.start().isPresent() && comp.end().isPresent()) {
+            end = comp.end().get().getLocationVec3().add(0.5d, 0, 0.5d);
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos2",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
+                comp.start().get().getLocationBlockPos().toShortString(),
+                comp.end().get().getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
         }
 
@@ -367,7 +335,7 @@ public class RoadConstructionTool extends Item {
 
         Vec3 line = end.subtract(start);
 
-        final double width = nbt.getByte(NBT_ROAD_WIDTH);
+        final double width = comp.roadWidth();
         final double halfWidth = width / 2;
         final double spacing = 0.25D;
 
@@ -438,5 +406,15 @@ public class RoadConstructionTool extends Item {
             this.replaceBlocks = replaceBlocks;
             this.roadType = roadType;
         }
+    }
+
+    @Override
+    public DataComponentType<RoadConstructionToolComponent> getComponentType() {
+        return ModDataComponents.ROAD_CONSTRUCTION_TOOL_COMPONENT.get();
+    }
+
+    @Override
+    public RoadConstructionToolComponent emptyComponent() {
+        return RoadConstructionToolComponent.empty();
     }
 }

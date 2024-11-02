@@ -7,9 +7,10 @@ import de.mrjulsen.trafficcraft.item.WrenchItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -80,7 +81,6 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
@@ -90,7 +90,6 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public FluidState getFluidState(BlockState pState) {
         return pState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(pState);
     }
@@ -100,22 +99,22 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
     }
 
     @Override
-    public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {        
-        Item item = pPlayer.getInventory().getSelected().getItem();
+    protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        Item item = stack.getItem();
 
         if (item instanceof BrushItem) {
-            return InteractionResult.FAIL;
+            return ItemInteractionResult.FAIL;
         }
 
-        if (pLevel.isClientSide) {
-            if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof WritableSignBlockEntity blockEntity) {
-                if (!pPlayer.isShiftKeyDown()) {                
+        if (level.isClientSide) {
+            if (item instanceof WrenchItem && level.getBlockEntity(pos) instanceof WritableSignBlockEntity blockEntity) {
+                if (!player.isShiftKeyDown()) {                
                     ClientWrapper.showWritableSignScreen(blockEntity);
                 }
-                return InteractionResult.SUCCESS;
+                return ItemInteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.FAIL;
+        return ItemInteractionResult.FAIL;
 
     }
 

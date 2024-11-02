@@ -23,6 +23,7 @@ import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
@@ -94,21 +95,23 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
     private int selectedIndex;
 
     private final ItemStack stack;
+    private final PatternCatalogueItem item;
     private final boolean creative;
     
-    private static final ResourceLocation OVERLAY = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench_overlay.png");
+    private static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_sign_workbench_overlay.png");
 
     public TrafficSignPatternSelectionScreen(ItemStack stack) {
         super(title);
 
-        if (!(stack.getItem() instanceof PatternCatalogueItem)) {
+        if (!(stack.getItem() instanceof PatternCatalogueItem )) {
             throw new IllegalStateException("ItemStack is no PatternCatalogueItem.");
         }
 
         this.stack = stack;
+        this.item = (PatternCatalogueItem)stack.getItem();
         this.creative = stack.getItem() instanceof CreativePatternCatalogueItem;
-        selectedBookmark = stack.getItem() instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? 0 : bookmarks.length;
-        this.selectedIndex = PatternCatalogueItem.getSelectedIndex(stack);
+        selectedBookmark = stack.getItem() instanceof CreativePatternCatalogueItem creativeItem && creativeItem.shouldUseCustomPattern(stack) ? 0 : bookmarks.length;
+        this.selectedIndex = item.getSelectedIndex(stack);
     }
 
     @Override
@@ -119,11 +122,11 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
     @Override
     public void onClose() {
         if (selectedBookmark >= bookmarks.length) {
-            TrafficCraft.net().sendToServer(new PatternCatalogueIndexPacket(PatternCatalogueItem.getSelectedIndex(stack)));
-        } else {
-            NamedTrafficSignTextureReference data = CreativePatternCatalogueItem.getCustomImage(stack);
+            DLNetworkManager.sendToServer(new PatternCatalogueIndexPacket(item.getSelectedIndex(stack)));
+        } else if (item instanceof CreativePatternCatalogueItem creativeItem) {
+            NamedTrafficSignTextureReference data = creativeItem.getCustomImage(stack);
             if (data != null) {
-                TrafficCraft.net().sendToServer(new CreativePatternCataloguePacket(data));
+                DLNetworkManager.sendToServer(new CreativePatternCataloguePacket(data));
             }
         }
         cachedTextures.values().forEach(x -> x.close());
@@ -141,26 +144,26 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
         groupPatterns.components.clear();
 
         if (selectedBookmark >= bookmarks.length) {
-            final int count = PatternCatalogueItem.getStoredPatternCount(stack);
+            final int count = item.getStoredPatternCount(stack);
             for (int i = 0; i < count; i++) {
                 final int j = i;
 
                 DLIconButton btn = new DLIconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, Sprite.empty(), groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
-                PatternCatalogueItem.setSelectedIndex(stack, j);
-                if (stack.getItem() instanceof CreativePatternCatalogueItem) {
-                    CreativePatternCatalogueItem.clearCustomImage(stack);
+                item.setSelectedIndex(stack, j);
+                if (stack.getItem() instanceof CreativePatternCatalogueItem creativeItem) {
+                    creativeItem.clearCustomImage(stack);
                 }
                 }) {
                     public void renderImage(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-                        NamedTrafficSignTextureReference data = PatternCatalogueItem.getPatternAt(stack, j);
+                        NamedTrafficSignTextureReference data = item.getPatternAt(stack, j);
                         TrafficSignClientTexture tex = cachedTextures.computeIfAbsent(data, x -> TrafficSignClientTexture.load(data.getTextureId(), false));
                         GuiUtils.drawTexture(tex.getTextureLocation(), graphics, x() + 1, y() + 1, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), tex.getRawData().getWidth(), tex.getRawData().getHeight());
                     }
                 }.withAlignment(EAlignment.CENTER);
-                addTooltip(DLTooltip.of(TextUtils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
+                addTooltip(DLTooltip.of(TextUtils.text(item.getPatternAt(stack, j).getName())).assignedTo(btn));
                 this.addRenderableWidget(btn);
             }
-        } else {
+        } else if (item instanceof CreativePatternCatalogueItem creativeItem) {
             // builtin textures
             final TrafficSignShape[] shapes = bookmarks[selectedBookmark] == TrafficSignShape.MISC ? Arrays.stream(TrafficSignShape.values()).filter(x -> {
                 return !Arrays.stream(bookmarks).anyMatch(y -> x == y) || x == TrafficSignShape.MISC;
@@ -168,7 +171,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
 
             for (TrafficSignShape shape : shapes) {
                 int a = 1;
-                ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
+                ResourceLocation path = ResourceLocation.parse(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
                 List<TrafficSignTextureMetadata> locs = new ArrayList<>();
                 while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
                     short width = 32;
@@ -182,7 +185,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
                     locs.add(new TrafficSignTextureMetadata(path, shape, a, width, height));
 
                     a++;
-                    path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
+                    path = ResourceLocation.parse(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + a + ".png");
                 }
 
                 final int count = locs.size();
@@ -191,7 +194,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
                     Sprite sprite = new Sprite(locs.get(j).location(), 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
 
                     DLIconButton btn = new DLIconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, null, (button) -> {
-                        CreativePatternCatalogueItem.setCustomImage(stack, NamedTrafficSignTextureReference.ofBuildIn("", new BuildInTrafficSignCodec(locs.get(j).shape(), locs.get(j).id(), locs.get(j).width(), locs.get(j).height())));
+                        creativeItem.setCustomImage(stack, NamedTrafficSignTextureReference.ofBuildIn("", new BuildInTrafficSignCodec(locs.get(j).shape(), locs.get(j).id(), locs.get(j).width(), locs.get(j).height())));
                         selectedIndex = j;
                     }).withAlignment(EAlignment.CENTER);
                     this.addRenderableWidget(btn);
@@ -253,8 +256,8 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
 
         DynamicGuiRenderer.renderArea(graphics, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 2, guiTop + 45 - 1, MAX_ENTRIES_IN_ROW * ICON_BUTTON_WIDTH + 2, MAX_ROWS * ICON_BUTTON_HEIGHT + 2, AreaStyle.BROWN, ButtonState.DOWN);
 
-        if (CreativePatternCatalogueItem.hasCustomPattern(stack)) {            
-            NamedTrafficSignTextureReference data = CreativePatternCatalogueItem.getCustomImage(stack);
+        if (item instanceof CreativePatternCatalogueItem creativeItem && creativeItem.hasCustomPattern(stack)) {            
+            NamedTrafficSignTextureReference data = creativeItem.getCustomImage(stack);
             TrafficSignClientTexture tex = cachedTextures.computeIfAbsent(data, x -> TrafficSignClientTexture.load(data.getTextureId(), false));
             BuildInTrafficSignCodec codec = BuildInTrafficSignCodec.decode(data.getTextureId());
             GuiUtils.drawTexture(tex.getTextureLocation(), graphics, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), tex.getRawData().getWidth(), tex.getRawData().getHeight());
@@ -266,7 +269,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
             graphics.poseStack().popPose();
             
         } else {
-            NamedTrafficSignTextureReference data = PatternCatalogueItem.getSelectedPattern(stack);
+            NamedTrafficSignTextureReference data = item.getSelectedPattern(stack);
             if (data != null) {
                 TrafficSignClientTexture tex = cachedTextures.computeIfAbsent(data, x -> TrafficSignClientTexture.load(data.getTextureId(), false));
                 GuiUtils.drawTexture(tex.getTextureLocation(), graphics, guiLeft + 15, guiTop + HEIGHT - 15 - 24, 24, 24, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), tex.getRawData().getWidth(), tex.getRawData().getHeight());

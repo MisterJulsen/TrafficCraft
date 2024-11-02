@@ -42,7 +42,7 @@ public class TrafficLightScheduleEntry extends DLWidgetContainer {
     private static final int TIMELINE_WIDTH = TrafficLightScheduleContainer.TIMELINE_WIDTH;
     private static final int SPACING = TrafficLightScheduleContainer.SPACING;
 
-    private static final ResourceLocation ICONS = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
+    private static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
     private static final Sprite MOVE_UP_ICON = new Sprite(ICONS, 64, 64, 24, 29, 12, 12);
     private static final Sprite MOVE_DOWN_ICON = new Sprite(ICONS, 64, 64, 12, 29, 12, 12);
     private static final Sprite DELETE_ICON = new Sprite(ICONS, 64, 64, 0, 29, 12, 12);

@@ -18,6 +18,7 @@ import de.mrjulsen.mcdragonlib.client.util.Graphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
@@ -38,7 +39,7 @@ import net.minecraft.world.level.Level;
 
 public class TrafficLightScheduleEditor extends DLScreen {
 
-    public static final ResourceLocation WIDGETS = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
+    public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
     public static final int TEXTURE_WIDTH = 64;
     public static final int TEXTURE_HEIGHT = 64;
 
@@ -142,7 +143,7 @@ public class TrafficLightScheduleEditor extends DLScreen {
     @Override
     protected void onDone() {
         super.onDone();
-        TrafficCraft.net().sendToServer(new TrafficLightSchedulePacket(
+        DLNetworkManager.sendToServer(new TrafficLightSchedulePacket(
             pos,
             List.of(schedule)
         ));

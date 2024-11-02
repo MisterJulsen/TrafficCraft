@@ -1,0 +1,44 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "TKT",
+        "RGR",
+        "CIC"
+    ],
+    "key": {
+        "T": [
+            {
+                "item": "minecraft:redstone_torch"
+            }
+        ],
+        "K": [
+            {
+                "item": "minecraft:comparator"
+            }
+        ],
+        "R": [
+            {
+                "tag": "c:dusts/redstone"
+            }
+        ],
+        "G": [
+            {
+                "tag": "c:ingots/gold"
+            }
+        ],
+        "C": [
+            {
+                "tag": "c:ingots/copper"
+            }
+        ],
+        "I": [
+            {
+                "item": "minecraft:iron_block"
+            }
+        ]
+    },
+    "result": {
+        "id": "trafficcraft:traffic_light_controller",
+        "count": 1
+    }
+}
