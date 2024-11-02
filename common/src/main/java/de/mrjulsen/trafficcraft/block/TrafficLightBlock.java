@@ -1,11 +1,13 @@
 package de.mrjulsen.trafficcraft.block;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
@@ -183,10 +185,30 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public boolean hasAnalogOutputSignal(BlockState pState) {
         return true;
     }
+    
+    private static int calcStateFlag(Collection<TrafficLightColor> colors ) {
+        int flag = 0;
+        
+        if (colors.contains(TrafficLightColor.GREEN) || colors.contains(TrafficLightColor.F1_F2_F3_F5)) {
+            flag |= 1;
+        }
+        if (colors.contains(TrafficLightColor.YELLOW) || colors.contains(TrafficLightColor.F4)) {
+            flag |= 2;
+        }
+        if (colors.contains(TrafficLightColor.RED) || colors.contains(TrafficLightColor.F0)) {
+            flag |= 4;
+        }
+        
+        return flag;
+    }
 
     @Override
     public int getAnalogOutputSignal(BlockState pState, Level pLevel, BlockPos pPos) {
-        return pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity blockEntity && blockEntity.isRunning() ? 15 : 0;
+        if (!(pLevel.getBlockEntity(pPos) instanceof TrafficLightBlockEntity be)) {
+            return 0;
+        }
+        int flag = calcStateFlag(be.getEnabledColors()) * 2;
+        return flag;
     }
 
     /* BLOCK ENTITY */
