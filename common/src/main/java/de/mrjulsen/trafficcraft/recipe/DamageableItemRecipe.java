@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.recipe;
 
+import de.mrjulsen.trafficcraft.registry.ModItems;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -18,7 +19,7 @@ public class DamageableItemRecipe extends ShapelessRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return DamageableItemRecipeSerializer.INSTANCE;
+        return ModItems.DAMAGEABLE_ITEM_RECIPE.get();
     }
     
     @Override
