@@ -106,7 +106,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
     // data
     private TrafficSignShape shape;
     private int[][] pixels; // image
-    private String name;
+    private String name = "";
     private TrafficSignWorkbenchEditorTool tool = TrafficSignWorkbenchEditorTool.DRAW;
     private int selectedColor = 0xFF000000;
     private int selectedIndex = -1;
@@ -322,7 +322,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
             TextUtils.empty(),
             false,
             (txt) -> {
-                this.name = txt;
+                this.name = txt == null ? "" : txt;
             },
             null
         );
