@@ -10,7 +10,7 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.StreetLampConfigCardItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
-import de.mrjulsen.trafficcraft.recipe.DamageableItemRecipeSerializer;
+import de.mrjulsen.trafficcraft.recipe.DamageableItemRecipe;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
@@ -44,7 +44,7 @@ public class ModItems {
 
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPES = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.RECIPE_SERIALIZER);
-    public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE = RECIPES.register("damageable_item_recipe", DamageableItemRecipeSerializer::new);
+    public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE = RECIPES.register("damageable_item_recipe", DamageableItemRecipe.Serializer::new);
 
 
 
