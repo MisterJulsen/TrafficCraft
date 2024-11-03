@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TownSignScreen extends WritableSignScreen {
     
-    private Component textVariant = Utils.translate("gui.trafficcraft.townsignvariant");
+    private Component textVariant = TextUtils.translate("gui.trafficcraft.townsignvariant");
     private TownSignVariant variant;
     private TownSignBlock.ETownSignSide side;
 

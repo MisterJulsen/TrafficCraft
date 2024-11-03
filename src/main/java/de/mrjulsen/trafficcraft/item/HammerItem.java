@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.item;
 
 import javax.annotation.Nonnull;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.Constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -63,7 +63,7 @@ public class HammerItem extends DiggerItem {
         BlockState block = level.getBlockState(pos);
 
         if (block.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            if (Utils.rotateBlock(level, pos, Rotation.CLOCKWISE_90)) {
+            if (DLUtils.rotateBlock(level, pos, Rotation.CLOCKWISE_90)) {
                 level.playLocalSound(pos.getX(), pos.getY(), pos.getZ(), SoundEvents.ANVIL_PLACE, SoundSource.BLOCKS, 0.5f, 2.0f, false);
                 level.levelEvent(pContext.getPlayer(), LevelEvent.PARTICLES_SCRAPE, pos, Block.getId(pContext.getLevel().getBlockState(pContext.getClickedPos())));
                 pContext.getPlayer().getCooldowns().addCooldown(pContext.getItemInHand().getItem(), 10);

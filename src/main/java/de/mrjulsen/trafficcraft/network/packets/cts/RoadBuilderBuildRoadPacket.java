@@ -3,16 +3,16 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
-import de.mrjulsen.mcdragonlib.utils.ScheduledTask;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.ScheduledTask;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuildingData;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,8 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildRoadPacket> {
 
@@ -63,11 +61,11 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
 
         return new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType);
     }
-
+    
     @Override
-    public void handle(RoadBuilderBuildRoadPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(RoadBuilderBuildRoadPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
             final Level level = sender.getLevel();
             ItemStack item = null;
             InteractionHand hand = null;
@@ -94,9 +92,9 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                 packet.roadType
             );
 
-            ScheduledTask.create(buildingData, level, RoadConstructionTool.BUILD_DELAY_TICKS, buildingData.blocks.size(), (data, lvl, iteration) -> {
+            ScheduledTask.create(buildingData, level, RoadConstructionTool.BUILD_DELAY_TICKS, buildingData.blocks.size(), (data, context) -> {
                 boolean[] canContinue = new boolean[] { true };
-                for (Entry<BlockPos, Integer> block : data.blocks.get(iteration).entrySet()) {
+                for (Entry<BlockPos, Integer> block : data.blocks.get(context.iteration()).entrySet()) {
                     
                     if (!canContinue[0] || !data.player.isAlive()) {
                         return false;
@@ -131,11 +129,11 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
                     }
                 }
 
-                if (iteration >= buildingData.blocks.size() - 1) {
+                if (context.iteration() >= buildingData.blocks.size() - 1) {
                     if (level.dimension().location().equals(DimensionType.NETHER_LOCATION.location())) {
-                        Utils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "highway_to_hell", "req");
+                        DLUtils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "highway_to_hell", "req");
                     } else if (level.dimension().location().equals(DimensionType.END_LOCATION.location())) {
-                        Utils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "final_destination", "req");
+                        DLUtils.giveAdvancement((ServerPlayer)data.player, ModMain.MOD_ID, "final_destination", "req");
                     }
                 }
 
@@ -146,10 +144,5 @@ public class RoadBuilderBuildRoadPacket implements IPacketBase<RoadBuilderBuildR
 
     private static boolean isPlayerCreative(Player pPlayer) {
         return pPlayer.isCreative() || pPlayer.isSpectator();
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

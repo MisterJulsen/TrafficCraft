@@ -45,10 +45,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class SignPickerScreen extends CommonScreen {
 
-    public static final Component title = Utils.translate("gui.trafficcraft.signpicker.title");
-    public static final Component titleOpenFileDialog = Utils.translate("gui.trafficcraft.signpicker.openfiledialog");
-    public static final Component btnDoneText = Utils.translate("gui.trafficcraft.signpicker.load");
-    public static final Component tooltipImport = Utils.translate("gui.trafficcraft.signpicker.tooltip.import");
+    public static final Component title = TextUtils.translate("gui.trafficcraft.signpicker.title");
+    public static final Component titleOpenFileDialog = TextUtils.translate("gui.trafficcraft.signpicker.openfiledialog");
+    public static final Component btnDoneText = TextUtils.translate("gui.trafficcraft.signpicker.load");
+    public static final Component tooltipImport = TextUtils.translate("gui.trafficcraft.signpicker.tooltip.import");
 
     private static final int WIDTH = 187;
     private static final int HEIGHT = 171;

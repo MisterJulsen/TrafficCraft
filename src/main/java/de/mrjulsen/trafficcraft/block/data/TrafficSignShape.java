@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.init.ClientInit;
 import net.minecraft.client.renderer.texture.DynamicTexture;
@@ -56,7 +56,7 @@ public enum TrafficSignShape implements StringRepresentable {
 	}
 
 	public boolean isPixelValid(int x, int y) {
-		return !IntStream.of(invalidPixels).anyMatch(a -> a == Utils.coordsToInt((byte)Mth.clamp(x, 0, MAX_WIDTH), (byte)Mth.clamp(y, 0, MAX_HEIGHT)));
+		return !IntStream.of(invalidPixels).anyMatch(a -> a == DLUtils.coordsToInt((byte)Mth.clamp(x, 0, MAX_WIDTH), (byte)Mth.clamp(y, 0, MAX_HEIGHT)));
 	}
 
 	public static TrafficSignShape getShapeByIndex(int index) {

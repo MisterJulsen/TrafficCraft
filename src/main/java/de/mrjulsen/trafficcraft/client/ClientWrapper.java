@@ -2,8 +2,8 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.common.IIdentifiable;
-import de.mrjulsen.mcdragonlib.utils.TimeUtils.TimeFormat;
+import de.mrjulsen.mcdragonlib.core.IIdentifiable;
+import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
@@ -20,6 +20,7 @@ import de.mrjulsen.trafficcraft.client.screen.WritableSignScreen;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignWorkbenchUpdateClientPacket;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +59,7 @@ public class ClientWrapper {
 
     
     @SuppressWarnings("resource")
-    public static void handleTrafficSignWorkbenchUpdateClientPacket(TrafficSignWorkbenchUpdateClientPacket packet, Supplier<NetworkEvent.Context> ctx) { 
+    public static void handleTrafficSignWorkbenchUpdateClientPacket(TrafficSignWorkbenchUpdateClientPacket packet, Supplier<PacketContext> ctx) { 
         if (Minecraft.getInstance().screen instanceof TrafficSignWorkbenchGui screen) {
             screen.updatePreview();
         }
@@ -72,7 +73,7 @@ public class ClientWrapper {
         }
     }
 
-    public static void handleTrafficSignTextureResetPacket(TrafficSignTextureResetPacket packet, Supplier<NetworkEvent.Context> ctx) { 
+    public static void handleTrafficSignTextureResetPacket(TrafficSignTextureResetPacket packet, Supplier<PacketContext> ctx) { 
         TrafficSignTextureCacheClient.clear(packet.id);
     }
 

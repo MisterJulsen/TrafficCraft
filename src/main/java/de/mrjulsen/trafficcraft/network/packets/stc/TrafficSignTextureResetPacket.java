@@ -2,12 +2,12 @@ package de.mrjulsen.trafficcraft.network.packets.stc;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import dev.architectury.networking.NetworkManager.PacketContext;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficSignTextureResetPacket implements IPacketBase<TrafficSignTextureResetPacket> {
     public String id;
@@ -29,18 +29,13 @@ public class TrafficSignTextureResetPacket implements IPacketBase<TrafficSignTex
 
         return new TrafficSignTextureResetPacket(id);
     }
-
+    
     @Override
-    public void handle(TrafficSignTextureResetPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            NetworkManagerBase.executeOnClient(() -> {
-                ClientWrapper.handleTrafficSignTextureResetPacket(packet, context);
+    public void handle(TrafficSignTextureResetPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+                ClientWrapper.handleTrafficSignTextureResetPacket(packet, contextSupplier);
             });
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_CLIENT;
     }
 }

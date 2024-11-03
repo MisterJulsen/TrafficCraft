@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.utils.IClipboardData;
+import de.mrjulsen.mcdragonlib.data.INBTSerializable;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import net.minecraft.nbt.CompoundTag;
@@ -13,7 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class TrafficLightSchedule implements IClipboardData {
+public class TrafficLightSchedule implements INBTSerializable {
 
     private static final String NBT_LOOP = "loop";
     private static final String NBT_ENTRIES = "entries";

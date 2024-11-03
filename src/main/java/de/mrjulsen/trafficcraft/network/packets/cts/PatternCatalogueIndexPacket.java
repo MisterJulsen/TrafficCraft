@@ -2,14 +2,12 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
+import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
 
 public class PatternCatalogueIndexPacket implements IPacketBase<PatternCatalogueIndexPacket> {
 
@@ -34,9 +32,9 @@ public class PatternCatalogueIndexPacket implements IPacketBase<PatternCatalogue
     }
 
     @Override
-    public void handle(PatternCatalogueIndexPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            ServerPlayer sender = context.get().getSender();
+    public void handle(PatternCatalogueIndexPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            Player sender = contextSupplier.get().getPlayer();
             if (sender.getMainHandItem().getItem() instanceof PatternCatalogueItem) {
                 PatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), packet.index);
                 if (sender.getMainHandItem().getItem() instanceof CreativePatternCatalogueItem) {
@@ -50,9 +48,5 @@ public class PatternCatalogueIndexPacket implements IPacketBase<PatternCatalogue
             }
             sender.getInventory().setChanged();
         });
-    }
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_SERVER;
     }
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.DragonLibConstants;
-import de.mrjulsen.mcdragonlib.utils.IClipboardData;
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.data.INBTSerializable;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 
-public class TrafficLightScheduleEntryData implements IClipboardData {
+public class TrafficLightScheduleEntryData implements INBTSerializable {
 
     private static final String NBT_ID = "id";
     private static final String NBT_TICKS = "ticks";
@@ -19,7 +19,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
     @Deprecated private static final String NBT_MODE = "mode";
 
     public static final int MAX_SECONDS = 999;
-    public static final int MAX_TICKS = MAX_SECONDS * DragonLibConstants.TPS;
+    public static final int MAX_TICKS = MAX_SECONDS * DragonLib.TPS;
 
     private List<TrafficLightColor> enabledColors = new ArrayList<>(TrafficLightColor.values().length);
     private int ticks = 0;
@@ -46,7 +46,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
     }
 
     public double getDurationSeconds() {
-        return (double)this.ticks / DragonLibConstants.TPS;
+        return (double)this.ticks / DragonLib.TPS;
     }
 
     public int getPhaseId() {
@@ -82,7 +82,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
     }
 
     public void setDurationSeconds(double seconds) {
-        this.setDurationTicks((int)(seconds * DragonLibConstants.TPS));
+        this.setDurationTicks((int)(seconds * DragonLib.TPS));
     }
 
     public void addDurationTicks(int amount) {
@@ -90,7 +90,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
     }
 
     public void addDurationSeconds(int amount) {
-        this.addDurationTicks((int)(amount * DragonLibConstants.TPS));
+        this.addDurationTicks((int)(amount * DragonLib.TPS));
     }
 
     public void subDurationTicks(int amount) {
@@ -98,7 +98,7 @@ public class TrafficLightScheduleEntryData implements IClipboardData {
     }
 
     public void subDurationSeconds(int amount) {
-        this.subDurationTicks((int)(amount * DragonLibConstants.TPS));
+        this.subDurationTicks((int)(amount * DragonLib.TPS));
     }
 
     public void setPhaseId(int id) {

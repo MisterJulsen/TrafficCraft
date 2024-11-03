@@ -2,12 +2,12 @@ package de.mrjulsen.trafficcraft.network.packets.stc;
 
 import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.network.IPacketBase;
-import de.mrjulsen.mcdragonlib.network.NetworkManagerBase;
+import de.mrjulsen.mcdragonlib.net.IPacketBase;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import dev.architectury.networking.NetworkManager.PacketContext;
+import dev.architectury.utils.Env;
+import dev.architectury.utils.EnvExecutor;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
 
 public class TrafficSignWorkbenchUpdateClientPacket implements IPacketBase<TrafficSignWorkbenchUpdateClientPacket> {
 
@@ -22,18 +22,13 @@ public class TrafficSignWorkbenchUpdateClientPacket implements IPacketBase<Traff
     public TrafficSignWorkbenchUpdateClientPacket decode(FriendlyByteBuf buffer) {
         return new TrafficSignWorkbenchUpdateClientPacket();
     }
-
+    
     @Override
-    public void handle(TrafficSignWorkbenchUpdateClientPacket packet, Supplier<NetworkEvent.Context> context) {
-        NetworkManagerBase.handlePacket(packet, context, () -> {
-            NetworkManagerBase.executeOnClient(() -> {
-                ClientWrapper.handleTrafficSignWorkbenchUpdateClientPacket(packet, context);
+    public void handle(TrafficSignWorkbenchUpdateClientPacket packet, Supplier<PacketContext> contextSupplier) {
+        contextSupplier.get().queue(() -> {
+            EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
+                ClientWrapper.handleTrafficSignWorkbenchUpdateClientPacket(packet, contextSupplier);
             });
         });
-    }
-
-    @Override
-    public NetworkDirection getDirection() {
-        return NetworkDirection.PLAY_TO_CLIENT;
     }
 }

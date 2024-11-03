@@ -10,9 +10,11 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.mojang.math.Vector3f;
 
-import de.mrjulsen.mcdragonlib.common.Location;
-import de.mrjulsen.mcdragonlib.utils.StatusResult;
-import de.mrjulsen.mcdragonlib.utils.Utils;
+import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.data.StatusResult;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.ModMain;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
@@ -154,7 +156,7 @@ public class RoadConstructionTool extends Item {
 
     private static StatusResult isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
-        boolean flag2 = de.mrjulsen.mcdragonlib.utils.Math.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
+        boolean flag2 = MathUtils.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
         int status = 0;
 
         if (!flag1) {
@@ -239,7 +241,7 @@ public class RoadConstructionTool extends Item {
         pPlayer.getCooldowns().addCooldown(pStack.getItem(), blockList.size() * BUILD_DELAY_TICKS);
 
         if (!pLevel.isClientSide) {
-            Utils.giveAdvancement((ServerPlayer)pPlayer, ModMain.MOD_ID, "road_construction_tool", "req");            
+            DLUtils.giveAdvancement((ServerPlayer)pPlayer, ModMain.MOD_ID, "road_construction_tool", "req");            
         }
 
         return new RoadBuildingData(blockList, pPlayer, pHand, pStack, start, end, roadWidth, replaceBlocks, roadType);
@@ -346,13 +348,13 @@ public class RoadConstructionTool extends Item {
                 end = null;
             }
 
-            player.displayClientMessage(Utils.translate("item.trafficcraft.road_construction_tool.status_pos1",
+            player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos1",
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
             ), true);
 
         } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
             end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
-            player.displayClientMessage(Utils.translate("item.trafficcraft.road_construction_tool.status_pos2",
+            player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos2",
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
                 Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
@@ -378,10 +380,10 @@ public class RoadConstructionTool extends Item {
             int lineStatus = isLineValid(start, end).code();
             switch (lineStatus) {
                 case ERROR_TOO_FAR:
-                    player.displayClientMessage(Utils.translate("item.trafficcraft.road_construction_tool.status_too_far").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_too_far").withStyle(ChatFormatting.RED), true);
                     break;
                 case ERROR_SLOPE_TOO_STEEP:
-                    player.displayClientMessage(Utils.translate("item.trafficcraft.road_construction_tool.status_slope_too_steep").withStyle(ChatFormatting.RED), true);
+                    player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_slope_too_steep").withStyle(ChatFormatting.RED), true);
                     break;
                 default:
                     break;

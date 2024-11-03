@@ -33,7 +33,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class TrafficLightControllerScreen extends CommonScreen {
-    public static final Component title = Utils.translate("gui.trafficcraft.trafficlightcontroller.title");
+    public static final Component title = TextUtils.translate("gui.trafficcraft.trafficlightcontroller.title");
 
     private static final int GUI_WIDTH = 240;
     
@@ -53,8 +53,8 @@ public class TrafficLightControllerScreen extends CommonScreen {
     protected ResizableCycleButton<Boolean> statusButton;
     protected Button editScheduleButton;
 
-    private Component textStatus = Utils.translate("gui.trafficcraft.trafficlightcontroller.status");
-    private Component textEditSchedule = Utils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
+    private Component textStatus = TextUtils.translate("gui.trafficcraft.trafficlightcontroller.status");
+    private Component textEditSchedule = TextUtils.translate("gui.trafficcraft.trafficlightcontroller.edit_schedule");
 
     public TrafficLightControllerScreen(BlockPos pos, Level level) {
         super(title);

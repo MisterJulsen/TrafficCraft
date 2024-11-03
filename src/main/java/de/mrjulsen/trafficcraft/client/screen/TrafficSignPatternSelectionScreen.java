@@ -48,7 +48,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class TrafficSignPatternSelectionScreen extends CommonScreen {
     
-    public static final Component title = Utils.translate("gui.trafficcraft.patternselection.title");
+    public static final Component title = TextUtils.translate("gui.trafficcraft.patternselection.title");
     
     private static final int WIDTH = 158;
     private static final int HEIGHT = 200;
@@ -167,7 +167,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
                         
                     }
                 }.withAlignment(Alignment.CENTER);
-                addTooltip(Tooltip.of(Utils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
+                addTooltip(Tooltip.of(TextUtils.text(PatternCatalogueItem.getPatternAt(stack, j).getName())).assignedTo(btn));
                 this.addRenderableWidget(btn);
             }
         } else {
@@ -272,7 +272,7 @@ public class TrafficSignPatternSelectionScreen extends CommonScreen {
 
                 float scale = 0.75f;
                 pPoseStack.scale(scale, scale, scale);
-                this.font.draw(pPoseStack, Utils.translate("gui.trafficcraft.patternselection.build_in_pattern", Utils.translate(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
+                this.font.draw(pPoseStack, TextUtils.translate("gui.trafficcraft.patternselection.build_in_pattern", TextUtils.translate(data.getShape().getTranslationKey()).getString(), selectedIndex + 1), (guiLeft + 15 + 30) / scale, (guiTop + HEIGHT - 15 - 24 / 2 - this.font.lineHeight / 2) / scale, 4210752);
                 pPoseStack.setIdentity();
             }
             
