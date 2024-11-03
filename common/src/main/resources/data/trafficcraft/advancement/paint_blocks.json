@@ -31,7 +31,7 @@
             "condition": "minecraft:location_check",
             "predicate": {
               "block": {
-                "tag": "trafficcraft:paintable"
+                "items": "#trafficcraft:paintable"
               }
             }
           }

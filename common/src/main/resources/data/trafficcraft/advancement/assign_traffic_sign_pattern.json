@@ -22,7 +22,7 @@
           {
             "condition": "minecraft:match_tool",
             "predicate": {
-              "tag": "trafficcraft:pattern_catalogues"
+              "items": "#trafficcraft:pattern_catalogues"
             }
           },
           {

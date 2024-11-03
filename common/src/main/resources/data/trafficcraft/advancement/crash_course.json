@@ -20,7 +20,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "trafficcraft:barriers"
+            "items": "#trafficcraft:barriers"
           }
         ]
       }
