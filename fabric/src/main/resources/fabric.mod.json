@@ -1,19 +1,19 @@
 {
   "schemaVersion": 1,
-  "id": "trafficcraft",
+  "id": "${modid}",
   "version": "${version}",
-  "name": "TrafficCraft",
-  "description": "A Minecraft mod that brings roads, traffic signs, traffic lights and much more to your Minecraft world. Build your own cities and roads according to your wishes. Feel free to join my Discord server for more information about my mods or to send bug reports, suggestions or to exchange with the community! https://discord.gg/AeSbNgvc7f",
+  "name": "${display_name}",
+  "description": "${description}",
   "authors": [
-    "MrJulsen"
+    "${authors}"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/minecraft/mc-mods/trafficcraft",
-    "issues": "https://github.com/MisterJulsen/TrafficCraft/issues",
-    "sources": "https://github.com/MisterJulsen/TrafficCraft"
+    "homepage": "${homepage}",
+    "issues": "${issues}",
+    "sources": "${source}"
   },
-  "license": "GNU General Public License v3.0",
-  "icon": "mod_icon.png",
+  "license": "${license}",
+  "icon": "${icon}",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -21,14 +21,22 @@
     ]
   },
   "mixins": [
-    "trafficcraft.mixins.json"
+    "${modid}.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "minecraft": "~1.18.2",
-    "java": ">=17",
-    "dragonlib": ">=1.18.2-2.2.19",
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=${java_version}",
+    "dragonlib": ">=${dragonlib_version}",
     "fabric-api": "*"
   },
-  "accessWidener": "trafficcraft.accesswidener"
+  "custom": {
+    "modmenu": {
+      "links": {
+        "Discord": "${discord}"
+      },
+      "update_checker": true
+    }
+  },
+  "accessWidener": "${modid}.accesswidener"
 }
