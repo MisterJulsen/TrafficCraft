@@ -602,7 +602,7 @@ public class TrafficSignWorkbenchGui extends DLContainerScreen<TrafficSignWorkbe
         }
 
         if (scrollbar != null) {
-            scrollbar.setScreenSize(MAX_ROWS).updateMaxScroll(currentRow + 1);
+            scrollbar.setScreenSize(MAX_ROWS).setMaxScroll(currentRow + 1);
         }
     }
 

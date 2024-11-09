@@ -41,6 +41,8 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientPlayerEvent;
 import dev.architectury.event.events.client.ClientRawInputEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.injectables.annotations.PlatformOnly;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.registries.RegistrySupplier;
@@ -69,16 +71,20 @@ public class ClientInit {
      * @param cls the class for the component
      * @param factory the factory for the ClientTooltipComponent
      */
+    @PlatformOnly(value = PlatformOnly.FABRIC)
     @SuppressWarnings("unchecked")
     public static <T extends TooltipComponent> void registerTooltipComponentFactory(Class<T> cls, Function<? super T, ? extends ClientTooltipComponent> factory) {
         tooltipComponentFactories.put(cls, (Function<TooltipComponent, ClientTooltipComponent>) factory);
     }
 
+    @PlatformOnly(value = PlatformOnly.FABRIC)
     @Nullable
     public static ClientTooltipComponent getClientTooltipComponent(TooltipComponent component) {
         var factory = tooltipComponentFactories.get(component.getClass());
         return factory == null ? null : factory.apply(component);
     }
+
+    
 
     public static int[][] textureToIntArray(DynamicTexture tex, boolean flipRgb) {
         final int[][] a = new int[tex.getPixels().getWidth()][];
@@ -123,9 +129,11 @@ public class ClientInit {
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntityRenderer::new);
             
-            registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
-                return new ClientTrafficSignTooltipStack(tooltip);
-            });
+            if (Platform.isFabric()) {
+                ClientInit.registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
+                    return new ClientTrafficSignTooltipStack(tooltip);
+                });
+            }
 
             /* REGISTER MENUS */
 

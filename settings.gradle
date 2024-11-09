@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'TrafficCraft 1.21.1'
+rootProject.name = "TrafficCraft"
 
 include 'common'
 include 'fabric'

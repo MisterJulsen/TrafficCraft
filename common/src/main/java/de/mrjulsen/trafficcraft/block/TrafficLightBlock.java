@@ -191,7 +191,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
     public boolean hasAnalogOutputSignal(BlockState pState) {
         return true;
     }
-
+    
     private static int calcStateFlag(Collection<TrafficLightColor> colors ) {
         int flag = 0;
         
