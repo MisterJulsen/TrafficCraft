@@ -59,14 +59,6 @@ dependencies {
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('META-INF/mods.toml') {
-        expand version: project.version
-    }
-}
-
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"

@@ -15,8 +15,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class DamageableItemRecipeSerializer implements RecipeSerializer<DamageableItemRecipe> {
-
-    public static final DamageableItemRecipeSerializer INSTANCE = new DamageableItemRecipeSerializer();
    
     private static final Codec<DamageableItemRecipe> CODEC = RecordCodecBuilder.create((instance) -> {
         return instance.group(ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((shapelessRecipe) -> {
