@@ -1,9 +1,8 @@
 package de.mrjulsen.trafficcraft.data;
 
 import java.io.Closeable;
+import java.util.Base64;
 import java.util.UUID;
-
-import org.apache.commons.codec.binary.Base64;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.mrjulsen.mcdragonlib.core.IIdentifiable;
@@ -138,7 +137,7 @@ public class TrafficSignData implements Closeable, IIdentifiable {
 
     public static NamedTrafficSignTextureReference migrate(CompoundTag nbt) {
         TrafficSignData src = TrafficSignData.fromNbt(nbt);
-        TrafficSignTextureData data = new TrafficSignTextureData(src.getShape(), Base64.decodeBase64(src.getTexture()), (short)src.getWidth(), (short)src.getHeight(), System.currentTimeMillis(), new UUID(0, 0));
+        TrafficSignTextureData data = new TrafficSignTextureData(src.getShape(), Base64.getDecoder().decode(src.getTexture()), (short)src.getWidth(), (short)src.getHeight(), System.currentTimeMillis(), new UUID(0, 0));
         DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {});
         String name = src.getName();
         src.close();
