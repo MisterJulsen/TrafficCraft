@@ -11,6 +11,7 @@ import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
+import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import dev.architectury.utils.EnvExecutor;
 import net.minecraft.nbt.CompoundTag;
@@ -142,7 +143,11 @@ public class TrafficSignData implements Closeable, IIdentifiable {
     public static NamedTrafficSignTextureReference migrate(CompoundTag nbt) {
         TrafficSignData src = TrafficSignData.fromNbt(nbt);
         TrafficSignTextureData data = new TrafficSignTextureData(src.getShape(), Base64.getDecoder().decode(src.getTexture()), (short)src.getWidth(), (short)src.getHeight(), System.currentTimeMillis(), new UUID(0, 0));
-        DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {});
+        if (Platform.getEnvironment() == Env.CLIENT) {
+            DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {});
+        } else {
+            data.save();
+        }
         String name = src.getName();
         src.close();
         return NamedTrafficSignTextureReference.of(data, name);
