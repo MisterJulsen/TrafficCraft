@@ -158,7 +158,7 @@ public class TrafficLightScheduleContainer extends DLWidgetContainer {
             }
             currentY += addRenderableOnly(new TrafficLightScheduleTextEntry(x(), y() + currentY, textEnd)).height();
 
-            this.scrollBar.updateMaxScroll(currentY);
+            this.scrollBar.setMaxScroll(currentY);
         }
 
         @Override

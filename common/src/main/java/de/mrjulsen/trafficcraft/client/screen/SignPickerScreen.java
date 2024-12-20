@@ -65,6 +65,7 @@ public class SignPickerScreen extends DLScreen {
 
     private final WidgetsCollection groupPatterns = new WidgetsCollection();
     private DLVerticalScrollBar scrollbar;
+    private boolean updateScrollableContent = true;
     private DLButton doneButton;
 
     private final ResourceLocation[] resources;
@@ -178,7 +179,10 @@ public class SignPickerScreen extends DLScreen {
 
         this.scrollbar = this.addRenderableWidget(new DLVerticalScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)).withOnValueChanged(v -> {
             this.scroll = v.getScrollValue();
-            fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
+            if (updateScrollableContent)
+                fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
+
+            updateScrollableContent = true;
         }).setAutoScrollerSize(true));
 
         fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
@@ -232,7 +236,8 @@ public class SignPickerScreen extends DLScreen {
         }
 
         if (scrollbar != null) {
-            scrollbar.setScreenSize(MAX_ROWS).updateMaxScroll(currentRow + 1);
+            updateScrollableContent = false;
+            scrollbar.setScreenSize(MAX_ROWS).setMaxScroll(currentRow + 1);
         }
     }
 }
