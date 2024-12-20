@@ -4,16 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
-
-import org.apache.commons.codec.digest.MessageDigestAlgorithms;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.server.MinecraftServer;
 
 public class TrafficSignTextureData {
 
@@ -67,7 +65,8 @@ public class TrafficSignTextureData {
 
     public UUID calculateHash() {
         try {
-            MessageDigest md = MessageDigest.getInstance(MessageDigestAlgorithms.SHA3_512);
+            
+            MessageDigest md = MessageDigest.getInstance("SHA3-512");
             byte[] hash = md.digest(pixelData);
             ByteBuffer byteBuffer = ByteBuffer.wrap(hash);
             long high = byteBuffer.getLong();
@@ -75,7 +74,7 @@ public class TrafficSignTextureData {
             
             UUID id = new UUID(high, low);
             return id;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             TrafficCraft.LOGGER.error("Unable to calculate texture hash value.", e);
         }
         return new UUID(0, 0);

@@ -9,6 +9,7 @@ import net.minecraftforge.fml.config.ModConfig;
 
 public final class CrossPlatformImpl {
     
+    @SuppressWarnings("removal")
     public static void setRenderLayer(Block block, RenderType type) { 
     }
     

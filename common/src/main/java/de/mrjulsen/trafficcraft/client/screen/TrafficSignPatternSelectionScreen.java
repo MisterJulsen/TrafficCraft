@@ -74,6 +74,7 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
     
     private final WidgetsCollection groupPatterns = new WidgetsCollection();
     private DLVerticalScrollBar scrollbar;
+    private boolean updateScrollableContent = true;
 
     private int guiTop;
     private int guiLeft;
@@ -208,7 +209,10 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
             )
         )).setAutoScrollerSize(true).withOnValueChanged((scrollbar) -> {
             this.scroll = scrollbar.getScrollValue();
-            fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), scroll, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 1, guiTop + 45, this.scrollbar);
+            if (updateScrollableContent)
+                fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), scroll, guiLeft + WIDTH / 2 - ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW / 2 - 1, guiTop + 45, this.scrollbar);
+
+            updateScrollableContent = true;
         });
 
         this.scrollbar.visible = groupPatterns.components.size() > MAX_ENTRIES_IN_ROW * MAX_ROWS;
@@ -231,7 +235,8 @@ public class TrafficSignPatternSelectionScreen extends DLScreen {
         }
 
         if (scrollbar != null) {
-            scrollbar.setScreenSize(MAX_ROWS).updateMaxScroll(currentRow + 1);
+            updateScrollableContent = false;
+            scrollbar.setScreenSize(MAX_ROWS).setMaxScroll(currentRow + 1);
         }
     }
 

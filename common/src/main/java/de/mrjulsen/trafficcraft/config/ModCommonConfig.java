@@ -23,11 +23,11 @@ public class ModCommonConfig {
     static {
         BUILDER.push(TrafficCraft.MOD_ID + "_common_config");
         
-        BITUMEN_GENERATION = BUILDER.comment("Whether bitumen ore should generate in the world or not. (Default: ON)")
+        BITUMEN_GENERATION = BUILDER.comment("[FABRIC ONLY] Whether bitumen ore should generate in the world or not. (Default: ON)")
             .define("world_generation.bitumen.enabled", true);
             
         
-        SALT_GENERATION = BUILDER.comment("Whether salt should generate in the world or not. (Default: ON)")
+        SALT_GENERATION = BUILDER.comment("[FABRIC ONLY] Whether salt should generate in the world or not. (Default: ON)")
             .define("world_generation.salt.enabled", true);
             
 
