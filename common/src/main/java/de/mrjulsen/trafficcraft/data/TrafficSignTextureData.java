@@ -11,7 +11,6 @@ import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.server.MinecraftServer;
 
 public class TrafficSignTextureData {
 
