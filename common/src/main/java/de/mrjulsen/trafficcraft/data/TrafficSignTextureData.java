@@ -132,7 +132,7 @@ public class TrafficSignTextureData {
         return shape;
     }
 
-    public void save() {
+    public synchronized void save() {
         if (hasErrors()) {
             return;
         }
