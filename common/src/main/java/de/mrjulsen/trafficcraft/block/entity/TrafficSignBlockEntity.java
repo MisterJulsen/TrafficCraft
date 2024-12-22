@@ -12,6 +12,7 @@ import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import dev.architectury.utils.GameInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
@@ -55,10 +56,12 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
             }
             if (getLevel().isClientSide) return;
             
-            BlockState state = getLevel().getBlockState(getBlockPos());
-            TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), java.util.Base64.getDecoder().decode(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
-            data.save();
-            setTextureId(data.getHash().toString());
+            GameInstance.getServer().execute(() -> {
+                BlockState state = getLevel().getBlockState(getBlockPos());
+                TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), java.util.Base64.getDecoder().decode(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
+                data.save();
+                setTextureId(data.getHash().toString());
+            });
         }, "Traffic Sign Migration").start();
     }
 
