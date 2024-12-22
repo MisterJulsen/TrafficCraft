@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[${neoforge_version_int},)"
+loaderVersion = "[${neoforge_loader_version},)"
 issueTrackerURL = "${issues}"
 license = "${license}"
 
@@ -17,7 +17,7 @@ logoFile = "${icon}"
 [[dependencies.${modid}]]
 modId = "neoforge"
 type = "required"
-versionRange = "[${neoforge_version_short},)"
+versionRange = "[${neoforge_dependency_version},)"
 ordering = "NONE"
 side = "BOTH"
 
