@@ -23,7 +23,9 @@ public record PatternCatalogueComponent(List<NamedTrafficSignTextureReference> t
     public static final StreamCodec<RegistryFriendlyByteBuf, PatternCatalogueComponent> STREAM_CODEC = StreamCodec.composite(
         StreamCodec.of(NamedTrafficSignTextureReference::toNetwork, NamedTrafficSignTextureReference::fromNetwork).apply(ByteBufCodecs.list()), PatternCatalogueComponent::textures,
         ByteBufCodecs.INT, PatternCatalogueComponent::selectedIndex,
-        PatternCatalogueComponent::new
+        (a, b) -> {
+            return new PatternCatalogueComponent(new ArrayList<>(a), b);
+        }
     );
 
     public static PatternCatalogueComponent empty() {
