@@ -59,7 +59,8 @@ subprojects {
             "discord": rootProject.discord,
             "next_unsupported_minecraft_version": rootProject.next_unsupported_minecraft_version,
             "dragonlib_version": "$rootProject.minecraft_version-$rootProject.dragonlib_version",
-            "forge_version_int": rootProject.forge_version_int,
+            "forge_loader_version": rootProject.forge_loader_version,
+            "forge_dependency_version": rootProject.forge_dependency_version,
             "fabric_loader_version": rootProject.fabric_loader_version,
             "java_version": rootProject.java_version
         ]
