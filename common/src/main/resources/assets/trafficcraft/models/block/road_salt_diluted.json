@@ -1,0 +1,21 @@
+{
+	"credit": "Made with Blockbench",
+	"ambientocclusion": false,
+	"render_type": "minecraft:translucent",
+	"textures": {
+		"particle": "trafficcraft:block/road_salt_diluted",
+		"line": "trafficcraft:block/road_salt_diluted"
+	},
+	"elements": [
+		{
+			"from": [-8, 0.25, -8],
+			"to": [24, 0.25, 24],
+			"shade": false,
+			"rotation": {"angle": 0, "axis": "y", "origin": [-8, 0, -8]},
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#line", "tintindex": 0},
+				"down": {"uv": [0, 16, 16, 0], "texture": "#line", "tintindex": 0}
+			}
+		}
+	]
+}

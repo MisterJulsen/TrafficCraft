@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "trafficcraft:block/salt"
+      },
+      {
+        "model": "trafficcraft:block/salt",
+        "y": 90
+      },
+      {
+        "model": "trafficcraft:block/salt",
+        "y": 180
+      },
+      {
+        "model": "trafficcraft:block/salt",
+        "y": 270
+      }
+    ]
+  }
+}

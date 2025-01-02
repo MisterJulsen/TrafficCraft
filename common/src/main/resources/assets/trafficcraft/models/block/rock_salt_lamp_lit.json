@@ -1,0 +1,50 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "block/stripped_dark_oak_log",
+		"1": "trafficcraft:block/rock_salt_lamp_lit",
+		"3": "trafficcraft:block/lamp_light",
+		"particle": "trafficcraft:block/rock_salt"
+	},
+	"elements": [
+		{
+			"from": [5, 0, 5],
+			"to": [11, 2, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 0, 7]},
+			"faces": {
+				"north": {"uv": [0, 0, 6, 2], "texture": "#0"},
+				"east": {"uv": [0, 0, 6, 2], "texture": "#0"},
+				"south": {"uv": [0, 0, 6, 2], "texture": "#0"},
+				"west": {"uv": [0, 0, 6, 2], "texture": "#0"},
+				"up": {"uv": [0, 0, 6, 6], "texture": "#0"},
+				"down": {"uv": [0, 0, 6, 6], "texture": "#0"}
+			}
+		},
+		{
+			"from": [4, 2, 4],
+			"to": [12, 13, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 2, 7]},
+			"faces": {
+				"north": {"uv": [0, 0, 8, 11], "texture": "#1"},
+				"east": {"uv": [0, 0, 8, 11], "texture": "#1"},
+				"south": {"uv": [0, 0, 8, 11], "texture": "#1"},
+				"west": {"uv": [0, 0, 8, 11], "texture": "#1"},
+				"up": {"uv": [0, 0, 8, 8], "texture": "#1"},
+				"down": {"uv": [0, 0, 8, 8], "texture": "#1"}
+			}
+		},
+		{
+			"from": [6, 2, 6],
+			"to": [10, 10, 10],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 2, 7]},
+			"faces": {
+				"north": {"texture": "#3"},
+				"east": {"texture": "#3"},
+				"south": {"texture": "#3"},
+				"west": {"texture": "#3"},
+				"up": {"texture": "#3"},
+				"down": {"texture": "#3"}
+			}
+		}
+	]
+}

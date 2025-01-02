@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "WLW",
+        "WLW",
+        "WLW"
+    ],
+    "key": {
+        "W": [
+            {
+                "item": "minecraft:stone_brick_wall"
+            }
+        ],
+        "L": [
+            {
+                "item": "minecraft:ladder"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:manhole",
+        "count": 3
+    }
+}

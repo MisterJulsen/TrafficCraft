@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RR",
+        "WW",
+        "BB"
+    ],
+    "key": {
+        "R": [
+            {
+                "item": "minecraft:red_dye"
+            }
+        ],
+        "W": [
+            {
+                "item": "minecraft:quartz"
+            }
+        ],
+        "B": [
+            {
+                "item": "trafficcraft:raw_bitumen"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:traffic_barrel",
+        "count": 2
+    }
+}

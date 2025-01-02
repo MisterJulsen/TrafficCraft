@@ -1,0 +1,55 @@
+{
+  "variants": {
+    "quality=fresh": [
+      {
+        "model": "trafficcraft:block/road_salt_fresh"
+      },
+      {
+        "model": "trafficcraft:block/road_salt_fresh",
+        "y": 90
+      },
+      {
+        "model": "trafficcraft:block/road_salt_fresh",
+        "y": 180
+      },
+      {
+        "model": "trafficcraft:block/road_salt_fresh",
+        "y": 270
+      }
+    ],
+    "quality=muddy": [
+      {
+        "model": "trafficcraft:block/road_salt_muddy"
+      },
+      {
+        "model": "trafficcraft:block/road_salt_muddy",
+        "y": 90
+      },
+      {
+        "model": "trafficcraft:block/road_salt_muddy",
+        "y": 180
+      },
+      {
+        "model": "trafficcraft:block/road_salt_muddy",
+        "y": 270
+      }
+    ],
+    "quality=diluted": [
+      {
+        "model": "trafficcraft:block/road_salt_diluted"
+      },
+      {
+        "model": "trafficcraft:block/road_salt_diluted",
+        "y": 90
+      },
+      {
+        "model": "trafficcraft:block/road_salt_diluted",
+        "y": 180
+      },
+      {
+        "model": "trafficcraft:block/road_salt_diluted",
+        "y": 270
+      }
+    ]
+  }
+}
