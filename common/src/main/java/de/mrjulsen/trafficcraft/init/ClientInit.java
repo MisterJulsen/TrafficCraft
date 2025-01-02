@@ -171,7 +171,7 @@ public class ClientInit {
                 blocks
             );
             
-            ItemColors itemColors = ((MinecraftAccessor)Minecraft.getInstance()).getItemColors();
+            ItemColors itemColors = ((MinecraftAccessor)Minecraft.getInstance()).trafficcraft$getItemColors();
             itemColors.register(new TintedTextures.TintedItem(),
                 ModBlocks.GUARDRAIL.get(),
                 ModItems.PAINT_BRUSH.get(),
