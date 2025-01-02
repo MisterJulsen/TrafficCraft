@@ -1,0 +1,10 @@
+{
+    "variants": {
+        "lit=true": {
+            "model": "trafficcraft:block/rock_salt_lamp_lit"
+        },
+        "lit=false": {
+            "model": "trafficcraft:block/rock_salt_lamp"
+        }
+    }
+}

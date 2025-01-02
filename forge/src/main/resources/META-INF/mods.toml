@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[${forge_version_int},)"
+issueTrackerURL = "${issues}"
+license = "${license}"
+
+[[mods]]
+modId = "${modid}"
+version = "${version}"
+displayName = "${display_name}"
+displayUrl="${homepage}"
+authors = "${authors}"
+credits="This mod is inspired by Mapper's RoadStuff mod."
+description = '''${description}'''
+logoFile = "${icon}"
+
+[[dependencies.${modid}]]
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version_int},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},${next_unsupported_minecraft_version})"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${modid}]]
+modId = "dragonlib"
+mandatory = true
+versionRange = "[${dragonlib_version},)"
+ordering = "BEFORE"
+side = "BOTH"
