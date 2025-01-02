@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "OOO",
+        "OOO",
+        "OOO"
+    ],
+    "key": {
+        "O": [
+            {
+                "item": "trafficcraft:raw_bitumen"
+            }
+        ]
+    },
+    "result": {
+        "item": "trafficcraft:bitumen_block",
+        "count": 1
+    }
+}

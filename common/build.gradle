@@ -1,0 +1,16 @@
+architectury {
+    common rootProject.enabled_platforms.split(',')
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/trafficcraft.accesswidener")
+}
+
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+   
+    modCompileOnly("dev.architectury:architectury:${rootProject.architectury_api_version}")
+    modCompileOnly("com.electronwill.night-config:toml:3.6.0")
+    modCompileOnly("net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}")
+    modImplementation("de.mrjulsen.mcdragonlib:dragonlib-fabric:${rootProject.minecraft_version}-${rootProject.dragonlib_version}")
+}
