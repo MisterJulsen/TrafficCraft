@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import de.mrjulsen.mcdragonlib.compat.CompatManager;
 import de.mrjulsen.mcdragonlib.net.NetworkManagerBase;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.data.AgingManager;
@@ -50,6 +51,7 @@ public final class TrafficCraft {
         if (Platform.getEnv() == EnvType.CLIENT) {
             ClientInitWrapper.init();
             AgingManager.init();
+            CompatManager.requiresFixForSodium();
         }
 
         ModBlocks.register();
