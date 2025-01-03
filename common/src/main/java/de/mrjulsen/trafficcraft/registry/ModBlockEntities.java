@@ -14,6 +14,7 @@ import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntities {
@@ -23,7 +24,9 @@ public class ModBlockEntities {
     public static final RegistrySupplier<BlockEntityType<TrafficLightBlockEntity>> TRAFFIC_LIGHT_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_block_entity", () -> BlockEntityType.Builder.of(TrafficLightBlockEntity::new, ModBlocks.TRAFFIC_LIGHT.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<TrafficLightControllerBlockEntity>> TRAFFIC_LIGHT_CONTROLLER_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_controller_block_entity", () -> BlockEntityType.Builder.of(TrafficLightControllerBlockEntity::new, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<TrafficLightRequestButtonBlockEntity>> TRAFFIC_LIGHT_REQUEST_BUTTON_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_request_button_block_entity", () -> BlockEntityType.Builder.of(TrafficLightRequestButtonBlockEntity::new, ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get()).build(null));
-    public static final RegistrySupplier<BlockEntityType<ColoredBlockEntity>> COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new, ModBlocks.GUARDRAIL.get()).build(null));    
+    public static final RegistrySupplier<BlockEntityType<ColoredBlockEntity>> COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new,
+        ModBlocks.COLORED_BLOCKS.stream().map(RegistrySupplier::get).toArray(Block[]::new)
+    ).build(null));    
     public static final RegistrySupplier<BlockEntityType<EmptyBlockEntity>> EMPTY_BLOCK_ENTITY = BLOCK_ENTITIES.register("road_salt_block_entity", () -> BlockEntityType.Builder.of(EmptyBlockEntity::new, ModBlocks.ROAD_SALT.get()).build(null));    
     public static final RegistrySupplier<BlockEntityType<StreetLampBlockEntity>> STREET_LAMP_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_lamp_block_entity", () -> BlockEntityType.Builder.of(StreetLampBlockEntity::new,
         ModBlocks.STREET_LAMP.get(),
