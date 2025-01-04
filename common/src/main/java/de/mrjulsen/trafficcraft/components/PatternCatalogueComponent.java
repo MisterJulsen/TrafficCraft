@@ -17,7 +17,10 @@ public record PatternCatalogueComponent(List<NamedTrafficSignTextureReference> t
         return builder.group(
             Codec.list(NamedTrafficSignTextureReference.CODEC.codec()).optionalFieldOf("textures", new ArrayList<>()).forGetter(PatternCatalogueComponent::textures),
             Codec.INT.optionalFieldOf("selected_texture", 0).forGetter(PatternCatalogueComponent::selectedIndex)
-        ).apply(builder, PatternCatalogueComponent::new);
+        ).apply(builder,
+        (a, b) -> {
+            return new PatternCatalogueComponent(new ArrayList<>(a), b);
+        });
     });
     
     public static final StreamCodec<RegistryFriendlyByteBuf, PatternCatalogueComponent> STREAM_CODEC = StreamCodec.composite(
