@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
@@ -12,7 +11,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import de.mrjulsen.mcdragonlib.util.ColorUtils;
 import de.mrjulsen.mcdragonlib.util.Wikipedia;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.CrossPlatform;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
@@ -29,7 +27,6 @@ import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
 import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import de.mrjulsen.trafficcraft.item.IScrollEventItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
-import de.mrjulsen.trafficcraft.mixin.MinecraftAccessor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
@@ -42,11 +39,10 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.rendering.BlockEntityRendererRegistry;
+import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
+import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
@@ -98,7 +94,8 @@ public class ClientInit {
     }
 
     public static final DynamicTexture[] SHAPE_TEXTURES = new DynamicTexture[TrafficSignShape.values().length];
-    
+
+    @SuppressWarnings("unchecked")
     public static void init() {
         ClientLifecycleEvent.CLIENT_SETUP.register(mc -> {
             
@@ -110,18 +107,18 @@ public class ClientInit {
             ItemModelGenerator.LAYERS.add("layer8");
             
             /* RENDER LAYERS */
-            CrossPlatform.setRenderLayer(ModBlocks.PAINT_BUCKET.get(), RenderType.cutout());
-            CrossPlatform.setRenderLayer(ModBlocks.MANHOLE.get(), RenderType.cutout());
-            CrossPlatform.setRenderLayer(ModBlocks.MANHOLE_COVER.get(), RenderType.cutout());
-            CrossPlatform.setRenderLayer(ModBlocks.TRAFFIC_SIGN_WORKBENCH.get(), RenderType.cutout());
-            CrossPlatform.setRenderLayer(ModBlocks.ROAD_SALT.get(), RenderType.translucent());
+            RenderTypeRegistry.register(RenderType.cutout(), 
+                ModBlocks.PAINT_BUCKET.get(),
+                ModBlocks.MANHOLE.get(),
+                ModBlocks.MANHOLE_COVER.get(),
+                ModBlocks.TRAFFIC_SIGN_WORKBENCH.get()
+            );
+            RenderTypeRegistry.register(RenderType.translucent(), 
+                ModBlocks.ROAD_SALT.get()
+            );
+            RenderTypeRegistry.register(RenderType.cutout(), ModBlocks.COLORED_BLOCKS.stream().filter(x -> x.getId().toString().contains("pattern")).map(RegistrySupplier::get).toArray(Block[]::new));
 
-            for (RegistrySupplier<Block> block : ModBlocks.COLORED_BLOCKS) {
-                if (block.getId().toString().contains("pattern")) {
-                    CrossPlatform.setRenderLayer(block.get(), RenderType.cutout());
-                }
-            }
-            
+
             /* BLOCK ENTITY RENDERERS */
             BlockEntityRendererRegistry.register(ModBlockEntities.TOWN_SIGN_BLOCK_ENTITY.get(), TownSignBlockEntityRenderer::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.STREET_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<StreetSignBlockEntity>::new);
@@ -157,28 +154,19 @@ public class ClientInit {
             });
         });
 
-        ClientLifecycleEvent.CLIENT_STARTED.register(mc -> {            
-            /* BLOCK COLORS */
-            final BlockColors blockColors = Minecraft.getInstance().getBlockColors();
-            Block[] blocks = new Block[ModBlocks.COLORED_BLOCKS.size()];
-            for (int i = 0; i < ModBlocks.COLORED_BLOCKS.size(); i++) {
-                blocks[i] = ModBlocks.COLORED_BLOCKS.get(i).get();
-            }
-            
-            blockColors.register(new TintedTextures.TintedBlock(),
-                blocks
-            );
-            
-            ItemColors itemColors = ((MinecraftAccessor)Minecraft.getInstance()).getItemColors();
-            itemColors.register(new TintedTextures.TintedItem(),
-                ModBlocks.GUARDRAIL.get(),
-                ModItems.PAINT_BRUSH.get(),
-                ModBlocks.TRAFFIC_CONE.get(),
-                ModBlocks.TRAFFIC_BOLLARD.get(),
-                ModBlocks.TRAFFIC_BARREL.get(),
-                ModBlocks.ROAD_BARRIER_FENCE.get(),
-                ModBlocks.CONCRETE_BARRIER.get(),
-                ModItems.COLOR_PALETTE.get()
+        /* BLOCK COLORS */
+
+        ClientLifecycleEvent.CLIENT_STARTED.register(mc -> {
+            ColorHandlerRegistry.registerBlockColors(new TintedTextures.TintedBlock(), ModBlocks.COLORED_BLOCKS.toArray(RegistrySupplier[]::new));
+            ColorHandlerRegistry.registerItemColors(new TintedTextures.TintedItem(), 
+                ModBlocks.GUARDRAIL,
+                ModItems.PAINT_BRUSH,
+                ModBlocks.TRAFFIC_CONE,
+                ModBlocks.TRAFFIC_BOLLARD,
+                ModBlocks.TRAFFIC_BARREL,
+                ModBlocks.ROAD_BARRIER_FENCE,
+                ModBlocks.CONCRETE_BARRIER,
+                ModItems.COLOR_PALETTE
             );
 
             DynamicTexture[] textures = Arrays.stream(TrafficSignShape.values()).map(v -> {
