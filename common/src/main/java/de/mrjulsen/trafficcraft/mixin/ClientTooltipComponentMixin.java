@@ -18,7 +18,7 @@ public interface ClientTooltipComponentMixin {
 
     @PlatformOnly(value = PlatformOnly.FABRIC)
     @Inject(method = "create(Lnet/minecraft/world/inventory/tooltip/TooltipComponent;)Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;", at = @At(value = "HEAD"), cancellable = true)
-    private static void onCreate(TooltipComponent visualTooltipComponent, CallbackInfoReturnable<ClientTooltipComponent> cir) {
+    private static void trafficcraft$create(TooltipComponent visualTooltipComponent, CallbackInfoReturnable<ClientTooltipComponent> cir) {
         ClientTooltipComponent result = ClientInit.getClientTooltipComponent(visualTooltipComponent);
         if (result != null) {
             cir.setReturnValue(result);

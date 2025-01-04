@@ -6,17 +6,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.level.block.Block;
 
-public final class CrossPlatform {    
-    
-    @ExpectPlatform
-    public static void setRenderLayer(Block block, RenderType type) {
-        throw new AssertionError();
-    }
+public final class CrossPlatform {  
     
     @ExpectPlatform
     public static void registerConfig() {

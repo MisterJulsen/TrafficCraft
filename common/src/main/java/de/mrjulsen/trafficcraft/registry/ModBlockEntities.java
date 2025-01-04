@@ -26,7 +26,6 @@ public class ModBlockEntities {
     public static final RegistrySupplier<BlockEntityType<TrafficLightRequestButtonBlockEntity>> TRAFFIC_LIGHT_REQUEST_BUTTON_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_light_request_button_block_entity", () -> BlockEntityType.Builder.of(TrafficLightRequestButtonBlockEntity::new, ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<ColoredBlockEntity>> COLORED_BLOCK_ENTITY = BLOCK_ENTITIES.register("colored_block_entity", () -> BlockEntityType.Builder.of(ColoredBlockEntity::new,
         ModBlocks.COLORED_BLOCKS.stream().map(RegistrySupplier::get).toArray(Block[]::new)
-
     ).build(null));    
     public static final RegistrySupplier<BlockEntityType<EmptyBlockEntity>> EMPTY_BLOCK_ENTITY = BLOCK_ENTITIES.register("road_salt_block_entity", () -> BlockEntityType.Builder.of(EmptyBlockEntity::new, ModBlocks.ROAD_SALT.get()).build(null));    
     public static final RegistrySupplier<BlockEntityType<StreetLampBlockEntity>> STREET_LAMP_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_lamp_block_entity", () -> BlockEntityType.Builder.of(StreetLampBlockEntity::new,
