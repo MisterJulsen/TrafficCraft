@@ -9,5 +9,5 @@ import net.minecraft.client.color.item.ItemColors;
 @Mixin(Minecraft.class)
 public interface MinecraftAccessor {    
     @Accessor("itemColors")
-    ItemColors getItemColors();
+    ItemColors trafficcraft$getItemColors();
 }
