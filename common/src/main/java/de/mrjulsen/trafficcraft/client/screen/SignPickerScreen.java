@@ -14,33 +14,40 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLVerticalScrollBar;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
-import de.mrjulsen.mcdragonlib.client.render.Sprite;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.ButtonState;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
-import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLScrollBar.Orientation;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLTooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
+import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.client.util.GuiUtils.TextureFillMode;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.ModGuiIcons;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class SignPickerScreen extends DLScreen {
+public class SignPickerScreen extends DLWindow {
 
     public static final Component title = TextUtils.translate("gui.trafficcraft.signpicker.title");
     public static final Component titleOpenFileDialog = TextUtils.translate("gui.trafficcraft.signpicker.openfiledialog");
@@ -54,76 +61,90 @@ public class SignPickerScreen extends DLScreen {
     private static final int ICON_BUTTON_WIDTH = 18;
     private static final int ICON_BUTTON_HEIGHT = 18;
       
-    private int guiLeft;
-    private int guiTop;
     private DynamicTexture preview;
 
-    private double scroll = 0;
-
-    private final Screen lastScreen;
     private final TrafficSignShape shape;
 
-    private final WidgetsCollection groupPatterns = new WidgetsCollection();
-    private DLVerticalScrollBar scrollbar;
-    private boolean updateScrollableContent = true;
+    private final DLPanel groupPatterns;
+    private DLScrollBar scrollbar;
     private DLButton doneButton;
 
-    private final ResourceLocation[] resources;
+    private final DLTexture[] resources;
     private final int count;
     private final Consumer<NativeImage> result;
 
-    public SignPickerScreen(Screen lastScreen, TrafficSignShape shape, Consumer<NativeImage> result) {
-        super(title);
-        this.lastScreen = lastScreen;
+    public SignPickerScreen(DLWindowManager manager, TrafficSignShape shape, Consumer<NativeImage> result) {
+        super(manager);
         this.shape = shape;
         this.result = result;
 
+        setSize(WIDTH, HEIGHT);
+        windowSpawnPosition.set(WindowPosition.PARENT_CENTER);
+
         int i = 1;
-        ResourceLocation path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
-        List<ResourceLocation> locs = new ArrayList<>();
+        ResourceLocation path = DLUtils.resourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
+        List<DLTexture> locs = new ArrayList<>();
         while (Minecraft.getInstance().getResourceManager().getResource(path).isPresent()) {
-            locs.add(path);
+            locs.add(new DLTexture(path, 32, 32));
             i++;
             path = new ResourceLocation(TrafficCraft.MOD_ID + ":" + "textures/block/sign/" + shape.getShape() + "/" + shape.getShape() + i + ".png");
         }
-        this.resources = locs.toArray(ResourceLocation[]::new);
+        this.resources = locs.toArray(DLTexture[]::new);
         this.count = this.resources.length;
-    }
 
-    @Override
-    public void onClose() {
-        if (lastScreen != null) {            
-            this.minecraft.setScreen(this.lastScreen);
-        } else {
-            super.onClose();
-        }
-    }
+        groupPatterns = addComponent(new DLPanel(7, 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_WIDTH * MAX_ROWS + 2));
+        groupPatterns.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
+        groupPatterns.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
+            if (e.layer() == RenderLayer.MAIN) {
+                DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
+            }
+            return false;
+        });
 
-    @Override
-    public void tick() {
-        doneButton.set_active(preview != null);
-        super.tick();
-    }
+        DLPanel innerPanel = groupPatterns.addComponent(new DLPanel(1, 1, groupPatterns.width() - 2, groupPatterns.height() - 2));
+        FlowLayout layout = new FlowLayout();
+        layout.flowDirection.set(Direction.HORIZONTAL);
+        layout.wrap.set(true);        
+        innerPanel.layout.set(layout);
+        innerPanel.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
 
-    @Override
-    public void init() {
-        super.init();
-        guiLeft = this.width / 2 - WIDTH / 2;
-        guiTop = this.height / 2 - (HEIGHT + 24) / 2; 
-
-        groupPatterns.components.clear();
+        this.scrollbar = addComponent(new DLScrollBar(groupPatterns.x() + groupPatterns.width(), groupPatterns.y(), 8, groupPatterns.height(), Orientation.VERTICAL));
+        scrollbar.anchor.set2(EAlign.BOTTOM, EAlign.TOP, EAlign.RIGHT);
+        scrollbar.scrollerSize.set(0);
+        scrollbar.screenSize.set(innerPanel.height());
+        scrollbar.max.set((int)Math.ceil(count / MAX_ENTRIES_IN_ROW * ICON_BUTTON_HEIGHT));
+        scrollbar.inputConsumptionPolicy.set(c -> true);
+        scrollbar.scrollSteps.set(ICON_BUTTON_HEIGHT);
+        scrollbar.addEventListener(DLScrollBar.ValueChangedEvent.class, (s, e) -> {
+            innerPanel.setScrollOffsetY(e.value());
+            return false;
+        });
+        addEventListener(DLGuiStandardEvents.ScrollEvent.class, scrollbar::invokeEvent);
         
-        doneButton = addButton(guiLeft + WIDTH / 2 - 67 + 20, guiTop + HEIGHT - 28, 65, 20, btnDoneText, (p) -> {
-            this.onDone();
-        }, null);
+        doneButton = addComponent(new DLButton(WIDTH / 2 - 67 + 20, HEIGHT - 28, 65, 20));
+        doneButton.text.set(btnDoneText);
+        doneButton.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            onDone();
+            return false;
+        });
 
-        addButton(guiLeft + WIDTH / 2 + 2 + 20, guiTop + HEIGHT - 28, 65, 20, CommonComponents.GUI_CANCEL, (p) -> {
-            this.onClose();
-        }, null);
+        DLButton cancelButton = addComponent(new DLButton(WIDTH / 2 + 2 + 20, HEIGHT - 28, 65, 20));
+        cancelButton.text.set(CommonComponents.GUI_CANCEL);
+        cancelButton.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            getWindowManager().closeWindow(this);
+            return false;
+        });
+
 
         
-        DLIconButton btn = new DLIconButton(ButtonType.DEFAULT, AreaStyle.BROWN, TrafficSignWorkbenchGui.ButtonIcons.IMPORT.getSprite(), groupPatterns, guiLeft + 9, guiTop + 36 + 0 * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, TextUtils.empty(), (button) -> {
-            groupPatterns.performForEach(x -> ((DLIconButton)x).deselect());
+        DLButton btnImport = new DLButton(0, 0, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT);
+        btnImport.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+        btnImport.tooltip.set(new DLTooltip(List.of(tooltipImport), 200));
+        btnImport.text.set(TextUtils.empty());
+        btnImport.icon.set(ModGuiIcons.WRITE_TO_FILE.getAsSprite(16, 16));
+        innerPanel.addComponent(btnImport);        
+        btnImport.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            groupPatterns.getComponentsOfType(DLToggleButton.class, true).forEach(x -> x.checked.set(false));
             PointerBuffer filterPatterns = MemoryUtil.memAllocPointer(5);
             filterPatterns.put(MemoryUtil.memUTF8("*.png"));
             filterPatterns.put(MemoryUtil.memUTF8("*.jpg"));
@@ -132,10 +153,10 @@ public class SignPickerScreen extends DLScreen {
             filterPatterns.put(MemoryUtil.memUTF8("*.bmp"));
             filterPatterns.flip();
 
-            this.minecraft.getSoundManager().pause();
-            String s = TinyFileDialogs.tinyfd_openFileDialog(titleOpenFileDialog.getString(), (CharSequence)null, filterPatterns, "Image Files", false);
-            if (s != null) {
-                try (InputStream data = DLUtils.scaleImage(new FileInputStream(s), 32, 32)) {
+            Minecraft.getInstance().getSoundManager().pause();
+            String str = TinyFileDialogs.tinyfd_openFileDialog(titleOpenFileDialog.getString(), (CharSequence)null, filterPatterns, "Image Files", false);
+            if (str != null) {
+                try (InputStream data = DLUtils.scaleImage(new FileInputStream(str), 32, 32)) {
                     if (preview != null) {
                         preview.close();
                         preview = null;                    
@@ -148,47 +169,41 @@ public class SignPickerScreen extends DLScreen {
                         img.setPixelRGBA(x, y, 0);
                     });
                     preview = new DynamicTexture(img);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
                 
             }
-            this.minecraft.getSoundManager().resume();
-        }).withAlignment(EAlignment.CENTER);
-        addTooltip(DLTooltip.of(tooltipImport).assignedTo(btn)).withMaxWidth(width / 4);
-        this.addRenderableWidget(btn);
+            Minecraft.getInstance().getSoundManager().resume();
+            return false;
+        });
         
-        for (int i = 0; i < count; i++) {
-            final int j = i;
-            Sprite sprite = new Sprite(resources[j], 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
-            DLIconButton btnImport = new DLIconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, TextUtils.empty(), (button) -> {
+        for (int k = 0; k < count; k++) {
+            final int j = k;
+            DLSprite sprite = new DLSprite(resources[j], 16, 16, 0, 0, 32, 32);
+            DLToggleButton textureBtn = innerPanel.addComponent(new DLToggleButton(0, 0, ICON_BUTTON_WIDTH, ICON_BUTTON_WIDTH));
+            textureBtn.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+            textureBtn.radioButtonMode.set(true);
+            textureBtn.text.set(TextUtils.EMPTY);
+            textureBtn.icon.set(sprite);
+            textureBtn.iconAlignment.set(ETextAlignment.CENTER);
+            textureBtn.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
+            textureBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
                 if (preview != null) {
                     preview.close();
                     preview = null;
                 }
 
                 try {
-                    preview = new DynamicTexture(NativeImage.read(this.minecraft.getResourceManager().getResource(resources[j]).get().open()));
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    preview = new DynamicTexture(NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(resources[j].getTexture().get()).get().open()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
-            }).withAlignment(EAlignment.CENTER);            
-            this.addRenderableWidget(btnImport);
+                return false;
+            });
         }
-        
-
-        this.scrollbar = this.addRenderableWidget(new DLVerticalScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2)).withOnValueChanged(v -> {
-            this.scroll = v.getScrollValue();
-            if (updateScrollableContent)
-                fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
-
-            updateScrollableContent = true;
-        }).setAutoScrollerSize(true));
-
-        fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
     }
 
-    @Override
     protected void onDone() {
         NativeImage img = null;
         if (preview != null) {
@@ -202,42 +217,16 @@ public class SignPickerScreen extends DLScreen {
             img = image;
         }
         result.accept(img);
-        this.onClose();
+        getWindowManager().closeWindow(this);
     }
 
     @Override
-    public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-        renderScreenBackground(graphics);
-        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WIDTH, HEIGHT);
-        DynamicGuiRenderer.renderArea(graphics, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.DOWN);
-        
-        GuiUtils.drawString(graphics, font, guiLeft + WIDTH / 2, guiTop + 6, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+        DefaultGuiTextures.DRAGONLIB_UI.getSprite(DefaultGuiTextures.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());        
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WIDTH / 2, 6, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
 
-        super.renderMainLayer(graphics, mouseX, mouseY, partialTicks);
-        
         if (preview != null) {
-            GuiUtils.drawTexture(preview.getId(), graphics, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
-        }
-    }
-
-    private void fillButtons(DLIconButton[] buttons, double scrollRow, int defX, int defY, DLVerticalScrollBar scrollbar) {
-        if (buttons.length <= 0) {
-            return;
-        }
-
-        int currentRow = -1;
-        for (int i = 0; i < buttons.length; i++) {
-            if (i % MAX_ENTRIES_IN_ROW == 0)
-                currentRow++;
-
-            buttons[i].set_x(defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH);
-            buttons[i].set_y((int)(defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT)));
-            buttons[i].set_visible(currentRow >= scrollRow && currentRow < scrollRow + MAX_ROWS);
-        }
-
-        if (scrollbar != null) {
-            updateScrollableContent = false;
-            scrollbar.setScreenSize(MAX_ROWS).setMaxScroll(currentRow + 1);
+            GuiUtils.drawTexture(preview.getId(), graphics, 8, 130, 32, 32, 0, 0, 32, 32, TextureFillMode.STRETCH, 32, 32);
         }
     }
 }

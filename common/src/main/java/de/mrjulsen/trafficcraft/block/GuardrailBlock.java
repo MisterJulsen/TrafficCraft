@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
@@ -345,7 +346,7 @@ public class GuardrailBlock extends ColorableBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public int getDefaultColor() {
+    public DLColor getDefaultColor() {
         return Constants.METAL_COLOR;
     }
 

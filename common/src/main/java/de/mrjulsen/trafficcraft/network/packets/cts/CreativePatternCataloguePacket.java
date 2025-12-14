@@ -1,46 +1,47 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
-public class CreativePatternCataloguePacket implements IPacketBase<CreativePatternCataloguePacket> {
+public class CreativePatternCataloguePacket extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
     
     private NamedTrafficSignTextureReference data;
 
-    public CreativePatternCataloguePacket() {}
+    public CreativePatternCataloguePacket(DLStatus status) {
+        super(status);
+    }
 
     public CreativePatternCataloguePacket(NamedTrafficSignTextureReference data) {
+        super(DLStatus.OK);
         this.data = data;
     }
 
     @Override
-    public void encode(CreativePatternCataloguePacket packet, FriendlyByteBuf buffer) {
-        buffer.writeNbt(packet.data.toNbt());
+    protected void write(CompoundTag nbt) {
+        nbt.put(NBT_DATA, data.toNbt());
     }
 
     @Override
-    public CreativePatternCataloguePacket decode(FriendlyByteBuf buffer) {
-        return new CreativePatternCataloguePacket(NamedTrafficSignTextureReference.fromNbt(buffer.readNbt()));
+    protected void read(CompoundTag nbt) {
+        this.data = NamedTrafficSignTextureReference.fromNbt(nbt.getCompound(NBT_DATA));
     }
 
-    @Override
-    public void handle(CreativePatternCataloguePacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-            if (sender.getMainHandItem().getItem() instanceof CreativePatternCatalogueItem) {
-                CreativePatternCatalogueItem.setCustomImage(sender.getMainHandItem(), packet.data);
-                CreativePatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), -1);
-            } else if (sender.getOffhandItem().getItem() instanceof CreativePatternCatalogueItem) { 
-                CreativePatternCatalogueItem.setCustomImage(sender.getOffhandItem(), packet.data);
-                CreativePatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), -1);
-            }
-            sender.getInventory().setChanged();
-        });        
+    public static void handle(CreativePatternCataloguePacket packet, NetworkPacketContext context) {
+        ServerPlayer sender = (ServerPlayer)context.getPlayer();
+        if (sender.getMainHandItem().getItem() instanceof CreativePatternCatalogueItem) {
+            CreativePatternCatalogueItem.setCustomImage(sender.getMainHandItem(), packet.data);
+            CreativePatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), -1);
+        } else if (sender.getOffhandItem().getItem() instanceof CreativePatternCatalogueItem) { 
+            CreativePatternCatalogueItem.setCustomImage(sender.getOffhandItem(), packet.data);
+            CreativePatternCatalogueItem.setSelectedIndex(sender.getMainHandItem(), -1);
+        }
+        sender.getInventory().setChanged();
     }
 }

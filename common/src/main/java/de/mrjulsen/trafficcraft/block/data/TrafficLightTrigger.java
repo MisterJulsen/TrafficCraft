@@ -2,15 +2,15 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.core.IIterableEnum;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.data.IIterableEnum;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 
-public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightTrigger> {
+public enum TrafficLightTrigger implements ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightTrigger> {
     NONE("none", 0, Blocks.BARRIER),
 	ON_REQUEST("on_request", 1, ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get()),
 	REDSTONE("redstone", 2, Items.REDSTONE);
@@ -52,13 +52,8 @@ public enum TrafficLightTrigger implements StringRepresentable, ITranslatableEnu
     }
 
 	@Override
-	public String getEnumName() {
-		return "trafficlighttrigger";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getTrigger();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "trafficlighttrigger", trigger);
 	}
 
 	@Override

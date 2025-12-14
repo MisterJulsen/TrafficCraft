@@ -1,0 +1,63 @@
+{
+    "dragonlib-gui": {
+        "texture_size": [ 64, 64 ],
+        "sprites": {
+            "red": {
+                "type": "stretch",
+                "uv": [ 0, 0 ],
+                "size": [ 10, 10 ]
+            },
+            "yellow": {
+                "type": "stretch",
+                "uv": [ 10, 0 ],
+                "size": [ 10, 10 ]
+            },
+            "green": {
+                "type": "stretch",
+                "uv": [ 20, 0 ],
+                "size": [ 10, 10 ]
+            },
+            "f0": {
+                "type": "stretch",
+                "uv": [ 0, 10 ],
+                "size": [ 10, 10 ]
+            },
+            "f4": {
+                "type": "stretch",
+                "uv": [ 10, 10 ],
+                "size": [ 10, 10 ]
+            },
+            "f1_f2_f3_f5": {
+                "type": "stretch",
+                "uv": [ 20, 10 ],
+                "size": [ 10, 10 ]
+            },
+            "timeline_node": {
+                "type": "stretch",
+                "uv": [ 0, 20 ],
+                "size": [ 9, 9 ]
+            },
+            "timeline_action": {
+                "type": "stretch",
+                "uv": [ 9, 20 ],
+                "size": [ 9, 9 ]
+            },
+            "timeline_delay": {
+                "type": "stretch",
+                "uv": [ 18, 20 ],
+                "size": [ 9, 9 ]
+            },
+            "timeline_edge": {
+                "type": "stretch",
+                "uv": [ 27, 20 ],
+                "size": [ 9, 9 ]
+            },
+            "container": {
+                "type": "nine_slice",
+                "uv": [ 30, 0 ],
+                "size": [ 10, 10 ],
+                "border": [ 2, 2, 2, 2 ]
+            }
+        }
+    }
+}

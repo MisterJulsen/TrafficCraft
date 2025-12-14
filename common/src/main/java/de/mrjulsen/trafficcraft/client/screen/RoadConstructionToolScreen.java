@@ -1,23 +1,30 @@
 package de.mrjulsen.trafficcraft.client.screen;
 
 import java.util.List;
+import java.util.Optional;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLItemButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLSlider;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
-import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCycleButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLSlider;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLTooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
-import de.mrjulsen.mcdragonlib.core.Location;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
+import de.mrjulsen.mcdragonlib.util.DLColor;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
+import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
@@ -26,19 +33,22 @@ import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuilderCountResult
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderDataPacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderResetPacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class RoadConstructionToolScreen extends DLScreen {
+public class RoadConstructionToolScreen extends DLWindow {
     public static final Component title = TextUtils.translate("gui.trafficcraft.road_builder.title");
 
-    private static final ResourceLocation GUI = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/road_construction_tool.png");
+    private static final DLTexture GUI = new DLTexture(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/gui/road_construction_tool.png"), 256, 256);
     private static final int GUI_WIDTH = 244;
     private static final int GUI_HEIGHT = 179;
+
     private static final int WORKING_AREA_X = 7;
     private static final int WORKING_AREA_Y = 17;
     private static final int WORKING_AREA_WIDTH = 230;
@@ -48,15 +58,14 @@ public class RoadConstructionToolScreen extends DLScreen {
     private static final int WORKING_AREA_RIGHT = WORKING_AREA_X + WORKING_AREA_WIDTH;
     
 
-    private int guiTop, guiLeft;    
-
     // Controls
-    private final WidgetsCollection itemButtonCollection = new WidgetsCollection();
     private DLSlider widthSlider;
     private DLButton buildButton;
-    private GuiAreaDefinition pos1Area;
-    private GuiAreaDefinition pos2Area;
-    private GuiAreaDefinition buildButtonArea;    
+
+    private Rectangle pos1Area;
+    private Rectangle pos2Area;
+    private Rectangle buildButtonArea;
+ 
 
     // Settings
     private byte roadWidth;
@@ -64,8 +73,8 @@ public class RoadConstructionToolScreen extends DLScreen {
     private RoadType roadType = RoadType.ASPHALT;
 
     private final ItemStack stack;
-    private final Location pos1;
-    private final Location pos2;
+    private final WorldLocation pos1;
+    private final WorldLocation pos2;
     private int blocksCount;
     private int slopesCount;
 
@@ -86,16 +95,18 @@ public class RoadConstructionToolScreen extends DLScreen {
     private final Component tooltipBuildMissingPos = TextUtils.translate("gui.trafficcraft.road_builder.tooltip.build_missing_pos");
 
 
-    public RoadConstructionToolScreen(ItemStack stack, int blocksCount, int slopesCount) {
-        super(title);
+    public RoadConstructionToolScreen(DLWindowManager manager, ItemStack stack, int blocksCount, int slopesCount) {
+        super(manager);
+        setSize(GUI_WIDTH, GUI_HEIGHT);
+        windowSpawnPosition.set(WindowPosition.CENTER);
 
         if (!(stack.getItem() instanceof RoadConstructionTool)) {
             throw new IllegalArgumentException(stack.getDisplayName().getString() + " is not a valid item for screen 'RoadBuilderToolScreen'.");
         }
 
         CompoundTag nbt = stack.getOrCreateTag();
-        pos1 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1));
-        pos2 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION2));
+        pos1 = nbt.contains(RoadConstructionTool.NBT_LOCATION1) ? WorldLocation.loadFromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1)) : null;
+        pos2 = nbt.contains(RoadConstructionTool.NBT_LOCATION2) ? WorldLocation.loadFromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION2)) : null;
         roadWidth = nbt.getByte(RoadConstructionTool.NBT_ROAD_WIDTH);
         replaceExistingBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
         roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
@@ -103,18 +114,9 @@ public class RoadConstructionToolScreen extends DLScreen {
         this.stack = stack;
         this.blocksCount = blocksCount;
         this.slopesCount = slopesCount;
-    }
-
-    @Override
-    public void init() {
-        super.init();
         
-        guiLeft = this.width / 2 - GUI_WIDTH / 2;
-        guiTop = this.height / 2 - GUI_HEIGHT / 2;
-        itemButtonCollection.components.clear();
-
-        pos1Area = new GuiAreaDefinition(guiLeft + 7, guiTop + 17, 114, 18);
-        pos2Area = new GuiAreaDefinition(guiLeft + 123, guiTop + 17, 114, 18);
+        pos1Area = Rectangle.withSize(7, 17, 114, 18);
+        pos2Area = Rectangle.withSize(123, 17, 114, 18);
 
 
         /* Default page */
@@ -122,52 +124,76 @@ public class RoadConstructionToolScreen extends DLScreen {
         int btnSpace = WORKING_AREA_WIDTH / 3;
         int btnWidth = btnSpace - 2;
 
-        addButton(guiLeft + WORKING_AREA_X + (btnSpace * 0), guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, resetText, (p) -> {
-            TrafficCraft.net().sendToServer(new RoadBuilderResetPacket());
-            this.onClose();
-        }, DLTooltip.of(tooltipReset).withMaxWidth(width / 4));
+        DLButton closeBtn = addComponent(new DLButton(WORKING_AREA_X, WORKING_AREA_BOTTOM - 20, btnWidth, 20));
+        closeBtn.text.set(resetText);
+        closeBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            ModNetworkManager.RESET_ROAD_BUILDER.send(NetworkDirection.toServer(), new RoadBuilderResetPacket());
+            getWindowManager().closeWindow(this);
+            return false;
+        });
+        closeBtn.tooltip.set(new DLTooltip(List.of(tooltipReset), 200));
 
-        this.buildButton = addButton(guiLeft + WORKING_AREA_X + (btnSpace * 1) + 2, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, buildText, (p) -> {
+        buildButton = addComponent(new DLButton(WORKING_AREA_X + btnSpace + 2, WORKING_AREA_BOTTOM - 20, btnWidth, 20));
+        buildButton.text.set(buildText);
+        buildButton.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             updateStackData();
-            CompoundTag nbt = this.stack.getOrCreateTag();
-            Location pos1 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION1));
-            Location pos2 = Location.fromNbt(nbt.getCompound(RoadConstructionTool.NBT_LOCATION2));
-            byte roadWidth = nbt.getByte(RoadConstructionTool.NBT_ROAD_WIDTH);
-            boolean replaceBlocks = nbt.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
-            RoadType roadType = RoadType.getRoadTypeByIndex(nbt.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
+            CompoundTag tag = this.stack.getOrCreateTag();
+            WorldLocation pos1 = WorldLocation.loadFromNbt(tag.getCompound(RoadConstructionTool.NBT_LOCATION1));
+            WorldLocation pos2 = WorldLocation.loadFromNbt(tag.getCompound(RoadConstructionTool.NBT_LOCATION2));
+            byte roadWidth = tag.getByte(RoadConstructionTool.NBT_ROAD_WIDTH);
+            boolean replaceBlocks = tag.getBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS);
+            RoadType roadType = RoadType.getRoadTypeByIndex(tag.getInt(RoadConstructionTool.NBT_ROAD_TYPE));
 
-            TrafficCraft.net().sendToServer(new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
-
+            ModNetworkManager.ROAD_BUILDER_BUILD_ROAD.send(NetworkDirection.toServer(), new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType));
             RoadConstructionTool.reset(stack);
-            TrafficCraft.net().sendToServer(new RoadBuilderResetPacket());
-            this.onDone();
-        }, null);
-        buildButton.active = pos1 != null && pos2 != null && roadWidth > 0;
-        buildButtonArea = new GuiAreaDefinition(buildButton.x(), buildButton.y(), buildButton.getWidth(), buildButton.getHeight());
+            ModNetworkManager.RESET_ROAD_BUILDER.send(NetworkDirection.toServer(), new RoadBuilderResetPacket());
 
-        addButton(guiLeft + WORKING_AREA_X + (btnSpace * 2) + 4, guiTop + WORKING_AREA_BOTTOM - 20, btnWidth, 20, CommonComponents.GUI_DONE, (p) -> {
-            this.onDone();
-        }, null);
+            onDone();
+            return false;
+        });
+        buildButton.tooltip.set(new DLTooltip(List.of(tooltipReset), 200));
+        buildButton.enabled.set(pos1 != null && pos2 != null && roadWidth > 0);
+        
+        buildButtonArea = Rectangle.withSize(buildButton.x(), buildButton.y(), buildButton.width(), buildButton.height());
 
-        addOnOffButton(guiLeft + WORKING_AREA_X, guiTop + 38, 114, 20, replaceBlocksText, this.replaceExistingBlocks, (btn, value) -> {
-            this.replaceExistingBlocks = value;
+        DLButton doneBtn = addComponent(new DLButton(WORKING_AREA_X + (btnSpace * 2) + 4, WORKING_AREA_BOTTOM - 20, btnWidth, 20));
+        doneBtn.text.set(CommonComponents.GUI_DONE);
+        doneBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            onDone();
+            return false;
+        });
 
+        DLCycleButton<Boolean> replaceBtn = addComponent(new DLCycleButton<>(WORKING_AREA_X, 38, 114, 20));
+        replaceBtn.text.set(replaceBlocksText);
+        replaceBtn.selectedItem.set(Optional.of(replaceExistingBlocks));
+        replaceBtn.tooltip.set(new DLTooltip(List.of(tooltipReplaceBlocks), 200));
+        replaceBtn.cycling.set(true);
+        replaceBtn.items.addAll(true, false);
+        replaceBtn.textFormat.set((c) -> TextUtils.text(c.text.get().getString()).append(": ").append(c.selectedItem.get().map(b -> b ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF).orElse(CommonComponents.OPTION_OFF)));
+        replaceBtn.addEventListener(DLCycleButton.SelectedItemChanged.class, (s, e) -> {
+            this.replaceExistingBlocks = replaceBtn.selectedItem.get().orElse(false);
             if (pos1 != null && pos2 != null) {
-                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
-                blocksCount = res.blocksCount;
-                slopesCount = res.slopesCount;
+                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(Minecraft.getInstance().level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
+                this.blocksCount = res.blocksCount;
+                this.slopesCount = res.slopesCount;
             }
-        }, DLTooltip.of(tooltipReplaceBlocks).withMaxWidth(width / 4));
+            return false;
+        });
 
-        this.widthSlider = addSlider(guiLeft + WORKING_AREA_X + 116, guiTop + 38, 114, 20, roadWidthText, TextUtils.text(""), 1, ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get(), 1, this.roadWidth, true,
-        (slider, value) -> {
-            roadWidth = value.byteValue();
+        this.widthSlider = addComponent(new DLSlider(WORKING_AREA_X + 116, 38, 114, 20));
+        widthSlider.text.set(roadWidthText);
+        widthSlider.min.set(1D);
+        widthSlider.max.set((double)ModCommonConfig.ROAD_BUILDER_MAX_ROAD_WIDTH.get());
+        widthSlider.value.set((double)roadWidth);
+        widthSlider.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
+            roadWidth = (byte)e.value();
             if (pos1 != null && pos2 != null) {
-                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(minecraft.level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
-                blocksCount = res.blocksCount;
-                slopesCount = res.slopesCount;
+                RoadBuilderCountResult res = RoadConstructionTool.countBlocksNeeded(Minecraft.getInstance().level, pos1.getLocationVec3(), pos2.getLocationVec3(), roadWidth, replaceExistingBlocks);
+                this.blocksCount = res.blocksCount;
+                this.slopesCount = res.slopesCount;
             }
-        }, null, null);
+            return false;
+        });
         
         int blocksWidth = WORKING_AREA_WIDTH - 2;
         int buttonWidth = blocksWidth / (RoadType.values().length - 1);
@@ -175,84 +201,82 @@ public class RoadConstructionToolScreen extends DLScreen {
         for (int i = 1; i < RoadType.values().length; i++) {
             RoadType type = RoadType.values()[i];
 
-            DLItemButton btn = this.addRenderableWidget(new DLItemButton(
-                ButtonType.RADIO_BUTTON,
-                AreaStyle.BROWN,
-                new ItemStack(type.getBlock().asItem()),
-                itemButtonCollection,
-                guiLeft + WORKING_AREA_X + 1 + (buttonWidth * (i - 1)),
-                guiTop + 84,
-                buttonWidth,
-                DLItemButton.DEFAULT_BUTTON_HEIGHT,
-                null,
-                (p) -> {
-                    this.roadType = type;
-                }).withAlignment(EAlignment.LEFT)
-            );
+            ItemStack itemStack = new ItemStack(type.getBlock().asItem());
+            DLToggleButton btn = addComponent(new DLToggleButton(WORKING_AREA_X + 1 + (buttonWidth * (i - 1)), 84, buttonWidth, 18));
+            btn.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+            btn.text.set(itemStack.getHoverName());
+            btn.tooltip.set(new DLTooltip(Screen.getTooltipFromItem(Minecraft.getInstance(), itemStack), 200));
+            btn.icon.set(new DLSprite(itemStack, 16, false));
+            btn.radioButtonMode.set(true);
+            btn.textColor.set(DragonLib.VANILLA_UI_FONT_COLOR);
+            btn.drawFontShadow.set(false);
+            btn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+                this.roadType = type;
+                return false;
+            });
 
             if (type == roadType) {
-                btn.select();
+                btn.checked.set(true);
             }
         }
-
-        addTooltip(DLTooltip.of(tooltipPos1).assignedTo(pos1Area));
-        addTooltip(DLTooltip.of(tooltipPos2).assignedTo(pos2Area));
     }
 
     private void updateStackData() {
-        roadWidth = (byte)this.widthSlider.getValue();
+        roadWidth = this.widthSlider.value.get().byteValue();
         CompoundTag nbt = this.stack.getOrCreateTag();
         nbt.putByte(RoadConstructionTool.NBT_ROAD_WIDTH, roadWidth);
         nbt.putBoolean(RoadConstructionTool.NBT_REPLACE_BLOCKS, replaceExistingBlocks);
         nbt.putInt(RoadConstructionTool.NBT_ROAD_TYPE, roadType.getIndex());
-        TrafficCraft.net().sendToServer(new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
+        ModNetworkManager.UPDATE_ROAD_BUILDER.send(NetworkDirection.toServer(), new RoadBuilderDataPacket(replaceExistingBlocks, roadWidth, roadType));
     }
 
-    @Override
     protected void onDone() {
         updateStackData();
-        onClose();
+        getWindowManager().closeWindow(this);
     }
 
     @Override
-    public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {        
-        renderScreenBackground(graphics);
-        
-        GuiUtils.drawTexture(GUI, graphics, guiLeft, guiTop, 0, 0, GUI_WIDTH, GUI_HEIGHT);
-        GuiUtils.drawString(graphics, font, this.width / 2 - font.width(title) / 2, guiTop + 6, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
-        GuiUtils.drawString(graphics, font, guiLeft + WORKING_AREA_X, guiTop + 73, roadBlocksText, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.LEFT, false);
-        GuiUtils.drawString(graphics, font, guiLeft + WORKING_AREA_X + 3, guiTop + 107, requiredResourcesText, DragonLib.NATIVE_BUTTON_FONT_COLOR_HIGHLIGHT, EAlignment.LEFT, false);
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {        
+        GuiUtils.drawTexture(GUI, graphics, 0, 0, GUI_WIDTH, GUI_HEIGHT);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 6, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WORKING_AREA_X, 73, roadBlocksText, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.LEFT, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WORKING_AREA_X + 3, 107, requiredResourcesText, DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
 
         // render positions
         String pos1Text = pos1 == null ? noPositionDefined.getString() : String.format("%s, %s, %s", MathUtils.round(pos1.x, 2), MathUtils.round(pos1.y, 2), MathUtils.round(pos1.z, 2));
         String pos2Text = pos2 == null ? noPositionDefined.getString() : String.format("%s, %s, %s", MathUtils.round(pos2.x, 2), MathUtils.round(pos2.y, 2), MathUtils.round(pos2.z, 2));        
-        GuiUtils.drawString(graphics, font, guiLeft + WORKING_AREA_X + (114 / 2), guiTop + 22, pos1Text, pos1 == null ? 0xFFDD2222 : 0xFF555555, EAlignment.CENTER, false);
-        GuiUtils.drawString(graphics, font, guiLeft + WORKING_AREA_X + 116 + (114 / 2), guiTop + 22, pos2Text, pos2 == null ? 0xFFDD2222 : 0xFF555555, EAlignment.CENTER, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WORKING_AREA_X + (114 / 2), 22, pos1Text, DLColor.fromInt(pos1 == null ? 0xFFDD2222 : 0xFF555555), ETextAlignment.CENTER, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WORKING_AREA_X + 116 + (114 / 2), 22, pos2Text, DLColor.fromInt(pos2 == null ? 0xFFDD2222 : 0xFF555555), ETextAlignment.CENTER, false);
 
         // render required items
         if (pos1 != null && pos2 != null) {
             String blockCountText = String.format("x %s", blocksCount);
             String slopeCountText = String.format("x %s", slopesCount);
-            int blockDisplayWidth = 20 + font.width(blockCountText);
-            int slopeDisplayWidth = 20 + font.width(slopeCountText);
-            int guiCenter = guiLeft + WORKING_AREA_X + WORKING_AREA_WIDTH / 2;
+            int blockDisplayWidth = 20 + graphics.defaultFont().width(blockCountText);
+            int slopeDisplayWidth = 20 + graphics.defaultFont().width(slopeCountText);
+            int guiCenter = WORKING_AREA_X + WORKING_AREA_WIDTH / 2;
 
-            graphics.graphics().renderItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, guiTop + 122);
-            graphics.graphics().renderItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, guiTop + 122);        
-            GuiUtils.drawString(graphics, font, guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, guiTop + 127, blockCountText, 0xFFDBDBDB, EAlignment.LEFT, false);
-            GuiUtils.drawString(graphics, font, guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, guiTop + 127, slopeCountText, 0xFFDBDBDB, EAlignment.LEFT, false);
+            graphics.graphics().renderItem(new ItemStack(roadType.getBlock()), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2, 122);
+            graphics.graphics().renderItem(new ItemStack(roadType.getSlope()), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2, 122);        
+            GuiUtils.drawString(graphics, graphics.defaultFont(), guiCenter - WORKING_AREA_WIDTH / 4 - blockDisplayWidth / 2 + 20, 127, blockCountText, DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
+            GuiUtils.drawString(graphics, graphics.defaultFont(), guiCenter + WORKING_AREA_WIDTH / 4 - slopeDisplayWidth / 2 + 20, 127, slopeCountText, DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
         }
-        
-        // default rendering
-        super.renderMainLayer(graphics, mouseX, mouseY, partialTicks);
+    }
 
-        // Tooltips
-        if (buildButtonArea.isInBounds(mouseX, mouseY)) {
+    @Override
+    public void renderFrontLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+        if (buildButtonArea.collision(mouseX, mouseY)) {
             if (pos1 == null || pos2 == null) {
-                GuiUtils.renderTooltip(this, buildButtonArea, List.of(tooltipBuildMissingPos), width / 4, graphics, mouseX, mouseY);
+                GuiUtils.drawTooltip(graphics, graphics.defaultFont(), (int)mouseX, (int)mouseY, List.of(tooltipBuildMissingPos), 200);
             } else {
-                GuiUtils.renderTooltip(this, buildButton, List.of(tooltipBuild), width / 4, graphics, mouseX, mouseY);
+                GuiUtils.drawTooltip(graphics, graphics.defaultFont(), (int)mouseX, (int)mouseY, List.of(tooltipBuild), 200);
             }
+        }
+        if (pos1Area.collision(mouseX, mouseY)) {
+            GuiUtils.drawTooltip(graphics, graphics.defaultFont(), (int)mouseX, (int)mouseY, List.of(tooltipPos1), 200);
+        }
+        if (pos2Area.collision(mouseX, mouseY)) {
+            GuiUtils.drawTooltip(graphics, graphics.defaultFont(), (int)mouseX, (int)mouseY, List.of(tooltipPos2), 200);
         }
     }
 

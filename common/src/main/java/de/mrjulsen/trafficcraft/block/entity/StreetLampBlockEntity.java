@@ -1,8 +1,8 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
-import de.mrjulsen.mcdragonlib.util.TimeUtils;
+import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.util.time.ConfiguredTimeSystem;
+import de.mrjulsen.mcdragonlib.util.time.DLTime;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class StreetLampBlockEntity extends SyncedBlockEntity {
+public class StreetLampBlockEntity extends DLSyncedBlockEntity {
 
     private static final String NBT_TURN_ON_TIME = "turnOnTime";
     private static final String NBT_TURN_OFF_TIME = "turnOffTime";
@@ -49,7 +49,10 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
             return;
         }
 
-        if (TimeUtils.isInRange((int)(level.getDayTime() % DragonLib.ticksPerDay()), onTimeTicks, offTimeTicks)) {
+        ConfiguredTimeSystem system = new ConfiguredTimeSystem();
+        long time = (long)DLTime.fromLevelTime(level, system).getTicks() % system.getTicksPerDay();
+
+        if (isInRange(time, onTimeTicks, offTimeTicks)) {
             if (!state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, true));
             }
@@ -57,6 +60,17 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
             if (state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, false));
             }
+        }
+    }
+
+    public static boolean isInRange(long time, long start, long end) {
+        time %= 24000;
+        start %= 24000;
+        end %= 24000;
+        if (start <= end) {
+            return time >= start && time <= end;
+        } else {
+            return time >= start || time <= end;
         }
     }
 
@@ -73,12 +87,12 @@ public class StreetLampBlockEntity extends SyncedBlockEntity {
     }
 
     public void setOnTime(int time) {
-        this.onTimeTicks = Mth.clamp(time, 0, (int)DragonLib.ticksPerDay() - 1);
+        this.onTimeTicks = Mth.clamp(time, 0, 23999);
         notifyUpdate();
     }
 
     public void setOffTime(int time) {
-        this.offTimeTicks = Mth.clamp(time, 0, (int)DragonLib.ticksPerDay() - 1);
+        this.offTimeTicks = Mth.clamp(time, 0, 23999);
         notifyUpdate();
     }
 }

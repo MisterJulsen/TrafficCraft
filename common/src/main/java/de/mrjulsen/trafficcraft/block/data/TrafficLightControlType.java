@@ -2,14 +2,14 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.core.IIterableEnum;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.data.IIterableEnum;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ItemLike;
 
-public enum TrafficLightControlType implements StringRepresentable, ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightControlType> {
+public enum TrafficLightControlType implements ITranslatableEnum, IItemIcon, IIterableEnum<TrafficLightControlType> {
     STATIC("static", 0, ModBlocks.TRAFFIC_LIGHT.get()),
 	OWN_SCHEDULE("own_schedule", 1, ModItems.PATTERN_CATALOGUE.get()),
 	REMOTE("remote", 2, ModBlocks.TRAFFIC_LIGHT_CONTROLLER.get());
@@ -51,13 +51,8 @@ public enum TrafficLightControlType implements StringRepresentable, ITranslatabl
     }
 
 	@Override
-	public String getEnumName() {
-		return "trafficlightcontroltype";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getControlType();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "trafficlightcontroltype", controlType);
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import net.minecraft.core.BlockPos;
@@ -51,7 +52,7 @@ public interface IPaintableBlock {
         return InteractionResult.FAIL;
     }
 
-    default int getDefaultColor() {
-        return 0xFFFFFFFF;
+    default DLColor getDefaultColor() {
+        return DLColor.WHITE;
     }
 }

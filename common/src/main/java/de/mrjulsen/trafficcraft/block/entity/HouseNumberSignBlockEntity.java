@@ -1,8 +1,9 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen.ConfiguredLineData;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen.WritableSignConfig;
+import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen.ConfiguredLineData;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen.WritableSignConfig;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.block.WritableTrafficSign;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -10,12 +11,11 @@ import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec2;
 
-public class HouseNumberSignBlockEntity extends WritableSignBlockEntity implements IColorBlockEntity {
+public class HouseNumberSignBlockEntity extends DLWritableSignBlockEntity implements IColorBlockEntity {
 
     private PaintColor color = PaintColor.NONE;
 
@@ -35,7 +35,7 @@ public class HouseNumberSignBlockEntity extends WritableSignBlockEntity implemen
                 new ConfiguredLineData(0, 1.0F / 16.0F * 0.5F, new Vec2(1, 1), new Vec2(maxScale, maxScale), 1.0F / 16.0F * 8, maxScale, 0)
             }, false, 0, y, WritableSignConfig.DEFAULT_SCALE, 0, 0.0f, 0.0f, -0.45f, (blockState) -> {
                 return blockState.getValue(WritableTrafficSign.FACING) == Direction.EAST || blockState.getValue(WritableTrafficSign.FACING) == Direction.WEST ? blockState.getValue(WritableTrafficSign.FACING).getOpposite().toYRot() : blockState.getValue(WritableTrafficSign.FACING).toYRot(); 
-            }, PaintColor.useWhiteOrBlackForeColor(this.getColor().getTextureColor()) ? DyeColor.WHITE.getTextColor() : DyeColor.BLACK.getTextColor());
+            }, DLColor.pickBasedOnBrightness(this.getColor().getTextureColor(), DLColor.WHITE, DLColor.BLACK, 0.5f).getAsARGB());
     }
 
     @Override

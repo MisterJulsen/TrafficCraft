@@ -4,12 +4,14 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.mcdragonlib.util.TimeUtils;
-import de.mrjulsen.mcdragonlib.util.TimeUtils.TimeFormat;
+import de.mrjulsen.mcdragonlib.util.time.DLTime;
+import de.mrjulsen.mcdragonlib.util.time.TimeContext;
+import de.mrjulsen.mcdragonlib.util.time.VanillaTimeSystem;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
+import de.mrjulsen.trafficcraft.util.ETimeFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +69,7 @@ public class StreetLampConfigCardItem extends Item {
                 }
                 timeFormat = stack.getOrCreateTag().getInt(NBT_TIME_FORMAT);
 
-                ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, TimeFormat.getFormatByIndex((byte)timeFormat));
+                ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, ETimeFormat.getByIndex(timeFormat));
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             }
         }
@@ -81,8 +83,10 @@ public class StreetLampConfigCardItem extends Item {
         
         CompoundTag nbt = null;
         if ((nbt = doesContainValidLinkData(stack)) != null) {
-            list.add(TextUtils.translate(keyTurnOn, TimeUtils.parseTime(nbt.getInt(NBT_TIME_ON), TimeFormat.getFormatByIndex((byte)nbt.getInt(NBT_TIME_FORMAT)))));
-            list.add(TextUtils.translate(keyTurnOff, TimeUtils.parseTime(nbt.getInt(NBT_TIME_OFF), TimeFormat.getFormatByIndex((byte)nbt.getInt(NBT_TIME_FORMAT)))));            
+            DLTime timeOn = DLTime.fromTicks(nbt.getInt(NBT_TIME_ON), VanillaTimeSystem.INSTANCE);
+            DLTime timeOff = DLTime.fromTicks(nbt.getInt(NBT_TIME_OFF), VanillaTimeSystem.INSTANCE);
+            list.add(TextUtils.translate(keyTurnOn, timeOn.format(ETimeFormat.getByIndex(nbt.getInt(NBT_TIME_FORMAT)).getFormat(), TimeContext.INGAME)));
+            list.add(TextUtils.translate(keyTurnOff, timeOff.format(ETimeFormat.getByIndex(nbt.getInt(NBT_TIME_FORMAT)).getFormat(), TimeContext.INGAME)));            
         } else {
             list.add(textEmpty);
         }        
@@ -115,8 +119,8 @@ public class StreetLampConfigCardItem extends Item {
                         player.displayClientMessage(textErrorTimeEqual, false);                        
                         return InteractionResult.FAIL;
                     }
-                    blockEntity.setOnTime((int)TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt(NBT_TIME_ON)));
-                    blockEntity.setOffTime((int)TimeUtils.shiftDayTimeToMinecraftTicks(nbt.getInt(NBT_TIME_OFF)));
+                    blockEntity.setOnTime((int)DLTime.fromTicks(nbt.getInt(NBT_TIME_ON), VanillaTimeSystem.INSTANCE).getTicks());
+                    blockEntity.setOffTime((int)DLTime.fromTicks(nbt.getInt(NBT_TIME_OFF), VanillaTimeSystem.INSTANCE).getTicks());
                     player.displayClientMessage(textApply, true);
                     DLUtils.giveAdvancement((ServerPlayer)player, TrafficCraft.MOD_ID, "street_lamp_config", "requirement");
                 } else {

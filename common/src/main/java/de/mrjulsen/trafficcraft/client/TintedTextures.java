@@ -21,12 +21,12 @@ public class TintedTextures {
             
             if (pState.getBlock() instanceof IPaintableBlock block) {
                 if (pLevel == null) {
-                    return block.getDefaultColor();
+                    return block.getDefaultColor().getAsARGB();
                 }
 
                 if (pLevel.getBlockEntity(pPos) instanceof IColorBlockEntity blockEntity) {
                     PaintColor c = blockEntity.getColor();
-                    return c == PaintColor.NONE ? block.getDefaultColor() : c.getTextureColor();
+                    return c == PaintColor.NONE ? block.getDefaultColor().getAsARGB() : c.getTextureColor().getAsARGB();
                 }
             }
                         
@@ -40,11 +40,11 @@ public class TintedTextures {
 
             if (pStack.getItem() instanceof BlockItem blockItem) {
                 if (blockItem.getBlock() instanceof IPaintableBlock coloredBlock) {
-                    return coloredBlock.getDefaultColor();
+                    return coloredBlock.getDefaultColor().getAsARGB();
                 }
             } else if (pStack.getItem() instanceof BrushItem) {                
                 if (pTintIndex == 1) {
-                    return BrushItem.getColor(pStack).getTextureColor();
+                    return BrushItem.getColor(pStack).getTextureColor().getAsARGB();
                 } else {
                     return 0xFFFFFFFF;
                 }

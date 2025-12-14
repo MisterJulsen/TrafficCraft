@@ -29,17 +29,14 @@ public class TrafficLightBlockEntityRenderer extends RotatableBlockEntityRendere
     public void renderBlock(BERGraphics<TrafficLightBlockEntity> graphics, float pPartialTick) {
         BlockState blockstate = graphics.blockEntity().getBlockState();
         graphics.poseStack().pushPose();
-        graphics.poseStack().scale(16, 16, 16);
-
-        final float pixel = 1.0F / 16.0F;
-        graphics.poseStack().translate(pixel * 6f, pixel * 1.5f, pixel * 11.5f);
+        graphics.poseStack().translate(6f, 5.5f, 13);
         for (int i = 0; i < graphics.blockEntity().getColorSlotCount() && i < blockstate.getValue(TrafficLightBlock.MODEL).getLightsCount(); i++) {
             if (graphics.blockEntity().getColorOfSlot(i) != null && graphics.blockEntity().isColorEnabled(graphics.blockEntity().getColorOfSlot(i), true)) {
                 new TrafficLightTextureManager.TrafficLightTextureKey(graphics.blockEntity().getIcon(), graphics.blockEntity().getColorOfSlot(i)).render(graphics, graphics.blockEntity(), graphics.packedLight());
             } else {
                 new TrafficLightTextureManager.TrafficLightTextureKey(TrafficLightIcon.NONE, TrafficLightColor.NONE).render(graphics, graphics.blockEntity(), graphics.packedLight());
             }
-            graphics.poseStack().translate(0, pixel * 5, 0);
+            graphics.poseStack().translate(0, 5, 0);
         }
         graphics.poseStack().popPose();
     }

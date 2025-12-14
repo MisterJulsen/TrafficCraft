@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
 import de.mrjulsen.trafficcraft.block.data.IColorBlockEntity;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -9,7 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ColoredBlockEntity extends SyncedBlockEntity implements IColorBlockEntity {
+public class ColoredBlockEntity extends DLSyncedBlockEntity implements IColorBlockEntity {
 
     // Properties
     protected PaintColor color = PaintColor.NONE;

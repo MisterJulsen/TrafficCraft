@@ -8,8 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.util.ColorUtils;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.Wikipedia;
+import de.mrjulsen.mcdragonlib.util.DLColor.ColorChannel;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
@@ -87,7 +88,7 @@ public class ClientInit {
         for (int x = 0; x < tex.getPixels().getWidth(); x++) {
             a[x] = new int[tex.getPixels().getHeight()];
             for (int y = 0; y < tex.getPixels().getHeight(); y++) {
-                a[x][y] = flipRgb ? ColorUtils.swapRedBlue(tex.getPixels().getPixelRGBA(x, y)) : tex.getPixels().getPixelRGBA(x, y);
+                a[x][y] = flipRgb ? DLColor.fromInt(tex.getPixels().getPixelRGBA(x, y)).swapChannels(ColorChannel.R, ColorChannel.B).getAsARGB() : tex.getPixels().getPixelRGBA(x, y);
             }
         }
         return a;

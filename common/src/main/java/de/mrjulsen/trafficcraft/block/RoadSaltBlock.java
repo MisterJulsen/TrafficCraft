@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.core.IIterableEnum;
+import de.mrjulsen.mcdragonlib.data.IIterableEnum;
 import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
 import de.mrjulsen.trafficcraft.config.ModCommonConfig;
 import net.minecraft.core.BlockPos;

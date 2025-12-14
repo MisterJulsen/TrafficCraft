@@ -8,20 +8,22 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import de.mrjulsen.mcdragonlib.data.Pair.MutablePair;
+
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
+import de.mrjulsen.mcdragonlib.util.Pair.MutablePair;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference.BuildInTrafficSignCodec;
-import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
+import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.GetTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-@SuppressWarnings("resource")
 public class TrafficSignClientTexture implements AutoCloseable {
 
     public static final DynamicTexture EMPTY_TEXTURE;
@@ -137,9 +139,9 @@ public class TrafficSignClientTexture implements AutoCloseable {
                 System.currentTimeMillis(),
                 GameInstance.getClient().player.getUUID()
             );
-            DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {
+            ModNetworkManager.CREATE_NEW_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toServer(), new CreateNewTrafficSignTexturePacket.Request(data), (response) -> {
                 DLUtils.doIfNotNull(andThen, x -> x.run());
-            });
+            }, () -> {});
         } catch (IOException e) {
             TrafficCraft.LOGGER.error("Unable to create new traffic sign texture.", e);
             data = TrafficSignTextureData.empty();
@@ -147,7 +149,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
         return data;
     }
 
-    public static TrafficSignClientTexture load(String id, boolean allowBackground) {
+    public static TrafficSignClientTexture load(String id, boolean allowBackground, Runnable afterLoad) {
         MutablePair<TrafficSignClientTexture, Integer> data = cachedTexturesById.computeIfAbsent(id, x -> {            
             TrafficSignClientTexture textureData = new TrafficSignClientTexture(id);
             if (id.startsWith(BuildInTrafficSignCodec.PREFIX)) {
@@ -161,7 +163,10 @@ public class TrafficSignClientTexture implements AutoCloseable {
                     TrafficCraft.LOGGER.error("Error while loading TrafficSignClientTexture.", e);
                 }
             } else {
-                DataAccessor.getFromServer(id, ModAccessorTypes.GET_TRAFFIC_SIGN_TEXTURE, a -> textureData.init(a, allowBackground));
+                ModNetworkManager.GET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toServer(), new GetTrafficSignTexturePacket.Request(id), (response) -> {
+                    textureData.init(response.getData(), allowBackground);
+                    DLUtils.doIfNotNull(afterLoad, Runnable::run);
+                }, () -> {});
             }
             return new MutablePair<>(textureData, 0);
         });

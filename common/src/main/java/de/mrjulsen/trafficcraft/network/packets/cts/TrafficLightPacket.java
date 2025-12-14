@@ -1,10 +1,11 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
+import de.mrjulsen.mcdragonlib.util.NbtUtils;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
@@ -12,14 +13,26 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
+public class TrafficLightPacket extends NetworkPacketData {
+
+    private static final String NBT_POS = "Pos";
+    private static final String NBT_ENABLED_COLORS = "EnabledColors";
+    private static final String NBT_TYPE = "Type";
+    private static final String NBT_MODEL = "Model";
+    private static final String NBT_ICON = "Icon";
+    private static final String NBT_CONTROL_TYPE = "ControlType";
+    private static final String NBT_COLORS = "Colors";
+    private static final String NBT_ID = "Id";
+    private static final String NBT_SCHEDULED = "IsScheduled";
 
     private BlockPos pos;
     private Collection<TrafficLightColor> enabledColors;
@@ -31,9 +44,12 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
     private int phaseId;
     private boolean scheduleEnabled;
 
-    public TrafficLightPacket() {}
+    public TrafficLightPacket(DLStatus status) {
+        super(status);
+    }
 
     public TrafficLightPacket(BlockPos pos, Collection<TrafficLightColor> enabledColors, TrafficLightType type, TrafficLightModel model, TrafficLightIcon icon, TrafficLightControlType controlType, TrafficLightColor[] colorSlots, int phaseId, boolean scheduleEnabled) {
+        super(DLStatus.OK);
         this.pos = pos;
         this.enabledColors = enabledColors;
         this.type = type;
@@ -46,84 +62,58 @@ public class TrafficLightPacket implements IPacketBase<TrafficLightPacket> {
     }
 
     @Override
-    public void encode(TrafficLightPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(packet.pos);
-        TrafficLightColor[] enabledColorsArr = packet.enabledColors.toArray(TrafficLightColor[]::new);        
-        buffer.writeBoolean(enabledColorsArr.length > 0);
-        if (enabledColorsArr.length > 0) {
-            byte[] enColBArr = new byte[enabledColorsArr.length];
-            for (int i = 0; i < enabledColorsArr.length; i++) {
-                enColBArr[i] = enabledColorsArr[i].getGroupIndex();
-            }
-            buffer.writeByteArray(enColBArr);
+    protected void write(CompoundTag nbt) {
+        NbtUtils.putNbtPos(nbt, NBT_POS, pos);
+        ListTag enabledColorsList = new ListTag();
+        for (TrafficLightColor color : enabledColors) {
+            enabledColorsList.add(ByteTag.valueOf(color.getGroupIndex()));
         }
-        buffer.writeByte(packet.type.getIndex());
-        buffer.writeByte(packet.model.getLightsCount());
-        buffer.writeByte(packet.icon.getIndex());
-        buffer.writeByte(packet.controlType.getIndex());
-        buffer.writeBoolean(packet.colors.length > 0);
-        if (packet.colors.length > 0) {
-            byte[] colSlBArr = new byte[packet.colors.length];
-            for (int i = 0; i < packet.colors.length; i++) {
-                colSlBArr[i] = packet.colors[i].getGroupIndex();
-            }
-            buffer.writeByteArray(colSlBArr);
+        nbt.put(NBT_ENABLED_COLORS, enabledColorsList);
+        nbt.putByte(NBT_TYPE, type.getIndex());
+        nbt.putByte(NBT_MODEL, model.getLightsCount());
+        nbt.putByte(NBT_ICON, icon.getIndex());
+        nbt.putByte(NBT_CONTROL_TYPE, controlType.getIndex());
+        ListTag colorsList = new ListTag();
+        for (TrafficLightColor color : colors) {
+            colorsList.add(ByteTag.valueOf(color.getGroupIndex()));
         }
-        buffer.writeInt(packet.phaseId);
-        buffer.writeBoolean(packet.scheduleEnabled);
-
+        nbt.put(NBT_COLORS, colorsList);
+        nbt.putInt(NBT_ID, phaseId);
+        nbt.putBoolean(NBT_SCHEDULED, scheduleEnabled);
     }
 
     @Override
-    public TrafficLightPacket decode(FriendlyByteBuf buffer) {
-        
-        BlockPos pos = buffer.readBlockPos();
-        Collection<TrafficLightColor> enabledColors = new ArrayList<>();
-        byte[] enColBArr = new byte[0];
-        if (buffer.readBoolean()) {
-            enColBArr = buffer.readByteArray();
-        }
-        
-        TrafficLightType type = TrafficLightType.getTypeByIndex(buffer.readByte());        
-        for (byte b : enColBArr) {
-            enabledColors.add(TrafficLightColor.getColorByGroupIndex(b, type));
-        }
-        TrafficLightModel model = TrafficLightModel.getModelByLightsCount(buffer.readByte());
-        TrafficLightIcon icon = TrafficLightIcon.getIconByIndex(buffer.readByte());
-        TrafficLightControlType controlType = TrafficLightControlType.getControlTypeByIndex(buffer.readByte());
-        TrafficLightColor[] colorSlots = new TrafficLightColor[TrafficLightModel.maxRequiredSlots()];
-        if (buffer.readBoolean()) {
-            byte[] colSlBArr = buffer.readByteArray();
-            for (int i = 0; i < colSlBArr.length && i < colorSlots.length; i++) {
-                colorSlots[i] = TrafficLightColor.getColorByGroupIndex(colSlBArr[i], type);
-            }
-        }        
-        int phaseId = buffer.readInt();
-        boolean scheduleEnabled = buffer.readBoolean();
-
-        return new TrafficLightPacket(pos, enabledColors, type, model, icon, controlType, colorSlots, phaseId, scheduleEnabled);
+    protected void read(CompoundTag nbt) {
+        this.pos = NbtUtils.getNbtBlockPos(nbt, NBT_POS);
+        this.type = TrafficLightType.getTypeByIndex(nbt.getByte(NBT_TYPE));
+        this.enabledColors = nbt.getList(NBT_ENABLED_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getColorByGroupIndex(((ByteTag)x).getAsByte(), type)).toList();
+        this.model = TrafficLightModel.getModelByLightsCount(nbt.getByte(NBT_MODEL));
+        this.icon = TrafficLightIcon.getIconByIndex(nbt.getByte(NBT_ICON));
+        this.controlType = TrafficLightControlType.getControlTypeByIndex(nbt.getByte(NBT_CONTROL_TYPE));
+        this.colors = nbt.getList(NBT_COLORS, Tag.TAG_BYTE).stream().map(x -> TrafficLightColor.getColorByGroupIndex(((ByteTag)x).getAsByte(), type)).toArray(TrafficLightColor[]::new);
+        this.phaseId = nbt.getInt(NBT_ID);
+        this.scheduleEnabled = nbt.getBoolean(NBT_SCHEDULED);
     }
     
-    @Override
-    public void handle(TrafficLightPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer player = (ServerPlayer)contextSupplier.get().getPlayer();
-            if (player != null) {
-                Level level = player.level();
-                if (level.isLoaded(packet.pos)) {
-                    if (level.getBlockEntity(packet.pos) instanceof TrafficLightBlockEntity blockEntity) {
-                        blockEntity.setRunning(packet.scheduleEnabled);
-                        blockEntity.setPhaseId(packet.phaseId);
-                        blockEntity.setControlType(packet.controlType);
-                        blockEntity.setIcon(packet.icon);
-                        blockEntity.setColorSlots(packet.colors);
-                        blockEntity.enableOnlyColors(packet.enabledColors);
-                        blockEntity.setType(packet.type);
-                    }
-                    BlockState state = level.getBlockState(packet.pos);
-                    level.setBlockAndUpdate(packet.pos, state.setValue(TrafficLightBlock.MODEL, packet.model));
+    
+    public static void handle(TrafficLightPacket packet, NetworkPacketContext context) {
+        ServerPlayer player = (ServerPlayer)context.getPlayer();
+        if (player != null) {
+            Level level = player.level();
+            if (level.isLoaded(packet.pos)) {
+                if (level.getBlockEntity(packet.pos) instanceof TrafficLightBlockEntity blockEntity) {
+                    blockEntity.setRunning(packet.scheduleEnabled);
+                    blockEntity.setPhaseId(packet.phaseId);
+                    blockEntity.setControlType(packet.controlType);
+                    blockEntity.setIcon(packet.icon);
+                    blockEntity.setColorSlots(packet.colors);
+                    blockEntity.enableOnlyColors(packet.enabledColors);
+                    blockEntity.setType(packet.type);
                 }
-            };
-        });
+                BlockState state = level.getBlockState(packet.pos);
+                level.setBlockAndUpdate(packet.pos, state.setValue(TrafficLightBlock.MODEL, packet.model));
+                level.blockEntityChanged(packet.pos);
+            }
+        };
     }
 }

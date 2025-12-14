@@ -6,19 +6,20 @@ import org.joml.Vector3f;
 
 import com.mojang.math.Axis;
 
-import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
+import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
 import de.mrjulsen.mcdragonlib.client.ber.SafeBlockEntityRenderer;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen.ConfiguredLineData;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen.WritableSignConfig;
-import de.mrjulsen.mcdragonlib.client.util.BERUtils;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen.ConfiguredLineData;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen.WritableSignConfig;
+import de.mrjulsen.mcdragonlib.client.util.RenderUtils;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class WritableSignBlockEntityRenderer<T extends WritableSignBlockEntity> extends SafeBlockEntityRenderer<T> {
+public class WritableSignBlockEntityRenderer<T extends DLWritableSignBlockEntity> extends SafeBlockEntityRenderer<T> {
     protected final Font font;
 
     public WritableSignBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -55,7 +56,7 @@ public class WritableSignBlockEntityRenderer<T extends WritableSignBlockEntity> 
             graphics.poseStack().scale(scale, -scale, scale);
             graphics.poseStack().translate(data.xOffset() / scale, data.yOffset() / scale - (WritableSignScreen.DEFAULT_LINE_HEIGHT / 2 * config.lineData()[0].lineHeightScale()) + config.getLineHeightsUntil(lineIndex) + config.getLineOffset(lineIndex, vector3f.y()), 0);   
             graphics.poseStack().scale(vector3f.x(), vector3f.y(), vector3f.z());
-            BERUtils.drawString(graphics, font, xCenter, 0, line, config.berColor(), EAlignment.LEFT, false);
+            RenderUtils.drawString(graphics, font, xCenter, 0, line, DLColor.fromInt(config.berColor()), ETextAlignment.LEFT, false);
                         
             graphics.poseStack().popPose();
         }

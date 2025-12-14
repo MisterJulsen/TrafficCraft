@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
+import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
@@ -108,7 +108,7 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
         }
 
         if (pLevel.isClientSide) {
-            if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof WritableSignBlockEntity blockEntity) {
+            if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof DLWritableSignBlockEntity blockEntity) {
                 if (!pPlayer.isShiftKeyDown()) {                
                     ClientWrapper.showWritableSignScreen(blockEntity);
                 }

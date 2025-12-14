@@ -4,7 +4,6 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.block.PaintBucketBlock;
@@ -72,13 +71,13 @@ public class BrushItem extends Item {
         
         if (stack.hasTag()) {
             PaintColor paintColor = PaintColor.getByIndex(stack.getTag().getInt(NBT_COLOR));
-            String color = TextUtils.translate(paintColor.getValueTranslationKey(TrafficCraft.MOD_ID)).getString();
+            String color = paintColor.getValueTranslation().getString();
     
             list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + stack.getTag().getInt(NBT_PATTERN)).withStyle(ChatFormatting.GRAY));            
             if (stack.getTag().getInt(NBT_PAINT) == 0) {
                 list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
             } else {
-                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
+                list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor().getAsARGB()))).withStyle(ChatFormatting.GRAY));
             }
             list.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * stack.getTag().getInt(NBT_PAINT))).withStyle(ChatFormatting.GRAY));
         }
@@ -100,7 +99,7 @@ public class BrushItem extends Item {
 
     @Override
     public int getBarColor(ItemStack pStack) {
-        return getColor(pStack).getTextureColor();
+        return getColor(pStack).getTextureColor().getAsARGB();
     }
 
     public static CompoundTag checkNbt(ItemStack stack) {

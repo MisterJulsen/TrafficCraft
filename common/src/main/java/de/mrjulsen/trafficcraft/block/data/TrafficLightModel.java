@@ -1,33 +1,38 @@
 package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import net.minecraft.util.StringRepresentable;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
+import de.mrjulsen.trafficcraft.client.ModGuiIcons;
 
-public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum, IIconEnum {
-    ONE_LIGHT("single", 1, 9, 16, 2, 0),
-	TWO_LIGHTS("double", 2, 4.5f, 16, 3, 0),
-	THREE_LIGHTS("tripple", 3, -0.5f, 16, 4, 0);
+public enum TrafficLightModel implements ITranslatableEnum {
+    ONE_LIGHT("single", () -> ModGuiIcons.TRAFFIC_LIGHT_1_LIGHT.getAsSprite(16, 16), 1, 9, 16),
+	TWO_LIGHTS("double", () -> ModGuiIcons.TRAFFIC_LIGHT_2_LIGHTS.getAsSprite(16, 16), 2, 4.5f, 16),
+	THREE_LIGHTS("tripple", () -> ModGuiIcons.TRAFFIC_LIGHT_3_LIGHTS.getAsSprite(16, 16), 3, -0.5f, 16);
 	
 	private String name;
+	private Supplier<DLSprite> icon;
 	private byte lightsCount;
 	private float hitboxBottom;
 	private float hitboxTop;
-	private int uMul;
-	private int vMul;
 	
-	private TrafficLightModel(String name, int lightsCount, float hitboxBottom, float hitboxTop, int u, int v) {
+	private TrafficLightModel(String name, Supplier<DLSprite> icon, int lightsCount, float hitboxBottom, float hitboxTop) {
 		this.name = name;
+		this.icon = icon;
 		this.lightsCount = (byte)lightsCount;
 		this.hitboxBottom = hitboxBottom;
 		this.hitboxTop = hitboxTop;
-		this.uMul = u;
-		this.vMul = v;
 	}
 	
 	public String getName() {
 		return this.name;
+	}
+
+	public DLSprite getIcon() {
+		return icon.get();
 	}
 
 	public byte getLightsCount() {
@@ -46,16 +51,6 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum,
 		return Math.abs(getHitboxTop() - getHitboxBottom());
 	}
 
-	@Override
-	public int getUMultiplier() {
-		return uMul;
-	}
-
-	@Override
-	public int getVMultiplier() {
-		return vMul;
-	}
-
 	public static TrafficLightModel getModelByLightsCount(byte lightsCount) {
 		return Arrays.stream(TrafficLightModel.values()).filter(x -> x.getLightsCount() == lightsCount).findFirst().orElse(TrafficLightModel.THREE_LIGHTS);
 	}
@@ -66,13 +61,8 @@ public enum TrafficLightModel implements StringRepresentable, ITranslatableEnum,
     }
 
 	@Override
-	public String getEnumName() {
-		return "trafficlightmodel";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getName();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "trafficlightmodel", name);
 	}
 
     public static byte maxRequiredSlots() {

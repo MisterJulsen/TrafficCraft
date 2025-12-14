@@ -1,241 +1,163 @@
 package de.mrjulsen.trafficcraft.client.widgets;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLContextMenu;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLContextMenuItem;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLContextMenuItem.ContextMenuItemData;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLNumberSelector;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLWidgetContainer;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
-import de.mrjulsen.mcdragonlib.client.render.Sprite;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.ButtonState;
-import de.mrjulsen.mcdragonlib.client.util.DLWidgetsCollection;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
-import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent.ConsumptionType;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLNumberPicker;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLTooltip;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.render.FlatButtonRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
+import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.trafficcraft.TrafficCraft;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
+import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
-import de.mrjulsen.trafficcraft.client.screen.TrafficLightScheduleEditor;
+import de.mrjulsen.trafficcraft.client.ModGuiIcons;
+import de.mrjulsen.trafficcraft.client.widgets.data.TrafficLightScheduleEditorWidget;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
-public class TrafficLightScheduleEntry extends DLWidgetContainer {
+public class TrafficLightScheduleEntry extends DLGuiComponent {
 
-    private static final int LEFT_PADDING = TrafficLightScheduleContainer.LEFT_PADDING;
-    private static final int TIMELINE_WIDTH = TrafficLightScheduleContainer.TIMELINE_WIDTH;
-    private static final int SPACING = TrafficLightScheduleContainer.SPACING;
+    private static final int CONTROL_BTN_SIZE = 16;
 
-    private static final ResourceLocation ICONS = new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
-    private static final Sprite MOVE_UP_ICON = new Sprite(ICONS, 64, 64, 24, 29, 12, 12);
-    private static final Sprite MOVE_DOWN_ICON = new Sprite(ICONS, 64, 64, 12, 29, 12, 12);
-    private static final Sprite DELETE_ICON = new Sprite(ICONS, 64, 64, 0, 29, 12, 12);
+    private final DLPanel widgets;
 
-    private static final int DEFAULT_EDIT_BOX_HEIGHT = 18;
-    private static final int DEFAULT_ENTRY_HEIGHT = 22;
-    private static final int CONTROL_BUTTON_SIZE = 16;
-    private static final int SIGNAL_ICON_SIZE = 10;
-    public static final int HEIGHT = TrafficLightScheduleEditor.ENTRY_PADDING * 2 + DEFAULT_ENTRY_HEIGHT * 2;
-
-    private final DLWidgetsCollection widgets = new DLWidgetsCollection();
-    private final TrafficLightScheduleContainer parent;
-
-    private final DLNumberSelector delaySelector;
-    private final DLNumberSelector phaseIdBox;
-    private final DLButton deleteButton;
-    private final DLButton moveUpButton;
-    private final DLButton moveDownButton;
-    private final DLIconButton[] signalButtons;
-    private GuiAreaDefinition signalSelectionArea = GuiAreaDefinition.empty();
-
-    //private final TrafficLightType type = TrafficLightType.CAR;
-    // Animation
-    private static final int FRAME_DURATION_TICKS = 20;
-    private int ticks;
-    private int frame;
-    private TrafficLightType typeFrame = TrafficLightType.CAR;
+    private final DLNumberPicker delaySelector;
+    private final DLNumberPicker phaseIdBox;
+    private final TrafficLightSignalButton[] signalButtons;
 
     private final TrafficLightColor[] signals;
-    private final Collection<DLTooltip> tooltips = new ArrayList<>();
 
     // texts
-    private static final Component textDelay = TextUtils.translate("gui.trafficcraft.trafficlightschedule.delay");
-    private static final Component textPhaseId = TextUtils.translate("gui.trafficcraft.trafficlightschedule.phase_id");
-    private static final Component textMoveUp = TextUtils.translate("gui.trafficcraft.trafficlightschedule.move_up");
-    private static final Component textMoveDown = TextUtils.translate("gui.trafficcraft.trafficlightschedule.move_down");
-    private static final Component textDelete = TextUtils.translate("gui.trafficcraft.trafficlightschedule.delete");
+    private final Component textDelay = TextUtils.translate("gui.trafficcraft.trafficlightschedule.delay");
+    private final Component textPhaseId = TextUtils.translate("gui.trafficcraft.trafficlightschedule.phase_id");
+    private final Component textMoveUp = TextUtils.translate("gui.trafficcraft.trafficlightschedule.move_up");
+    private final Component textMoveDown = TextUtils.translate("gui.trafficcraft.trafficlightschedule.move_down");
+    private final Component textDelete = TextUtils.translate("gui.trafficcraft.trafficlightschedule.delete");
 
     // data
     private final boolean hidePhaseId;
     private final TrafficLightScheduleEntry instance = this;
-    private DLContextMenu menu;
 
-    public TrafficLightScheduleEntry(TrafficLightScheduleContainer container, Map<Integer, TrafficLightType> signalTypes, boolean hidePhaseId, TrafficLightScheduleEntryData entry, int x, int y, int pWidth, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
-        super(x, y, pWidth, HEIGHT);
-        this.parent = container;
+    public TrafficLightScheduleEntry(int x, int y, int width, TrafficLightScheduleEntryData entry, boolean hidePhaseId, Map<Integer, TrafficLightType> signalTypes, Consumer<TrafficLightScheduleEntryData> removeAction, BiConsumer<TrafficLightScheduleEntryData, Integer> reorderAction) {
+        super(x, y, width, TrafficLightScheduleEditorWidget.PADDING * 2 + 40);
+        inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
+
         this.hidePhaseId = hidePhaseId;
 
-        delaySelector = addRenderableWidget(new DLNumberSelector(
-            x() + LEFT_PADDING + TIMELINE_WIDTH + 1,
-            y() + SPACING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - DEFAULT_EDIT_BOX_HEIGHT / 2,
-            38,
-            DEFAULT_EDIT_BOX_HEIGHT,
-            entry.getDurationSeconds(),
-            true,
-            (selector, value) -> {
-                entry.setDurationSeconds(MathUtils.clamp(selector.getAsInt(), 0, TrafficLightScheduleEntryData.MAX_SECONDS));
-            }
-        ) {
-            @Override
-            public void setMouseSelected(boolean selected) {
-                super.setMouseSelected(selected);
-                instance.setMouseSelected(selected);
-            }
+        delaySelector = addComponent(new DLNumberPicker(TrafficLightScheduleEditorWidget.TEXT_X, TrafficLightScheduleEditorWidget.PADDING / 2 + 2, 38, 16));
+        delaySelector.max.set((double)TrafficLightScheduleEntryData.MAX_SECONDS);
+        delaySelector.value.set(entry.getDurationSeconds());
+        delaySelector.inputConsumptionPolicy.set(c -> c != ConsumptionType.MOUSE_MOVE);
+        delaySelector.addEventListener(DLNumberPicker.ValueChangedEvent.class, (s, e) -> {
+            entry.setDurationSeconds(MathUtils.clamp(e.value(), 0, TrafficLightScheduleEntryData.MAX_SECONDS));
+            return false;
         });
-        delaySelector.setNumberBounds(0, TrafficLightScheduleEntryData.MAX_SECONDS);
-        DLTooltip tooltip1 = DLTooltip.of(textDelay).assignedTo(GuiAreaDefinition.of(delaySelector));
-        tooltip1.setDynamicOffset(() -> 0, () -> (int)container.getScrollOffset());
-        tooltips.add(tooltip1);
-        widgets.add(delaySelector);
+        delaySelector.tooltip.set(new DLTooltip(List.of(textDelay), 200));
 
-        int signalSelectionX = x() + LEFT_PADDING + TIMELINE_WIDTH;
+        int currentY = (int)(TrafficLightScheduleEditorWidget.PADDING * 1.5f + 20 + 2);
+        int signalSelectionX = TrafficLightScheduleEditorWidget.TEXT_X;
         if (!hidePhaseId) {
-            phaseIdBox = addRenderableWidget(new DLNumberSelector(
-                x() + LEFT_PADDING + TIMELINE_WIDTH + 1,
-                y() + (int)(SPACING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - (DEFAULT_EDIT_BOX_HEIGHT - 2) / 2),
-                38,
-                DEFAULT_EDIT_BOX_HEIGHT - 2,
-                entry.getPhaseId(),
-                false,
-                (selector, value) -> {
-                    entry.setPhaseId(selector.getAsInt());
-                }
-            ) {
-                @Override
-                public void setMouseSelected(boolean selected) {
-                    super.setMouseSelected(selected);
-                    instance.setMouseSelected(selected);
-                }
+            phaseIdBox = addComponent(new DLNumberPicker(signalSelectionX, currentY, 38, 16));
+            phaseIdBox.showButtons.set(false);
+            phaseIdBox.min.set(-9999D);
+            phaseIdBox.max.set(9999D);
+            phaseIdBox.value.set((double)entry.getPhaseId());
+            phaseIdBox.inputConsumptionPolicy.set(c -> c != ConsumptionType.MOUSE_MOVE);
+            phaseIdBox.addEventListener(DLNumberPicker.ValueChangedEvent.class, (s, e) -> {
+                entry.setPhaseId((int)e.value());
+                return false;
             });
-            phaseIdBox.setNumberBounds(-9999, 9999);
-            DLTooltip tooltip2 = DLTooltip.of(textPhaseId).assignedTo(GuiAreaDefinition.of(phaseIdBox));
-            tooltip2.setDynamicOffset(() -> 0, () -> (int)container.getScrollOffset());
-            tooltips.add(tooltip2); 
-            widgets.add(phaseIdBox);
+            phaseIdBox.tooltip.set(new DLTooltip(List.of(textPhaseId), 200));
             
-            signalSelectionX += phaseIdBox.getWidth() + 6;
+            signalSelectionX += phaseIdBox.width() + 6;
         } else {
             phaseIdBox = null;
         }
 
         signals = TrafficLightColor.getAllowedForType(TrafficLightType.CAR, false);
-        signalSelectionArea = new GuiAreaDefinition(signalSelectionX, y() + (int)(SPACING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - DEFAULT_EDIT_BOX_HEIGHT / 2 + 1), signals.length * (SIGNAL_ICON_SIZE + 4) + 4, DEFAULT_EDIT_BOX_HEIGHT - 2);
-        this.signalButtons = new DLIconButton[signals.length];
-        for (int i = 0; i < signals.length; i++) {
-            final int j = i;
-            this.signalButtons[j] = addRenderableWidget(new DLIconButton(ButtonType.DEFAULT, AreaStyle.FLAT, Sprite.empty(), signalSelectionArea.getX() + 3 + j * (SIGNAL_ICON_SIZE + 4), signalSelectionArea.getY() + 2, SIGNAL_ICON_SIZE + 2, SIGNAL_ICON_SIZE + 2, TextUtils.empty(),
-            (b) -> {
-                if (entry.getEnabledColors().contains(signals[j])) {
-                    entry.disableColors(List.of(signals[j]));
-                } else {
-                    entry.enableColors(List.of(signals[j]));
-                }
-            }) {
-                @Override
-                public void renderMainLayer(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-                    GuiUtils.fill(graphics, x(), y(), width(), height(), isMouseSelected() ? 0xFFFFFFFF : 0xFFA7A7A7);
-                    GuiUtils.drawTexture(
-                        TrafficLightScheduleEditor.WIDGETS,
-                        graphics,
-                        signalButtons[j].x() + 1,
-                        signalButtons[j].y() + 1,
-                        SIGNAL_ICON_SIZE,
-                        SIGNAL_ICON_SIZE,
-                        j * SIGNAL_ICON_SIZE,
-                        (signalTypes.containsKey(entry.getPhaseId()) && signalTypes.get(entry.getPhaseId()) != null ? signalTypes.get(entry.getPhaseId()).getIndex() : typeFrame.getIndex()) * SIGNAL_ICON_SIZE,
-                        SIGNAL_ICON_SIZE,
-                        SIGNAL_ICON_SIZE,
-                        TrafficLightScheduleEditor.TEXTURE_WIDTH,
-                        TrafficLightScheduleEditor.TEXTURE_HEIGHT
-                    );
-                    if (!entry.getEnabledColors().contains(signals[j])) {
-                        GuiUtils.fill(graphics, x() + 1, y() + 1, width() - 2, height() - 2, 0xAA000000);
-                    }   
-                }
 
-                @Override
-                public void setMouseSelected(boolean selected) {
-                    super.setMouseSelected(selected);
-                    instance.setMouseSelected(selected);
-                }
-            });
+        widgets = addComponent(new DLPanel(signalSelectionX, currentY, 10, 16));
+        widgets.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
+            if (e.layer() == RenderLayer.MAIN) {
+                GuiUtils.drawBox(e.graphics(), 0, 0, s.width(), s.height(), DLColor.BLACK, DLColor.fromInt(0xFFDBDBDB));
+            }
+            return false;
+        });
+        FlowLayout signalsLayout = new FlowLayout();
+        signalsLayout.padding.set(new Padding(2, 3, 2, 3));
+        signalsLayout.flowDirection.set(Direction.HORIZONTAL);
+        signalsLayout.wrap.set(false);
+        signalsLayout.horizontalGap.set(1);
+        widgets.layout.set(signalsLayout);
+        widgets.inputConsumptionPolicy.set(c -> c != ConsumptionType.MOUSE_MOVE);
+        widgets.addEventListener(DLGuiStandardEvents.ComponentLayoutUpdatedEvent.class, (s, e) -> {
+            widgets.setWidth(e.layoutResult().contentWidth());
+            return false;
+        });
+       
+        this.signalButtons = new TrafficLightSignalButton[signals.length];
+        for (int i = 0; i < signals.length; i++) {
+            final int k = i;
+            TrafficLightColor signal = signals[i];
+            TrafficLightSignalButton signalBtn = this.signalButtons[k] = widgets.addComponent(new TrafficLightSignalButton(entry, signal, signalTypes.getOrDefault(entry.getPhaseId(), null)));
+            signalBtn.inputConsumptionPolicy.set(c -> c != ConsumptionType.MOUSE_MOVE);
         }
 
-        moveUpButton = addRenderableWidget(new DLIconButton(ButtonType.DEFAULT, AreaStyle.FLAT, MOVE_UP_ICON, x() + width() - CONTROL_BUTTON_SIZE - 4, y() + 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, TextUtils.empty(),
-        (b) -> {
+        DLButton moveUpButton = addComponent(new DLButton(width() - CONTROL_BTN_SIZE - 4, 4, CONTROL_BTN_SIZE, CONTROL_BTN_SIZE));
+        moveUpButton.anchor.set2(EAlign.TOP, EAlign.RIGHT);
+        moveUpButton.componentRenderer.set(FlatButtonRenderer.INSTANCE);
+        moveUpButton.text.set(TextUtils.empty());
+        moveUpButton.icon.set(ModGuiIcons.MOVE_UP.getAsSprite(16, 16));
+        moveUpButton.inputConsumptionPolicy.set(p -> p != ConsumptionType.MOUSE_MOVE);
+        moveUpButton.tooltip.set(new DLTooltip(List.of(textMoveUp), 200));
+        moveUpButton.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             reorderAction.accept(entry, -1);
-        }) {
-            @Override
-            public void setMouseSelected(boolean selected) {
-                super.setMouseSelected(selected);
-                instance.setMouseSelected(selected);
-            }
+            return false;
         });
-        moveUpButton.setRenderStyle(AreaStyle.FLAT);
-        moveUpButton.setBackColor(0x00000000);
-        DLTooltip tooltip3 = DLTooltip.of(textMoveUp).assignedTo(GuiAreaDefinition.of(moveUpButton));
-        tooltip3.setDynamicOffset(() -> 0, () -> (int)container.getScrollOffset());
-        tooltips.add(tooltip3);
 
-        moveDownButton = addRenderableWidget(new DLIconButton(ButtonType.DEFAULT, AreaStyle.FLAT, MOVE_DOWN_ICON, x() + width() - CONTROL_BUTTON_SIZE - 4, y() + 4 + CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, TextUtils.empty(),
-        (b) -> {
+        DLButton moveDownButton = addComponent(new DLButton(width() - CONTROL_BTN_SIZE - 4, 4 + CONTROL_BTN_SIZE, CONTROL_BTN_SIZE, CONTROL_BTN_SIZE));
+        moveDownButton.anchor.set2(EAlign.TOP, EAlign.RIGHT);
+        moveDownButton.componentRenderer.set(FlatButtonRenderer.INSTANCE);
+        moveDownButton.text.set(TextUtils.empty());
+        moveDownButton.icon.set(ModGuiIcons.MOVE_DOWN.getAsSprite(16, 16));
+        moveDownButton.inputConsumptionPolicy.set(p -> p != ConsumptionType.MOUSE_MOVE);
+        moveDownButton.tooltip.set(new DLTooltip(List.of(textMoveDown), 200));
+        moveDownButton.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             reorderAction.accept(entry, 1);
-        }) {
-            @Override
-            public void setMouseSelected(boolean selected) {
-                super.setMouseSelected(selected);
-                instance.setMouseSelected(selected);
-            }
+            return false;
         });
-        moveDownButton.setRenderStyle(AreaStyle.FLAT);
-        moveDownButton.setBackColor(0x00000000);
-        DLTooltip tooltip4 = DLTooltip.of(textMoveDown).assignedTo(GuiAreaDefinition.of(moveDownButton));
-        tooltip4.setDynamicOffset(() -> 0, () -> (int)container.getScrollOffset());
-        tooltips.add(tooltip4);
+        
 
-        deleteButton = addRenderableWidget(new DLIconButton(ButtonType.DEFAULT, AreaStyle.FLAT, DELETE_ICON, x() + width() - CONTROL_BUTTON_SIZE - 4, y() + height - CONTROL_BUTTON_SIZE - 4, CONTROL_BUTTON_SIZE, CONTROL_BUTTON_SIZE, TextUtils.empty(),
-        (b) -> {
+        DLButton deleteBtn = addComponent(new DLButton(width() - CONTROL_BTN_SIZE - 4, height() - 4 - CONTROL_BTN_SIZE, CONTROL_BTN_SIZE, CONTROL_BTN_SIZE));
+        deleteBtn.anchor.set2(EAlign.BOTTOM, EAlign.RIGHT);
+        deleteBtn.componentRenderer.set(FlatButtonRenderer.INSTANCE);
+        deleteBtn.text.set(TextUtils.empty());
+        deleteBtn.icon.set(ModGuiIcons.DELETE_WHITE.getAsSprite(16, 16));
+        deleteBtn.inputConsumptionPolicy.set(p -> p != ConsumptionType.MOUSE_MOVE);
+        deleteBtn.tooltip.set(new DLTooltip(List.of(textDelete), 200));
+        deleteBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
             removeAction.accept(entry);
-        }) {
-            @Override
-            public void setMouseSelected(boolean selected) {
-                super.setMouseSelected(selected);
-                instance.setMouseSelected(selected);
-            }
+            return false;
         });
-        deleteButton.setRenderStyle(AreaStyle.FLAT);
-        deleteButton.setBackColor(0x00000000);
-        DLTooltip tooltip5 = DLTooltip.of(textDelete).assignedTo(GuiAreaDefinition.of(deleteButton));
-        tooltip5.setDynamicOffset(() -> 0, () -> (int)container.getScrollOffset());
-        tooltips.add(tooltip5);
         
-        
+        /*
         setMenu(new DLContextMenu(() -> GuiAreaDefinition.of(this), () ->
             new DLContextMenuItem.Builder()
                 .add(new ContextMenuItemData(textMoveUp, Sprite.empty(), true, (b) -> reorderAction.accept(entry, -1), null))
@@ -243,130 +165,62 @@ public class TrafficLightScheduleEntry extends DLWidgetContainer {
                 .addSeparator()
                 .add(new ContextMenuItemData(textDelete, Sprite.empty(), true, (b) -> removeAction.accept(entry), null))
         ));
+        */
         
     }
 
     @Override
-    public DLContextMenu getContextMenu() {
-        return menu;
-    }
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+            
+        DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_gray_normal")
+            .render(
+                graphics,
+                TrafficLightScheduleEditorWidget.PADDING,
+                TrafficLightScheduleEditorWidget.PADDING / 2,
+                TrafficLightScheduleEditorWidget.ENTRY_PADDING_LEFT + TrafficLightScheduleEditorWidget.SPRITE_SIZE + TrafficLightScheduleEditorWidget.ENTRY_PADDING_TIMELINE_TEXT + delaySelector.width() + TrafficLightScheduleEditorWidget.ENTRY_PADDING_RIGHT,
+                20
+            );
+            
+        DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_gray_normal")
+            .render(
+                graphics,
+                TrafficLightScheduleEditorWidget.PADDING,
+                (int)(TrafficLightScheduleEditorWidget.PADDING * 1.5f + 20),
+                TrafficLightScheduleEditorWidget.ENTRY_PADDING_LEFT + TrafficLightScheduleEditorWidget.SPRITE_SIZE + TrafficLightScheduleEditorWidget.ENTRY_PADDING_TIMELINE_TEXT + (phaseIdBox == null ? 0 : phaseIdBox.width() + 6) + widgets.width() + TrafficLightScheduleEditorWidget.ENTRY_PADDING_RIGHT,
+                20
+            );
 
-    @Override
-    public void setMenu(DLContextMenu menu) {
-        this.menu = menu;
-    }
 
-    public void tick() {
-        // Animation
-        ticks++;
-        if (ticks % FRAME_DURATION_TICKS == 0) {
-            frame++;
-            typeFrame = TrafficLightType.getTypeByIndex((byte)(frame % TrafficLightType.values().length));
+
+        TrafficLightScheduleEditorWidget.ICONS.getSprite(TrafficLightScheduleEditorWidget.SPRITE_TIMELINE_EDGE)
+            .render(
+                graphics,
+                TrafficLightScheduleEditorWidget.TIMELINE_ICON_X,
+                0,
+                TrafficLightScheduleEditorWidget.SPRITE_SIZE,
+                height()
+            );
+
+        TrafficLightScheduleEditorWidget.ICONS.getSprite(TrafficLightScheduleEditorWidget.SPRITE_TIMELINE_DELAY)
+            .render(
+                graphics,
+                TrafficLightScheduleEditorWidget.TIMELINE_ICON_X,
+                TrafficLightScheduleEditorWidget.PADDING + 10 / TrafficLightScheduleEditorWidget.SPRITE_SIZE / 2,
+                TrafficLightScheduleEditorWidget.SPRITE_SIZE,
+                TrafficLightScheduleEditorWidget.SPRITE_SIZE
+            );
+            
+        TrafficLightScheduleEditorWidget.ICONS.getSprite(TrafficLightScheduleEditorWidget.SPRITE_TIMELINE_ACTION)
+            .render(
+                graphics,
+                TrafficLightScheduleEditorWidget.TIMELINE_ICON_X,
+                (int)(TrafficLightScheduleEditorWidget.PADDING * 1.5f + 30 - TrafficLightScheduleEditorWidget.SPRITE_SIZE / 2),
+                TrafficLightScheduleEditorWidget.SPRITE_SIZE,
+                TrafficLightScheduleEditorWidget.SPRITE_SIZE
+            );
+            
+        if (isSelected()) {            
+            GuiUtils.fill(graphics, 0, 0, width(), height(), DLColor.fromInt(0x22FFFFFF));
         }
     }
-
-    @Override
-    public void setMouseSelected(boolean selected) {        
-        super.setMouseSelected(selected);
-        moveUpButton.set_visible(isMouseSelected());
-        moveDownButton.set_visible(isMouseSelected());
-        deleteButton.set_visible(isMouseSelected());
-    }
-
-    @Override
-    public void renderMainLayer(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        
-        if (isMouseSelected()) {            
-            GuiUtils.fill(graphics, x, y, width, height, 0x22FFFFFF);
-        }
-        
-        DynamicGuiRenderer.renderArea(
-            graphics,
-            x() + LEFT_PADDING,
-            y() + SPACING / 2,
-            TIMELINE_WIDTH + delaySelector.getWidth() + 8,
-            DEFAULT_ENTRY_HEIGHT,
-            AreaStyle.GRAY,
-            ButtonState.BUTTON
-        );
-
-        DynamicGuiRenderer.renderArea(
-            graphics,
-            x + LEFT_PADDING,
-            y + (int)(SPACING * 1.5f + DEFAULT_ENTRY_HEIGHT),
-            TIMELINE_WIDTH + (hidePhaseId ? 0 : phaseIdBox.getWidth() + 6) + signalSelectionArea.getWidth() + 8,
-            DEFAULT_ENTRY_HEIGHT,
-            AreaStyle.GRAY,
-            ButtonState.BUTTON
-        );
-
-        GuiUtils.drawTexture(
-            TrafficLightScheduleEditor.WIDGETS,
-            graphics, x + TrafficLightScheduleEditor.ENTRY_PADDING + TIMELINE_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y,
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            HEIGHT,
-            27,
-            20,
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            TrafficLightScheduleEditor.TIMELINE_VH,
-            TrafficLightScheduleEditor.TEXTURE_WIDTH,
-            TrafficLightScheduleEditor.TEXTURE_HEIGHT
-        );
-
-        GuiUtils.drawTexture(
-            TrafficLightScheduleEditor.WIDGETS,
-            graphics,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING + TIMELINE_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + TrafficLightScheduleEditor.ENTRY_PADDING / 2 + DEFAULT_ENTRY_HEIGHT / 2 - TrafficLightScheduleEditor.TIMELINE_VH / 2,
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            TrafficLightScheduleEditor.TIMELINE_VH,
-            18,
-            20,
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            TrafficLightScheduleEditor.TIMELINE_VH,
-            TrafficLightScheduleEditor.TEXTURE_WIDTH,
-            TrafficLightScheduleEditor.TEXTURE_HEIGHT
-        );
-
-        GuiUtils.drawTexture(
-            TrafficLightScheduleEditor.WIDGETS,
-            graphics,
-            x + TrafficLightScheduleEditor.ENTRY_PADDING + TIMELINE_WIDTH / 2 - TrafficLightScheduleEditor.TIMELINE_UW / 2,
-            y + (int)(TrafficLightScheduleEditor.ENTRY_PADDING * 1.5f + DEFAULT_ENTRY_HEIGHT * 1.5f - TrafficLightScheduleEditor.TIMELINE_VH / 2),
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            TrafficLightScheduleEditor.TIMELINE_VH,
-            9,
-            20,
-            TrafficLightScheduleEditor.TIMELINE_UW,
-            TrafficLightScheduleEditor.TIMELINE_VH,
-            TrafficLightScheduleEditor.TEXTURE_WIDTH,
-            TrafficLightScheduleEditor.TEXTURE_HEIGHT
-        );
-
-        GuiUtils.drawBox(graphics, signalSelectionArea, 0xFF000000, 0xFFDBDBDB);
-
-        super.renderMainLayer(graphics, pMouseX, pMouseY, pPartialTick);
-    }
-
-    @Override
-    public void renderFrontLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderFrontLayer(graphics, mouseX, mouseY, partialTicks);
-        if (this.parent.isMouseOver(mouseX, mouseY))
-            tooltips.stream().forEach(x -> x.render(Minecraft.getInstance().screen, graphics, mouseX, mouseY));
-    }
-
-    @Override
-    public NarrationPriority narrationPriority() {
-        return NarrationPriority.HOVERED;
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) { }
-
-    @Override
-    public boolean consumeScrolling(double mouseX, double mouseY) {
-        return false;
-    }    
-
 }

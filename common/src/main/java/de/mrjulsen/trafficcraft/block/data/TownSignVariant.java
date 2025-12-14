@@ -1,9 +1,9 @@
 package de.mrjulsen.trafficcraft.block.data;
 
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import net.minecraft.util.StringRepresentable;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 
-public enum TownSignVariant implements StringRepresentable, ITranslatableEnum {
+public enum TownSignVariant implements ITranslatableEnum {
     FRONT("front", 0),
 	BACK("back", 1),
 	BOTH("both", 2);
@@ -39,12 +39,7 @@ public enum TownSignVariant implements StringRepresentable, ITranslatableEnum {
     }
 
 	@Override
-	public String getEnumName() {
-		return "townsignvariant";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getVariant();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "townsignvariant", variant);
 	}
 }

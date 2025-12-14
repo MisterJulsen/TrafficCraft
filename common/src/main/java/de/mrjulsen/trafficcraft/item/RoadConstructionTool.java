@@ -12,11 +12,11 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 
-import de.mrjulsen.mcdragonlib.core.Location;
-import de.mrjulsen.mcdragonlib.data.StatusResult;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
@@ -93,10 +93,10 @@ public class RoadConstructionTool extends Item {
             if (!level.isClientSide) {
                 CompoundTag compound = pContext.getItemInHand().getOrCreateTag();
 
-                Location location = new Location(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location().toString());
+                WorldLocation location = new WorldLocation(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location());
                 
                 if (compound.contains(NBT_LOCATION1)) {
-                    if (isLineValid(Location.fromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).result()) {
+                    if (isLineValid(WorldLocation.loadFromNbt(compound.getCompound(NBT_LOCATION1)).getLocationVec3(), location.getLocationVec3()).flag() == DLStatus.FLAG_OK) {
                         compound.put(NBT_LOCATION2, location.toNbt());
                     }
                 } else {
@@ -155,9 +155,9 @@ public class RoadConstructionTool extends Item {
         }
     }
 
-    private static StatusResult isLineValid(Vec3 a, Vec3 b) {
+    private static DLStatus isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
-        boolean flag2 = MathUtils.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
+        boolean flag2 = MathUtils.slope(a.toVector3f(), b.toVector3f()) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
         int status = 0;
 
         if (!flag1) {
@@ -165,7 +165,8 @@ public class RoadConstructionTool extends Item {
         } else if (!flag2) {
             status = ERROR_SLOPE_TOO_STEEP;
         }
-        return new StatusResult(flag1 && flag2, status, null);
+        
+        return new DLStatus(flag1 && flag2 ? DLStatus.FLAG_OK : DLStatus.FLAG_ERROR, status, "");
     }
 
     @Override
@@ -174,8 +175,8 @@ public class RoadConstructionTool extends Item {
         
         initStackTag(itemstack);
         
-        Location startLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION1));
-        Location endLoc = Location.fromNbt(itemstack.getTag().getCompound(NBT_LOCATION2));
+        WorldLocation startLoc = WorldLocation.loadFromNbt(itemstack.getTag().getCompound(NBT_LOCATION1));
+        WorldLocation endLoc = WorldLocation.loadFromNbt(itemstack.getTag().getCompound(NBT_LOCATION2));
         Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
 
         if (endLoc != null && startLoc != null) {
@@ -333,7 +334,7 @@ public class RoadConstructionTool extends Item {
             return;
         }
 
-        Vec3 start = Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationVec3().add(0.5d, 0, 0.5d);
+        Vec3 start = WorldLocation.loadFromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationVec3().add(0.5d, 0, 0.5d);
         Vec3 end = null;
 
         if (nbt.contains(NBT_LOCATION1) && !nbt.contains(NBT_LOCATION2)) {
@@ -350,14 +351,14 @@ public class RoadConstructionTool extends Item {
             }
 
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos1",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
+                WorldLocation.loadFromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString()
             ), true);
 
         } else if (nbt.contains(NBT_LOCATION1) && nbt.contains(NBT_LOCATION2)) {
-            end = Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
+            end = WorldLocation.loadFromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationVec3().add(0.5d, 0, 0.5d);
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos2",
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
-                Location.fromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
+                WorldLocation.loadFromNbt(nbt.getCompound(NBT_LOCATION1)).getLocationBlockPos().toShortString(),
+                WorldLocation.loadFromNbt(nbt.getCompound(NBT_LOCATION2)).getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
         }
 
@@ -393,7 +394,7 @@ public class RoadConstructionTool extends Item {
             if (clientTicks == 0) {
                 for (double d = 0; d < 1; d += mul) {
                     Vec3 vecPos = new Vec3(line.x * d, line.y * d, line.z * d).add(start);
-                    level.addParticle(new DustParticleOptions(isLineValid(start, end).result() ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
+                    level.addParticle(new DustParticleOptions(isLineValid(start, end).flag() == DLStatus.FLAG_OK ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
                     
                     Vec3 rightVec = vecPos.add(new Vec3(line.z * d, 0, -line.x * d).normalize().scale(halfWidth));
                     level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), rightVec.x, rightVec.y, rightVec.z, 0, 0, 0);

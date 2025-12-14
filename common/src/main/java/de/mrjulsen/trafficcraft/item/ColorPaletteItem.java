@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.core.ColorObject;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -42,8 +42,8 @@ public class ColorPaletteItem extends Item {
                 if (i == 0) {
                     list.add(TextUtils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
                 } else {                
-                    ColorObject c = ColorObject.fromInt(i);
-                    list.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
+                    DLColor c = DLColor.fromInt(i);
+                    list.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getRed(), c.getGreen(), c.getBlue(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
                 }
             } 
         }

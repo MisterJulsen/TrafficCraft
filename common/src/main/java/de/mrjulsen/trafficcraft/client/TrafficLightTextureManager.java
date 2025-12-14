@@ -5,14 +5,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.client.ber.BERCube;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
+import de.mrjulsen.mcdragonlib.client.model.mesh.CornerType;
+import de.mrjulsen.mcdragonlib.client.model.mesh.CubeMesh;
+import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Holder.Direct;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec2;
@@ -103,10 +110,29 @@ public class TrafficLightTextureManager {
         private static final float pixel = 1.0F / 16.0F;
 
         private final TrafficLightTextureKey key;
-        private final BERCube cube;
+        private final Mesh cube;
 
         private TrafficLightBulbModel(TrafficLightTextureKey key) {
             this.key = key;
+
+            if (key != null) {
+                cube = new CubeMesh(new Vector3f(), new Vector3f(pixel * 4, pixel * 4, pixel * 1));
+                cube.getFaces().forEach(f -> f.setTexture(key.getTextureLocation()));
+                for (Direction dir : Direction.values()) {
+                    if (dir.getAxis() != Axis.Z) {
+                        cube.getFacesOfDirection(dir).forEach(f -> {
+                            f.getCorner(CornerType.TOP_LEFT).setUV(new Vector2f(0, 0));
+                            f.getCorner(CornerType.TOP_RIGHT).setUV(new Vector2f(0, 0));
+                            f.getCorner(CornerType.BOTTOM_LEFT).setUV(new Vector2f(0, 1));
+                            f.getCorner(CornerType.BOTTOM_RIGHT).setUV(new Vector2f(0, 1));
+                        });
+                    }
+                }
+            } else {
+                cube = new CubeMesh(new Vector3f(), new Vector3f());
+            }
+            
+            /*
             if (key != null) {
                 cube = BERCube.cube(key.getTextureLocation(), pixel * 4, pixel * 4, pixel, dir -> dir != Direction.NORTH && dir != Direction.UP, dir -> {
                     switch (dir) {
@@ -123,6 +149,7 @@ public class TrafficLightTextureManager {
             } else {
                 cube = new BERCube(0, 0, 0);
             }
+                */
         }
 
         protected static final TrafficLightBulbModel create(TrafficLightTextureKey key) {
@@ -131,9 +158,9 @@ public class TrafficLightTextureManager {
 
         private void render(BERGraphics<?> graphics, BlockEntity be, int light) {
             graphics.poseStack().pushPose();
-            graphics.poseStack().translate(0, 0, pixel);
-            cube.setLight(key.isOffState() ? light : LightTexture.FULL_BRIGHT);
-            cube.render(graphics);    
+            //graphics.poseStack().translate(0, 0, pixel);
+            //cube.setLight(key.isOffState() ? light : LightTexture.FULL_BRIGHT);
+            cube.render(graphics, key.isOffState() ? graphics.packedLight() : LightTexture.FULL_BRIGHT, graphics.packedOverlay(), false, true);    
             graphics.poseStack().popPose();
         }
 

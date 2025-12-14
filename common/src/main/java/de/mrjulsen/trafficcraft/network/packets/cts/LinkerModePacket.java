@@ -1,47 +1,45 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem.LinkerMode;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
-public class LinkerModePacket implements IPacketBase<LinkerModePacket> {
+public class LinkerModePacket extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
 
     private LinkerMode mode;
 
-    public LinkerModePacket() {}
+    public LinkerModePacket(DLStatus status) {
+        super(status);
+    }
 
     public LinkerModePacket(LinkerMode mode) {
+        super(DLStatus.OK);
         this.mode = mode;
     }
 
     @Override
-    public void encode(LinkerModePacket packet, FriendlyByteBuf buffer) {
-        buffer.writeEnum(packet.mode);
+    protected void write(CompoundTag nbt) {
+        nbt.putInt(NBT_DATA, mode.getIndex());
     }
 
     @Override
-    public LinkerModePacket decode(FriendlyByteBuf buffer) {
-        LinkerMode mode = buffer.readEnum(LinkerMode.class); 
-        return new LinkerModePacket(mode);
+    protected void read(CompoundTag nbt) {
+        this.mode = LinkerMode.getByIndex(nbt.getInt(NBT_DATA));
     }
     
-    @Override
-    public void handle(LinkerModePacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-
-            if (sender.getMainHandItem().getItem() instanceof TrafficLightLinkerItem) {
-                TrafficLightLinkerItem.setMode(sender.getMainHandItem(), packet.mode);
-            } else if (sender.getOffhandItem().getItem() instanceof TrafficLightLinkerItem) { 
-                TrafficLightLinkerItem.setMode(sender.getOffhandItem(), packet.mode);
-            }
-
-            sender.getInventory().setChanged();
-        });
+    public static void handle(LinkerModePacket packet, NetworkPacketContext context) {
+        ServerPlayer sender = (ServerPlayer)context.getPlayer();
+        if (sender.getMainHandItem().getItem() instanceof TrafficLightLinkerItem) {
+            TrafficLightLinkerItem.setMode(sender.getMainHandItem(), packet.mode);
+        } else if (sender.getOffhandItem().getItem() instanceof TrafficLightLinkerItem) { 
+            TrafficLightLinkerItem.setMode(sender.getOffhandItem(), packet.mode);
+        }
+        sender.getInventory().setChanged();
     }
 }

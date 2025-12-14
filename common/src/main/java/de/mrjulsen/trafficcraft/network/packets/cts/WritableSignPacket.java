@@ -1,59 +1,55 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.nio.charset.StandardCharsets;
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
-import dev.architectury.networking.NetworkManager.PacketContext;
+import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
+import de.mrjulsen.mcdragonlib.util.NbtUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 
-public class WritableSignPacket implements IPacketBase<WritableSignPacket> {
+public class WritableSignPacket extends NetworkPacketData {
+
+    private static final String NBT_MESSAGES = "Messages";
+    private static final String NBT_POS = "Pos";
+
     private String[] messages;
     private BlockPos pos;
 
-    public WritableSignPacket() {}
+    public WritableSignPacket(DLStatus status) {
+        super(status);
+    }
 
     public WritableSignPacket(BlockPos pos, String[] messages) {
+        super(DLStatus.OK);
         this.pos = pos;
         this.messages = messages;
     }
 
     @Override
-    public void encode(WritableSignPacket packet, FriendlyByteBuf buffer) {
-        buffer.writeBlockPos(packet.pos);
-        buffer.writeInt(packet.messages.length);
-        for (int i = 0; i < packet.messages.length; i++) {
-            String message = packet.messages[i];
-            int messageLength = packet.messages[i].getBytes(StandardCharsets.UTF_8).length;
-            buffer.writeInt(messageLength);
-            buffer.writeUtf(message, messageLength);
+    protected void write(CompoundTag nbt) {
+        ListTag msgs = new ListTag();
+        for (String msg : messages) {
+            msgs.add(StringTag.valueOf(msg));
         }
+        nbt.put(NBT_MESSAGES, msgs);
+        NbtUtils.putNbtPos(nbt, NBT_POS, pos);
     }
 
     @Override
-    public WritableSignPacket decode(FriendlyByteBuf buffer) {
-        BlockPos pos = buffer.readBlockPos();
-        int messagesCount = buffer.readInt();
-        String[] messages = new String[messagesCount];
-        for (int i = 0; i < messagesCount; i++) {
-            int messageLength = buffer.readInt();
-            messages[i] = buffer.readUtf(messageLength);
-        }
-
-        WritableSignPacket instance = new WritableSignPacket(pos, messages);
-        return instance;
+    protected void read(CompoundTag nbt) {
+        this.messages = nbt.getList(NBT_MESSAGES, Tag.TAG_STRING).stream().map(x -> ((StringTag)x).getAsString()).toArray(String[]::new);
+        this.pos = NbtUtils.getNbtBlockPos(nbt, NBT_POS);
     }
-    
-    @Override
-    public void handle(WritableSignPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-            if (sender.level().getBlockEntity(packet.pos) instanceof WritableSignBlockEntity blockEntity) {
-                blockEntity.setTexts(packet.messages);
-            }
-        });
+
+    public static void handle(WritableSignPacket packet, NetworkPacketContext context) {
+        ServerPlayer sender = (ServerPlayer)context.getPlayer();
+        if (sender.level().getBlockEntity(packet.pos) instanceof DLWritableSignBlockEntity blockEntity) {
+            blockEntity.setTexts(packet.messages);
+        }
     }
 }

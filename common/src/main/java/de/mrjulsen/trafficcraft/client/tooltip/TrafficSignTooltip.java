@@ -27,9 +27,9 @@ public class TrafficSignTooltip implements TooltipComponent, IAgeable {
 		
 		this.textures.clear();
 		patterns.stream().forEach(x -> {
-			textures.put(x, TrafficSignClientTexture.load(x.getTextureId(), false));
+			textures.put(x, TrafficSignClientTexture.load(x.getTextureId(), false, null));
 		});
-		DLUtils.doIfNotNull(selected, a -> textures.computeIfAbsent(a, x -> TrafficSignClientTexture.load(x.getTextureId(), false)));
+		DLUtils.doIfNotNull(selected, a -> textures.computeIfAbsent(a, x -> TrafficSignClientTexture.load(x.getTextureId(), false, null)));
 	}
 
 	public NonNullList<NamedTrafficSignTextureReference> getPatterns() {

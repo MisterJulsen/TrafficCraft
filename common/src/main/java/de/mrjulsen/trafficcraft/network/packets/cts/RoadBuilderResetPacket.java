@@ -1,36 +1,37 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.IPacketBase;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
-public class RoadBuilderResetPacket implements IPacketBase<RoadBuilderResetPacket> {
+public class RoadBuilderResetPacket extends NetworkPacketData {
     
-    public RoadBuilderResetPacket() {}
+    public RoadBuilderResetPacket(DLStatus status) {
+        super(status);
+    }
+
+    public RoadBuilderResetPacket() {
+        super(DLStatus.OK);
+    }
 
     @Override
-    public void encode(RoadBuilderResetPacket packet, FriendlyByteBuf buffer) {}
+    protected void write(CompoundTag nbt) {
+    }
 
     @Override
-    public RoadBuilderResetPacket decode(FriendlyByteBuf buffer) {
-        return new RoadBuilderResetPacket();
+    protected void read(CompoundTag nbt) {
     }
     
-    @Override
-    public void handle(RoadBuilderResetPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-
-            if (sender.getMainHandItem().getItem() instanceof RoadConstructionTool) {
-                RoadConstructionTool.reset(sender.getMainHandItem());
-            } else if (sender.getOffhandItem().getItem() instanceof RoadConstructionTool) {
-                RoadConstructionTool.reset(sender.getOffhandItem());
-            }
-            sender.getInventory().setChanged();
-        });
+    public static void handle(RoadBuilderResetPacket packet, NetworkPacketContext context) {        
+        ServerPlayer sender = (ServerPlayer)context.getPlayer();
+        if (sender.getMainHandItem().getItem() instanceof RoadConstructionTool) {
+            RoadConstructionTool.reset(sender.getMainHandItem());
+        } else if (sender.getOffhandItem().getItem() instanceof RoadConstructionTool) {
+            RoadConstructionTool.reset(sender.getOffhandItem());
+        }
+        sender.getInventory().setChanged();
     }
 }

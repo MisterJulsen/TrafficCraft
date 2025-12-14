@@ -2,11 +2,12 @@ package de.mrjulsen.trafficcraft.client.tooltip;
 
 import java.util.Map;
 
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
-import de.mrjulsen.mcdragonlib.data.DataCache;
-import de.mrjulsen.mcdragonlib.data.Pair;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.util.DLColor;
+import de.mrjulsen.mcdragonlib.util.DataCache;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
 import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
@@ -60,7 +61,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
     @Override
     public void renderImage(Font pFont, int pX, int pY, GuiGraphics guiGraphics) {
         checkGridLayout();
-        Graphics graphics = new Graphics(guiGraphics, guiGraphics.pose());
+        DLGuiGraphics graphics = new DLGuiGraphics(guiGraphics, guiGraphics.pose(), Minecraft.getInstance().font, 0);
         Pair<Integer, Integer> grid = gridLayout.get(lastKnownTexturesCount);
         int x = pX;
         int y = pY;
@@ -68,17 +69,17 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         graphics.poseStack().pushPose();
         graphics.poseStack().scale(FONT_SCALE, FONT_SCALE, FONT_SCALE);
         graphics.poseStack().translate(0, 0, 1000);
-        if (selectedData != null) {            
+        if (selectedData != null) {
             graphics.poseStack().pushPose();
             graphics.poseStack().translate((x + 5) / FONT_SCALE, y / FONT_SCALE, 0);
-            GuiUtils.drawString(graphics, pFont, 0, 0, TextUtils.translate("item.trafficcraft.pattern_catalogue.tooltip.selected_texture"), 0xFFDBDBDB, EAlignment.LEFT, false);
-            GuiUtils.drawString(graphics, pFont, 32, pFont.lineHeight + 10, selectedData.getName(), 0xFFFFFFFF, EAlignment.LEFT, false);
+            GuiUtils.drawString(graphics, pFont, 0, 0, TextUtils.translate("item.trafficcraft.pattern_catalogue.tooltip.selected_texture"), DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
+            GuiUtils.drawString(graphics, pFont, 32, pFont.lineHeight + 10, selectedData.getName(), DLColor.WHITE, ETextAlignment.LEFT, false);
             graphics.poseStack().popPose();
         }
         if (lastKnownTexturesCount > 0) {            
             graphics.poseStack().pushPose();
             graphics.poseStack().translate((x + 5) / FONT_SCALE, (y + pFont.lineHeight + 24) / FONT_SCALE, 0);
-            GuiUtils.drawString(graphics, pFont, 0, 0, TextUtils.translate("item.trafficcraft.pattern_catalogue.tooltip.saved_textures"), 0xFFDBDBDB, EAlignment.LEFT, false);
+            GuiUtils.drawString(graphics, pFont, 0, 0, TextUtils.translate("item.trafficcraft.pattern_catalogue.tooltip.saved_textures"), DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
             graphics.poseStack().popPose();
         }
         graphics.poseStack().popPose();

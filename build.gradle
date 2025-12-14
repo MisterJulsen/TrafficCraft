@@ -29,6 +29,27 @@ subprojects {
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
+
+        
+        maven { url = "https://maven.tterrag.com/" } // Flywheel        
+        maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
+        maven { url = "https://maven.blamejared.com/" } // JEI
+        maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+        maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+        maven { url = "https://mvn.devos.one/snapshots/" } // Create, Porting Lib, Forge Tags, Milk Lib, Registrate
+        maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+        maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+        maven { url = "https://maven.tterrag.com/" } // Flywheel
+        maven { url = "https://maven.blamejared.com" } // Embeddium
+        maven { url = "https://api.modrinth.com/maven" } // Modrinth
+        maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
+        maven { url = "https://maven.blamejared.com/" } // JEI
+        maven { url = "https://modmaven.dev" } // JEI
+        maven { url = "https://cursemaven.com"
+            content {
+                includeGroup "curse.maven"
+            }
+        }
     }
 
     loom {
