@@ -31,8 +31,8 @@ dependencies {
 
     modCompileOnly("dev.architectury:architectury-fabric:${rootProject.architectury_api_version}")
     modCompileOnly("com.electronwill.night-config:toml:3.6.0")
-    modImplementation(include("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"))
-    modImplementation(include("de.mrjulsen.mcdragonlib:dragonlib-fabric:${rootProject.minecraft_version}-${rootProject.dragonlib_version}"))
+    modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}")
+    modImplementation("de.mrjulsen.mcdragonlib:dragonlib-fabric:${rootProject.minecraft_version}-${rootProject.dragonlib_version}")
     
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
