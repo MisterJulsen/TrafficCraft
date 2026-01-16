@@ -14,7 +14,11 @@ public enum TrafficLightIcon implements StringRepresentable, ITranslatableEnum, 
 	STRAIGHT_RIGHT("straight_right", 4, 4, 1, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
 	STRAIGHT_LEFT("straight_left", 5, 5, 1, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
 	PEDESTRIAN("pedestrian", 6, 6, 1, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
-	BIKE("bike", 7, 7, 1, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN });
+	BIKE("bike", 7, 7, 1, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
+	DOWN("down", 8, 4, 2, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
+	DOWN_RIGHT("down_left", 9, 5, 2, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
+	DOWN_LEFT("down_right", 10, 6, 2, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN }),
+	X("x", 11, 7, 2, new TrafficLightType[] { TrafficLightType.CAR }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN });
 	
 	private String name;
 	private byte index;

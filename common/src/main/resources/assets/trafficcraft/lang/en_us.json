@@ -194,7 +194,11 @@
     "enum.trafficcraft.trafficlighticon.straight_right": "Straight ahead & right",
     "enum.trafficcraft.trafficlighticon.straight_left": "Straight ahead & left",
     "enum.trafficcraft.trafficlighticon.pedestrian": "Pedestrian",
-    "enum.trafficcraft.trafficlighticon.bike": "Bike",    
+    "enum.trafficcraft.trafficlighticon.bike": "Bike",
+    "enum.trafficcraft.trafficlighticon.down_left": "Keep Left",
+    "enum.trafficcraft.trafficlighticon.down_right": "Keep Right",
+    "enum.trafficcraft.trafficlighticon.down": "Down",
+    "enum.trafficcraft.trafficlighticon.x": "Lane closed",
     
     "enum.trafficcraft.trafficlighttype": "Signal Type",
     "enum.trafficcraft.trafficlighttype.description": "Signal type of the traffic light.",
