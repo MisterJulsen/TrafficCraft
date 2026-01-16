@@ -194,7 +194,11 @@
     "enum.trafficcraft.trafficlighticon.straight_right": "Geradeaus und nach rechts",
     "enum.trafficcraft.trafficlighticon.straight_left": "Geradeaus und nach links",
     "enum.trafficcraft.trafficlighticon.pedestrian": "Fußgänger",
-    "enum.trafficcraft.trafficlighticon.bike": "Fahrrad",    
+    "enum.trafficcraft.trafficlighticon.bike": "Fahrrad",
+    "enum.trafficcraft.trafficlighticon.down_left": "Links halten",
+    "enum.trafficcraft.trafficlighticon.down_right": "Rechts halten",
+    "enum.trafficcraft.trafficlighticon.down": "Unten",
+    "enum.trafficcraft.trafficlighticon.x": "Spur geschlossen", 
     
     "enum.trafficcraft.trafficlighttype": "Signaltyp",
     "enum.trafficcraft.trafficlighttype.description": "Die Signalart der Ampel.",
