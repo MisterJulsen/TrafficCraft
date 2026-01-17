@@ -1,5 +1,8 @@
 package de.mrjulsen.trafficcraft.client;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
@@ -24,6 +27,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public class ClientWrapper {
+
+
+    private static final Queue<Runnable> afterRenderTasks = new ConcurrentLinkedQueue<>();
+
+    public static final void submitTaskAfterRenderFrame(Runnable task) {
+        afterRenderTasks.add(task);
+    }
+
+    public static void runAllScheduledRenderTasks() {
+        while (!afterRenderTasks.isEmpty()) {
+            afterRenderTasks.poll().run();
+        }
+    }
 
     public static void showPaintBrushScreen(int pattern, int paint, PaintColor color) {
         DLWindow.openWindow(mgr -> new PaintBrushScreen(mgr, pattern, paint, color));
