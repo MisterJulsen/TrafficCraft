@@ -7,6 +7,7 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.time.DLTime;
 import de.mrjulsen.mcdragonlib.util.time.TimeContext;
 import de.mrjulsen.mcdragonlib.util.time.VanillaTimeSystem;
+import de.mrjulsen.mcdragonlib.util.time.format.TimeFormatTicks;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
@@ -14,6 +15,7 @@ import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.util.ETimeFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.data.loot.packs.VanillaArchaeologyLoot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -60,14 +62,14 @@ public class StreetLampConfigCardItem extends Item {
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         } else {
             if (level.isClientSide) {                
-                int turnOn = 18500;
-                int turnOff = 5500;
-                int timeFormat = 0;
+                int turnOn = (int)((VanillaTimeSystem.INSTANCE.getTicksPerDay() - VanillaTimeSystem.INSTANCE.getDaytimeOffset()) + (double)VanillaTimeSystem.INSTANCE.getTicksPerDay() / (24 * 2));
+                int turnOff = (int)(VanillaTimeSystem.INSTANCE.getDaytimeOffset() - (double)VanillaTimeSystem.INSTANCE.getTicksPerDay() / (24 * 2));
+                int timeFormat = ETimeFormat.HOURS_24.getIndex();
                 if ((nbt = doesContainValidLinkData(stack)) != null) {
                     turnOn = nbt.getInt(NBT_TIME_ON);
                     turnOff = nbt.getInt(NBT_TIME_OFF);
+                    timeFormat = stack.getOrCreateTag().getInt(NBT_TIME_FORMAT);
                 }
-                timeFormat = stack.getOrCreateTag().getInt(NBT_TIME_FORMAT);
 
                 ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, ETimeFormat.getByIndex(timeFormat));
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
@@ -83,10 +85,11 @@ public class StreetLampConfigCardItem extends Item {
         
         CompoundTag nbt = null;
         if ((nbt = doesContainValidLinkData(stack)) != null) {
-            DLTime timeOn = DLTime.fromTicks(nbt.getInt(NBT_TIME_ON), VanillaTimeSystem.INSTANCE);
-            DLTime timeOff = DLTime.fromTicks(nbt.getInt(NBT_TIME_OFF), VanillaTimeSystem.INSTANCE);
-            list.add(TextUtils.translate(keyTurnOn, timeOn.format(ETimeFormat.getByIndex(nbt.getInt(NBT_TIME_FORMAT)).getFormat(), TimeContext.INGAME)));
-            list.add(TextUtils.translate(keyTurnOff, timeOff.format(ETimeFormat.getByIndex(nbt.getInt(NBT_TIME_FORMAT)).getFormat(), TimeContext.INGAME)));            
+            ETimeFormat format = ETimeFormat.getByIndex(nbt.getInt(NBT_TIME_FORMAT));
+            DLTime timeOn = new DLTime(nbt.getInt(NBT_TIME_ON), VanillaTimeSystem.INSTANCE);
+            DLTime timeOff = new DLTime(nbt.getInt(NBT_TIME_OFF), VanillaTimeSystem.INSTANCE);
+            list.add(TextUtils.translate(keyTurnOn, timeOn.format(format.getFormat(), TimeContext.INGAME)));
+            list.add(TextUtils.translate(keyTurnOff, timeOff.format(format.getFormat(), TimeContext.INGAME)));
         } else {
             list.add(textEmpty);
         }        
@@ -119,8 +122,8 @@ public class StreetLampConfigCardItem extends Item {
                         player.displayClientMessage(textErrorTimeEqual, false);                        
                         return InteractionResult.FAIL;
                     }
-                    blockEntity.setOnTime((int)DLTime.fromTicks(nbt.getInt(NBT_TIME_ON), VanillaTimeSystem.INSTANCE).getTicks());
-                    blockEntity.setOffTime((int)DLTime.fromTicks(nbt.getInt(NBT_TIME_OFF), VanillaTimeSystem.INSTANCE).getTicks());
+                    blockEntity.setOnTime(nbt.getInt(NBT_TIME_ON));
+                    blockEntity.setOffTime(nbt.getInt(NBT_TIME_OFF));
                     player.displayClientMessage(textApply, true);
                     DLUtils.giveAdvancement((ServerPlayer)player, TrafficCraft.MOD_ID, "street_lamp_config", "requirement");
                 } else {

@@ -275,8 +275,11 @@
     "gui.trafficcraft.trafficlightcontroller.status": "Status",
     "gui.trafficcraft.trafficlightcontroller.edit_schedule": "Edit Traffic Light Schedule...",
 
-    "gui.trafficcraft.streetlampconfig.turn_on_time": "Turn on at: %s",
-    "gui.trafficcraft.streetlampconfig.turn_off_time": "Turn off at: %s",
+    "enum.trafficcraft.time_format.hours_24": "24 Hours",
+    "enum.trafficcraft.time_format.hours_12": "12 Hours",
+    "enum.trafficcraft.time_format.ticks": "Ticks",
+    "gui.trafficcraft.streetlampconfig.turn_on_time": "Turn on at",
+    "gui.trafficcraft.streetlampconfig.turn_off_time": "Turn off at",
     "gui.trafficcraft.streetlampconfig.time_format": "Time Format",
     "gui.trafficcraft.streetlampconfig.title": "Street Lamp Configuration",
 

@@ -5,16 +5,14 @@ import java.util.Optional;
 import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCycleButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLSlider;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.*;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
 import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
@@ -31,9 +29,7 @@ import net.minecraft.network.chat.Component;
 public class StreetLampScheduleScreen extends DLWindow {
 
     public static final Component title = TextUtils.translate("gui.trafficcraft.streetlampconfig.title");
-    
-    private int guiTop = 50;
-    
+
     private static final int LINES = 3;
     private static final int SPACING_Y = 25;
     private static final int HEIGHT = (int)((LINES + 2.5) * SPACING_Y);
@@ -61,6 +57,10 @@ public class StreetLampScheduleScreen extends DLWindow {
         setSize(200, 100);
         windowSpawnPosition.set(WindowPosition.CENTER);
 
+        double ticksPerDay = VanillaTimeSystem.INSTANCE.getTicksPerDay();
+        double daytimeOffset = VanillaTimeSystem.INSTANCE.getDaytimeOffset();
+        double timeSteps = ticksPerDay / (24 * 4);
+
         DLPanel contentPanel = addComponent(new DLPanel(0, 40, width(), height()));
         contentPanel.anchor.set(EAlign.values());
 
@@ -69,33 +69,43 @@ public class StreetLampScheduleScreen extends DLWindow {
         timeFormatButton.cycling.set(true);
         timeFormatButton.items.addAll(ETimeFormat.values());
         timeFormatButton.selectedItem.set(Optional.of(timeFormat));
-        timeFormatButton.addEventListener(DLCycleButton.SelectedItemChanged.class, (s, e) -> {
-            timeFormatButton.selectedItem.get().ifPresent(c -> this.timeFormat = c);
-            return false;
-        });
-        //timeFormatButton.tooltip.set(new DLTooltip(GuiUtils.getEnumTooltipData(ETimeFormat.class, 200), 200));
+        timeFormatButton.textFormat.set(f -> TextUtils.empty().append(f.text.get()).append(": ").append(f.selectedItem.get().map(ITranslatableEnum::getValueTranslation).orElse(TextUtils.empty())));
 
         timeOnSlider = contentPanel.addComponent(new DLSlider(0, 0, 0, 20));
         timeOnSlider.text.set(textTurnOnTime);
         timeOnSlider.min.set(0D);
-        timeOnSlider.max.set(23750D);
-        timeOnSlider.step.set(250D);
-        timeOnSlider.value.set((double)turnOnTime);
-        timeOnSlider.textFormat.set((c) -> TextUtils.text(c.text.get().getString()).append(": ").append(DLTime.fromTicks(c.value.get() - 6000, VanillaTimeSystem.INSTANCE).format(timeFormat.getFormat(), TimeContext.INGAME)));
+        timeOnSlider.max.set(ticksPerDay - timeSteps);
+        timeOnSlider.step.set(timeSteps);
+        timeOnSlider.value.set((turnOnTime + daytimeOffset) % ticksPerDay);
+        timeOnSlider.textFormat.set((c) -> {
+            int time = (int)positiveModulo(c.value.get() - daytimeOffset, ticksPerDay);
+            String suffixKey = getTimeSuffix(time);
+            return TextUtils.text(c.text.get().getString())
+                    .append(": ")
+                    .append(new DLTime(time, VanillaTimeSystem.INSTANCE).format(timeFormat.getFormat(), TimeContext.INGAME))
+                    .append(suffixKey == null ? TextUtils.empty() : TextUtils.text(" (").append(TextUtils.translate(suffixKey)).append(")"));
+        });
         timeOnSlider.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
-            this.turnOnTime = (int)e.value();
+            this.turnOnTime = (int)positiveModulo(e.value() - daytimeOffset, ticksPerDay);
             return false;
         });
         
         timeOffSlider = contentPanel.addComponent(new DLSlider(0, 0, 0, 20));
         timeOffSlider.text.set(textTurnOffTime);
         timeOffSlider.min.set(0D);
-        timeOffSlider.max.set(23750D);
-        timeOffSlider.step.set(250D);
-        timeOffSlider.value.set((double)turnOffTime);
-        timeOffSlider.textFormat.set((c) -> TextUtils.text(c.text.get().getString()).append(": ").append(DLTime.fromTicks(c.value.get() - 6000, VanillaTimeSystem.INSTANCE).format(timeFormat.getFormat(), TimeContext.INGAME)));
+        timeOffSlider.max.set(ticksPerDay - timeSteps);
+        timeOffSlider.step.set(timeSteps);
+        timeOffSlider.value.set((turnOffTime + daytimeOffset) % ticksPerDay);
+        timeOffSlider.textFormat.set((c) -> TextUtils.text(c.text.get().getString()).append(": ").append(new DLTime((long)positiveModulo(c.value.get() - daytimeOffset, ticksPerDay), VanillaTimeSystem.INSTANCE).format(timeFormat.getFormat(), TimeContext.INGAME)));
         timeOffSlider.addEventListener(DLSlider.ValueChangedEvent.class, (s, e) -> {
-            this.turnOffTime = (int)e.value();
+            this.turnOffTime = (int)positiveModulo(e.value() - daytimeOffset, ticksPerDay);
+            return false;
+        });
+
+        timeFormatButton.addEventListener(DLCycleButton.SelectedItemChanged.class, (s, e) -> {
+            timeFormatButton.selectedItem.get().ifPresent(c -> this.timeFormat = c);
+            timeOnSlider.invokeEvent(timeOnSlider, new DLSlider.TextFormatChanged<>(timeOnSlider.textFormat.get()), true);
+            timeOffSlider.invokeEvent(timeOffSlider, new DLSlider.TextFormatChanged<>(timeOffSlider.textFormat.get()), true);
             return false;
         });
         
@@ -137,25 +147,25 @@ public class StreetLampScheduleScreen extends DLWindow {
         contentPanel.layout.set(layout);
     }
 
+    private double positiveModulo(double num, double mod) {
+        return (num % mod + mod) % mod;
+    }
+
     protected void onDone() {
         ModNetworkManager.UPDATE_STREET_LAMP_CONFIG_CARD.send(NetworkDirection.toServer(), new StreetLampConfigPacket(this.turnOnTime, this.turnOffTime, this.timeFormat));
         getWindowManager().closeWindow(this);
     }
 
-    private String getTimeSuffix(int value) {        
-        value = value % 24000;
-        switch (value) {
-            case 0:
-                return "gui.trafficcraft.daytime.midnight";                
-            case 6000:
-                return "gui.trafficcraft.daytime.morning";                
-            case 12000:
-                return "gui.trafficcraft.daytime.noon";                
-            case 18000:
-                return "gui.trafficcraft.daytime.evening";
-            default:
-                return null;
-        }
+    private String getTimeSuffix(int value) {
+        long ticksPerDay = VanillaTimeSystem.INSTANCE.getTicksPerDay();
+        value = (int)(value % ticksPerDay);
+        return switch (value) {
+            case 0 -> "gui.trafficcraft.daytime.midnight";
+            case 6000 -> "gui.trafficcraft.daytime.morning";
+            case 12000 -> "gui.trafficcraft.daytime.noon";
+            case 18000 -> "gui.trafficcraft.daytime.evening";
+            default -> null;
+        };
     }
 
     @Override

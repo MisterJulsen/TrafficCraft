@@ -275,8 +275,11 @@
     "gui.trafficcraft.trafficlightcontroller.status": "Status",
     "gui.trafficcraft.trafficlightcontroller.edit_schedule": "Ampelschaltplan bearbeiten...",
 
-    "gui.trafficcraft.streetlampconfig.turn_on_time": "Anschalten: %s",
-    "gui.trafficcraft.streetlampconfig.turn_off_time": "Ausschalten: %s",
+    "enum.trafficcraft.time_format.hours_24": "24-Stunden",
+    "enum.trafficcraft.time_format.hours_12": "12-Stunden",
+    "enum.trafficcraft.time_format.ticks": "Ticks",
+    "gui.trafficcraft.streetlampconfig.turn_on_time": "Anschalten",
+    "gui.trafficcraft.streetlampconfig.turn_off_time": "Ausschalten",
     "gui.trafficcraft.streetlampconfig.time_format": "Zeitformat",
     "gui.trafficcraft.streetlampconfig.title": "Straßenlaternenkonfiguration",
 

@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.block.entity;
 import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
 import de.mrjulsen.mcdragonlib.util.time.ConfiguredTimeSystem;
 import de.mrjulsen.mcdragonlib.util.time.DLTime;
+import de.mrjulsen.mcdragonlib.util.time.VanillaTimeSystem;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -49,10 +50,7 @@ public class StreetLampBlockEntity extends DLSyncedBlockEntity {
             return;
         }
 
-        ConfiguredTimeSystem system = new ConfiguredTimeSystem();
-        long time = (long)DLTime.fromLevelTime(level, system).getTicks() % system.getTicksPerDay();
-
-        if (isInRange(time, onTimeTicks, offTimeTicks)) {
+        if (new DLTime(level, DLTime.defaultTimeSystem()).isBetweenDaily(new DLTime(onTimeTicks, VanillaTimeSystem.INSTANCE), new DLTime(offTimeTicks, VanillaTimeSystem.INSTANCE), DLTime.defaultTimeSystem())) {
             if (!state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, true));
             }
@@ -60,17 +58,6 @@ public class StreetLampBlockEntity extends DLSyncedBlockEntity {
             if (state.getValue(StreetLampBaseBlock.LIT)) {
                 level.setBlockAndUpdate(pos, state.setValue(StreetLampBaseBlock.LIT, false));
             }
-        }
-    }
-
-    public static boolean isInRange(long time, long start, long end) {
-        time %= 24000;
-        start %= 24000;
-        end %= 24000;
-        if (start <= end) {
-            return time >= start && time <= end;
-        } else {
-            return time >= start || time <= end;
         }
     }
 
@@ -87,12 +74,12 @@ public class StreetLampBlockEntity extends DLSyncedBlockEntity {
     }
 
     public void setOnTime(int time) {
-        this.onTimeTicks = Mth.clamp(time, 0, 23999);
+        this.onTimeTicks = Mth.clamp(time, 0, (int)(VanillaTimeSystem.INSTANCE.getTicksPerDay() - 1));
         notifyUpdate();
     }
 
     public void setOffTime(int time) {
-        this.offTimeTicks = Mth.clamp(time, 0, 23999);
+        this.offTimeTicks = Mth.clamp(time, 0, (int)(VanillaTimeSystem.INSTANCE.getTicksPerDay() - 1));
         notifyUpdate();
     }
 }
