@@ -2,6 +2,7 @@ plugins {
     id 'dev.architectury.loom' version '1.6-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id "net.mrjulsen.mod-build-tools" version "1.0.0"
 }
 
 architectury {
@@ -19,13 +20,12 @@ subprojects {
     apply plugin: 'maven-publish'
 
     base {
-        // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
         archivesName = "$rootProject.archives_name-$project.name"
     }
 
     repositories {
         maven { url = "file:///${System.getProperty('user.home')}/.m2/github/modsrepo/maven/" } // DragonLib
-        maven { url = "https://raw.githubusercontent.com/MisterJulsen/modsrepo/main/maven" } // DragonLib
+        maven { url = "https://maven.mrjulsen.net" } // DragonLib
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
@@ -95,7 +95,6 @@ subprojects {
     java {
         withSourcesJar()
         withJavadocJar()
-
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -104,7 +103,38 @@ subprojects {
         it.options.release = 17
     }
 
-    // Configure Maven publishing.
     publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+            }
+        }
+
+        repositories {
+        }
+    }
+}
+
+
+modBuildTools {
+    publish {
+        localRepoDir = "${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
+        s3Bucket = "maven"
+        endpointEnv = System.getenv("MAVEN_ENDPOINT")
+        accessKeyEnv = System.getenv("MAVEN_ACCESS_KEY")
+        secretKeyEnv = System.getenv("MAVEN_SECRET_KEY")
+        publishCommon = false
+    }
+    javadoc {
+        title = "Test Mod API ${release_channel}-${mod_version}"
+        tags = [
+            "apiNote:a:API Note:",
+            "implNote:a:Impl Note:",
+            "implSpec:a:Impl Spec:",
+            "related:a:Related:",
+            "example:a:Examples:",
+            "side:a:Valid on side:"
+        ]
     }
 }
