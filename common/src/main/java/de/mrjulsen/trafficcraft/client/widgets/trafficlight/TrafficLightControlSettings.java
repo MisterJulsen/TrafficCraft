@@ -15,7 +15,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLSprite;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
@@ -49,7 +49,7 @@ import net.minecraft.network.chat.Component;
 public class TrafficLightControlSettings extends DLGuiComponent {
 
 
-    public static final DefaultGuiTextures ICONS = new DefaultGuiTextures(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png"));
+    public static final DLTextureSheet ICONS = new DLTextureSheet(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png"));
     private static final float SMALL_SCALE_VALUE = 0.75f;
 
     protected final Component title = TrafficLightControlType.STATIC.getEnumTranslation();
@@ -92,7 +92,7 @@ public class TrafficLightControlSettings extends DLGuiComponent {
         controlTypePanel.layout.set(controlTypeLayout);
         controlTypePanel.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
             if (e.layer() == RenderLayer.MAIN) {                
-                DefaultGuiTextures.DRAGONLIB_UI.getSprite("slot").render(e.graphics(), 0, 0, s.width(), s.height());
+                DLTextureSheet.DRAGONLIB_UI.getSprite("slot").render(e.graphics(), 0, 0, s.width(), s.height());
             }
             return false;
         });
@@ -303,7 +303,7 @@ public class TrafficLightControlSettings extends DLGuiComponent {
 
     @Override
     public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-        DefaultGuiTextures.DRAGONLIB_UI.getSprite(DefaultGuiTextures.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());
+        DLTextureSheet.DRAGONLIB_UI.getSprite(DLTextureSheet.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());
         GuiUtils.drawString(graphics, graphics.defaultFont(), 7, 7, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.LEFT, false);
     }
     

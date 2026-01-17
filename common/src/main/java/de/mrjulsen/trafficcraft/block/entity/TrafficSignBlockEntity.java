@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.block.IBlockEntityExtension;
 import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
@@ -20,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficSignBlockEntity extends DLSyncedBlockEntity {
+public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBlockEntityExtension {
 
     private static final String NBT_LEGACY_TEXTURE = "texture";
     private static final String NBT_TEXTURE = "SignTexture";

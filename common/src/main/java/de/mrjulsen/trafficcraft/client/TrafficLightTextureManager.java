@@ -9,7 +9,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
-import de.mrjulsen.mcdragonlib.client.model.mesh.BasicMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.CornerType;
 import de.mrjulsen.mcdragonlib.client.model.mesh.CubeMesh;
 import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
@@ -19,10 +18,8 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.Holder.Direct;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec2;
 
 public class TrafficLightTextureManager {
     private static final TrafficLightBulbModel FALLBACK_MODEL = TrafficLightBulbModel.create(null);

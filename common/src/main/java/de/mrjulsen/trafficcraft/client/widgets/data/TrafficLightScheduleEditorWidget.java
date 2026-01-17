@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.client.widgets.data;
 import java.util.Map;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.atlas.GLGuiTextureData.StretchedSprite;
+import de.mrjulsen.mcdragonlib.client.atlas.DLTextureSheetData.StretchedSprite;
 import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
@@ -15,7 +15,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.data.ETextAlignment;
@@ -31,7 +31,7 @@ import net.minecraft.network.chat.Component;
 
 public class TrafficLightScheduleEditorWidget extends DLGuiComponent {
     
-    public static final DefaultGuiTextures ICONS = new DefaultGuiTextures(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png"));
+    public static final DLTextureSheet ICONS = new DLTextureSheet(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png"));
     public static final String SPRITE_TIMELINE_NODE = "timeline_node";
     public static final String SPRITE_TIMELINE_ACTION = "timeline_action";
     public static final String SPRITE_TIMELINE_DELAY = "timeline_delay";
@@ -151,7 +151,7 @@ public class TrafficLightScheduleEditorWidget extends DLGuiComponent {
 
         @Override
         public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {            
-            DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_gray_normal").render(graphics, PADDING, PADDING / 2, TEXT_X + graphics.defaultFont().width(text) + ENTRY_PADDING_RIGHT, 20);
+            DLTextureSheet.DRAGONLIB_UI.getSprite("button_gray_normal").render(graphics, PADDING, PADDING / 2, TEXT_X + graphics.defaultFont().width(text) + ENTRY_PADDING_RIGHT, 20);
             ICONS.getSprite(SPRITE_TIMELINE_EDGE).render(graphics, TIMELINE_ICON_X, 0, SPRITE_SIZE, height());
             ICONS.getSprite(SPRITE_TIMELINE_NODE).render(graphics, TIMELINE_ICON_X, height() / 2 - SPRITE_SIZE / 2, SPRITE_SIZE, SPRITE_SIZE);
             GuiUtils.drawString(graphics, graphics.defaultFont(), TEXT_X, height() / 2 - graphics.defaultFont().lineHeight / 2, text, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.LEFT, false);            

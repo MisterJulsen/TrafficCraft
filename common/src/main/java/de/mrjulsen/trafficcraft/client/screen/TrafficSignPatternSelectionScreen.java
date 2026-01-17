@@ -23,7 +23,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLSprite;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
@@ -122,7 +122,7 @@ public class TrafficSignPatternSelectionScreen extends DLWindow {
         groupPatterns.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
         groupPatterns.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
             if (e.layer() == RenderLayer.MAIN) {
-                DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
+                DLTextureSheet.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
             }
             return false;
         });

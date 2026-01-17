@@ -5,7 +5,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 
@@ -27,7 +27,7 @@ public class OptionsPanel extends DLGuiComponent {
 
     @Override
     public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-        DefaultGuiTextures.DRAGONLIB_UI.getSprite("slot").render(graphics, 0, 0, width(), height());
+        DLTextureSheet.DRAGONLIB_UI.getSprite("slot").render(graphics, 0, 0, width(), height());
     }
 
 }

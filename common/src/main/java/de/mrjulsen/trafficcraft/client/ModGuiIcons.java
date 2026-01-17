@@ -2,10 +2,9 @@ package de.mrjulsen.trafficcraft.client;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.client.atlas.GLGuiTextureData;
-import de.mrjulsen.mcdragonlib.client.atlas.GLGuiTextureData.AbstractSprite;
-import de.mrjulsen.mcdragonlib.client.atlas.GLGuiTextureData.StretchedSprite;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.atlas.DLTextureSheetData;
+import de.mrjulsen.mcdragonlib.client.atlas.DLTextureSheetData.StretchedSprite;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLSprite;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
@@ -55,7 +54,7 @@ public enum ModGuiIcons {
     private String id;
 
     public static final int ICON_SIZE = 16;
-    public static final DefaultGuiTextures ICONS = new DefaultGuiTextures(new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/icons.png"));
+    public static final DLTextureSheet ICONS = new DLTextureSheet(new ResourceLocation(TrafficCraft.MOD_ID, "textures/gui/icons.png"));
 
     ModGuiIcons(String id) {
         this.id = id;
@@ -76,7 +75,7 @@ public enum ModGuiIcons {
     }
     
     public DLSprite getAsSprite(int renderWidth, int renderHeight) {
-        GLGuiTextureData metadata = ICONS.getSprite(id).metadata();
+        DLTextureSheetData metadata = ICONS.getSprite(id).metadata();
         if (!(ICONS.getSprite(id) instanceof StretchedSprite sprite)) {
             return DLSprite.empty();
         }

@@ -15,7 +15,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCycleButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLTooltip;
@@ -118,7 +118,7 @@ public class TrafficLightScheduleEditor extends DLWindow {
         headerLayout.flowDirection.set(Direction.HORIZONTAL);
         areaHeader.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
             if (e.layer() == RenderLayer.MAIN) {
-                DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
+                DLTextureSheet.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
             }            
             return false;
         });
@@ -219,7 +219,7 @@ public class TrafficLightScheduleEditor extends DLWindow {
 
     @Override
     public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-        DefaultGuiTextures.DRAGONLIB_UI.getSprite(DefaultGuiTextures.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());
+        DLTextureSheet.DRAGONLIB_UI.getSprite(DLTextureSheet.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());
         GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 7, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);     
     }
 }

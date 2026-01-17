@@ -7,7 +7,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLSprite;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
@@ -97,7 +97,7 @@ public class PatternSelectionScreen extends DLGuiComponent {
 
         @Override
         public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-            DefaultGuiTextures.DRAGONLIB_UI.getSprite("button_brown_down").render(graphics, 0, 0, width(), height());
+            DLTextureSheet.DRAGONLIB_UI.getSprite("button_brown_down").render(graphics, 0, 0, width(), height());
         }
 
     }

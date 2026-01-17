@@ -6,7 +6,7 @@ import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLGuiComponent;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
-import de.mrjulsen.mcdragonlib.client.render.DefaultGuiTextures;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
@@ -45,7 +45,7 @@ public abstract class AbstractTrafficLightSettings extends DLGuiComponent {
 
     @Override
     public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
-        DefaultGuiTextures.DRAGONLIB_UI.getSprite(DefaultGuiTextures.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, getArrowOffset(), 0, width() - getArrowOffset(), height());
+        DLTextureSheet.DRAGONLIB_UI.getSprite(DLTextureSheet.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, getArrowOffset(), 0, width() - getArrowOffset(), height());
         GuiUtils.drawTexture(ARROW_TEXTURE, graphics, 0, height() / 2 - ARROW_HEIGHT / 2, ARROW_WIDTH, ARROW_HEIGHT);
         GuiUtils.drawString(graphics, graphics.defaultFont(), getArrowOffset() + 7, 7, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.LEFT, false);
     }
