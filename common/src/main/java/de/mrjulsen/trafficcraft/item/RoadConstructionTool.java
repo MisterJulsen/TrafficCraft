@@ -174,17 +174,19 @@ public class RoadConstructionTool extends Item {
         ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);   
         
         initStackTag(itemstack);
-        
+
+        boolean bothPositionsDefined = itemstack.getTag().contains(NBT_LOCATION1) && itemstack.getTag().contains(NBT_LOCATION2);
+
         WorldLocation startLoc = WorldLocation.loadFromNbt(itemstack.getTag().getCompound(NBT_LOCATION1));
         WorldLocation endLoc = WorldLocation.loadFromNbt(itemstack.getTag().getCompound(NBT_LOCATION2));
         Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
 
-        if (endLoc != null && startLoc != null) {
+        if (bothPositionsDefined && endLoc != null && startLoc != null) {
             Vec3 start = startLoc.getLocationVec3();
             Vec3 end = endLoc.getLocationVec3();
             byte roadWidth = itemstack.getTag().getByte(NBT_ROAD_WIDTH);
             boolean replaceBlocks = true;
-            blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks); 
+            blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks);
         }
 
         if (pLevel.isClientSide) {
