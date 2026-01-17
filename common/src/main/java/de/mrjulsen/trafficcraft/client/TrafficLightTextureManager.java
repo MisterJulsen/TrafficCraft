@@ -5,13 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.client.model.mesh.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
-import de.mrjulsen.mcdragonlib.client.model.mesh.CornerType;
-import de.mrjulsen.mcdragonlib.client.model.mesh.CubeMesh;
-import de.mrjulsen.mcdragonlib.client.model.mesh.Mesh;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
@@ -107,46 +106,39 @@ public class TrafficLightTextureManager {
         private static final float pixel = 1.0F / 16.0F;
 
         private final TrafficLightTextureKey key;
-        private final Mesh cube;
+        private final BasicMesh cube;
 
         private TrafficLightBulbModel(TrafficLightTextureKey key) {
             this.key = key;
 
             if (key != null) {
-                cube = new CubeMesh(new Vector3f(), new Vector3f(pixel * 4, pixel * 4, pixel * 1));
-                cube.getFaces().forEach(f -> f.setTexture(key.getTextureLocation()));
-                for (Direction dir : Direction.values()) {
-                    if (dir.getAxis() != Axis.Z) {
-                        cube.getFacesOfDirection(dir).forEach(f -> {
-                            f.getCorner(CornerType.TOP_LEFT).setUV(new Vector2f(0, 0));
-                            f.getCorner(CornerType.TOP_RIGHT).setUV(new Vector2f(0, 0));
-                            f.getCorner(CornerType.BOTTOM_LEFT).setUV(new Vector2f(0, 1));
-                            f.getCorner(CornerType.BOTTOM_RIGHT).setUV(new Vector2f(0, 1));
-                        });
-                    }
-                }
+                cube = new BasicMesh();
+                Face frontFace = Face.createFace(Direction.SOUTH, new Vector3f(0, 0, pixel * 1), pixel * 4, pixel * 4);
+                frontFace.setTexture(key.getTextureLocation());
+                cube.addFace(frontFace);
+
+                Face rightSide = Face.createFace(Direction.EAST, new Vector3f(pixel * 4, 0, 0), pixel * 1, pixel * 4);
+                rightSide.getCorner(CornerType.TOP_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                rightSide.getCorner(CornerType.BOTTOM_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                rightSide.setTexture(key.getTextureLocation());
+                cube.addFace(rightSide);
+
+                Face leftSide = Face.createFace(Direction.WEST, new Vector3f(), pixel * 1, pixel * 4);
+                leftSide.setTexture(key.getTextureLocation());
+                leftSide.getCorner(CornerType.TOP_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                leftSide.getCorner(CornerType.BOTTOM_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                cube.addFace(leftSide);
+
+                Face bottomFace = Face.createFace(Direction.DOWN, new Vector3f(), pixel * 4, pixel * 1);
+                bottomFace.setTexture(key.getTextureLocation());
+                bottomFace.getCorner(CornerType.BOTTOM_LEFT).setV(DragonLib.BLOCK_PIXEL);
+                bottomFace.getCorner(CornerType.BOTTOM_RIGHT).setV(DragonLib.BLOCK_PIXEL);
+                cube.addFace(bottomFace);
+
+                cube.cleanUp();
             } else {
-                cube = new CubeMesh(new Vector3f(), new Vector3f());
+                cube = new BasicMesh();
             }
-            
-            /*
-            if (key != null) {
-                cube = BERCube.cube(key.getTextureLocation(), pixel * 4, pixel * 4, pixel, dir -> dir != Direction.NORTH && dir != Direction.UP, dir -> {
-                    switch (dir) {
-                        case WEST:
-                        case EAST:
-                            return Pair.of(new Vec2(0, 0), new Vec2(pixel, 1));
-                        case DOWN:
-                        case UP:
-                            return Pair.of(new Vec2(0, 0), new Vec2(1, pixel));
-                        default:
-                            return Pair.of(new Vec2(0, 0), new Vec2(1, 1));
-                    }
-                });
-            } else {
-                cube = new BERCube(0, 0, 0);
-            }
-                */
         }
 
         protected static final TrafficLightBulbModel create(TrafficLightTextureKey key) {
