@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.Pair.MutablePair;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
+import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference.BuildInTrafficSignCodec;
 import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.GetTrafficSignTexturePacket;
@@ -32,23 +34,30 @@ public class TrafficSignClientTexture implements AutoCloseable {
 
     static {
         NativeImage img = new NativeImage(1, 1, false);
-        img.setPixelRGBA(0, 0, 0x00000000);
-        EMPTY_TEXTURE = new DynamicTexture(img);
+        img.setPixelRGBA(0, 0, 0);
+        EMPTY_TEXTURE = new DynamicTexture(img) {
+            @Override
+            public void close() {}
+        };
         EMPTY_LOCATION = new ResourceLocation(TrafficCraft.MOD_ID, "empty_sign");
         Minecraft.getInstance().getTextureManager().register(EMPTY_LOCATION, EMPTY_TEXTURE);
         EMPTY = new TrafficSignClientTexture("empty");
     }
 
-    public static final Map<String, MutablePair<TrafficSignClientTexture, Integer>> cachedTexturesById = new HashMap<>();
+    public static final Map<String /* textureId */, MutablePair<TrafficSignClientTexture /* instance */, Integer /* uses */>> cachedTexturesById = new HashMap<>();
 
     public static int debug_cachedTexturesCount() { return cachedTexturesById.size(); }
 
     public static int closeAll() {
         int count = cachedTexturesById.size();
-        new ArrayList<>(cachedTexturesById.values()).stream().map(x -> x.getFirst()).forEach(x -> x.close());
-        cachedTexturesById.clear();
+        synchronized (cachedTexturesById) {
+            cachedTexturesById.values().stream().map(x -> x.getFirst()).forEach(x -> x.close());
+            cachedTexturesById.clear();
+        }
         return count;
     }
+
+
 
     protected TrafficSignTextureData rawData = TrafficSignTextureData.empty();
     protected DynamicTexture texture = EMPTY_TEXTURE;
@@ -74,7 +83,6 @@ public class TrafficSignClientTexture implements AutoCloseable {
                 tex = new DynamicTexture(NativeImage.read(new ByteArrayInputStream(rawData.getPixelData())));
             } catch (IOException e) {
                 TrafficCraft.LOGGER.error("Unable to load texture.", e);
-                tex = MissingTextureAtlasSprite.getTexture();
             }
         }
         this.texture = tex;
@@ -252,14 +260,19 @@ public class TrafficSignClientTexture implements AutoCloseable {
 
     private void closeInternal() {
         isClosed = true;
-        if (this != EMPTY && !this.equals(EMPTY) && !this.isBuiltIn()) {
-            DLUtils.doIfNotNull(texture, x -> x.close());
-            Minecraft.getInstance().getTextureManager().release(textureLocation);
 
-            if (backgroundTexture != null && backgroundTexture != EMPTY_TEXTURE) {
-                backgroundTexture.close();
+        if (this != EMPTY && !this.equals(EMPTY) && !this.isBuiltIn()) {
+            ClientWrapper.submitTaskAfterRenderFrame(() -> {
+                DLUtils.doIfNotNull(texture, x -> x.close());
+                Minecraft.getInstance().getTextureManager().release(textureLocation);
+            });
+        }
+        
+        if (backgroundTexture != null && backgroundTexture != EMPTY_TEXTURE) {
+            ClientWrapper.submitTaskAfterRenderFrame(() -> {
+                DLUtils.doIfNotNull(backgroundTexture, x -> x.close());
                 Minecraft.getInstance().getTextureManager().release(backgroundTextureLocation);
-            }
+            });
         }
     }
 }
