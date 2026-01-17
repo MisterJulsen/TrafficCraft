@@ -21,11 +21,6 @@ public class Constants {
     public static final Component textCopy = TextUtils.translate("core.trafficcraft.common.copy");
     public static final Component textPaste = TextUtils.translate("core.trafficcraft.common.paste");
 
-    public static final String GERMAN_LOCAL_CODE = "de";
-
-    public static final String WIKIPEDIA_TRAFFIC_LIGHT_ID = "Q8004";
-    public static final String WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID = "Q2354774";
-
     public static final Random RANDOM = new Random();
     public static final RandomSource RANDOM_SOURCE = RandomSource.create();
 }

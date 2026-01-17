@@ -99,9 +99,7 @@ public class ClientInit {
     @SuppressWarnings("unchecked")
     public static void init() {
         ClientLifecycleEvent.CLIENT_SETUP.register(mc -> {
-            
-            Wikipedia.addArticle(Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID, Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID);
-            
+
             ItemModelGenerator.LAYERS.add("layer5");
             ItemModelGenerator.LAYERS.add("layer6");
             ItemModelGenerator.LAYERS.add("layer7");
