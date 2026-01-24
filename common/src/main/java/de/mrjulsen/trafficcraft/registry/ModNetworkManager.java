@@ -28,7 +28,7 @@ import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacke
 
 public class ModNetworkManager {
 
-    public static final DLNetworkManager NETWORK = new DLNetworkManager(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "network"), "1");
+    public static final DLNetworkManager NETWORK = new DLNetworkManager(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "network"), "2");
 
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, GetTrafficSignTexturePacket.Request, GetTrafficSignTexturePacket.Response> GET_TRAFFIC_SIGN_TEXTURE = NETWORK.registerSendAndReceivePacket("get_traffic_sign_texture", NetworkDirection.C2S, GetTrafficSignTexturePacket::handle, GetTrafficSignTexturePacket.Request::new, GetTrafficSignTexturePacket.Response::new);
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, PatternCatalogueDeletePacket.Request, PatternCatalogueDeletePacket.Response> DELETE_PATTERN_CATALOG_ENTRY = NETWORK.registerSendAndReceivePacket("delete_pattern_catalog_entry", NetworkDirection.C2S, PatternCatalogueDeletePacket::handle, PatternCatalogueDeletePacket.Request::new, PatternCatalogueDeletePacket.Response::new);
