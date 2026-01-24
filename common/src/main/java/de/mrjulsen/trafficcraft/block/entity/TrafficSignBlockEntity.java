@@ -96,7 +96,6 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
     public void resetTexture() {
         if (level.isClientSide) {
             DLUtils.doIfNotNull(texture, x -> x.close());
-            texture = null;
         }
     }
 

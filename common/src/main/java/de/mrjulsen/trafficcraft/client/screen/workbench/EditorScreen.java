@@ -39,6 +39,7 @@ import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -93,7 +94,7 @@ public class EditorScreen extends DLGuiComponent {
     private boolean hasColorPalette;
 
 
-    public EditorScreen(TrafficSignWorkbenchWindow win, TrafficSignShape shape, DynamicTexture texture, String name, int index) {
+    public EditorScreen(TrafficSignWorkbenchWindow win, TrafficSignShape shape, AbstractTexture texture, String name, int index) {
         super(0, 0, win.width(), win.height());
         this.win = win;
         layoutContraint.set(FlowLayout.FlowConstraint.FILL);

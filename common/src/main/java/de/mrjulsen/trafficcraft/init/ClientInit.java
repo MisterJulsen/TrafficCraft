@@ -49,6 +49,7 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -83,7 +84,10 @@ public class ClientInit {
 
     
 
-    public static int[][] textureToIntArray(DynamicTexture tex, boolean flipRgb) {
+    public static int[][] textureToIntArray(AbstractTexture texture, boolean flipRgb) {
+        if (!(texture instanceof DynamicTexture tex)) {
+            return new int[0][];
+        }
         final int[][] a = new int[tex.getPixels().getWidth()][];
         for (int x = 0; x < tex.getPixels().getWidth(); x++) {
             a[x] = new int[tex.getPixels().getHeight()];
