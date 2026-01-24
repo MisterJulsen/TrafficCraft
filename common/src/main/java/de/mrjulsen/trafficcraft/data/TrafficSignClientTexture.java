@@ -51,7 +51,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
     public static int closeAll() {
         int count = cachedTexturesById.size();
         synchronized (cachedTexturesById) {
-            cachedTexturesById.values().stream().map(x -> x.getFirst()).forEach(x -> x.close());
+            cachedTexturesById.values().stream().map(x -> x.getFirst()).forEach(x -> x.closeInternal());
             cachedTexturesById.clear();
         }
         return count;
