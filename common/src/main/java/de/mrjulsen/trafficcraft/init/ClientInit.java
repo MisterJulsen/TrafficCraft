@@ -106,7 +106,14 @@ public class ClientInit {
             ItemModelGenerator.LAYERS.add("layer8");
             
             /* RENDER LAYERS */
-            RenderTypeRegistry.register(RenderType.cutout(), 
+            RenderTypeRegistry.register(RenderType.cutout(),
+                ModBlocks.WHITE_DELINEATOR.get(),
+                ModBlocks.YELLOW_DELINEATOR.get(),
+                ModBlocks.SMALL_WHITE_DELINEATOR.get(),
+                ModBlocks.SMALL_YELLOW_DELINEATOR.get(),
+                ModBlocks.RED_DELINEATOR.get(),
+                ModBlocks.REFLECTOR.get(),
+                ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get(),
                 ModBlocks.PAINT_BUCKET.get(),
                 ModBlocks.MANHOLE.get(),
                 ModBlocks.MANHOLE_COVER.get(),

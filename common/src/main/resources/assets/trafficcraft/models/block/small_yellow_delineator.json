@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"loader": "dragonlib:advanced_json",
 	"render_type": "cutout",
 	"textures": {
 		"0": "trafficcraft:block/ger_delineator",
@@ -7,15 +7,26 @@
 	},
 	"elements": [
 		{
+			"name": "base",
 			"from": [6, 0, 7],
 			"to": [9, 9, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [0, -5, 0]},
 			"faces": {
-				"north": {"uv": [8, 2, 11, 11], "texture": "#0"},
+				"north": {"uv": [0, 2, 3, 11], "texture": "#0"},
 				"east": {"uv": [6, 2, 8, 11], "texture": "#0"},
-				"south": {"uv": [11, 2, 14, 11], "texture": "#0"},
+				"south": {"uv": [3, 2, 6, 11], "texture": "#0"},
 				"west": {"uv": [6, 2, 8, 11], "texture": "#0"},
 				"down": {"uv": [6, 14, 8, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "overlay",
+			"from": [7, 4, 7],
+			"to": [8, 7, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -5, 0]},
+			"faces": {
+				"north": {"uv": [14, 0, 15, 3], "texture": "#0", "dragonlib_data": { "emissive": true }},
+				"south": {"uv": [14, 3, 15, 6], "texture": "#0", "dragonlib_data": { "emissive": true }}
 			}
 		},
 		{
@@ -23,10 +34,10 @@
 			"to": [7, 11, 9],
 			"rotation": {"angle": 0, "axis": "y", "origin": [-0.5, -5, 0]},
 			"faces": {
-				"north": {"uv": [7, 0, 8, 2], "texture": "#0"},
-				"south": {"uv": [7, 0, 8, 2], "texture": "#0"},
-				"west": {"uv": [7, 0, 9, 2], "texture": "#0"},
-				"up": {"uv": [7, 0, 8, 2], "texture": "#0"}
+				"north": {"uv": [6, 0, 7, 2], "texture": "#0"},
+				"south": {"uv": [6, 0, 7, 2], "texture": "#0"},
+				"west": {"uv": [6, 0, 8, 2], "texture": "#0"},
+				"up": {"uv": [6, 0, 7, 2], "texture": "#0"}
 			}
 		},
 		{
@@ -43,9 +54,9 @@
 			"to": [9.83, 11, 9],
 			"rotation": {"angle": -45, "axis": "z", "origin": [7, 11, 8]},
 			"faces": {
-				"north": {"uv": [7, 0, 8.83, 0.9], "texture": "#0"},
-				"south": {"uv": [7, 0, 8.83, 0.9], "texture": "#0"},
-				"up": {"uv": [7, 0, 8.83, 2], "texture": "#0"}
+				"north": {"uv": [6, 0, 7.83, 0.9], "texture": "#0"},
+				"south": {"uv": [6, 0, 7.83, 0.9], "texture": "#0"},
+				"up": {"uv": [6, 0, 7.83, 2], "texture": "#0"}
 			}
 		}
 	],
@@ -65,7 +76,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -73,7 +84,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"head": {
