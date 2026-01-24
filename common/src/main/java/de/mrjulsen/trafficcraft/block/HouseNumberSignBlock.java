@@ -109,8 +109,7 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
       return new HouseNumberSignBlockEntity(pPos, pState);
    }
 
-   public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel,
-         BlockPos pCurrentPos, BlockPos pFacingPos) {
+   public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
       if (pFacing.getOpposite() == pState.getValue(FACING) && !pState.canSurvive(pLevel, pCurrentPos)) {
          return Blocks.AIR.defaultBlockState();
       } else {
@@ -124,7 +123,7 @@ public class HouseNumberSignBlock extends WritableTrafficSign implements IPainta
 
    @Override
    public boolean canSurvive(BlockState pState, LevelReader pLevel, BlockPos pPos) {
-      BlockPos below = pPos.below();
+      BlockPos below = pPos.relative(pState.getValue(FACING).getOpposite());
       return pLevel.getBlockState(below).isFaceSturdy(pLevel, below, Direction.UP);
    }
 
