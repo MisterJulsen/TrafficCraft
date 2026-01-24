@@ -1,21 +1,22 @@
 {
-	"credit": "Made with Blockbench",
+	"format_version": "1.21.11",
+	"credit": "Created by MrJulsen in Blockbench",
 	"render_type": "cutout",
 	"textures": {
-		"0": "block/stone_bricks",
 		"1": "trafficcraft:block/concrete",
-		"particle": "block/stone_bricks"
+		"2": "trafficcraft:block/curb",
+		"particle": "trafficcraft:block/curb"
 	},
 	"elements": [
 		{
 			"from": [0, 0, 0],
 			"to": [16, 12, 4],
 			"faces": {
-				"north": {"uv": [0, 0, 16, 12], "texture": "#0", "cullface": "north"},
-				"east": {"uv": [0, 0, 4, 12], "texture": "#0", "cullface": "east"},
-				"west": {"uv": [0, 0, 4, 12], "texture": "#0", "cullface": "west"},
-				"up": {"uv": [0, 0, 16, 4], "texture": "#0"},
-				"down": {"uv": [0, 0, 16, 4], "texture": "#0", "cullface": "down"}
+				"north": {"uv": [0, 0, 16, 12], "texture": "#2", "cullface": "north"},
+				"east": {"uv": [4, 0, 0, 12], "texture": "#2", "cullface": "east"},
+				"west": {"uv": [0, 0, 4, 12], "texture": "#2", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 4], "texture": "#2"},
+				"down": {"uv": [0, 4, 16, 0], "texture": "#2", "cullface": "down"}
 			}
 		},
 		{
@@ -46,7 +47,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -54,7 +55,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {
