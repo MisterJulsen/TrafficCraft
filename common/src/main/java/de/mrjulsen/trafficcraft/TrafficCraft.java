@@ -1,5 +1,6 @@
 package de.mrjulsen.trafficcraft;
 
+import de.mrjulsen.trafficcraft.registry.*;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -8,11 +9,6 @@ import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.data.AgingManager;
 import de.mrjulsen.trafficcraft.init.ClientInitWrapper;
 import de.mrjulsen.trafficcraft.init.ServerInit;
-import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
-import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.registry.ModBlocks;
-import de.mrjulsen.trafficcraft.registry.ModCreativeModeTab;
-import de.mrjulsen.trafficcraft.registry.ModItems;
 import de.mrjulsen.trafficcraft.world.ModWorldGen;
 import dev.architectury.platform.Platform;
 import net.fabricmc.api.EnvType;
@@ -36,6 +32,7 @@ public final class TrafficCraft {
         ModNetworkManager.init();
         ModCreativeModeTab.init();
         ModWorldGen.init();
+        ModTags.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
         CrossPlatform.registerConfig();

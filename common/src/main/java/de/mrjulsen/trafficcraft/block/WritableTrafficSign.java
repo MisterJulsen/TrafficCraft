@@ -3,13 +3,14 @@ package de.mrjulsen.trafficcraft.block;
 import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.item.WrenchItem;
+import de.mrjulsen.trafficcraft.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -101,14 +102,15 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
 
     @Override
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {        
-        Item item = pPlayer.getInventory().getSelected().getItem();
+        ItemStack stack = pPlayer.getInventory().getSelected();
+        Item item = stack.getItem();
 
         if (item instanceof BrushItem) {
             return InteractionResult.FAIL;
         }
 
         if (pLevel.isClientSide) {
-            if (item instanceof WrenchItem && pLevel.getBlockEntity(pPos) instanceof DLWritableSignBlockEntity blockEntity) {
+            if (stack.is(ModTags.WRENCHES) && pLevel.getBlockEntity(pPos) instanceof DLWritableSignBlockEntity blockEntity) {
                 if (!pPlayer.isShiftKeyDown()) {                
                     ClientWrapper.showWritableSignScreen(blockEntity);
                 }

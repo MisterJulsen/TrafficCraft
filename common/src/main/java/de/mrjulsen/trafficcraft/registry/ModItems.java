@@ -24,7 +24,7 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.ITEM);
 
 
-    public static final RegistrySupplier<Item> WRENCH = ITEMS.register("wrench", () -> new WrenchItem());
+    public static final RegistrySupplier<Item> WRENCH = ITEMS.register("wrench", WrenchItem::new);
     public static final RegistrySupplier<Item> TRAFFIC_LIGHT_LINKER = ITEMS.register("traffic_light_linker", () -> new TrafficLightLinkerItem(((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(ModCreativeModeTab.MOD_TAB).stacksTo(1)));
     public static final RegistrySupplier<Item> BITUMEN = ITEMS.register("raw_bitumen", () -> new Item(((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(ModCreativeModeTab.MOD_TAB)));
     public static final RegistrySupplier<Item> IRON_ROD = ITEMS.register("iron_rod", () -> new Item(((InjectedItemPropertiesExtension)new Item.Properties()).arch$tab(ModCreativeModeTab.MOD_TAB)));
