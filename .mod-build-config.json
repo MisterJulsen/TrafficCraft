@@ -10,23 +10,23 @@
   ],
   "changelog_categories": [
     {
-      "inputs": ["added", "✨"],
+      "inputs": ["added", "add", "✨"],
       "output": "✨"
     },
     {
-      "inputs": ["fixed", "🐛"],
+      "inputs": ["fixed", "fix", "🐛"],
       "output": "🐛"
     },
     {
-      "inputs": ["changed", "♻️"],
+      "inputs": ["changed", "change", "♻️"],
       "output": "♻️"
     },
     {
-      "inputs": ["removed", "🔥"],
+      "inputs": ["removed", "remove", "🔥"],
       "output": "🔥"
     },
     {
-      "inputs": ["updated", "⬆️"],
+      "inputs": ["updated", "update", "⬆️"],
       "output": "⬆️"
     }
   ],
