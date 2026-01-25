@@ -53,7 +53,7 @@ public class ModNetworkManager {
     
     
     
-    public static final NetworkPacketType.Send<NetworkDirection.S2C, TrafficSignTextureResetPacket> RESET_TRAFFIC_DIGN_TEXTURE = NETWORK.registerSendOnlyPacket("reset_traffic_sign_texture", NetworkDirection.S2C, TrafficSignTextureResetPacket::handle, TrafficSignTextureResetPacket::new);
+    public static final NetworkPacketType.Send<NetworkDirection.S2C, TrafficSignTextureResetPacket> RESET_TRAFFIC_SIGN_TEXTURE = NETWORK.registerSendOnlyPacket("reset_traffic_sign_texture", NetworkDirection.S2C, TrafficSignTextureResetPacket::handle, TrafficSignTextureResetPacket::new);
 
     
 

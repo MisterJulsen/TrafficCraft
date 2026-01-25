@@ -95,7 +95,9 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
 
     public void resetTexture() {
         if (level.isClientSide) {
-            DLUtils.doIfNotNull(texture, x -> x.close());
+            TrafficSignClientTexture oldTexture = texture;
+            texture = null;
+            DLUtils.doIfNotNull(oldTexture, x -> x.close());
         }
     }
 
@@ -103,7 +105,7 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
         setTextureId(texture.getTextureId());
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                ModNetworkManager.RESET_TRAFFIC_DIGN_TEXTURE.send(NetworkDirection.toPlayer(player), new TrafficSignTextureResetPacket(getBlockPos()));
+                ModNetworkManager.RESET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toPlayer(player), new TrafficSignTextureResetPacket(getBlockPos()));
             }
         }
     }
