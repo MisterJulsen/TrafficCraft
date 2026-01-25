@@ -8,7 +8,7 @@ import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen;
 import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
-import de.mrjulsen.trafficcraft.client.screen.TrafficLightconfigScreen;
+import de.mrjulsen.trafficcraft.client.screen.TrafficLightConfigScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignPatternSelectionScreen;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.PaintBrushScreen;
@@ -54,7 +54,7 @@ public class ClientWrapper {
     }
 
     public static void showTrafficLightConfigScreen(Level level, BlockPos pos) {
-        DLWindow.openWindow(mgr -> new TrafficLightconfigScreen(mgr, level, pos));
+        DLWindow.openWindow(mgr -> new TrafficLightConfigScreen(mgr, level, pos));
     }
 
     public static void showTrafficLightControllerScreen(BlockPos pos, Level level) {

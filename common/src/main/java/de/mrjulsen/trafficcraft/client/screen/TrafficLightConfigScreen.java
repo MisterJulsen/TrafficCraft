@@ -38,7 +38,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightconfigScreen extends DLWindow {
+public class TrafficLightConfigScreen extends DLWindow {
     
     public static final int WINDOW_WIDTH = 256;
     public static final int WINDOW_HEIGHT = 230;
@@ -47,7 +47,7 @@ public class TrafficLightconfigScreen extends DLWindow {
 
     private final Component title = TextUtils.translate("gui.trafficcraft.trafficlight.title");
 
-    public TrafficLightconfigScreen(DLWindowManager manager, Level level, BlockPos pos) {
+    public TrafficLightConfigScreen(DLWindowManager manager, Level level, BlockPos pos) {
         super(manager);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         windowSpawnPosition.set(WindowPosition.CENTER);
