@@ -14,7 +14,7 @@ public final class TrafficCraftNeoForge {
         TrafficCraft.init();
     }
 
-    public static ModContainer getModContainer() {
+    private static ModContainer getModContainer() {
         return modContainer;
     }
 }

@@ -2,6 +2,7 @@ plugins {
     id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id "net.mrjulsen.mod-build-tools" version "1.0.5"
 }
 
 architectury {
@@ -10,7 +11,7 @@ architectury {
 
 allprojects {
     group = rootProject.maven_group
-    version = "$rootProject.minecraft_version${rootProject.release_channel != "release" ? "-$rootProject.release_channel" : ""}-$rootProject.mod_version"
+    version = "$rootProject.minecraft_version${rootProject.release_channel != "release" ? "-$rootProject.release_channel" : ""}-$rootProject.mod_version${rootProject.build_number != "0" ? "+$rootProject.build_number" : ""}"
 }
 
 subprojects {
@@ -29,6 +30,7 @@ subprojects {
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
+        maven { url = "https://maven.mrjulsen.net" } // DragonLib
     }
 
     dependencies {
@@ -60,7 +62,7 @@ subprojects {
             "fabric_loader_version": rootProject.fabric_loader_version,
             "java_version": rootProject.java_version
         ]
-        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF\\neoforge.mods.toml']) {
+        filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
             expand expandProps
         }
         inputs.properties(expandProps)
@@ -78,9 +80,50 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         it.options.release = 21
     }
-
-    // Configure Maven publishing.
-    publishing {
-    }
     
+
+    jar {
+        manifest {
+            attributes([
+                    "Specification-Title"     : "${rootProject.display_name}",
+                    "Specification-Vendor"    : "${rootProject.authors}",
+                    "Specification-Version"   : "1",
+                    "Implementation-Title"    : project.name,
+                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Vendor"   : "${rootProject.authors}",
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            ])
+        }
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifactId = base.archivesName.get()
+                from components.java
+            }
+        }
+    }
+}
+
+modBuildTools {
+    publish {
+        localRepoDir = "${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
+        s3Bucket = "maven"
+        endpointEnv = "MAVEN_ENDPOINT"
+        accessKeyEnv = "MAVEN_ACCESS_KEY"
+        secretKeyEnv = "MAVEN_SECRET_KEY"
+        publishCommon = false
+    }
+    javadoc {
+        title = "TrafficCraft ${release_channel}-${mod_version}"
+        tags = [
+                "apiNote:a:API Note:",
+                "implNote:a:Impl Note:",
+                "implSpec:a:Impl Spec:",
+                "related:a:Related:",
+                "example:a:Examples:",
+                "side:a:Valid on side:"
+        ]
+    }
 }
