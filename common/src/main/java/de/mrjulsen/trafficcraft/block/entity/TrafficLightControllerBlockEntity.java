@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
-import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
 import de.mrjulsen.trafficcraft.block.TrafficLightBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightControlType;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
+public class TrafficLightControllerBlockEntity extends DLSyncedBlockEntity {
 
     private static final String NBT_TRAFFIC_LIGHT_LOCATIONS = "LinkedTrafficLights";
     private static final String NBT_TICKS = "ticks";
@@ -36,7 +36,7 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
     private long totalTicks = 0;
     private boolean running = true;
     private boolean powered = false;
-    private List<Location> trafficLightLocations = new ArrayList<>();
+    private List<WorldLocation> trafficLightLocations = new ArrayList<>();
 
     protected TrafficLightControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -66,7 +66,7 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
         ListTag trafficLightsList = tag.getList(NBT_TRAFFIC_LIGHT_LOCATIONS, Tag.TAG_COMPOUND);
         trafficLightLocations.clear();
         for (int i = 0; i < trafficLightsList.size(); i++) {
-            Location loc = Location.fromNbt(trafficLightsList.getCompound(i));
+            WorldLocation loc = WorldLocation.loadFromNbt(trafficLightsList.getCompound(i));
             trafficLightLocations.add(loc);
         }
     }
@@ -80,7 +80,7 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
         }
 
         ListTag trafficLightsList = new ListTag();
-        for (Location loc : trafficLightLocations) {
+        for (WorldLocation loc : trafficLightLocations) {
             trafficLightsList.add(loc.toNbt());
         }
 
@@ -164,7 +164,7 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
 
     public void setSchedules(List<TrafficLightSchedule> schedules) {
         this.schedules.clear();
-        this.schedules = schedules;
+        this.schedules.addAll(schedules);
         notifyUpdate();
     }
 
@@ -215,18 +215,18 @@ public class TrafficLightControllerBlockEntity extends SyncedBlockEntity {
         return this.powered;
     }
 
-    public List<Location> getTrafficLightLocations() {
+    public List<WorldLocation> getTrafficLightLocations() {
         return trafficLightLocations;
     }
 
-    public void addTrafficLightLocation(Location loc) {
+    public void addTrafficLightLocation(WorldLocation loc) {
         if (!trafficLightLocations.contains(loc)) {
             trafficLightLocations.add(loc);
             notifyUpdate();
         }
     }
 
-    public void removeTrafficLightLocation(Location loc) {
+    public void removeTrafficLightLocation(WorldLocation loc) {
         trafficLightLocations.removeIf(x -> x.equals(loc));
         notifyUpdate();
     }

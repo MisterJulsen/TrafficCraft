@@ -8,9 +8,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public class NamedTrafficSignTextureReference {
+
+    private static final String NBT_TEXTURE_ID = "TextureId";
+    private static final String NBT_NAME = "Name";
 
     public static final MapCodec<NamedTrafficSignTextureReference> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
         return instance.group(
@@ -35,6 +39,20 @@ public class NamedTrafficSignTextureReference {
         return name;
     }
     
+    public static NamedTrafficSignTextureReference fromNbt(CompoundTag nbt) {
+        return new NamedTrafficSignTextureReference(
+                nbt.getString(NBT_TEXTURE_ID),
+                nbt.getString(NBT_NAME)
+        );
+    }
+
+    public CompoundTag toNbt() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putString(NBT_TEXTURE_ID, getTextureId());
+        nbt.putString(NBT_NAME, getName());
+        return nbt;
+    }
+
     public static NamedTrafficSignTextureReference fromNetwork(RegistryFriendlyByteBuf buffer) {
         String textureId = buffer.readUtf();
         String name = buffer.readUtf();

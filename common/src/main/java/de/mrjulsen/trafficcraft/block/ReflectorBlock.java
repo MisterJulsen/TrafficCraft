@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
 import com.mojang.serialization.MapCodec;
-
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import net.minecraft.core.BlockPos;
@@ -107,7 +107,7 @@ public class ReflectorBlock extends ColorableBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public int getDefaultColor() {
+    public DLColor getDefaultColor() {
         return PaintColor.WHITE.getTextureColor();
     }
 }

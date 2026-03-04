@@ -10,12 +10,14 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.item.WrenchItem;
+import de.mrjulsen.trafficcraft.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -154,24 +156,24 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         Item item = stack.getItem();
 
-        if (item instanceof WrenchItem) {
+        if (stack.is(ModTags.WRENCHES)) {
             if (!level.isClientSide) {
                 if (level.getBlockEntity(pos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
                     if (!level.isClientSide) {
-                        player.displayClientMessage(TextUtils.translate("block.trafficcraft.street_lamp.use.error_scheduled"), true);  
+                        player.displayClientMessage(TextUtils.translate("block.trafficcraft.street_lamp.use.error_scheduled"), true);
                         return ItemInteractionResult.FAIL;
                     }
-                } else {                    
+                } else {
                     level.setBlockAndUpdate(pos, state.setValue(LIT, !state.getValue(LIT)));
                 }
-            } else {            
+            } else {
                 level.playSound(player, pos, SoundEvents.COMPARATOR_CLICK, SoundSource.BLOCKS, 0.3F, 0.5f);
             }
             return ItemInteractionResult.SUCCESS;
-        }  
+        }
 
-        
-        
+
+
         return ItemInteractionResult.FAIL;
     }
 

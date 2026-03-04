@@ -1,42 +1,43 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.components.BrushComponent;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class PaintBrushPacket extends BaseNetworkPacket<PaintBrushPacket> {
+public class PaintBrushPacket extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
 
     private int pattern;
 
-    public PaintBrushPacket() {}
+    public PaintBrushPacket(DLStatus status) {
+        super(status);
+    }
 
     public PaintBrushPacket(int pattern) {
+        super(DLStatus.OK);
         this.pattern = pattern;
     }
 
     @Override
-    public void encode(PaintBrushPacket packet, RegistryFriendlyByteBuf buffer) {
-        buffer.writeInt(packet.pattern);
+    protected void write(CompoundTag nbt) {
+        nbt.putInt(NBT_DATA, pattern);
     }
 
     @Override
-    public PaintBrushPacket decode(RegistryFriendlyByteBuf buffer) {
-        int pattern = buffer.readInt();
-
-        return new PaintBrushPacket(pattern);
+    protected void read(CompoundTag nbt) {
+        this.pattern = nbt.getInt(NBT_DATA);
     }
     
-    @Override
-    public void handle(PaintBrushPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
-            
+    public static void handle(PaintBrushPacket packet, NetworkPacketContext context) {
+        context.queue(() -> {
+            ServerPlayer sender = (ServerPlayer)context.getPlayer();
+
             if (sender.getMainHandItem().getItem() instanceof BrushItem brush) {
                 ItemStack stack = sender.getMainHandItem();
                 BrushComponent comp = brush.getComponent(stack);

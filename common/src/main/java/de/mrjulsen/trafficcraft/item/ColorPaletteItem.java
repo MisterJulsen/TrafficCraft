@@ -2,7 +2,9 @@ package de.mrjulsen.trafficcraft.item;
 
 import java.util.ArrayList;
 import java.util.List;
-import de.mrjulsen.mcdragonlib.core.ColorObject;
+import java.util.stream.IntStream;
+
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.registry.ModDataComponents;
 import net.minecraft.ChatFormatting;
@@ -45,8 +47,8 @@ public class ColorPaletteItem extends Item implements IUseDataComponent<List<Int
                 if (i == 0) {
                     tooltipComponents.add(TextUtils.translate("item.trafficcraft.color_palette.color_unset").withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.GRAY));
                 } else {                
-                    ColorObject c = ColorObject.fromInt(i);
-                    tooltipComponents.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getR(), c.getG(), c.getB(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
+                    DLColor c = DLColor.fromInt(i);
+                    tooltipComponents.add(TextUtils.text(String.format("\u2B1B  %s, %s, %s (#%s)", c.getRed(), c.getGreen(), c.getBlue(), Integer.toHexString(i).toUpperCase())).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(i))));
                 }
             } 
         }

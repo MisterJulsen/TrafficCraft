@@ -5,11 +5,12 @@
     "minVersion": "0.8",
     "client": [
         "ClientTooltipComponentMixin",
-        "MinecraftAccessor"
+        "MinecraftAccessor",
+        "MinecraftMixin"
     ],
     "mixins": [
     ],
     "injectors": {
-      "defaultRequire": 1
+        "defaultRequire": 1
     }
 }

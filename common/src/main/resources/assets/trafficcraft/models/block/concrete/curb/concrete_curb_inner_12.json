@@ -1,20 +1,19 @@
 {
-	"credit": "Made with Blockbench",
 	"render_type": "cutout",
 	"textures": {
-		"0": "block/stone_bricks",
 		"2": "trafficcraft:block/concrete",
-		"particle": "trafficcraft:block/concrete"
+		"3": "trafficcraft:block/curb",
+		"particle": "trafficcraft:block/curb"
 	},
 	"elements": [
 		{
 			"from": [12, 0, 0],
 			"to": [16, 12, 4],
 			"faces": {
-				"north": {"uv": [0, 0, 4, 12], "texture": "#0", "cullface": "north"},
-				"east": {"uv": [12, 0, 16, 12], "texture": "#0", "cullface": "east"},
-				"up": {"uv": [12, 0, 16, 4], "texture": "#0", "cullface": "up"},
-				"down": {"uv": [12, 12, 16, 16], "texture": "#0", "cullface": "down"}
+				"north": {"uv": [0, 0, 4, 12], "texture": "#3", "cullface": "north"},
+				"east": {"uv": [12, 0, 16, 12], "texture": "#3", "cullface": "east"},
+				"up": {"uv": [12, 0, 16, 4], "texture": "#3"},
+				"down": {"uv": [12, 12, 16, 16], "texture": "#3", "cullface": "down"}
 			}
 		},
 		{
@@ -24,7 +23,7 @@
 				"east": {"uv": [0, 0, 12, 12], "texture": "#2", "cullface": "east"},
 				"south": {"uv": [0, 0, 16, 12], "texture": "#2", "cullface": "south"},
 				"west": {"uv": [0, 0, 12, 12], "texture": "#2", "cullface": "west"},
-				"up": {"uv": [0, 0, 16, 12], "texture": "#2", "cullface": "up"},
+				"up": {"uv": [0, 0, 16, 12], "texture": "#2"},
 				"down": {"uv": [0, 0, 16, 12], "texture": "#2", "cullface": "down"}
 			}
 		},
@@ -34,7 +33,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 12, 12], "texture": "#2", "cullface": "north"},
 				"west": {"uv": [0, 0, 4, 12], "texture": "#2", "cullface": "west"},
-				"up": {"uv": [0, 0, 12, 4], "texture": "#2", "cullface": "up"},
+				"up": {"uv": [0, 0, 12, 4], "texture": "#2"},
 				"down": {"uv": [0, 0, 12, 4], "texture": "#2", "cullface": "down"}
 			}
 		}
@@ -55,7 +54,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -63,7 +62,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {

@@ -2,11 +2,11 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.client.render.Sprite;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import net.minecraft.util.StringRepresentable;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 
-public enum TrafficLightIcon implements StringRepresentable, ITranslatableEnum, IIconEnum {
+public enum TrafficLightIcon implements ITranslatableEnum, IIconEnum {
     NONE("none", 0, 0, 1, TrafficLightType.values(), TrafficLightColor.values()),
 	RIGHT("right", 1, 1, 1, new TrafficLightType[] { TrafficLightType.CAR, TrafficLightType.TRAM }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN, TrafficLightColor.F1_F2_F3_F5 }),
 	LEFT("left", 2, 2, 1, new TrafficLightType[] { TrafficLightType.CAR, TrafficLightType.TRAM }, new TrafficLightColor[] { TrafficLightColor.RED, TrafficLightColor.YELLOW, TrafficLightColor.GREEN, TrafficLightColor.F1_F2_F3_F5 }),
@@ -74,8 +74,8 @@ public enum TrafficLightIcon implements StringRepresentable, ITranslatableEnum, 
 		return Arrays.stream(TrafficLightIcon.values()).filter(x -> x.getIndex() == index).findFirst().orElse(TrafficLightIcon.NONE);
 	}
 
-	public Sprite getSprite(TrafficLightType type) {
-		return new Sprite(ICON_TEXTURE_LOCATION, TEXTURE_SIZE, TEXTURE_SIZE, DEFAULT_SPRITE_SIZE * getUMultiplier(), DEFAULT_SPRITE_SIZE * (getVMultiplier() + type.getIndex()), DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
+	public DLSprite getSprite(TrafficLightType type) {
+		return new DLSprite(ICON_TEXTURE, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE * getUMultiplier(), DEFAULT_SPRITE_SIZE * (getVMultiplier() + type.getIndex()), DEFAULT_SPRITE_SIZE, DEFAULT_SPRITE_SIZE);
 	}
 
     @Override
@@ -84,12 +84,7 @@ public enum TrafficLightIcon implements StringRepresentable, ITranslatableEnum, 
     }
 
 	@Override
-	public String getEnumName() {
-		return "trafficlighticon";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getName();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "trafficlighticon", name);
 	}
 }

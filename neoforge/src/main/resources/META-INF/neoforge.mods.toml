@@ -16,7 +16,7 @@ logoFile = "${icon}"
 
 [[dependencies.${modid}]]
 modId = "neoforge"
-type = "required"
+mandatory = true
 versionRange = "[${neoforge_dependency_version},)"
 ordering = "NONE"
 side = "BOTH"
@@ -34,6 +34,3 @@ type = "required"
 versionRange = "[${dragonlib_version},)"
 ordering = "BEFORE"
 side = "BOTH"
-
-[[mixins]]
-config = "${modid}.mixins.json"

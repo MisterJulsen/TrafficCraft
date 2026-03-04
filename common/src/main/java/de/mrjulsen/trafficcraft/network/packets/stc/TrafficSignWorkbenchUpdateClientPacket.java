@@ -1,34 +1,32 @@
 package de.mrjulsen.trafficcraft.network.packets.stc;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 
-public class TrafficSignWorkbenchUpdateClientPacket extends BaseNetworkPacket<TrafficSignWorkbenchUpdateClientPacket> {
+public class TrafficSignWorkbenchUpdateClientPacket extends NetworkPacketData {
 
-    public TrafficSignWorkbenchUpdateClientPacket() {}
-
-    @Override
-    public void encode(TrafficSignWorkbenchUpdateClientPacket packet, RegistryFriendlyByteBuf buffer) {
-        
-    }
-
-    @Override
-    public TrafficSignWorkbenchUpdateClientPacket decode(RegistryFriendlyByteBuf buffer) {
-        return new TrafficSignWorkbenchUpdateClientPacket();
+    public TrafficSignWorkbenchUpdateClientPacket(DLStatus status) {
+        super(status);
     }
     
+    public TrafficSignWorkbenchUpdateClientPacket() {
+        super(DLStatus.OK);
+    }
+
     @Override
-    public void handle(TrafficSignWorkbenchUpdateClientPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            EnvExecutor.runInEnv(Env.CLIENT, () -> () -> {
-                ClientWrapper.handleTrafficSignWorkbenchUpdateClientPacket(packet);
-            });
+    protected void write(CompoundTag nbt) {
+    }
+
+    @Override
+    protected void read(CompoundTag nbt) {
+    }
+    
+    public static void handle(TrafficSignWorkbenchUpdateClientPacket packet, NetworkPacketContext context) {
+        context.queue(() -> {
+            ClientWrapper.handleTrafficSignWorkbenchUpdateClientPacket(packet);
         });
     }
 }

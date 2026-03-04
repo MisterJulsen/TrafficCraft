@@ -4,16 +4,22 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.mcdragonlib.util.TimeUtils;
+import de.mrjulsen.mcdragonlib.util.time.DLTime;
+import de.mrjulsen.mcdragonlib.util.time.TimeContext;
+import de.mrjulsen.mcdragonlib.util.time.VanillaTimeSystem;
+import de.mrjulsen.mcdragonlib.util.time.format.TimeFormatTicks;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.StreetLampBaseBlock;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.components.StreetLampComponent;
 import de.mrjulsen.trafficcraft.registry.ModDataComponents;
+import de.mrjulsen.trafficcraft.util.ETimeFormat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.data.loot.packs.VanillaArchaeologyLoot;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -52,9 +58,17 @@ public class StreetLampConfigCardItem extends Item implements IUseDataComponent<
             player.displayClientMessage(textClear, true);
             return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
         } else {
-            if (level.isClientSide) {
+            if (level.isClientSide) {                
+                int turnOn = (int)((VanillaTimeSystem.INSTANCE.getTicksPerDay() - VanillaTimeSystem.INSTANCE.getDaytimeOffset()) + (double)VanillaTimeSystem.INSTANCE.getTicksPerDay() / (24 * 2));
+                int turnOff = (int)(VanillaTimeSystem.INSTANCE.getDaytimeOffset() - (double)VanillaTimeSystem.INSTANCE.getTicksPerDay() / (24 * 2));
+                int timeFormat = ETimeFormat.HOURS_24.getIndex();
+
                 StreetLampComponent comp = getComponent(stack);
-                ClientWrapper.showStreetLampScheduleScreen(comp.turnOnTime(), comp.turnOffTime(), comp.timeFormat());
+                turnOn = comp.turnOnTime();
+                turnOff = comp.turnOffTime();
+                timeFormat = comp.timeFormat().getIndex();
+
+                ClientWrapper.showStreetLampScheduleScreen(turnOn, turnOff, ETimeFormat.getByIndex(timeFormat));
                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
             }
         }
@@ -72,8 +86,11 @@ public class StreetLampConfigCardItem extends Item implements IUseDataComponent<
         }
 
         StreetLampComponent comp = getComponent(stack);
-        tooltipComponents.add(TextUtils.translate(keyTurnOn, TimeUtils.parseTime(comp.turnOnTime(), comp.timeFormat())));
-        tooltipComponents.add(TextUtils.translate(keyTurnOff, TimeUtils.parseTime(comp.turnOffTime(), comp.timeFormat()))); 
+        ETimeFormat format = comp.timeFormat();
+        DLTime timeOn = new DLTime(comp.turnOnTime(), VanillaTimeSystem.INSTANCE);
+        DLTime timeOff = new DLTime(comp.turnOffTime(), VanillaTimeSystem.INSTANCE);
+        tooltipComponents.add(TextUtils.translate(keyTurnOn, timeOn.format(format.getFormat(), TimeContext.INGAME)));
+        tooltipComponents.add(TextUtils.translate(keyTurnOff, timeOff.format(format.getFormat(), TimeContext.INGAME)));
     }
     
     @Override
@@ -98,8 +115,8 @@ public class StreetLampConfigCardItem extends Item implements IUseDataComponent<
                         player.displayClientMessage(textErrorTimeEqual, false);                        
                         return InteractionResult.FAIL;
                     }
-                    blockEntity.setOnTime((int)TimeUtils.shiftDayTimeToMinecraftTicks(comp.turnOnTime()));
-                    blockEntity.setOffTime((int)TimeUtils.shiftDayTimeToMinecraftTicks(comp.turnOffTime()));
+                    blockEntity.setOnTime(comp.turnOnTime());
+                    blockEntity.setOffTime(comp.turnOffTime());
                     player.displayClientMessage(textApply, true);
                     DLUtils.giveAdvancement((ServerPlayer)player, TrafficCraft.MOD_ID, "street_lamp_config", "requirement");
                 } else {

@@ -53,7 +53,10 @@ public enum TrafficSignShape implements StringRepresentable {
 	}
 
 	public boolean isPixelValid(int x, int y) {
-		return !IntStream.of(invalidPixels).anyMatch(a -> a == DLUtils.coordsToInt((byte)Mth.clamp(x, 0, MAX_WIDTH), (byte)Mth.clamp(y, 0, MAX_HEIGHT)));
+		if (x < 0 || x >= MAX_WIDTH || y < 0 || y >= MAX_HEIGHT) {
+			return false;
+		}
+		return !IntStream.of(invalidPixels).anyMatch(a -> a == DLUtils.coordsToInt((byte)Mth.clamp(x, 0, MAX_WIDTH - 1), (byte)Mth.clamp(y, 0, MAX_HEIGHT - 1)));
 	}
 
 	public static TrafficSignShape getShapeByIndex(int index) {

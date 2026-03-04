@@ -1,8 +1,10 @@
 package de.mrjulsen.trafficcraft.data;
 
 import java.util.Arrays;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import net.minecraft.util.StringRepresentable;
+
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.util.DLColor;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.level.material.MapColor;
@@ -10,7 +12,7 @@ import net.minecraft.world.level.material.MapColor;
 /*
  * EXTENDED COPY OF DyeColor.class
  */
-public enum PaintColor implements StringRepresentable, ITranslatableEnum {
+public enum PaintColor implements ITranslatableEnum {
 	NONE(-1, "none", 0xFFFFFFFF, MapColor.NONE, 0xFFFFFFFF, 0xFFFFFFFF),
 	WHITE(0, "white", 16383998, MapColor.SNOW, 15790320, 16777215),
 	ORANGE(1, "orange", 16351261, MapColor.COLOR_ORANGE, 15435844, 16738335),
@@ -53,8 +55,8 @@ public enum PaintColor implements StringRepresentable, ITranslatableEnum {
 		return name;
 	}
 
-	public int getTextureColor() {
-		return textureColor;
+	public DLColor getTextureColor() {
+		return DLColor.fromInt(textureColor);
 	}
 
 	public MapColor getMaterialColor() {
@@ -92,17 +94,7 @@ public enum PaintColor implements StringRepresentable, ITranslatableEnum {
 	}
 
 	@Override
-	public String getSerializedName() {
-		return "paint_color";
-	}
-
-	@Override
-	public String getEnumName() {
-		return "paint_color";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return name;
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "paint_color", name);
 	}
 }

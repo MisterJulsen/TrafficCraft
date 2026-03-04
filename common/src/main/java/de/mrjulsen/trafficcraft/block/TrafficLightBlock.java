@@ -15,8 +15,8 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.item.WrenchItem;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import de.mrjulsen.trafficcraft.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -161,7 +161,7 @@ public class TrafficLightBlock extends ColorableBlock implements SimpleWaterlogg
             return ItemInteractionResult.FAIL;
         }
 
-        if (level.isClientSide && item instanceof WrenchItem) {
+        if (level.isClientSide && stack.is(ModTags.WRENCHES)) {
             if (!player.isShiftKeyDown())
                 ClientWrapper.showTrafficLightConfigScreen(level, pos);
                 

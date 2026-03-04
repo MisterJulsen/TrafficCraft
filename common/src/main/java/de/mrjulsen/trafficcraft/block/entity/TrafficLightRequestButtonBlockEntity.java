@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
-import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -12,13 +12,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficLightRequestButtonBlockEntity extends SyncedBlockEntity {
+public class TrafficLightRequestButtonBlockEntity extends DLSyncedBlockEntity {
 
     private static final String NBT_LISTENING = "listening";
     private static final String NBT_LINKED_TO = "linkedTo";
 
     // Properties
-    private Location linkLocation;
+    private WorldLocation linkLocation;
     private boolean listening;
 
     protected TrafficLightRequestButtonBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -32,9 +32,10 @@ public class TrafficLightRequestButtonBlockEntity extends SyncedBlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, Provider registries) {
         super.loadAdditional(tag, registries);
+
         this.listening = tag.getBoolean(NBT_LISTENING);
         if (tag.contains(NBT_LINKED_TO)) {
-            this.linkLocation = Location.fromNbt(tag.getCompound(NBT_LINKED_TO));
+            this.linkLocation = WorldLocation.loadFromNbt(tag.getCompound(NBT_LINKED_TO));
         }
     }
     
@@ -74,7 +75,7 @@ public class TrafficLightRequestButtonBlockEntity extends SyncedBlockEntity {
 
 
     /* GETTERS AND SETTERS */
-    public void linkTo(Location loc) {
+    public void linkTo(WorldLocation loc) {
         this.linkLocation = loc;
         notifyUpdate();
     }    
@@ -84,7 +85,7 @@ public class TrafficLightRequestButtonBlockEntity extends SyncedBlockEntity {
         notifyUpdate();
     }
     
-    public Location getLinkLocation() {
+    public WorldLocation getLinkLocation() {
         return this.linkLocation;
     }
 

@@ -3,15 +3,17 @@ package de.mrjulsen.trafficcraft.client.screen;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import de.mrjulsen.mcdragonlib.block.WritableSignBlockEntity;
-import de.mrjulsen.mcdragonlib.client.builtin.WritableSignScreen;
-import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
+import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
+import de.mrjulsen.mcdragonlib.client.gui.builtin.WritableSignScreen;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TownSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -23,7 +25,7 @@ public class TownSignScreen extends WritableSignScreen {
     private TownSignVariant variant;
     private TownSignBlock.ETownSignSide side;
 
-    public TownSignScreen(WritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
+    public TownSignScreen(DLWritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
         this(
             pSign,
             getConfig(pSign, side),
@@ -34,11 +36,11 @@ public class TownSignScreen extends WritableSignScreen {
         this.side = side;
     }
 
-    protected TownSignScreen(WritableSignBlockEntity pSign, WritableSignConfig config, BlockState state, ConfiguredLine[] messages) {
+    protected TownSignScreen(DLWritableSignBlockEntity pSign, WritableSignConfig config, BlockState state, ConfiguredLine[] messages) {
         super(pSign, config, state, messages);
     }
 
-    protected static WritableSignConfig getConfig(WritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
+    protected static WritableSignConfig getConfig(DLWritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side) {
         if (pSign instanceof TownSignBlockEntity blockEntity) {
             switch (side) {
                 case BACK:
@@ -50,7 +52,7 @@ public class TownSignScreen extends WritableSignScreen {
         return pSign.getRenderConfig();         
     }
 
-    protected static BlockState getState(WritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side, TownSignVariant variant) {
+    protected static BlockState getState(DLWritableSignBlockEntity pSign, TownSignBlock.ETownSignSide side, TownSignVariant variant) {
         switch (side) {
             case BACK:
                 return pSign.getBlockState().getBlock().defaultBlockState().setValue(TownSignBlock.VARIANT, TownSignVariant.BACK);
@@ -62,14 +64,16 @@ public class TownSignScreen extends WritableSignScreen {
 
     @Override
     protected void init() {
-        this.btnDone = addButton(this.width / 2 - 100, this.height / 4 + 145, 200, 20, CommonComponents.GUI_DONE, (p_169820_) -> {
+        
+        this.btnDone = Button.builder(CommonComponents.GUI_DONE, (btn) -> {
             this.onDone();
-        }, null);
+        }).bounds(this.width / 2 - 100, this.height / 4 + 145, 200, 20).build();
+        addRenderableWidget(btnDone);
 
-        addCycleButton(TrafficCraft.MOD_ID, TownSignVariant.class, this.width / 2 - 100, this.height / 4 + 120, 200, 20, textVariant, variant,
-        (btn, value) -> {
-            this.variant = value;            
-        }, null);
+        CycleButton<TownSignVariant> sideBtn = CycleButton.<TownSignVariant>builder(t -> t.getValueTranslation()).withValues(TownSignVariant.values()).create(this.width / 2 - 100, this.height / 4 + 120, 200, 20, textVariant, (a, b) -> {
+            this.variant = b;  
+        });
+        addRenderableWidget(sideBtn);
 
         this.signTextField = new TextFieldHelper(() -> {
             return this.messages[this.selectedLine].text;
@@ -90,7 +94,7 @@ public class TownSignScreen extends WritableSignScreen {
         });
     }
 
-    protected static ConfiguredLine[] getMessages(WritableSignBlockEntity pSign, WritableSignConfig config, TownSignBlock.ETownSignSide side) {
+    protected static ConfiguredLine[] getMessages(DLWritableSignBlockEntity pSign, WritableSignConfig config, TownSignBlock.ETownSignSide side) {
         if (pSign instanceof TownSignBlockEntity blockEntity) {
             switch (side) {
                 case BACK:
@@ -113,12 +117,12 @@ public class TownSignScreen extends WritableSignScreen {
 
     @Override
     public void removed() {
-        DLNetworkManager.sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
+        ModNetworkManager.UPDATE_TOWN_SIGN.send(NetworkDirection.toServer(), new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side));
     }
 
     @Override
     protected void onDone() {
-        DLNetworkManager.sendToServer(new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side)); 
+        ModNetworkManager.UPDATE_TOWN_SIGN.send(NetworkDirection.toServer(), new TownSignPacket(this.sign.getBlockPos(), Arrays.stream(messages).map(x -> x.text).toArray(String[]::new), variant, side));
         this.minecraft.setScreen(null);
     }
     

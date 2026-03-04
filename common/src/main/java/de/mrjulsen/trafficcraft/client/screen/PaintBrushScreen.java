@@ -4,29 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLVerticalScrollBar;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
-import de.mrjulsen.mcdragonlib.client.render.Sprite;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.ButtonState;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
-import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLScrollBar;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLToggleButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLScrollBar.Orientation;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.EAlign;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
+import de.mrjulsen.mcdragonlib.client.util.DLTexture;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.client.util.WidgetsCollection;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
-import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
+import de.mrjulsen.mcdragonlib.client.util.GuiUtils.TextureFillMode;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
+import de.mrjulsen.mcdragonlib.util.DLColor;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.data.PaintColor;
 import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
-public class PaintBrushScreen extends DLScreen {
+public class PaintBrushScreen extends DLWindow {
 
     public static final Component title = TextUtils.translate("gui.trafficcraft.paint_brush.title");
     public static final Component titleOpenFileDialog = TextUtils.translate("gui.trafficcraft.signpicker.openfiledialog");
@@ -40,134 +49,115 @@ public class PaintBrushScreen extends DLScreen {
     private static final int ICON_BUTTON_WIDTH = 18;
     private static final int ICON_BUTTON_HEIGHT = 18;
       
-    private int guiLeft;
-    private int guiTop;
-    private ResourceLocation preview;
-    private double scroll;
+    private DLTexture preview;
     
     private final int paint;
     private final PaintColor color;
-    private final int diffuseColor;
+    private final DLColor diffuseColor;
     private int patternId;
 
-    private final WidgetsCollection groupPatterns = new WidgetsCollection();
-    private DLVerticalScrollBar scrollbar;
-    private boolean updateScrollableContent = true;
+    private final DLPanel groupPatterns;
+    private final DLScrollBar scrollbar;
 
-    private final ResourceLocation[] resources;
-    private final int count;
+    private DLTexture[] resources;
+    private int count;
 
-    public PaintBrushScreen(int patternId, int paint, PaintColor color) {
-        super(title);
+    public PaintBrushScreen(DLWindowManager manager, int patternId, int paint, PaintColor color) {
+        super(manager);
+        setSize(WIDTH, HEIGHT);
+        windowSpawnPosition.set(WindowPosition.CENTER);
 
         this.patternId = patternId;
         this.paint = paint;
         this.color = color;
         this.diffuseColor = color.getTextureColor();
 
-        ResourceLocation path = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/block/sign_blank.png");
-        List<ResourceLocation> locs = new ArrayList<>();
+        DLTexture path = new DLTexture(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/block/sign_blank.png"), 32, 32);
+        List<DLTexture> locs = new ArrayList<>();
 
         for (int i = 1; i <= Constants.MAX_ASPHALT_PATTERNS + 1; i++) {
             locs.add(path);
-            path = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/block/patterns/" + i + ".png");
+            path = new DLTexture(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/block/patterns/" + i + ".png"), 32, 32);
         }
-        this.resources = locs.toArray(ResourceLocation[]::new);
+        this.resources = locs.toArray(DLTexture[]::new);
         this.count = this.resources.length;
-    }
 
-    @Override
-    public void onClose() {
-        DLNetworkManager.sendToServer(new PaintBrushPacket(patternId));
-        super.onClose();
-    }
 
-    @Override
-    public void init() {
-        super.init();
-        guiLeft = this.width / 2 - WIDTH / 2;
-        guiTop = this.height / 2 - (HEIGHT + 24) / 2; 
-
-        groupPatterns.components.clear();
+        groupPatterns = addComponent(new DLPanel(7, 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_WIDTH * MAX_ROWS + 2));
+        groupPatterns.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
+        groupPatterns.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
+            if (e.layer() == RenderLayer.MAIN) {
+                DLTextureSheet.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
+            }
+            return false;
+        });
+        DLPanel innerPanel = groupPatterns.addComponent(new DLPanel(1, 1, groupPatterns.width() - 2, groupPatterns.height() - 2));
+        FlowLayout layout = new FlowLayout();
+        layout.flowDirection.set(Direction.HORIZONTAL);
+        layout.wrap.set(true);        
+        innerPanel.layout.set(layout);
+        innerPanel.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
         
         for (int i = 0; i < count; i++) {
             final int j = i;
-            Sprite sprite = new Sprite(resources[j], 32, 32, 0, 0, 32, 32, ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2);
-            DLIconButton btnImport = new DLIconButton(ButtonType.RADIO_BUTTON, AreaStyle.BROWN, sprite, groupPatterns, guiLeft + 9, guiTop + 36 + j * ICON_BUTTON_HEIGHT, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT, TextUtils.empty(), (button) -> {
-                preview = resources[j];
-                patternId = j;
-            }) {
-                @Override
-                public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-                    GuiUtils.setTint(diffuseColor);
-                    super.renderMainLayer(graphics, mouseX, mouseY, partialTicks);
-                    GuiUtils.resetTint();
-                }
-            }.withAlignment(EAlignment.CENTER);
+            DLSprite sprite = new DLSprite(resources[j], ICON_BUTTON_WIDTH - 2, ICON_BUTTON_HEIGHT - 2, 0, 0, 32, 32);   
+            DLToggleButton btnImport = new DLToggleButton(0, 0, ICON_BUTTON_WIDTH, ICON_BUTTON_HEIGHT);
+
+            btnImport.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+            btnImport.radioButtonMode.set(true);
+            btnImport.text.set(TextUtils.EMPTY);
+            btnImport.icon.set(sprite);
+            btnImport.iconAlignment.set(ETextAlignment.CENTER);
+            btnImport.inputConsumptionPolicy.set(c -> c != ConsumptionType.SCROLL);
+            btnImport.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+                this.preview = resources[j];
+                this.patternId = j;
+                return false;
+            });
 
             if (patternId == j) {
-                btnImport.select();
-                preview = resources[j];                
+                btnImport.checked.set(true);
+                preview = resources[j];
             }
-            this.addRenderableWidget(btnImport);
+            innerPanel.addComponent(btnImport);
         }        
 
-        this.scrollbar = this.addRenderableWidget(new DLVerticalScrollBar(guiLeft + 171, guiTop + 16, 8, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, new GuiAreaDefinition(guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2))
-            .withOnValueChanged(v -> {
-                this.scroll = v.getScrollValue();
-                if (updateScrollableContent)
-                    fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
-
-                updateScrollableContent = true;
-            })
-            .setAutoScrollerSize(true));
-
-        fillButtons(groupPatterns.components.toArray(DLIconButton[]::new), this.scroll, guiLeft + 8, guiTop + 17, scrollbar);
+        this.scrollbar = addComponent(new DLScrollBar(groupPatterns.x() + groupPatterns.width(), groupPatterns.y(), 8, groupPatterns.height(), Orientation.VERTICAL));
+        scrollbar.anchor.set2(EAlign.BOTTOM, EAlign.TOP, EAlign.RIGHT);
+        scrollbar.scrollerSize.set(0);
+        scrollbar.screenSize.set(innerPanel.height());
+        scrollbar.max.set((int)Math.ceil(count / MAX_ENTRIES_IN_ROW * ICON_BUTTON_HEIGHT));
+        scrollbar.inputConsumptionPolicy.set(c -> true);
+        scrollbar.scrollSteps.set(ICON_BUTTON_HEIGHT);
+        scrollbar.addEventListener(DLScrollBar.ValueChangedEvent.class, (s, e) -> {
+            innerPanel.setScrollOffsetY(e.value());
+            return false;
+        });
+        addEventListener(DLGuiStandardEvents.ScrollEvent.class, scrollbar::invokeEvent);
     }
 
     @Override
-    public void renderMainLayer(Graphics graphics, int mouseX, int mouseY, float partialTicks) {
-        renderScreenBackground(graphics);
-        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WIDTH, HEIGHT);
-        DynamicGuiRenderer.renderArea(graphics, guiLeft + 7, guiTop + 16, ICON_BUTTON_WIDTH * MAX_ENTRIES_IN_ROW + 2, ICON_BUTTON_HEIGHT * MAX_ROWS + 2, AreaStyle.BROWN, ButtonState.DISABLED);
-        
-        super.renderMainLayer(graphics, mouseX, mouseY, partialTicks);
-        
-        GuiUtils.drawString(graphics, font, guiLeft + WIDTH / 2, guiTop + 6, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);
+    public void close() {
+        ModNetworkManager.UPDATE_PAINT_BRUSH.send(NetworkDirection.toServer(), new PaintBrushPacket(patternId));
+    }
+
+    @Override
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+        DLTextureSheet.DRAGONLIB_UI.getSprite(DLTextureSheet.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());                
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WIDTH / 2, 6, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
         
         if (preview != null) {
             GuiUtils.setTint(diffuseColor);
-            GuiUtils.drawTexture(preview, graphics, guiLeft + 8, guiTop + 130, 32, 32, 0, 0, 32, 32, 32, 32);
+            GuiUtils.drawTexture(preview, graphics, 8, 130, 32, 32, 0, 0, 32, 32, TextureFillMode.STRETCH);
             GuiUtils.resetTint();        
         }
 
         Component textPattern = TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", patternId);
-        Component textColor = TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate(color.getValueTranslationKey(TrafficCraft.MOD_ID)).getString());
+        Component textColor = TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", color.getValueTranslation().getString());
         Component textPaint = TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", (int)(100.0f / Constants.MAX_PAINT * paint));
 
-        GuiUtils.drawString(graphics, font, guiLeft + WIDTH - 7, guiTop + 130, textPattern, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.RIGHT, false);
-        GuiUtils.drawString(graphics, font, guiLeft + WIDTH - 7, guiTop + 130 + font.lineHeight, textColor, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.RIGHT, false);
-        GuiUtils.drawString(graphics, font, guiLeft + WIDTH - 7, guiTop + 130 + font.lineHeight * 2, textPaint, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.RIGHT, false);
-    }
-
-    private void fillButtons(DLIconButton[] buttons, double scrollRow, int defX, int defY, DLVerticalScrollBar scrollbar) {
-        if (buttons.length <= 0) {
-            return;
-        }
-
-        int currentRow = -1;
-        for (int i = 0; i < buttons.length; i++) {
-            if (i % MAX_ENTRIES_IN_ROW == 0)
-                currentRow++;
-
-            buttons[i].set_x(defX + (i % MAX_ENTRIES_IN_ROW) * ICON_BUTTON_WIDTH);
-            buttons[i].set_y((int)(defY + (currentRow) * ICON_BUTTON_HEIGHT - (scrollRow * ICON_BUTTON_HEIGHT)));
-            buttons[i].set_visible(currentRow >= scrollRow && currentRow < scrollRow + MAX_ROWS);
-        }
-
-        if (scrollbar != null) {
-            updateScrollableContent = false;
-            scrollbar.setScreenSize(MAX_ROWS).setMaxScroll(currentRow + 1);
-        }
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WIDTH - 7, 130, textPattern, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.RIGHT, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WIDTH - 7, 130 + graphics.defaultFont().lineHeight, textColor, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.RIGHT, false);
+        GuiUtils.drawString(graphics, graphics.defaultFont(), WIDTH - 7, 130 + graphics.defaultFont().lineHeight * 2, textPaint, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.RIGHT, false);
     }
 }

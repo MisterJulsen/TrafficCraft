@@ -1,10 +1,13 @@
 package de.mrjulsen.trafficcraft.client.ber;
 
+import org.joml.Vector3f;
+
 import com.mojang.math.Axis;
 
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
 import de.mrjulsen.mcdragonlib.client.ber.RotatableBlockEntityRenderer;
-import de.mrjulsen.mcdragonlib.client.util.BERUtils;
+import de.mrjulsen.mcdragonlib.client.util.RenderUtils;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
@@ -43,7 +46,7 @@ public class TrafficSignBlockEntityRenderer extends RotatableBlockEntityRenderer
         graphics.poseStack().translate(0.5f, 0.5f, 0.5f);
         graphics.poseStack().translate(-0.5d, -0.5d, z + 0.002d);
           
-        BERUtils.renderTexture(tex.getTextureLocation(), graphics, true, 0, 0, 0, 1, 1, 0, 0, 1, 1, blockstate.getValue(TrafficSignBlock.FACING), 0xFFFFFFFF, graphics.packedLight());
+        RenderUtils.renderTexture(tex.getTextureLocation(), graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, blockstate.getValue(TrafficSignBlock.FACING), DLColor.WHITE, graphics.packedLight(), true);
 
         graphics.poseStack().popPose();
         
@@ -55,7 +58,7 @@ public class TrafficSignBlockEntityRenderer extends RotatableBlockEntityRenderer
             graphics.poseStack().mulPose(Axis.YP.rotationDegrees(180));
             graphics.poseStack().translate(-0.5d, -0.5d, -(p * 2) + z - 0.002d);
             
-            BERUtils.renderTexture(tex.getBackgroundTextureLocation(), graphics, true, 0, 0, 0, 1, 1, 0, 0, 1, 1, blockstate.getValue(TrafficSignBlock.FACING).getOpposite(), 0xFFFFFFFF, graphics.packedLight());
+            RenderUtils.renderTexture(tex.getBackgroundTextureLocation(), graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, blockstate.getValue(TrafficSignBlock.FACING).getOpposite(), DLColor.WHITE, graphics.packedLight(), true);
             
             graphics.poseStack().popPose();
         }

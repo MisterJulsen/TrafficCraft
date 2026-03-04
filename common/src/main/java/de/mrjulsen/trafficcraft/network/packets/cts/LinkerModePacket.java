@@ -1,49 +1,51 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.components.TrafficLightLinkerComponent;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem.LinkerMode;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class LinkerModePacket extends BaseNetworkPacket<LinkerModePacket> {
+public class LinkerModePacket extends NetworkPacketData {
+
+    private static final String NBT_DATA = "Data";
 
     private LinkerMode mode;
 
-    public LinkerModePacket() {}
+    public LinkerModePacket(DLStatus status) {
+        super(status);
+    }
 
     public LinkerModePacket(LinkerMode mode) {
+        super(DLStatus.OK);
         this.mode = mode;
     }
 
     @Override
-    public void encode(LinkerModePacket packet, RegistryFriendlyByteBuf buffer) {
-        buffer.writeEnum(packet.mode);
+    protected void write(CompoundTag nbt) {
+        nbt.putInt(NBT_DATA, mode.getIndex());
     }
 
     @Override
-    public LinkerModePacket decode(RegistryFriendlyByteBuf buffer) {
-        LinkerMode mode = buffer.readEnum(LinkerMode.class); 
-        return new LinkerModePacket(mode);
+    protected void read(CompoundTag nbt) {
+        this.mode = LinkerMode.getByIndex(nbt.getInt(NBT_DATA));
     }
     
-    @Override
-    public void handle(LinkerModePacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
+    public static void handle(LinkerModePacket packet, NetworkPacketContext context) {
+        context.queue(() -> {
+            ServerPlayer sender = (ServerPlayer)context.getPlayer();
             ItemStack stack;
 
             if ((stack = sender.getMainHandItem()).getItem() instanceof TrafficLightLinkerItem item) {
                 TrafficLightLinkerComponent comp = item.getComponent(stack);
-                item.setComponent(stack, new TrafficLightLinkerComponent(comp.location(), mode, comp.targetBlockName()));
-            } else if ((stack = sender.getOffhandItem()).getItem() instanceof TrafficLightLinkerItem item) { 
+                item.setComponent(stack, new TrafficLightLinkerComponent(comp.location(), packet.mode, comp.targetBlockName()));
+            } else if ((stack = sender.getOffhandItem()).getItem() instanceof TrafficLightLinkerItem item) {
                 TrafficLightLinkerComponent comp = item.getComponent(stack);
-                item.setComponent(stack, new TrafficLightLinkerComponent(comp.location(), mode, comp.targetBlockName()));
+                item.setComponent(stack, new TrafficLightLinkerComponent(comp.location(), packet.mode, comp.targetBlockName()));
             }
 
             sender.getInventory().setChanged();

@@ -4,7 +4,6 @@ import java.util.List;
 
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.components.BrushComponent;
 import de.mrjulsen.trafficcraft.data.PaintColor;
@@ -66,21 +65,21 @@ public class BrushItem extends Item implements IUseDataComponent<BrushComponent>
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        
+
         if (hasComponent(stack)) {
             BrushComponent comp = getComponent(stack);
             PaintColor paintColor = PaintColor.getByIndex(comp.colorId());
-            String color = TextUtils.translate(paintColor.getValueTranslationKey(TrafficCraft.MOD_ID)).getString();
-    
-            tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + comp.patternId()).withStyle(ChatFormatting.GRAY));            
+            String color = paintColor.getValueTranslation().getString();
+
+            tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.pattern", "§f" + comp.patternId()).withStyle(ChatFormatting.GRAY));
             if (comp.paintAmount() == 0) {
                 tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color_empty")).withStyle(ChatFormatting.GRAY));
             } else {
-                tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor()))).withStyle(ChatFormatting.GRAY));
+                tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.color", TextUtils.text(color).withStyle(Style.EMPTY.applyFormat(ChatFormatting.WHITE).withColor(paintColor.getTextureColor().getAsARGB()))).withStyle(ChatFormatting.GRAY));
             }
             tooltipComponents.add(TextUtils.translate("item.trafficcraft.paint_brush.tooltip.paint", "§f" + (int)(100.0f / Constants.MAX_PAINT * comp.paintAmount())).withStyle(ChatFormatting.GRAY));
         }
-        
+
     }
 
     @Override
@@ -98,7 +97,7 @@ public class BrushItem extends Item implements IUseDataComponent<BrushComponent>
 
     @Override
     public int getBarColor(ItemStack pStack) {
-        return hasComponent(pStack) ? getColor(pStack).getTextureColor() : 0;
+        return getColor(pStack).getTextureColor().getAsARGB();
     }
 
     public int getPaintAmount() {

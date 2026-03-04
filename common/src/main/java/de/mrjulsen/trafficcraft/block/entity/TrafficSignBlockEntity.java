@@ -3,8 +3,9 @@ package de.mrjulsen.trafficcraft.block.entity;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import de.mrjulsen.mcdragonlib.block.SyncedBlockEntity;
-import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
+import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
+import de.mrjulsen.mcdragonlib.block.IBlockEntityExtension;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
@@ -12,6 +13,7 @@ import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
@@ -20,7 +22,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class TrafficSignBlockEntity extends SyncedBlockEntity {
+public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBlockEntityExtension {
 
     private static final String NBT_LEGACY_TEXTURE = "texture";
     private static final String NBT_TEXTURE = "SignTexture";
@@ -48,7 +50,6 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
         }
     }
 
-    @SuppressWarnings("resource")
     private void migrate(String base64) {
         new Thread(() -> {
             while (getLevel() == null) {
@@ -88,15 +89,16 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
             if (getTextureId() == null || getTextureId().equals("empty")) {
                 return TrafficSignClientTexture.EMPTY;
             }
-            texture = TrafficSignClientTexture.load(getTextureId(), true);
+            texture = TrafficSignClientTexture.load(getTextureId(), true, null);
         }
         return texture;
     }
 
     public void resetTexture() {
         if (level.isClientSide) {
-            DLUtils.doIfNotNull(texture, x -> x.close());
+            TrafficSignClientTexture oldTexture = texture;
             texture = null;
+            DLUtils.doIfNotNull(oldTexture, x -> x.close());
         }
     }
 
@@ -104,7 +106,7 @@ public class TrafficSignBlockEntity extends SyncedBlockEntity {
         setTextureId(texture.getTextureId());
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
-                DLNetworkManager.sendToPlayer(player, new TrafficSignTextureResetPacket(getBlockPos()));
+                ModNetworkManager.RESET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toPlayer(player), new TrafficSignTextureResetPacket(getBlockPos()));
             }
         }
     }

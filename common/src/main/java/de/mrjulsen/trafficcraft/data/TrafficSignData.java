@@ -5,11 +5,13 @@ import java.util.Base64;
 import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import de.mrjulsen.mcdragonlib.core.IIdentifiable;
+
+import de.mrjulsen.mcdragonlib.data.IIdentifiable;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
-import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
+import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import dev.architectury.platform.Platform;
 import dev.architectury.utils.Env;
 import net.minecraft.nbt.CompoundTag;
@@ -141,7 +143,7 @@ public class TrafficSignData implements Closeable, IIdentifiable {
         TrafficSignData src = TrafficSignData.fromNbt(nbt);
         TrafficSignTextureData data = new TrafficSignTextureData(src.getShape(), Base64.getDecoder().decode(src.getTexture()), (short)src.getWidth(), (short)src.getHeight(), System.currentTimeMillis(), new UUID(0, 0));
         if (Platform.getEnvironment() == Env.CLIENT) {
-            DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {});
+            ModNetworkManager.CREATE_NEW_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toServer(), new CreateNewTrafficSignTexturePacket.Request(data), (response) -> {}, () -> {});
         } else {
             data.save();
         }

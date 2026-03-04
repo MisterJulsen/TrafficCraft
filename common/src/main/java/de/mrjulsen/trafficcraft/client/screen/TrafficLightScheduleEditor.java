@@ -3,41 +3,46 @@ package de.mrjulsen.trafficcraft.client.screen;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
-import de.mrjulsen.mcdragonlib.client.gui.DLScreen;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLIconButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLItemButton;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLTooltip;
-import de.mrjulsen.mcdragonlib.client.gui.widgets.DLAbstractImageButton.ButtonType;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer;
-import de.mrjulsen.mcdragonlib.client.render.Sprite;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.AreaStyle;
-import de.mrjulsen.mcdragonlib.client.render.DynamicGuiRenderer.ButtonState;
-import de.mrjulsen.mcdragonlib.client.util.Graphics;
-import de.mrjulsen.mcdragonlib.client.util.GuiAreaDefinition;
+import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindow;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.base.DLWindowManager;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.layout.FlowLayout.Direction;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.render.VanillaSimpleButtonRenderer;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.richtext.Padding;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.util.RenderLayer;
+import de.mrjulsen.mcdragonlib.client.render.DLTextureSheet;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLCycleButton;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLPanel;
+import de.mrjulsen.mcdragonlib.client.gui.widgets.components.DLTooltip;
+import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
+import de.mrjulsen.mcdragonlib.client.util.DLSprite;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
-import de.mrjulsen.mcdragonlib.core.EAlignment;
-import de.mrjulsen.mcdragonlib.net.DLNetworkManager;
+import de.mrjulsen.mcdragonlib.data.ETextAlignment;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightTrigger;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.client.widgets.TrafficLightScheduleContainer;
+import de.mrjulsen.trafficcraft.client.widgets.data.TrafficLightScheduleEditorWidget;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
-public class TrafficLightScheduleEditor extends DLScreen {
+public class TrafficLightScheduleEditor extends DLWindow {
 
     public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/gui/traffic_light_schedule_icons.png");
     public static final int TEXTURE_WIDTH = 64;
@@ -54,18 +59,9 @@ public class TrafficLightScheduleEditor extends DLScreen {
     public static final int TIMELINE_UW = 9;
     public static final int TIMELINE_VH = 9;
     public static final int ENTRY_TIMELINE_COLUMN_WIDTH = 20;
-    
-    private static final int HEADER_BUTTON_COUNT = 2; // trigger, loop
 
-    private int guiLeft;
-    private int guiTop;
-
-    private GuiAreaDefinition areaHeader;
-    private GuiAreaDefinition areaWorkspace;
-
-    private TrafficLightScheduleContainer container;
-
-    private final Screen last;
+    private DLPanel areaHeader;
+    private TrafficLightScheduleEditorWidget container;
 
     private final Map<Integer, TrafficLightType> phaseIdTypes = new HashMap<>();
 
@@ -76,16 +72,19 @@ public class TrafficLightScheduleEditor extends DLScreen {
     private final TrafficLightSchedule schedule;
 
     //texts
-    private static final Component textAddEntry = TextUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
-    private static final String textLoop = TextUtils.translate("gui.trafficcraft.trafficlightschedule.loop").getString();
+    private final Component title = TextUtils.translate("gui.trafficcraft.trafficlightschedule.title");
+    private final Component textAddEntry = TextUtils.translate("gui.trafficcraft.trafficlightschedule.add_entry");
+    private final Component textLoop = TextUtils.translate("gui.trafficcraft.trafficlightschedule.loop");
 
-    protected TrafficLightScheduleEditor(Screen last, Level level, BlockPos pos) {
-        super(TextUtils.translate("gui.trafficcraft.trafficlightschedule.title"));
-        this.last = last;
+    public TrafficLightScheduleEditor(DLWindowManager manager, Level level, BlockPos pos) {
+        super(manager);
         this.pos = pos;
         this.level = level;
         this.isController = isController();
         schedule = getSchedule().copy();
+
+        setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        windowSpawnPosition.set(WindowPosition.CENTER);
 
         if (isController()) {
             if (level.getBlockEntity(pos) instanceof TrafficLightControllerBlockEntity blockEntity) {
@@ -111,6 +110,83 @@ public class TrafficLightScheduleEditor extends DLScreen {
                 phaseIdTypes.put(0, blockEntity.getTLType());
             }
         }
+
+        areaHeader = addComponent(new DLPanel(PADDING, TOP_PADDING, width() - PADDING * 2, 22));
+        FlowLayout headerLayout = new FlowLayout();
+        headerLayout.padding.set(new Padding(1));
+        headerLayout.wrap.set(false);
+        headerLayout.flowDirection.set(Direction.HORIZONTAL);
+        areaHeader.addEventListener(DLGuiStandardEvents.RenderEvent.class, (s, e) -> {
+            if (e.layer() == RenderLayer.MAIN) {
+                DLTextureSheet.DRAGONLIB_UI.getSprite("button_brown_down").render(e.graphics(), 0, 0, s.width(), s.height());
+            }            
+            return false;
+        });
+
+        DLCycleButton<TrafficLightTrigger> triggerBtn = areaHeader.addComponent(new DLCycleButton<>(0, 0, 1, 20));
+        triggerBtn.layoutContraint.set(FlowLayout.FlowConstraint.FILL);
+        triggerBtn.textColor.set(DragonLib.VANILLA_UI_FONT_COLOR);
+        triggerBtn.drawFontShadow.set(false);
+        triggerBtn.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+        triggerBtn.textFormat.set(c -> c.selectedItem.get().map(e -> e.getValueTranslation()).orElse(TextUtils.empty()));
+        triggerBtn.icon.set(new DLSprite(schedule.getTrigger().getIconStack(), 16, false));
+        triggerBtn.iconAlignment.set(ETextAlignment.LEFT);
+        triggerBtn.textAlignment.set(ETextAlignment.LEFT);
+        triggerBtn.items.addAll(TrafficLightTrigger.values());
+        triggerBtn.selectedItem.set(Optional.of(schedule.getTrigger()));
+        triggerBtn.addEventListener(DLCycleButton.SelectedItemChanged.class, (s, e) -> {
+            triggerBtn.selectedItem.get().ifPresent(c -> {
+                schedule.setTrigger(c);
+                triggerBtn.icon.set(new DLSprite(c.getIconStack(), 16, false));
+            });
+            return false;
+        });
+
+        DLCycleButton<Boolean> loopBtn = areaHeader.addComponent(new DLCycleButton<>(0, 0, 1, 20)); 
+        loopBtn.layoutContraint.set(FlowLayout.FlowConstraint.FILL);
+        loopBtn.textColor.set(DragonLib.VANILLA_UI_FONT_COLOR);
+        loopBtn.drawFontShadow.set(false);
+        loopBtn.componentRenderer.set(VanillaSimpleButtonRenderer.VANILLA_BUTTON_BROWN);
+        loopBtn.text.set(textLoop);
+        loopBtn.textFormat.set(c -> TextUtils.text(c.text.get().getString()).append(": ").append(c.selectedItem.get().map(b -> b ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF).orElse(CommonComponents.OPTION_OFF)));
+        loopBtn.items.addAll(true, false);
+        loopBtn.selectedItem.set(Optional.of(schedule.isLoop()));
+        loopBtn.addEventListener(DLCycleButton.SelectedItemChanged.class, (s, e) -> {
+            loopBtn.selectedItem.get().ifPresent(c -> {
+                schedule.setLoop(c);
+            });
+            return false;
+        });
+        areaHeader.layout.set(headerLayout);
+
+        // add entry btn
+        DLButton addBtn = addComponent(new DLButton(PADDING, height() - PADDING - 20, 20, 20));
+        addBtn.text.set(TextUtils.text("+"));
+        addBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            createNewEntry();
+            container.refresh();
+            return false;
+        });
+        addBtn.tooltip.set(new DLTooltip(List.of(textAddEntry), 200));
+
+
+        
+        DLButton cancelBtn = addComponent(new DLButton(width() - PADDING - 90, height() - PADDING - 20, 90, 20));
+        cancelBtn.text.set(CommonComponents.GUI_CANCEL);
+        cancelBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            getWindowManager().closeWindow(this);
+            return false;
+        });
+
+        DLButton doneBtn = addComponent(new DLButton(width() - PADDING - 184, height() - PADDING - 20, 90, 20));
+        doneBtn.text.set(CommonComponents.GUI_DONE);
+        doneBtn.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
+            onDone();
+            return false;
+        });
+
+        container = addComponent(new TrafficLightScheduleEditorWidget(PADDING, TOP_PADDING + areaHeader.height(), width() - PADDING * 2, height() - TOP_PADDING - areaHeader.height() - BOTTOM_PADDING, schedule, isController(), getPhaseTypes()));
+    
     }
 
     private boolean isController() {
@@ -131,172 +207,19 @@ public class TrafficLightScheduleEditor extends DLScreen {
         return phaseIdTypes;
     }
 
-    @Override
-    public void onClose() {
-        if (last != null) {
-            Minecraft.getInstance().setScreen(last);
-            return;
-        }   
-        super.onClose();
-    }
 
-    @Override
     protected void onDone() {
-        super.onDone();
-        DLNetworkManager.sendToServer(new TrafficLightSchedulePacket(
-            pos,
-            List.of(schedule)
-        ));
-        onClose();
-    }
-
-    @Override
-    protected void init() {
-        super.init();
-
-        guiLeft = width / 2 - WINDOW_WIDTH / 2;
-        guiTop = height / 2 - WINDOW_HEIGHT / 2;
-
-        areaHeader = new GuiAreaDefinition(guiLeft + PADDING, guiTop + TOP_PADDING, WINDOW_WIDTH - PADDING * 2, DLIconButton.DEFAULT_BUTTON_HEIGHT + 2);
-        areaWorkspace = new GuiAreaDefinition(guiLeft + PADDING, guiTop + TOP_PADDING + areaHeader.getHeight(), WINDOW_WIDTH - PADDING * 2, WINDOW_HEIGHT - TOP_PADDING - areaHeader.getHeight() - BOTTOM_PADDING);
-
-        int headerW = (areaHeader.getWidth() - 2) / HEADER_BUTTON_COUNT;
-        // trigger
-        final DLItemButton bt = addRenderableWidget(new DLItemButton(
-            ButtonType.DEFAULT,
-            AreaStyle.BROWN,
-            schedule.getTrigger().getIconStack(),
-            areaHeader.getLeft() + 1,
-            areaHeader.getTop() + 1,
-            headerW,                
-            areaHeader.getHeight() - 2,
-            TextUtils.translate(schedule.getTrigger().getValueTranslationKey(TrafficCraft.MOD_ID)),
-            (btn) -> {
-                DLItemButton ibtn = (DLItemButton)btn;
-                schedule.setTrigger(schedule.getTrigger().next());
-                ibtn.withItem(schedule.getTrigger().getIconStack());
-                btn.setMessage(TextUtils.translate(schedule.getTrigger().getValueTranslationKey(TrafficCraft.MOD_ID)));
-            }
-        ).withAlignment(EAlignment.LEFT).withDefaultItemTooltip(false));
-
-        addTooltip(DLTooltip
-            .of(TrafficCraft.MOD_ID, TrafficLightTrigger.class)
-            .withMaxWidth(width / 4)
-            .assignedTo(bt)
-        );
-
-        // loop
-        addRenderableWidget(new DLIconButton(
-            ButtonType.DEFAULT, 
-            AreaStyle.BROWN, 
-            Sprite.empty(),
-            null,
-            areaHeader.getLeft() + 1 + headerW,
-            areaHeader.getTop() + 1,
-            headerW,                
-            areaHeader.getHeight() - 2,
-            TextUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())),
-            (btn) -> {
-                schedule.setLoop(!schedule.isLoop());
-                btn.setMessage(TextUtils.text(textLoop + ": " + (schedule.isLoop() ? CommonComponents.OPTION_ON.getString() : CommonComponents.OPTION_OFF.getString())));
-            }
-        ));
-
-        // add entry btn
-        addButton(
-            guiLeft + PADDING,
-            guiTop + WINDOW_HEIGHT - PADDING - 20,
-            20,
-            20,
-            TextUtils.text("+"),
-            (btn) -> {
-                createNewEntry();
-            },
-            DLTooltip.of(textAddEntry)
-        );
-
-        addButton(
-            guiLeft + WINDOW_WIDTH - PADDING - 90,
-            guiTop + WINDOW_HEIGHT - PADDING - 20,
-            90,
-            20,
-            CommonComponents.GUI_CANCEL,
-            (btn) -> {
-                onClose();
-            },
-            null
-        );
-
-        addButton(
-            guiLeft + WINDOW_WIDTH - PADDING - 180 - 4,
-            guiTop + WINDOW_HEIGHT - PADDING - 20,
-            90,
-            20,
-            CommonComponents.GUI_DONE,
-            (btn) -> {
-                onDone();
-            },
-            null
-        );
-
-        container = addRenderableWidget(new TrafficLightScheduleContainer(schedule, isController(), getPhaseTypes(), areaWorkspace.getX(), areaWorkspace.getY(), areaWorkspace.getWidth(), areaWorkspace.getHeight()));
+        ModNetworkManager.UPDATE_TRAFFIC_LIGHT_SCHEDULE.send(NetworkDirection.toServer(), new TrafficLightSchedulePacket(pos, List.of(schedule)));
+        getWindowManager().closeWindow(this);
     }
 
     private void createNewEntry() {
         schedule.getEntries().add(new TrafficLightScheduleEntryData());
-        container.init();
     }
-
-    /*
-    private void removeEntry(TrafficLightScheduleEntryData entry) {
-        schedule.getEntries().removeIf(x -> x == entry);
-
-        initEntryWidgets();
-    }
-
-    private void move(TrafficLightScheduleEntryData entry, int offset) {
-        int index = -1;
-        List<TrafficLightScheduleEntryData> entries = schedule.getEntries();
-        for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i) == entry) {
-                index = i;
-                break;
-            }
-        }
-        int newIndex = index + offset;
-
-        if (newIndex < 0 || newIndex >= schedule.getEntries().size()) {
-            return;
-        }
-
-        TrafficLightScheduleEntryData data = schedule.getEntries().remove(index);
-        this.schedule.getEntries().add(newIndex, data);
-        container.init();
-    }
-        */
-
-        /*
-    private void initEntryWidgets() {
-
-        schedule.getEntries().forEach(x -> {
-            entries.add(addRenderableWidget(new TrafficLightScheduleEntry(getPhaseTypes(), !isController, x, areaWorkspace.getLeft(), 0, areaWorkspace.getWidth() - 2,
-                (entry) -> {
-                    removeEntry(entry);
-                },
-                (entry, offset) -> {
-                    move(entry, offset);
-                }
-            )));
-        });
-    }
-        */
 
     @Override
-    public void renderMainLayer(Graphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
-        renderScreenBackground(graphics);
-        DynamicGuiRenderer.renderWindow(graphics, guiLeft, guiTop, WINDOW_WIDTH, WINDOW_HEIGHT);
-        DynamicGuiRenderer.renderArea(graphics, areaHeader, AreaStyle.GRAY, ButtonState.DISABLED);
-        GuiUtils.drawString(graphics, font, width / 2, guiTop + 7, title, DragonLib.NATIVE_UI_FONT_COLOR, EAlignment.CENTER, false);        
-        super.renderMainLayer(graphics, pMouseX, pMouseY, pPartialTick);
+    public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
+        DLTextureSheet.DRAGONLIB_UI.getSprite(DLTextureSheet.SPRITE_NAME_WINDOW_ROUNDED).render(graphics, 0, 0, width(), height());
+        GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 7, title, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);     
     }
 }

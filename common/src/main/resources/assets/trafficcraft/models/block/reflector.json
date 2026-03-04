@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"loader": "dragonlib:advanced_json",
 	"render_type": "cutout",
 	"textures": {
 		"0": "trafficcraft:block/reflector",
@@ -7,6 +7,7 @@
 	},
 	"elements": [
 		{
+			"name": "base",
 			"from": [5, 0, 5],
 			"to": [11, 2, 11],
 			"faces": {
@@ -19,11 +20,19 @@
 			}
 		},
 		{
+			"name": "overlay",
+			"from": [6, 0, 5],
+			"to": [10, 1, 11],
+			"faces": {
+				"north": {"uv": [1, 8, 5, 9], "texture": "#0", "tintindex": 0, "dragonlib_data": { "emissive": true }},
+				"south": {"uv": [1, 8, 5, 9], "texture": "#0", "tintindex": 0, "dragonlib_data": { "emissive": true }}
+			}
+		},
+		{
 			"from": [4, 0, 5],
 			"to": [5, 1, 11],
 			"faces": {
 				"north": {"uv": [0, 2, 1, 3], "texture": "#0", "tintindex": 0},
-				"east": {"uv": [0, 2, 6, 3], "texture": "#0", "tintindex": 0},
 				"south": {"uv": [0, 2, 1, 3], "texture": "#0", "tintindex": 0},
 				"west": {"uv": [0, 2, 6, 3], "texture": "#0", "tintindex": 0},
 				"up": {"uv": [0, 2, 1, 8], "texture": "#0", "tintindex": 0},
@@ -37,7 +46,6 @@
 				"north": {"uv": [0, 2, 1, 3], "texture": "#0", "tintindex": 0},
 				"east": {"uv": [0, 2, 6, 3], "texture": "#0", "tintindex": 0},
 				"south": {"uv": [0, 2, 1, 3], "texture": "#0", "tintindex": 0},
-				"west": {"uv": [0, 2, 6, 3], "texture": "#0", "tintindex": 0},
 				"up": {"uv": [0, 2, 1, 8], "texture": "#0", "tintindex": 0},
 				"down": {"uv": [0, 2, 1, 8], "texture": "#0", "cullface": "down", "tintindex": 0}
 			}
@@ -59,7 +67,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -67,7 +75,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"translation": [0, 3.5, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},

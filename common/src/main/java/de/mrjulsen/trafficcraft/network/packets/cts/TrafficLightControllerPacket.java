@@ -1,45 +1,48 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
+import de.mrjulsen.mcdragonlib.util.NbtUtils;
 import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
-public class TrafficLightControllerPacket extends BaseNetworkPacket<TrafficLightControllerPacket> {
+public class TrafficLightControllerPacket extends NetworkPacketData {
+
+    private static final String NBT_POS = "Pos";
+    private static final String NBT_STATUS = "Status";
+
     private BlockPos pos;
     private boolean status;
 
-    public TrafficLightControllerPacket() {}
+    public TrafficLightControllerPacket(DLStatus status) {
+        super(status);
+    }
 
     public TrafficLightControllerPacket(BlockPos pos, boolean status) {
+        super(DLStatus.OK);
         this.pos = pos;
         this.status = status;
     }
 
     @Override
-    public void encode(TrafficLightControllerPacket packet, RegistryFriendlyByteBuf buffer) {
-        buffer.writeBlockPos(packet.pos);
-        buffer.writeBoolean(packet.status);
+    protected void write(CompoundTag nbt) {
+        NbtUtils.putNbtPos(nbt, NBT_POS, pos);
+        nbt.putBoolean(NBT_STATUS, status);
     }
 
     @Override
-    public TrafficLightControllerPacket decode(RegistryFriendlyByteBuf buffer) {
-        BlockPos pos = buffer.readBlockPos();
-        boolean status = buffer.readBoolean();
-        System.out.println("AJKDhsljkgsl");
-
-        return new TrafficLightControllerPacket(pos, status);
+    protected void read(CompoundTag nbt) {
+        this.pos = NbtUtils.getNbtBlockPos(nbt, NBT_POS);
+        this.status = nbt.getBoolean(NBT_STATUS);
     }
-    
-    @Override
-    public void handle(TrafficLightControllerPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer player = (ServerPlayer)contextSupplier.get().getPlayer();
+
+    public static void handle(TrafficLightControllerPacket packet, NetworkPacketContext context) {        
+        context.queue(() -> {
+            ServerPlayer player = (ServerPlayer)context.getPlayer();
             if (player != null) {
                 Level level = player.level();
                 if (level.isLoaded(packet.pos)) {

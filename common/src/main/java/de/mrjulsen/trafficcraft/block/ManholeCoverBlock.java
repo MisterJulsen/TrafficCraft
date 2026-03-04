@@ -1,14 +1,14 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.item.WrenchItem;
+import de.mrjulsen.trafficcraft.registry.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -72,8 +72,8 @@ public class ManholeCoverBlock extends ManholeBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        Item item =stack.getItem();
-        if (!(item instanceof WrenchItem)) {
+        ItemStack item = player.getInventory().getSelected();
+        if (!item.is(ModTags.WRENCHES)) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         
@@ -84,7 +84,7 @@ public class ManholeCoverBlock extends ManholeBlock {
         }
 
         level.playSound(null, pos, SoundEvents.GRINDSTONE_USE, SoundSource.BLOCKS, 1, 0.5F);
-        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        return ItemInteractionResult.SUCCESS;
     }
 
     @Override

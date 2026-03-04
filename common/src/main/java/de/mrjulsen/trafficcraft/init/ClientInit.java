@@ -4,14 +4,17 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+
+import de.mrjulsen.trafficcraft.CrossPlatform;
+import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
-import de.mrjulsen.mcdragonlib.util.ColorUtils;
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.Wikipedia;
+import de.mrjulsen.mcdragonlib.util.DLColor.ColorChannel;
 import de.mrjulsen.trafficcraft.Constants;
-import de.mrjulsen.trafficcraft.CrossPlatform;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
@@ -29,7 +32,6 @@ import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import de.mrjulsen.trafficcraft.item.BrushItem;
 import de.mrjulsen.trafficcraft.item.IScrollEventItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
-import de.mrjulsen.trafficcraft.item.TrafficLightLinkerItem;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModItems;
@@ -46,10 +48,12 @@ import dev.architectury.registry.client.rendering.ColorHandlerRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.registries.RegistrySupplier;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemModelGenerator;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -83,12 +87,15 @@ public class ClientInit {
 
     
 
-    public static int[][] textureToIntArray(DynamicTexture tex, boolean flipRgb) {
+    public static int[][] textureToIntArray(AbstractTexture texture, boolean flipRgb) {
+        if (!(texture instanceof DynamicTexture tex)) {
+            return new int[0][];
+        }
         final int[][] a = new int[tex.getPixels().getWidth()][];
         for (int x = 0; x < tex.getPixels().getWidth(); x++) {
             a[x] = new int[tex.getPixels().getHeight()];
             for (int y = 0; y < tex.getPixels().getHeight(); y++) {
-                a[x][y] = flipRgb ? ColorUtils.swapRedBlue(tex.getPixels().getPixelRGBA(x, y)) : tex.getPixels().getPixelRGBA(x, y);
+                a[x][y] = flipRgb ? DLColor.fromInt(tex.getPixels().getPixelRGBA(x, y)).swapChannels(ColorChannel.R, ColorChannel.B).getAsARGB() : tex.getPixels().getPixelRGBA(x, y);
             }
         }
         return a;
@@ -99,16 +106,21 @@ public class ClientInit {
     @SuppressWarnings("unchecked")
     public static void init() {
         ClientLifecycleEvent.CLIENT_SETUP.register(mc -> {
-            
-            Wikipedia.addArticle(Constants.WIKIPEDIA_TRAFFIC_LIGHT_ID, Constants.WIKIPEDIA_GERMAN_TRAM_SIGNAL_ID);
-            
+
             ItemModelGenerator.LAYERS.add("layer5");
             ItemModelGenerator.LAYERS.add("layer6");
             ItemModelGenerator.LAYERS.add("layer7");
             ItemModelGenerator.LAYERS.add("layer8");
             
             /* RENDER LAYERS */
-            RenderTypeRegistry.register(RenderType.cutout(), 
+            RenderTypeRegistry.register(RenderType.cutout(),
+                ModBlocks.WHITE_DELINEATOR.get(),
+                ModBlocks.YELLOW_DELINEATOR.get(),
+                ModBlocks.SMALL_WHITE_DELINEATOR.get(),
+                ModBlocks.SMALL_YELLOW_DELINEATOR.get(),
+                ModBlocks.RED_DELINEATOR.get(),
+                ModBlocks.REFLECTOR.get(),
+                ModBlocks.TRAFFIC_LIGHT_REQUEST_BUTTON.get(),
                 ModBlocks.PAINT_BUCKET.get(),
                 ModBlocks.MANHOLE.get(),
                 ModBlocks.MANHOLE_COVER.get(),

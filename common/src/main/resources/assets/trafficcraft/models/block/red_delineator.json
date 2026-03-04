@@ -1,5 +1,5 @@
 {
-	"credit": "Made with Blockbench",
+	"loader": "dragonlib:advanced_json",
 	"render_type": "cutout",
 	"textures": {
 		"0": "trafficcraft:block/red_delineator",
@@ -7,6 +7,7 @@
 	},
 	"elements": [
 		{
+			"name": "base",
 			"from": [6.5, 0, 7],
 			"to": [9.5, 16, 9],
 			"faces": {
@@ -16,6 +17,15 @@
 				"west": {"uv": [6, 0, 8, 16], "texture": "#0"},
 				"up": {"uv": [0, 0, 3, 2], "texture": "#0"},
 				"down": {"uv": [0, 14, 3, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "overlay",
+			"from": [7.5, 10, 7],
+			"to": [8.5, 13, 9],
+			"faces": {
+				"north": {"uv": [15, 0, 16, 3], "texture": "#0", "dragonlib_data": { "emissive": true }},
+				"south": {"uv": [15, 3, 16, 6], "texture": "#0", "dragonlib_data": { "emissive": true }}
 			}
 		}
 	],
@@ -35,7 +45,7 @@
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"firstperson_lefthand": {
-			"rotation": [0, 225, 0],
+			"rotation": [0, -135, 0],
 			"scale": [0.4, 0.4, 0.4]
 		},
 		"ground": {
@@ -43,7 +53,7 @@
 			"scale": [0.25, 0.25, 0.25]
 		},
 		"gui": {
-			"rotation": [30, 225, 0],
+			"rotation": [30, -135, 0],
 			"scale": [0.625, 0.625, 0.625]
 		},
 		"fixed": {

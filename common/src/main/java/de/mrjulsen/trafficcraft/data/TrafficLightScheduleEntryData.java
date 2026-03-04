@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.data.INBTSerializable;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +45,7 @@ public class TrafficLightScheduleEntryData implements INBTSerializable {
     }
 
     public double getDurationSeconds() {
-        return (double)this.ticks / DragonLib.tps();
+        return (double)this.ticks / 20D;
     }
 
     public int getPhaseId() {

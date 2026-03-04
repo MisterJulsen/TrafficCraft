@@ -8,31 +8,33 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import de.mrjulsen.mcdragonlib.data.Pair.MutablePair;
+
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.mcdragonlib.util.accessor.DataAccessor;
+import de.mrjulsen.mcdragonlib.util.Pair.MutablePair;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference.BuildInTrafficSignCodec;
-import de.mrjulsen.trafficcraft.registry.ModAccessorTypes;
+import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.GetTrafficSignTexturePacket;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import dev.architectury.utils.GameInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 
-@SuppressWarnings("resource")
 public class TrafficSignClientTexture implements AutoCloseable {
 
-    public static final DynamicTexture EMPTY_TEXTURE;
+    public static final SafeDynamicTexture EMPTY_TEXTURE;
     public static final TrafficSignClientTexture EMPTY;
     public static final ResourceLocation EMPTY_LOCATION;
 
     static {
         NativeImage img = new NativeImage(1, 1, false);
         img.setPixelRGBA(0, 0, 0x00000000);
-        EMPTY_TEXTURE = new DynamicTexture(img);
-        EMPTY_LOCATION = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "empty_sign");
+        EMPTY_TEXTURE = new SafeDynamicTexture(img);
+        EMPTY_LOCATION = DLUtils.resourceLocation(TrafficCraft.MOD_ID, "empty_sign");
         Minecraft.getInstance().getTextureManager().register(EMPTY_LOCATION, EMPTY_TEXTURE);
         EMPTY = new TrafficSignClientTexture("empty");
     }
@@ -49,8 +51,8 @@ public class TrafficSignClientTexture implements AutoCloseable {
     }
 
     protected TrafficSignTextureData rawData = TrafficSignTextureData.empty();
-    protected DynamicTexture texture = EMPTY_TEXTURE;
-    protected DynamicTexture backgroundTexture = EMPTY_TEXTURE;
+    protected SafeDynamicTexture texture = EMPTY_TEXTURE;
+    protected SafeDynamicTexture backgroundTexture = EMPTY_TEXTURE;
     protected ResourceLocation textureLocation = EMPTY_LOCATION;
     protected ResourceLocation backgroundTextureLocation = EMPTY_LOCATION;
     protected final String textureId;
@@ -66,13 +68,12 @@ public class TrafficSignClientTexture implements AutoCloseable {
         if (isClosed) return this;
 
         this.rawData = rawData;
-        DynamicTexture tex = EMPTY_TEXTURE;
+        SafeDynamicTexture tex = EMPTY_TEXTURE;
         if (rawData.getPixelData().length > 0) {
             try {
-                tex = new DynamicTexture(NativeImage.read(new ByteArrayInputStream(rawData.getPixelData())));
+                tex = new SafeDynamicTexture(NativeImage.read(new ByteArrayInputStream(rawData.getPixelData())));
             } catch (IOException e) {
                 TrafficCraft.LOGGER.error("Unable to load texture.", e);
-                tex = MissingTextureAtlasSprite.getTexture();
             }
         }
         this.texture = tex;
@@ -87,13 +88,13 @@ public class TrafficSignClientTexture implements AutoCloseable {
     }
 
     private void generateBgTexture() {
-        DynamicTexture originalTexture = EMPTY_TEXTURE;
+        SafeDynamicTexture originalTexture = EMPTY_TEXTURE;
         try {
-            String idSuffix = "_";
+            String idSuffix;
             if (isBuiltIn()) {
                 BuildInTrafficSignCodec codec = BuildInTrafficSignCodec.decode(textureId);
-                idSuffix = "" + codec.id() + "_bg";
-                originalTexture = new DynamicTexture(NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(getTextureLocation()).get().open()));
+                idSuffix = codec.id() + "_bg";
+                originalTexture = new SafeDynamicTexture(NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(getTextureLocation()).get().open()));
             } else {
                 idSuffix = "_bg";
                 originalTexture = texture;
@@ -102,7 +103,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
             if (originalTexture == null || originalTexture == EMPTY_TEXTURE) {
                 return;
             }
-            NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).get().open());            
+            NativeImage bg = NativeImage.read(Minecraft.getInstance().getResourceManager().getResource(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "textures/block/sign/blank.png")).get().open());
             final int width = Math.min(bg.getWidth(), TrafficSignShape.MAX_WIDTH);
             final int height = Math.min(bg.getHeight(), TrafficSignShape.MAX_HEIGHT);
             for (int x = 0; x < width; x++) {
@@ -113,14 +114,14 @@ public class TrafficSignClientTexture implements AutoCloseable {
                     bg.setPixelRGBA(width - 1 - x, y, 0);
                 }
             }
-            
-            this.backgroundTexture = new DynamicTexture(bg);
-            this.backgroundTextureLocation = ResourceLocation.fromNamespaceAndPath(TrafficCraft.MOD_ID, "sign_" + (isBuiltIn() ? rawData.getShape().getIndex() : rawData.getHash().toString()) + idSuffix);
+
+            this.backgroundTexture = new SafeDynamicTexture(bg);
+            this.backgroundTextureLocation = DLUtils.resourceLocation(TrafficCraft.MOD_ID, "sign_" + (isBuiltIn() ? rawData.getShape().getIndex() : rawData.getHash().toString()) + idSuffix);
             Minecraft.getInstance().getTextureManager().register(backgroundTextureLocation, backgroundTexture);
         } catch (Exception e) {
             TrafficCraft.LOGGER.error("Unable to create traffic sign background texture.", e);
         } finally {
-            if (isBuiltIn() && originalTexture != null && originalTexture != EMPTY_TEXTURE) {            
+            if (isBuiltIn() && originalTexture != null && originalTexture != EMPTY_TEXTURE) {
                 originalTexture.close();
             }
         }
@@ -130,16 +131,16 @@ public class TrafficSignClientTexture implements AutoCloseable {
         TrafficSignTextureData data;
         try {
             data = new TrafficSignTextureData(
-                shape,
-                image.asByteArray(),
-                (short)image.getWidth(),
-                (short)image.getHeight(),
-                System.currentTimeMillis(),
-                GameInstance.getClient().player.getUUID()
+                    shape,
+                    image.asByteArray(),
+                    (short)image.getWidth(),
+                    (short)image.getHeight(),
+                    System.currentTimeMillis(),
+                    GameInstance.getClient().player.getUUID()
             );
-            DataAccessor.getFromServer(data, ModAccessorTypes.CREATE_NEW_TRAFFIC_SIGN_TEXTURE, $ -> {
+            ModNetworkManager.CREATE_NEW_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toServer(), new CreateNewTrafficSignTexturePacket.Request(data), (response) -> {
                 DLUtils.doIfNotNull(andThen, x -> x.run());
-            });
+            }, () -> {});
         } catch (IOException e) {
             TrafficCraft.LOGGER.error("Unable to create new traffic sign texture.", e);
             data = TrafficSignTextureData.empty();
@@ -147,8 +148,8 @@ public class TrafficSignClientTexture implements AutoCloseable {
         return data;
     }
 
-    public static TrafficSignClientTexture load(String id, boolean allowBackground) {
-        MutablePair<TrafficSignClientTexture, Integer> data = cachedTexturesById.computeIfAbsent(id, x -> {            
+    public static TrafficSignClientTexture load(String id, boolean allowBackground, Runnable afterLoad) {
+        MutablePair<TrafficSignClientTexture, Integer> data = cachedTexturesById.computeIfAbsent(id, x -> {
             TrafficSignClientTexture textureData = new TrafficSignClientTexture(id);
             if (id.startsWith(BuildInTrafficSignCodec.PREFIX)) {
                 try {
@@ -161,13 +162,16 @@ public class TrafficSignClientTexture implements AutoCloseable {
                     TrafficCraft.LOGGER.error("Error while loading TrafficSignClientTexture.", e);
                 }
             } else {
-                DataAccessor.getFromServer(id, ModAccessorTypes.GET_TRAFFIC_SIGN_TEXTURE, a -> textureData.init(a, allowBackground));
+                ModNetworkManager.GET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toServer(), new GetTrafficSignTexturePacket.Request(id), (response) -> {
+                    textureData.init(response.getData(), allowBackground);
+                    DLUtils.doIfNotNull(afterLoad, Runnable::run);
+                }, () -> {});
             }
             return new MutablePair<>(textureData, 0);
         });
         data.setSecond(data.getSecond() + 1);
         if (allowBackground && data.getFirst().getRawData().getShape() == TrafficSignShape.MISC && data.getFirst().isFullyLoaded()) {
-            
+
             data.getFirst().generateBgTexture();
         }
         return data.getFirst();
@@ -194,7 +198,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
         return rawData;
     }
 
-    public DynamicTexture getTexture() {
+    public SafeDynamicTexture getTexture() {
         if (builtIn) {
             throw new IllegalAccessError("Cannot access built-in textures as DynamicTexture.");
         }
@@ -205,7 +209,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
         return textureLocation;
     }
 
-    public DynamicTexture getBackgroundTexture() {
+    public SafeDynamicTexture getBackgroundTexture() {
         if (builtIn) {
             throw new IllegalAccessError("Cannot access built-in textures as DynamicTexture.");
         }
@@ -248,7 +252,7 @@ public class TrafficSignClientTexture implements AutoCloseable {
     private void closeInternal() {
         isClosed = true;
         if (this != EMPTY && !this.equals(EMPTY) && !this.isBuiltIn()) {
-            DLUtils.doIfNotNull(texture, x -> x.close());
+            DLUtils.doIfNotNull(texture, DynamicTexture::close);
             Minecraft.getInstance().getTextureManager().release(textureLocation);
 
             if (backgroundTexture != null && backgroundTexture != EMPTY_TEXTURE) {

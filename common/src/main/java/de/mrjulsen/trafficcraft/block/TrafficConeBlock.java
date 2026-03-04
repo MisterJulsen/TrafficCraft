@@ -1,7 +1,7 @@
 package de.mrjulsen.trafficcraft.block;
 
 import com.mojang.serialization.MapCodec;
-
+import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.block.data.ColorableBlock;
 import net.minecraft.core.BlockPos;
@@ -113,7 +113,7 @@ public class TrafficConeBlock extends ColorableBlock implements SimpleWaterlogge
     }
 
     @Override
-    public int getDefaultColor() {
+    public DLColor getDefaultColor() {
         return Constants.TRAFFIC_CONE_BASE_COLOR;
     }
 

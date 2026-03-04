@@ -1,0 +1,202 @@
+{
+    "dragonlib-gui": {
+        "texture_size": [ 256, 256 ],
+        "sprites": {
+            "traffic_light": {
+                "type": "stretch",
+                "uv": [ 0, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "tram_traffic_light": {
+                "type": "stretch",
+                "uv": [ 16, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_one_light": {
+                "type": "stretch",
+                "uv": [ 32, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_two_lights": {
+                "type": "stretch",
+                "uv": [ 48, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_three_lights": {
+                "type": "stretch",
+                "uv": [ 64, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_four_lights": {
+                "type": "stretch",
+                "uv": [ 80, 0 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_no_icon": {
+                "type": "stretch",
+                "uv": [ 0, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_right": {
+                "type": "stretch",
+                "uv": [ 16, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_left": {
+                "type": "stretch",
+                "uv": [ 32, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_up": {
+                "type": "stretch",
+                "uv": [ 48, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_up_right": {
+                "type": "stretch",
+                "uv": [ 64, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_up_left": {
+                "type": "stretch",
+                "uv": [ 80, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_pedestrian": {
+                "type": "stretch",
+                "uv": [ 96, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_bike": {
+                "type": "stretch",
+                "uv": [ 112, 16 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_tram_icon": {
+                "type": "stretch",
+                "uv": [ 0, 32 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_tram_right": {
+                "type": "stretch",
+                "uv": [ 16, 32 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_tram_left": {
+                "type": "stretch",
+                "uv": [ 32, 32 ],
+                "size": [ 16, 16 ]
+            },
+            "traffic_light_tram_straight": {
+                "type": "stretch",
+                "uv": [ 48, 32 ],
+                "size": [ 16, 16 ]
+            },
+            "copy": {
+                "type": "stretch",
+                "uv": [ 0, 48 ],
+                "size": [ 16, 16 ]
+            },
+            "paste": {
+                "type": "stretch",
+                "uv": [ 16, 48 ],
+                "size": [ 16, 16 ]
+            },
+            "help": {
+                "type": "stretch",
+                "uv": [ 32, 48 ],
+                "size": [ 16, 16 ]
+            },
+            "check": {
+                "type": "stretch",
+                "uv": [ 48, 48 ],
+                "size": [ 16, 16 ]
+            },
+            "cancel": {
+                "type": "stretch",
+                "uv": [ 64, 48 ],
+                "size": [ 16, 16 ]
+            },
+            "edit": {
+                "type": "stretch",
+                "uv": [ 0, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "erase": {
+                "type": "stretch",
+                "uv": [ 16, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "pick": {
+                "type": "stretch",
+                "uv": [ 32, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "text": {
+                "type": "stretch",
+                "uv": [ 48, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "fill": {
+                "type": "stretch",
+                "uv": [ 64, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "delete": {
+                "type": "stretch",
+                "uv": [ 80, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "pattern": {
+                "type": "stretch",
+                "uv": [ 96, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "add": {
+                "type": "stretch",
+                "uv": [ 112, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "add_bullet": {
+                "type": "stretch",
+                "uv": [ 128, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "save": {
+                "type": "stretch",
+                "uv": [ 144, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "open": {
+                "type": "stretch",
+                "uv": [ 160, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "write_to_file": {
+                "type": "stretch",
+                "uv": [ 176, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "discard_file": {
+                "type": "stretch",
+                "uv": [ 192, 64 ],
+                "size": [ 16, 16 ]
+            },
+            "delete_white": {
+                "type": "stretch",
+                "uv": [ 0, 80 ],
+                "size": [ 16, 16 ]
+            },
+            "move_down": {
+                "type": "stretch",
+                "uv": [ 16, 80 ],
+                "size": [ 16, 16 ]
+            },
+            "move_up": {
+                "type": "stretch",
+                "uv": [ 32, 80 ],
+                "size": [ 16, 16 ]
+            }
+        }
+    }
+}

@@ -2,10 +2,10 @@ package de.mrjulsen.trafficcraft.block.data;
 
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import net.minecraft.util.StringRepresentable;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.trafficcraft.TrafficCraft;
 
-public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum {
+public enum TrafficLightColor implements ITranslatableEnum {
     NONE("none", 0, TrafficLightType.values(), 0),
 	RED("red", 1, new TrafficLightType[] { TrafficLightType.CAR }, 1),
 	YELLOW("yellow", 2, new TrafficLightType[] { TrafficLightType.CAR }, 2),
@@ -73,14 +73,9 @@ public enum TrafficLightColor implements StringRepresentable, ITranslatableEnum 
     public String getSerializedName() {
         return name;
     }
-
+	
 	@Override
-	public String getEnumName() {
-		return "trafficlightcolor";
-	}
-
-	@Override
-	public String getEnumValueName() {
-		return getName();
+	public Data getTranslationData() {
+		return new Data(TrafficCraft.MOD_ID, "trafficlightcolor", name);
 	}
 }

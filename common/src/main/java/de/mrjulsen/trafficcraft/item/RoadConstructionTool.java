@@ -9,11 +9,15 @@ import java.util.Optional;
 
 import org.joml.Vector3f;
 
-import de.mrjulsen.mcdragonlib.core.Location;
-import de.mrjulsen.mcdragonlib.data.StatusResult;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
+
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
-import de.mrjulsen.mcdragonlib.util.MathUtils;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
+import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
@@ -72,23 +76,23 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext pContext) { 
+    public InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
         BlockPos clickedPos = pContext.getClickedPos();
         Vec3 clickedVec = pContext.getClickLocation();
         Player player = pContext.getPlayer();
         ItemStack stack = pContext.getItemInHand();
 
-        if (!player.isShiftKeyDown()) {            
+        if (!player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 RoadConstructionToolComponent comp = getComponent(stack);
 
-                Location location = new Location(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location().toString());
-                Optional<Location> startLoc = comp.start();
-                Optional<Location> endLoc = comp.end();
+                WorldLocation location = new WorldLocation(clickedPos.getX(), clickedVec.y, clickedPos.getZ(), level.dimension().location());
+                Optional<WorldLocation> startLoc = comp.start();
+                Optional<WorldLocation> endLoc = comp.end();
 
                 if (startLoc.isPresent()) {
-                    if (isLineValid(comp.start().get().getLocationVec3(), location.getLocationVec3()).result()) {
+                    if (isLineValid(comp.start().get().getLocationVec3(), location.getLocationVec3()).isOK()) {
                         endLoc = Optional.of(location);
                     }
                 } else {
@@ -100,6 +104,34 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
         }
 
         return super.useOn(pContext);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
+
+        RoadConstructionToolComponent comp = getComponent(itemstack);
+        Optional<WorldLocation> startLoc = comp.start();
+        Optional<WorldLocation> endLoc = comp.end();
+        Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
+
+        if (endLoc.isPresent() && startLoc.isPresent()) {
+            Vec3 start = startLoc.get().getLocationVec3();
+            Vec3 end = endLoc.get().getLocationVec3();
+            byte roadWidth = comp.roadWidth();
+            boolean replaceBlocks = comp.replaceBlocks();
+            blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks);
+        }
+
+        if (pLevel.isClientSide) {
+            ClientWrapper.showRoadConstructionToolScreen(
+                    itemstack,
+                    (int)blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v <= 0 || v >= 8).count(),
+                    blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v > 0 && v < 8).mapToInt(x -> x).sum()
+            );
+        }
+
+        return InteractionResultHolder.success(itemstack);
     }
     
     public static ItemAttributeModifiers createAttributes(Tier tier, int attackDamage, float attackSpeed) {
@@ -119,9 +151,9 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
         stack.remove(ModDataComponents.ROAD_CONSTRUCTION_TOOL_COMPONENT.get());
     }
 
-    private static StatusResult isLineValid(Vec3 a, Vec3 b) {
+    private static DLStatus isLineValid(Vec3 a, Vec3 b) {
         boolean flag1 = a.distanceTo(b) < ModCommonConfig.ROAD_BUILDER_MAX_DISTANCE.get();
-        boolean flag2 = MathUtils.slope(a, b) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
+        boolean flag2 = MathUtils.slope(a.toVector3f(), b.toVector3f()) >= ModCommonConfig.ROAD_BUILDER_MAX_SLOPE.get();
         int status = 0;
 
         if (!flag1) {
@@ -129,35 +161,8 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
         } else if (!flag2) {
             status = ERROR_SLOPE_TOO_STEEP;
         }
-        return new StatusResult(flag1 && flag2, status, null);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
-        ItemStack itemstack = pPlayer.getItemInHand(pUsedHand);
-
-        RoadConstructionToolComponent comp = getComponent(itemstack);
-        Optional<Location> startLoc = comp.start();
-        Optional<Location> endLoc = comp.end();
-        Collection<Map<BlockPos, Integer>> blockList = new ArrayList<>();
-
-        if (endLoc.isPresent() && startLoc.isPresent()) {
-            Vec3 start = startLoc.get().getLocationVec3();
-            Vec3 end = endLoc.get().getLocationVec3();
-            byte roadWidth = comp.roadWidth();
-            boolean replaceBlocks = comp.replaceBlocks();
-            blockList = calculateRoad(pLevel, start, end, roadWidth, replaceBlocks); 
-        }
-
-        if (pLevel.isClientSide) {
-            ClientWrapper.showRoadConstructionToolScreen(
-                itemstack,
-                (int)blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v <= 0 || v >= 8).count(),
-                blockList.stream().flatMap(x -> x.values().stream()).filter(v -> v > 0 && v < 8).mapToInt(x -> x).sum()
-            );
-        }
         
-        return InteractionResultHolder.success(itemstack);
+        return new DLStatus(flag1 && flag2 ? DLStatus.FLAG_OK : DLStatus.FLAG_ERROR, status, "");
     }
 
     public static RoadBuilderCountResult countBlocksNeeded(Level level, Vec3 start, Vec3 end, byte roadWidth, boolean replaceBlocks) {
@@ -269,34 +274,34 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
 
     @SuppressWarnings("resource")
     @Environment(EnvType.CLIENT)
-	public static void clientTick() {
+    public static void clientTick() {
         clientTicks++;
         if (clientTicks > (Minecraft.useFancyGraphics() ? FANCY_GRAPHICS_CLIENT_TICK_DELAY : FAST_GRAPHICS_CLIENT_TICK_DELAY)) {
             clientTicks = 0;
         }
 
         Player player = Minecraft.getInstance().player;
-		Level level = Minecraft.getInstance().level;
+        Level level = Minecraft.getInstance().level;
 
-		if (player == null || level == null)
-			return;
-		if (Minecraft.getInstance().screen != null)
-			return;
+        if (player == null || level == null)
+            return;
+        if (Minecraft.getInstance().screen != null)
+            return;
 
-		if (!(player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool) && !(player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof RoadConstructionTool)) {
+        if (!(player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool) && !(player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof RoadConstructionTool)) {
             return;
         }
 
 
 
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof RoadConstructionTool ? player.getItemInHand(InteractionHand.MAIN_HAND) : player.getItemInHand(InteractionHand.OFF_HAND);
-        
+
         if (!(stack.getItem() instanceof RoadConstructionTool item) || !item.hasComponent(stack)) {
             return;
         }
-        
+
         RoadConstructionToolComponent comp = item.getComponent(stack);
-        
+
         if (!comp.start().isPresent()) {
             return;
         }
@@ -318,14 +323,14 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
             }
 
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos1",
-                comp.start().get().getLocationBlockPos().toShortString()
+                    comp.start().get().getLocationBlockPos().toShortString()
             ), true);
 
         } else if (comp.start().isPresent() && comp.end().isPresent()) {
             end = comp.end().get().getLocationVec3().add(0.5d, 0, 0.5d);
             player.displayClientMessage(TextUtils.translate("item.trafficcraft.road_construction_tool.status_pos2",
-                comp.start().get().getLocationBlockPos().toShortString(),
-                comp.end().get().getLocationBlockPos().toShortString()
+                    comp.start().get().getLocationBlockPos().toShortString(),
+                    comp.end().get().getLocationBlockPos().toShortString()
             ).withStyle(ChatFormatting.GREEN), true);
         }
 
@@ -361,18 +366,18 @@ public class RoadConstructionTool extends Item implements IUseDataComponent<Road
             if (clientTicks == 0) {
                 for (double d = 0; d < 1; d += mul) {
                     Vec3 vecPos = new Vec3(line.x * d, line.y * d, line.z * d).add(start);
-                    level.addParticle(new DustParticleOptions(isLineValid(start, end).result() ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
-                    
+                    level.addParticle(new DustParticleOptions(isLineValid(start, end).isOK() ? new Vector3f(0.2f, 0.9f, 0.2f) : new Vector3f(0.9f, 0.2f, 0.2f), 1f), vecPos.x, vecPos.y, vecPos.z, 0, 0, 0);
+
                     Vec3 rightVec = vecPos.add(new Vec3(line.z * d, 0, -line.x * d).normalize().scale(halfWidth));
                     level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), rightVec.x, rightVec.y, rightVec.z, 0, 0, 0);
-                    
+
                     Vec3 leftVec = vecPos.add(new Vec3(-line.z * d, 0, line.x * d).normalize().scale(halfWidth));
                     level.addParticle(new DustParticleOptions(new Vector3f(1f, 1f, 0.6f), 0.5f), leftVec.x, leftVec.y, leftVec.z, 0, 0, 0);
                 }
             }
         }
-         
-	}
+
+    }
 
     public static class RoadBuilderCountResult {
         public final int blocksCount;

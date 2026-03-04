@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TrafficLightControllerBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
@@ -15,6 +16,7 @@ import de.mrjulsen.trafficcraft.block.data.TrafficLightType;
 import de.mrjulsen.trafficcraft.data.TrafficLightScheduleEntryData;
 import de.mrjulsen.trafficcraft.data.TrafficLightSchedule;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
+import dev.architectury.utils.GameInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.ByteTag;
@@ -58,7 +60,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private long totalTicks = 0;
     private boolean running = true;
 
-    /** @deprecated Backwards compatibility only! */ @Deprecated private Location linkLocation = null;
+    /** @deprecated Backwards compatibility only! */ @Deprecated private WorldLocation linkLocation = null;
     private boolean linkMigrated = false;
 
     protected TrafficLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -98,7 +100,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
     private void linkMigration(CompoundTag nbt) {
         if (nbt.contains(NBT_LINKED_TO)) {
             TrafficCraft.LOGGER.warn("Traffic Light at position " + worldPosition.toShortString() + " contains deprecated link data. Trying to convert it.");            
-            linkLocation = Location.fromNbtAsInt(nbt.getCompound(NBT_LINKED_TO));
+            linkLocation = new WorldLocation(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z"), GameInstance.getServer().overworld());
             linkMigrated = false;
             return;
         }
@@ -176,7 +178,7 @@ public class TrafficLightBlockEntity extends ColoredBlockEntity {
             if (level.getBlockState(linkLocation.getLocationBlockPos()).getBlock() instanceof TrafficLightControllerBlock &&
                 level.getBlockEntity(linkLocation.getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity
             ) {
-                blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), level.dimension().location().toString()));
+                blockEntity.addTrafficLightLocation(new WorldLocation(pos.getX(), pos.getY(), pos.getZ(), level.dimension().location()));
             }
             linkMigrated = true;
             return;

@@ -1,51 +1,75 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
-import java.util.function.Supplier;
-
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
-import dev.architectury.networking.NetworkManager.PacketContext;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class PatternCatalogueIndexPacketGui extends BaseNetworkPacket<PatternCatalogueIndexPacketGui> {
+public class PatternCatalogueIndexPacketGui {
 
-    private int index;
+    public static class Request extends NetworkPacketData {
+        private static final String NBT_DATA = "Data";
 
-    public PatternCatalogueIndexPacketGui() {}
+        private int index;
 
-    public PatternCatalogueIndexPacketGui(int index) {
-        this.index = index;
+        public Request(DLStatus status) {
+            super(status);
+        }
+
+        public Request(int index) {
+            super(DLStatus.OK);
+            this.index = index;
+        }
+
+        @Override
+        protected void write(CompoundTag nbt) {
+            nbt.putInt(NBT_DATA, index);
+        }
+
+        @Override
+        protected void read(CompoundTag nbt) {
+            this.index = nbt.getInt(NBT_DATA);
+        }
     }
 
-    @Override
-    public void encode(PatternCatalogueIndexPacketGui packet, RegistryFriendlyByteBuf buffer) {
-        buffer.writeInt(packet.index);
+    public static class Response extends NetworkPacketData {
+
+        public Response(DLStatus status) {
+            super(status);
+        }
+
+        public Response() {
+            super(DLStatus.OK);
+        }
+
+        @Override
+        protected void write(CompoundTag nbt) {
+        }
+
+        @Override
+        protected void read(CompoundTag nbt) {
+        }
     }
 
-    @Override
-    public PatternCatalogueIndexPacketGui decode(RegistryFriendlyByteBuf buffer) {
-        int index = buffer.readInt();
-
-        return new PatternCatalogueIndexPacketGui(index);
-    }
-    
-    @Override
-    public void handle(PatternCatalogueIndexPacketGui packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
+    public static Response handle(Request packet, NetworkPacketContext context) {
+        return context.queueResult(() -> {
+            ServerPlayer sender = (ServerPlayer)context.getPlayer();
             if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
                 final ItemStack stack = menu.patternSlot.getItem();
                 if (!(stack.getItem() instanceof PatternCatalogueItem item))
-                    return;
+                    return new Response();
 
                 item.setSelectedIndex(stack, packet.index);
                 menu.patternSlot.set(stack);
                 menu.patternSlot.setChanged();
-                menu.broadcastChanges();     
+                menu.broadcastChanges();
+                return new Response();
             }
+            return new Response();
         });
     }
 }

@@ -1,11 +1,12 @@
 package de.mrjulsen.trafficcraft.network.packets.cts;
 
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 import java.util.Optional;
 
-import de.mrjulsen.mcdragonlib.core.Location;
-import de.mrjulsen.mcdragonlib.net.BaseNetworkPacket;
+import de.mrjulsen.mcdragonlib.data.DLStatus;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
+import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.mcdragonlib.util.ScheduledTask;
 import de.mrjulsen.mcdragonlib.util.ScheduledTask.ScheduledTaskContext;
@@ -14,9 +15,8 @@ import de.mrjulsen.trafficcraft.block.AsphaltSlope;
 import de.mrjulsen.trafficcraft.block.data.RoadType;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool.RoadBuildingData;
-import dev.architectury.networking.NetworkManager.PacketContext;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -27,48 +27,54 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 
-public class RoadBuilderBuildRoadPacket extends BaseNetworkPacket<RoadBuilderBuildRoadPacket> {
+public class RoadBuilderBuildRoadPacket extends NetworkPacketData {
 
-    private Location pos1;
-    private Location pos2;
+    private static final String NBT_POS1 = "Pos1";
+    private static final String NBT_POS2 = "Pos2";
+    private static final String NBT_ROAD_WIDTH = "RoadWidth";
+    private static final String NBT_REAPLCE_BLOCKS = "ReplaceBlocks";
+    private static final String NBT_ROAD_TYPE = "RoadType";
+
+    private WorldLocation pos1;
+    private WorldLocation pos2;
     private byte roadWidth;
     private boolean replaceBlocks;
     private RoadType roadType;
 
-    public RoadBuilderBuildRoadPacket() {}
+    public RoadBuilderBuildRoadPacket(DLStatus status) {
+        super(status);
+    }
     
-    public RoadBuilderBuildRoadPacket(Location pos1, Location pos2, byte roadWidth, boolean replaceBlocks, RoadType roadType) {
+    public RoadBuilderBuildRoadPacket(WorldLocation pos1, WorldLocation pos2, byte roadWidth, boolean replaceBlocks, RoadType roadType) {
+        super(DLStatus.OK);
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.roadWidth = roadWidth;
         this.replaceBlocks = replaceBlocks;
         this.roadType = roadType;
+    }    
+
+    @Override
+    protected void write(CompoundTag nbt) {
+        nbt.put(NBT_POS1, pos1.toNbt());
+        nbt.put(NBT_POS2, pos2.toNbt());
+        nbt.putByte(NBT_ROAD_WIDTH, roadWidth);
+        nbt.putBoolean(NBT_REAPLCE_BLOCKS, replaceBlocks);
+        nbt.putInt(NBT_ROAD_TYPE, roadType.getIndex());
     }
 
     @Override
-    public void encode(RoadBuilderBuildRoadPacket packet, RegistryFriendlyByteBuf buffer) {
-        buffer.writeNbt(packet.pos1.toNbt());
-        buffer.writeNbt(packet.pos2.toNbt());
-        buffer.writeByte(packet.roadWidth);
-        buffer.writeBoolean(packet.replaceBlocks);
-        buffer.writeEnum(packet.roadType);
+    protected void read(CompoundTag nbt) {
+        this.pos1 = WorldLocation.loadFromNbt(nbt.getCompound(NBT_POS1));
+        this.pos2 = WorldLocation.loadFromNbt(nbt.getCompound(NBT_POS2));
+        this.roadWidth = nbt.getByte(NBT_ROAD_WIDTH);
+        this.replaceBlocks = nbt.getBoolean(NBT_REAPLCE_BLOCKS);
+        this.roadType = RoadType.getRoadTypeByIndex(nbt.getInt(NBT_ROAD_TYPE));
     }
 
-    @Override
-    public RoadBuilderBuildRoadPacket decode(RegistryFriendlyByteBuf buffer) {
-        Location pos1 = Location.fromNbt(buffer.readNbt());
-        Location pos2 = Location.fromNbt(buffer.readNbt());
-        byte roadWidth = buffer.readByte();
-        boolean replaceBlocks = buffer.readBoolean();
-        RoadType roadType = buffer.readEnum(RoadType.class);
-
-        return new RoadBuilderBuildRoadPacket(pos1, pos2, roadWidth, replaceBlocks, roadType);
-    }
-
-    @Override
-    public void handle(RoadBuilderBuildRoadPacket packet, Supplier<PacketContext> contextSupplier) {
-        contextSupplier.get().queue(() -> {
-            ServerPlayer sender = (ServerPlayer)contextSupplier.get().getPlayer();
+    public static void handle(RoadBuilderBuildRoadPacket packet, NetworkPacketContext context) {        
+        context.queue(() -> {
+            ServerPlayer sender = (ServerPlayer)context.getPlayer();
             final Level level = sender.level();
             ItemStack item = null;
             InteractionHand hand = null;
@@ -84,15 +90,15 @@ public class RoadBuilderBuildRoadPacket extends BaseNetworkPacket<RoadBuilderBui
             }
 
             final RoadBuildingData buildingData = RoadConstructionTool.prepareRoadBuilding(
-                level,
-                sender,
-                hand,
-                item,
-                packet.pos1.getLocationVec3(),
-                packet.pos2.getLocationVec3(), 
-                packet.roadWidth,
-                packet.replaceBlocks,
-                packet.roadType
+                    level,
+                    sender,
+                    hand,
+                    item,
+                    packet.pos1.getLocationVec3(),
+                    packet.pos2.getLocationVec3(),
+                    packet.roadWidth,
+                    packet.replaceBlocks,
+                    packet.roadType
             );
 
             ScheduledTask.create(buildingData, level, RoadConstructionTool.BUILD_DELAY_TICKS, buildingData.blocks.size(), packet::run);

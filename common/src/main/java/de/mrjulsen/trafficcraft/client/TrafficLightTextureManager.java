@@ -5,17 +5,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import de.mrjulsen.mcdragonlib.client.ber.BERCube;
+import de.mrjulsen.mcdragonlib.DragonLib;
+import de.mrjulsen.mcdragonlib.client.model.mesh.*;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+
 import de.mrjulsen.mcdragonlib.client.ber.BERGraphics;
-import de.mrjulsen.mcdragonlib.data.Pair;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightColor;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightIcon;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.phys.Vec2;
 
 public class TrafficLightTextureManager {
     private static final TrafficLightBulbModel FALLBACK_MODEL = TrafficLightBulbModel.create(null);
@@ -103,25 +106,38 @@ public class TrafficLightTextureManager {
         private static final float pixel = 1.0F / 16.0F;
 
         private final TrafficLightTextureKey key;
-        private final BERCube cube;
+        private final BasicMesh cube;
 
         private TrafficLightBulbModel(TrafficLightTextureKey key) {
             this.key = key;
+
             if (key != null) {
-                cube = BERCube.cube(key.getTextureLocation(), pixel * 4, pixel * 4, pixel, dir -> dir != Direction.NORTH && dir != Direction.UP, dir -> {
-                    switch (dir) {
-                        case WEST:
-                        case EAST:
-                            return Pair.of(new Vec2(0, 0), new Vec2(pixel, 1));
-                        case DOWN:
-                        case UP:
-                            return Pair.of(new Vec2(0, 0), new Vec2(1, pixel));
-                        default:
-                            return Pair.of(new Vec2(0, 0), new Vec2(1, 1));
-                    }
-                });
+                cube = new BasicMesh();
+                Face frontFace = Face.createFace(Direction.SOUTH, new Vector3f(0, 0, pixel * 1), pixel * 4, pixel * 4);
+                frontFace.setTexture(key.getTextureLocation());
+                cube.addFace(frontFace);
+
+                Face rightSide = Face.createFace(Direction.EAST, new Vector3f(pixel * 4, 0, 0), pixel * 1, pixel * 4);
+                rightSide.getCorner(CornerType.TOP_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                rightSide.getCorner(CornerType.BOTTOM_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                rightSide.setTexture(key.getTextureLocation());
+                cube.addFace(rightSide);
+
+                Face leftSide = Face.createFace(Direction.WEST, new Vector3f(), pixel * 1, pixel * 4);
+                leftSide.setTexture(key.getTextureLocation());
+                leftSide.getCorner(CornerType.TOP_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                leftSide.getCorner(CornerType.BOTTOM_RIGHT).setU(DragonLib.BLOCK_PIXEL);
+                cube.addFace(leftSide);
+
+                Face bottomFace = Face.createFace(Direction.DOWN, new Vector3f(), pixel * 4, pixel * 1);
+                bottomFace.setTexture(key.getTextureLocation());
+                bottomFace.getCorner(CornerType.BOTTOM_LEFT).setV(DragonLib.BLOCK_PIXEL);
+                bottomFace.getCorner(CornerType.BOTTOM_RIGHT).setV(DragonLib.BLOCK_PIXEL);
+                cube.addFace(bottomFace);
+
+                cube.cleanUp();
             } else {
-                cube = new BERCube(0, 0, 0);
+                cube = new BasicMesh();
             }
         }
 
@@ -131,9 +147,9 @@ public class TrafficLightTextureManager {
 
         private void render(BERGraphics<?> graphics, BlockEntity be, int light) {
             graphics.poseStack().pushPose();
-            graphics.poseStack().translate(0, 0, pixel);
-            cube.setLight(key.isOffState() ? light : LightTexture.FULL_BRIGHT);
-            cube.render(graphics);    
+            //graphics.poseStack().translate(0, 0, pixel);
+            //cube.setLight(key.isOffState() ? light : LightTexture.FULL_BRIGHT);
+            cube.render(graphics, key.isOffState() ? graphics.packedLight() : LightTexture.FULL_BRIGHT, graphics.packedOverlay(), false, true);    
             graphics.poseStack().popPose();
         }
 

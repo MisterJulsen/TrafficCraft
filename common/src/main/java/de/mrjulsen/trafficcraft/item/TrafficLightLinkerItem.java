@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Arrays;
 
-import de.mrjulsen.mcdragonlib.core.IIterableEnum;
-import de.mrjulsen.mcdragonlib.core.ITranslatableEnum;
-import de.mrjulsen.mcdragonlib.core.Location;
+import de.mrjulsen.mcdragonlib.data.IIterableEnum;
+import de.mrjulsen.mcdragonlib.data.ITranslatableEnum;
+import de.mrjulsen.mcdragonlib.data.WorldLocation;
+import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.TrafficLightRequestButtonBlock;
@@ -15,12 +16,12 @@ import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntit
 import de.mrjulsen.trafficcraft.components.TrafficLightLinkerComponent;
 import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.registry.ModDataComponents;
+import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -55,12 +56,12 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
     }
 
     @Override
-    public InteractionResult useOn(UseOnContext pContext) { 
+    public InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
         BlockPos clickedPos = pContext.getClickedPos();
         Player player = pContext.getPlayer();
         ItemStack stack = pContext.getItemInHand();
-        
+
         if (!player.isShiftKeyDown()) {
             Block clickedBlock = pContext.getLevel().getBlockState(clickedPos).getBlock();
             if (!hasComponent(stack) && isSourceBlockAccepted(clickedBlock)) {
@@ -68,27 +69,27 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 if (!level.isClientSide) {
                     TrafficLightLinkerComponent comp = getComponent(stack);
                     setComponent(stack, new TrafficLightLinkerComponent(
-                        Optional.of(new Location(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location().toString())),
-                        comp.mode(),
-                        Optional.of(ModBlocks.BLOCKS.getRegistrar().getId(clickedBlock).toString())
+                            Optional.of(new WorldLocation(clickedPos.getX(), clickedPos.getY(), clickedPos.getZ(), level.dimension().location())),
+                            comp.mode(),
+                            Optional.of(ModBlocks.BLOCKS.getRegistrar().getId(clickedBlock).toString())
                     ));
                     player.displayClientMessage(TextUtils.translate(keySet, clickedPos.toShortString(), level.dimension().location().toString()).withStyle(ChatFormatting.AQUA), true);
                 }
                 return InteractionResult.SUCCESS;
-            } else if (isTargetBlockAccepted(clickedBlock)) {                        
+            } else if (isTargetBlockAccepted(clickedBlock)) {
                 if (!hasComponent(stack)) {
                     return InteractionResult.FAIL;
-                }                
+                }
 
                 TrafficLightLinkerComponent comp = getComponent(stack);
 
-                Optional<Location> linkLoc = comp.location();
+                Optional<WorldLocation> linkLoc = comp.location();
                 LinkerMode mode = comp.mode();
 
                 if (!linkLoc.isPresent()) {
                     return InteractionResult.FAIL;
                 }
-                
+
                 if (!pContext.getLevel().dimension().location().toString().equals(linkLoc.get().dimension)) {
                     player.displayClientMessage(TextUtils.translate(keyWrongDim).withStyle(ChatFormatting.RED), true);
                 }
@@ -105,20 +106,20 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                             player.displayClientMessage(TextUtils.translate(keySetLink, linkLoc.get().getLocationBlockPos().toShortString(), level.dimension().location().toString()).withStyle(ChatFormatting.GREEN), true);
                             break;
                     }
-                } else {                        
+                } else {
                     if (pContext.getLevel().isLoaded(linkLoc.get().getLocationBlockPos()) && isSourceBlockAccepted(pContext.getLevel().getBlockState(linkLoc.get().getLocationBlockPos()).getBlock())) {
                         if (pContext.getLevel().getBlockEntity(linkLoc.get().getLocationBlockPos()) instanceof TrafficLightControllerBlockEntity blockEntity) {
                             BlockPos pos = pContext.getClickedPos();
-                            String dim = pContext.getLevel().dimension().location().toString();
+                            ResourceLocation dim = pContext.getLevel().dimension().location();
 
                             switch (mode) {
-                                case UNLINK:                                
-                                    blockEntity.removeTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
+                                case UNLINK:
+                                    blockEntity.removeTrafficLightLocation(new WorldLocation(pos.getX(), pos.getY(), pos.getZ(), dim));
                                     player.displayClientMessage(TextUtils.translate(keyRemoveLink, linkLoc.get().getLocationBlockPos().toShortString(), level.dimension().location().toString()).withStyle(ChatFormatting.RED), true);
                                     break;
                                 case LINK:
                                 default:
-                                    blockEntity.addTrafficLightLocation(new Location(pos.getX(), pos.getY(), pos.getZ(), dim));
+                                    blockEntity.addTrafficLightLocation(new WorldLocation(pos.getX(), pos.getY(), pos.getZ(), dim));
                                     player.displayClientMessage(TextUtils.translate(keySetLink, linkLoc.get().getLocationBlockPos().toShortString(), level.dimension().location().toString()).withStyle(ChatFormatting.GREEN), true);
                                     break;
                             }
@@ -129,7 +130,7 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 }
 
                 return InteractionResult.SUCCESS;
-            } 
+            }
         }
 
         return super.useOn(pContext);
@@ -153,15 +154,19 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        
+
+        LinkerMode mode = LinkerMode.LINK;
         if (hasComponent(stack)) {
             TrafficLightLinkerComponent comp = getComponent(stack);
-            Optional<Location> loc = comp.location();
-            LinkerMode mode = comp.mode();
+            Optional<WorldLocation> loc = comp.location();
             Optional<String> block = comp.targetBlockName();
-        
-            if (loc.isPresent()) 
-                tooltipComponents.add(TextUtils.translate(keyTooltipLocation, Integer.toString((int)loc.get().x), Integer.toString((int)loc.get().y), Integer.toString((int)loc.get().z), loc.get().dimension));            
+            mode = comp.mode();
+
+            if (loc.isPresent()) {
+                tooltipComponents.add(TextUtils.translate(keyTooltipLocation, Integer.toString((int)loc.get().x), Integer.toString((int)loc.get().y), Integer.toString((int)loc.get().z), loc.get().dimension.toString()));
+            } else {
+                tooltipComponents.add(textNoLink);
+            }
 
             if (block.isPresent()) {
                 try {
@@ -171,11 +176,11 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                     tooltipComponents.add(TextUtils.translate(keyTooltipBlock, TextUtils.text("ERROR").withStyle(ChatFormatting.RED)));
                 }
             }
-            tooltipComponents.add(TextUtils.translate(keyTooltipMode, TextUtils.translate(mode.getValueTranslationKey(TrafficCraft.MOD_ID)), TextUtils.translate(mode.getValueTranslationKey(TrafficCraft.MOD_ID))));
-            tooltipComponents.add(textTooltipInstruction);
         } else {
             tooltipComponents.add(textNoLink);
-        }        
+        }
+        tooltipComponents.add(TextUtils.translate(keyTooltipMode, mode.getValueTranslation(), mode.getValueTranslation()));
+        tooltipComponents.add(textTooltipInstruction);
     }
 
     @Override
@@ -204,14 +209,14 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
                 mode = comp.mode().previous();
             }
             setComponent(itemStack, new TrafficLightLinkerComponent(comp.location(), mode, comp.targetBlockName()));
-            player.displayClientMessage(TextUtils.translate(keyTooltipMode, TextUtils.translate(mode.getValueTranslationKey(TrafficCraft.MOD_ID)), TextUtils.translate(mode.getValueTranslationKey(TrafficCraft.MOD_ID))), true);
+            player.displayClientMessage(TextUtils.translate(keyTooltipMode, mode.getValueTranslation(),mode.getValueTranslation()), true);
             return true;
         }
         return false;
     }
     
 
-    public static enum LinkerMode implements StringRepresentable, ITranslatableEnum, IIterableEnum<LinkerMode> {
+    public static enum LinkerMode implements ITranslatableEnum, IIterableEnum<LinkerMode> {
         LINK(0, "link"),
         UNLINK(1, "unlink");
 
@@ -241,18 +246,8 @@ public class TrafficLightLinkerItem extends Item implements ILinkerItem, IScroll
         }
 
         @Override
-        public String getEnumName() {
-            return "linkermode";
-        }
-
-        @Override
-        public String getEnumValueName() {
-            return getName();
-        }
-
-        @Override
-        public String getSerializedName() {
-            return getName();
+        public Data getTranslationData() {
+            return new Data(TrafficCraft.MOD_ID, "linkermode", name);
         }
     }
 
