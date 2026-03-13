@@ -25,7 +25,6 @@ subprojects {
 
     repositories {
         maven { url = "file:///${System.getProperty('user.home')}/.m2/github/modsrepo/maven/" } // DragonLib
-        maven { url = "https://maven.mrjulsen.net" } // DragonLib
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
