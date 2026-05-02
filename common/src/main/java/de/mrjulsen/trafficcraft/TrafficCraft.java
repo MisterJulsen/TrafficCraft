@@ -32,7 +32,8 @@ public final class TrafficCraft {
         ModNetworkManager.init();
         ModCreativeModeTab.init();
         ModWorldGen.init();
-        ModTags.init();
+        ModItemTags.init();
+        ModBlockTags.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
         CrossPlatform.registerConfig();

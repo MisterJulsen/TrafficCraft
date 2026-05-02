@@ -3,6 +3,7 @@ package de.mrjulsen.trafficcraft.block;
 import java.util.Map;
 
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
+import de.mrjulsen.trafficcraft.registry.ModBlockTags;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -147,7 +148,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     }
 
     private static boolean needsBottomExtension(BlockState pState, BlockState belowBlock) {
-        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM));
+        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) || belowBlock.is(ModBlockTags.POST_EXTENSION));
     }
 
     @Override

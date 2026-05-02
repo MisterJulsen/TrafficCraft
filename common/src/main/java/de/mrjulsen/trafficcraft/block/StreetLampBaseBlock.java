@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.block;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
-import de.mrjulsen.trafficcraft.registry.ModTags;
+import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -130,7 +130,7 @@ public class StreetLampBaseBlock extends BaseEntityBlock implements SimpleWaterl
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         ItemStack stack = pPlayer.getInventory().getSelected();
 
-        if (stack.is(ModTags.WRENCHES)) {
+        if (stack.is(ModItemTags.WRENCHES)) {
             if (!pLevel.isClientSide) {
                 if (pLevel.getBlockEntity(pPos) instanceof StreetLampBlockEntity blockEntity && blockEntity.getOnTime() != blockEntity.getOffTime()) {
                     if (!pLevel.isClientSide) {

@@ -5,7 +5,7 @@ import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.ILinkerItem;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
-import de.mrjulsen.trafficcraft.registry.ModTags;
+import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -100,7 +100,7 @@ public class TrafficLightControllerBlock extends BaseEntityBlock {
         ItemStack stack = pPlayer.getInventory().getSelected();
         Item item = stack.getItem();
 
-        if (item != null && (stack.is(ModTags.WRENCHES) && !(item instanceof ILinkerItem && ((ILinkerItem)item).isSourceBlockAccepted(this)))) {
+        if (item != null && (stack.is(ModItemTags.WRENCHES) && !(item instanceof ILinkerItem && ((ILinkerItem)item).isSourceBlockAccepted(this)))) {
             if(pLevel.isClientSide) {
                 if (!pPlayer.isShiftKeyDown())
                     ClientWrapper.showTrafficLightControllerScreen(pPos, pLevel);

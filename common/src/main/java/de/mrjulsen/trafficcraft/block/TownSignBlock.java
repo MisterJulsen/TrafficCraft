@@ -5,7 +5,7 @@ import de.mrjulsen.trafficcraft.block.data.TownSignVariant;
 import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.registry.ModTags;
+import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -101,7 +101,7 @@ public class TownSignBlock extends WritableTrafficSign implements ITrafficPostLi
         }
 
         if(pLevel.isClientSide) {
-            if (stack.is(ModTags.WRENCHES) && pLevel.getBlockEntity(pPos) instanceof TownSignBlockEntity blockEntity) {
+            if (stack.is(ModItemTags.WRENCHES) && pLevel.getBlockEntity(pPos) instanceof TownSignBlockEntity blockEntity) {
                 if(!pPlayer.isShiftKeyDown()) {                
                     ClientWrapper.showTownSignScreen(blockEntity, editSide);
                 }

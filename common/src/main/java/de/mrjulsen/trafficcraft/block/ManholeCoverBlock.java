@@ -1,6 +1,6 @@
 package de.mrjulsen.trafficcraft.block;
 
-import de.mrjulsen.trafficcraft.registry.ModTags;
+import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -71,7 +71,7 @@ public class ManholeCoverBlock extends ManholeBlock {
 
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {    
         ItemStack item = pPlayer.getInventory().getSelected();
-        if (!item.is(ModTags.WRENCHES)) {
+        if (!item.is(ModItemTags.WRENCHES)) {
             return InteractionResult.PASS;
         }
         

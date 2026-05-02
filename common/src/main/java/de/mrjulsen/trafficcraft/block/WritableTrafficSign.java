@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.block;
 import de.mrjulsen.mcdragonlib.block.DLWritableSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.item.BrushItem;
-import de.mrjulsen.trafficcraft.registry.ModTags;
+import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -110,7 +110,7 @@ public abstract class WritableTrafficSign extends BaseEntityBlock implements Sim
         }
 
         if (pLevel.isClientSide) {
-            if (stack.is(ModTags.WRENCHES) && pLevel.getBlockEntity(pPos) instanceof DLWritableSignBlockEntity blockEntity) {
+            if (stack.is(ModItemTags.WRENCHES) && pLevel.getBlockEntity(pPos) instanceof DLWritableSignBlockEntity blockEntity) {
                 if (!pPlayer.isShiftKeyDown()) {                
                     ClientWrapper.showWritableSignScreen(blockEntity);
                 }
