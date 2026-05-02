@@ -2,6 +2,8 @@ package de.mrjulsen.trafficcraft.block;
 
 import java.util.Map;
 
+import de.mrjulsen.mcdragonlib.util.DataCache;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.registry.ModBlockTags;
 import net.minecraft.Util;
@@ -56,6 +58,42 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     private static final VoxelShape SHAPE_DOWN = Block.box(7, 0, 7, 9, 7, 9);
     private static final VoxelShape SHAPE_EXTEND_DOWN = Block.box(7, -16, 7, 9, 0, 9);
 
+    private static final MapCache<VoxelShape, BlockState, BlockState> shapes = new MapCache<>(state -> {
+        VoxelShape shape = SHAPE_BASE;
+
+        if ((state.getValue(AXIS) == Axis.X) && !state.getValue(NORTH) && !state.getValue(SOUTH) && !state.getValue(UP) && !state.getValue(DOWN)) {
+            shape = Shapes.or(shape, SHAPE_EAST, SHAPE_WEST);
+        } else if ((state.getValue(AXIS) == Axis.Z) && !state.getValue(EAST) && !state.getValue(WEST) && !state.getValue(UP) && !state.getValue(DOWN)) {
+            shape = Shapes.or(shape, SHAPE_NORTH, SHAPE_SOUTH);
+        } else if ((state.getValue(AXIS) == Axis.Y) && !state.getValue(EAST) && !state.getValue(WEST) && !state.getValue(NORTH) && !state.getValue(SOUTH)) {
+            shape = Shapes.or(shape, SHAPE_UP, SHAPE_DOWN);
+        } else {
+            state.setValue(AXIS, state.getValue(AXIS));
+            if (state.getValue(NORTH)) {
+                shape = Shapes.or(shape, SHAPE_NORTH);
+            }
+            if (state.getValue(EAST)) {
+                shape = Shapes.or(shape, SHAPE_EAST);
+            }
+            if (state.getValue(SOUTH)) {
+                shape = Shapes.or(shape, SHAPE_SOUTH);
+            }
+            if (state.getValue(WEST)) {
+                shape = Shapes.or(shape, SHAPE_WEST);
+            }
+            if (state.getValue(UP)) {
+                shape = Shapes.or(shape, SHAPE_UP);
+            }
+            if (state.getValue(DOWN)) {
+                shape = Shapes.or(shape, SHAPE_DOWN);
+            }
+        }
+        if (state.getValue(EXTEND_BOTTOM)) {
+            shape = Shapes.or(shape, SHAPE_EXTEND_DOWN);
+        }
+        return shape;
+    }, BlockState::hashCode);
+
     public TrafficSignPostBlock() {
         super(BlockBehaviour.Properties.of()
             .mapColor(MapColor.METAL)
@@ -79,46 +117,7 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        
-        VoxelShape shape = SHAPE_BASE;
-
-        if ((pState.getValue(AXIS) == Axis.X) && !pState.getValue(NORTH) && !pState.getValue(SOUTH) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
-            shape = Shapes.or(shape, SHAPE_EAST, SHAPE_WEST);
-        } else if ((pState.getValue(AXIS) == Axis.Z) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(UP) && !pState.getValue(DOWN)) {
-            shape =  Shapes.or(shape, SHAPE_NORTH, SHAPE_SOUTH);
-        } else if ((pState.getValue(AXIS) == Axis.Y) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(NORTH) && !pState.getValue(SOUTH)) {
-            shape = Shapes.or(shape, SHAPE_UP, SHAPE_DOWN);
-        } else {
-            if (pState.getValue(NORTH)) {
-                shape = Shapes.or(shape, SHAPE_NORTH);
-            }
-
-            if (pState.getValue(EAST)) {
-                shape = Shapes.or(shape, SHAPE_EAST);
-            }
-
-            if (pState.getValue(SOUTH)) {
-                shape = Shapes.or(shape, SHAPE_SOUTH);
-            }
-
-            if (pState.getValue(WEST)) {
-                shape = Shapes.or(shape, SHAPE_WEST);
-            }
-
-            if (pState.getValue(UP)) {
-                shape = Shapes.or(shape, SHAPE_UP);
-            }
-
-            if (pState.getValue(DOWN)) {
-                shape = Shapes.or(shape, SHAPE_DOWN);
-            }
-        }
-
-        if (pState.getValue(EXTEND_BOTTOM)) {
-            shape = Shapes.or(shape, SHAPE_EXTEND_DOWN);
-        }
-
-        return shape;
+        return shapes.get(pState, pState);
     } 
 
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
@@ -131,20 +130,14 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     }
 
     public static BlockState rotatePillar(BlockState pState, Rotation pRotation) {
-        switch(pRotation) {
-            case COUNTERCLOCKWISE_90:
-            case CLOCKWISE_90:
-                switch((Direction.Axis)pState.getValue(AXIS)) {
-                    case X:
-                        return pState.setValue(AXIS, Direction.Axis.Z);
-                    case Z:
-                        return pState.setValue(AXIS, Direction.Axis.X);
-                    default:
-                        return pState;
-                }
-            default:
-                return pState;
-        }        
+        return switch (pRotation) {
+            case COUNTERCLOCKWISE_90, CLOCKWISE_90 -> switch (pState.getValue(AXIS)) {
+                case X -> pState.setValue(AXIS, Axis.Z);
+                case Z -> pState.setValue(AXIS, Axis.X);
+                default -> pState;
+            };
+            default -> pState;
+        };
     }
 
     private static boolean needsBottomExtension(BlockState pState, BlockState belowBlock) {
