@@ -1,15 +1,15 @@
 pluginManagement {
     repositories {
-        maven { url "https://maven.fabricmc.net/" }
-        maven { url "https://maven.architectury.dev/" }
-        maven { url "https://files.minecraftforge.net/maven/" }
-        maven { url "https://maven.mrjulsen.net" }
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { url = 'https://maven.architectury.dev/' }
+        maven { url = 'https://files.minecraftforge.net/maven/' }
+        maven { url = 'https://maven.mrjulsen.net/' }
         gradlePluginPortal()
     }
 }
 
-rootProject.name = "TrafficCraft 1.20.1"
-
 include 'common'
 include 'fabric'
 include 'forge'
+
+rootProject.name = "TrafficCraft 1.20.1-DL3"

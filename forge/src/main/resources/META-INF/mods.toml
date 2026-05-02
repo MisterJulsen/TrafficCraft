@@ -30,6 +30,6 @@ side = "BOTH"
 [[dependencies.${modid}]]
 modId = "dragonlib"
 mandatory = true
-versionRange = "[${dragonlib_version},)"
+versionRange = "[beta-3.0.19,)"
 ordering = "BEFORE"
 side = "BOTH"
