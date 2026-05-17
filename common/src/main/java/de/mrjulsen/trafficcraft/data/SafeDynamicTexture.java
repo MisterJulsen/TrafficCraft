@@ -7,14 +7,20 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 public class SafeDynamicTexture extends DynamicTexture {
 
     private boolean closed = false;
+    private final boolean immortal;
 
     public SafeDynamicTexture(NativeImage pixels) {
-        super(pixels);
+        this(pixels, false);
+    }
+
+    public SafeDynamicTexture(NativeImage image, boolean immortal) {
+        super(image);
+        this.immortal = immortal;
     }
 
     @Override
     public synchronized void close() {
-        if (closed) {
+        if (immortal || closed) {
             return;
         }
         closed = true;

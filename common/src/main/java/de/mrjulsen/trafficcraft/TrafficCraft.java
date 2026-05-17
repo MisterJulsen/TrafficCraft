@@ -1,6 +1,10 @@
 package de.mrjulsen.trafficcraft;
 
+import com.mojang.blaze3d.platform.NativeImage;
+import de.mrjulsen.trafficcraft.data.SafeDynamicTexture;
 import de.mrjulsen.trafficcraft.registry.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -34,8 +38,23 @@ public final class TrafficCraft {
         ModWorldGen.init();
         ModItemTags.init();
         ModBlockTags.init();
+        ModRegistries.init();
+        Regi.init();
             
         //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ModCommonConfig.SPEC, MOD_ID + "-common.toml");
         CrossPlatform.registerConfig();
+    }
+
+
+
+    public static final SafeDynamicTexture EMPTY_TEXTURE;
+    public static final ResourceLocation EMPTY_LOCATION;
+
+    static {
+        NativeImage img = new NativeImage(1, 1, false);
+        img.setPixelRGBA(0, 0, 0x00000000);
+        EMPTY_TEXTURE = new SafeDynamicTexture(img, true);
+        EMPTY_LOCATION = new ResourceLocation(TrafficCraft.MOD_ID, "empty_sign");
+        Minecraft.getInstance().getTextureManager().register(EMPTY_LOCATION, EMPTY_TEXTURE);
     }
 }

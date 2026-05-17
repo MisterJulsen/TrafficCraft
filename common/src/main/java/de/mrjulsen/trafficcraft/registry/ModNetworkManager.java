@@ -5,25 +5,7 @@ import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketType;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.CreateNewTrafficSignTexturePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.CreativePatternCataloguePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.GetTrafficSignTexturePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.LinkerModePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.PaintBrushPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
-import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderBuildRoadPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderDataPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.RoadBuilderResetPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.StreetLampConfigPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TownSignPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightControllerPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TrafficLightSchedulePacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.WritableSignPacket;
+import de.mrjulsen.trafficcraft.network.packets.cts.*;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 
 public class ModNetworkManager {
@@ -31,6 +13,7 @@ public class ModNetworkManager {
     public static final DLNetworkManager NETWORK = new DLNetworkManager(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "network"), "2");
 
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, GetTrafficSignTexturePacket.Request, GetTrafficSignTexturePacket.Response> GET_TRAFFIC_SIGN_TEXTURE = NETWORK.registerSendAndReceivePacket("get_traffic_sign_texture", NetworkDirection.C2S, GetTrafficSignTexturePacket::handle, GetTrafficSignTexturePacket.Request::new, GetTrafficSignTexturePacket.Response::new);
+    public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, GetTexturePacket.Request, GetTexturePacket.Response> GET_TEXTURE = NETWORK.registerSendAndReceivePacket("get_texture", NetworkDirection.C2S, GetTexturePacket::handle, GetTexturePacket.Request::new, GetTexturePacket.Response::new);
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, PatternCatalogueDeletePacket.Request, PatternCatalogueDeletePacket.Response> DELETE_PATTERN_CATALOG_ENTRY = NETWORK.registerSendAndReceivePacket("delete_pattern_catalog_entry", NetworkDirection.C2S, PatternCatalogueDeletePacket::handle, PatternCatalogueDeletePacket.Request::new, PatternCatalogueDeletePacket.Response::new);
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, TrafficSignPatternPacket.Request, TrafficSignPatternPacket.Response> UPDATE_TRAFFIC_SIGN_PATTERN = NETWORK.registerSendAndReceivePacket("update_traffic_sign_pattern", NetworkDirection.C2S, TrafficSignPatternPacket::handle, TrafficSignPatternPacket.Request::new, TrafficSignPatternPacket.Response::new);
     public static final NetworkPacketType.SendAndReceive<NetworkDirection.C2S, CreateNewTrafficSignTexturePacket.Request, CreateNewTrafficSignTexturePacket.Response> CREATE_NEW_TRAFFIC_SIGN_TEXTURE = NETWORK.registerSendAndReceivePacket("create_new_traffic_sign_texture", NetworkDirection.C2S, CreateNewTrafficSignTexturePacket::handle, CreateNewTrafficSignTexturePacket.Request::new, CreateNewTrafficSignTexturePacket.Response::new);

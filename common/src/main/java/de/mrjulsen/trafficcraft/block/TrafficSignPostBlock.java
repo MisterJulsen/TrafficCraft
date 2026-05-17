@@ -1,24 +1,33 @@
 package de.mrjulsen.trafficcraft.block;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
-import de.mrjulsen.mcdragonlib.util.DataCache;
 import de.mrjulsen.mcdragonlib.util.MapCache;
+import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
+import de.mrjulsen.trafficcraft.block.data.attachments.*;
+import de.mrjulsen.trafficcraft.block.entity.PostBlockEntity;
+import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModBlockTags;
+import de.mrjulsen.trafficcraft.registry.builtin.PostAttachmentRegistry;
+import de.mrjulsen.trafficcraft.util.VoxelShapeRotator;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.PipeBlock;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SlabBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -30,11 +39,15 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
 
-public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBlock, ITrafficPostLike {
+public class TrafficSignPostBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, ITrafficPostLike {
 
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
@@ -48,89 +61,101 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     public static final BooleanProperty EXTEND_BOTTOM = BooleanProperty.create("bottom_extension");
 
     protected static final Map<Direction, BooleanProperty> PROPERTY_BY_DIRECTION = PipeBlock.PROPERTY_BY_DIRECTION.entrySet().stream().collect(Util.toMap());
-    
-    private static final VoxelShape SHAPE_BASE = Block.box(7, 7, 7, 9, 9, 9);
-    private static final VoxelShape SHAPE_NORTH = Block.box(7, 7, 0, 9, 9, 7);
-    private static final VoxelShape SHAPE_EAST = Block.box(9, 7, 7, 16, 9, 9);
-    private static final VoxelShape SHAPE_SOUTH = Block.box(7, 7, 9, 9, 9, 16);
-    private static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
-    private static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
-    private static final VoxelShape SHAPE_DOWN = Block.box(7, 0, 7, 9, 7, 9);
+
+    public static final VoxelShape SHAPE_BASE = Block.box(7, 7, 7, 9, 9, 9);
+    public static final VoxelShape SHAPE_NORTH = Block.box(7, 7, 0, 9, 9, 7);
+    public static final VoxelShape SHAPE_EAST = Block.box(9, 7, 7, 16, 9, 9);
+    public static final VoxelShape SHAPE_SOUTH = Block.box(7, 7, 9, 9, 9, 16);
+    public static final VoxelShape SHAPE_WEST = Block.box(0, 7, 7, 7, 9, 9);
+    public static final VoxelShape SHAPE_UP = Block.box(7, 9, 7, 9, 16, 9);
+    public static final VoxelShape SHAPE_DOWN = Block.box(7, 0, 7, 9, 7, 9);
     private static final VoxelShape SHAPE_EXTEND_DOWN = Block.box(7, -16, 7, 9, 0, 9);
 
-    private static final MapCache<VoxelShape, BlockState, BlockState> shapes = new MapCache<>(state -> {
+    private static final MapCache<VoxelShape, BlockState, BlockState> SHAPES = new MapCache<>(state -> {
         VoxelShape shape = SHAPE_BASE;
+        Axis axis = state.getValue(AXIS);
 
-        if ((state.getValue(AXIS) == Axis.X) && !state.getValue(NORTH) && !state.getValue(SOUTH) && !state.getValue(UP) && !state.getValue(DOWN)) {
+        boolean hasNorth = state.getValue(NORTH);
+        boolean hasEast = state.getValue(EAST);
+        boolean hasSouth = state.getValue(SOUTH);
+        boolean hasWest = state.getValue(WEST);
+        boolean hasUp = state.getValue(UP);
+        boolean hasDown = state.getValue(DOWN);
+        if (axis == Axis.X && !hasNorth && !hasSouth && !hasUp && !hasDown) {
             shape = Shapes.or(shape, SHAPE_EAST, SHAPE_WEST);
-        } else if ((state.getValue(AXIS) == Axis.Z) && !state.getValue(EAST) && !state.getValue(WEST) && !state.getValue(UP) && !state.getValue(DOWN)) {
+        } else if (axis == Axis.Z && !hasEast && !hasWest && !hasUp && !hasDown) {
             shape = Shapes.or(shape, SHAPE_NORTH, SHAPE_SOUTH);
-        } else if ((state.getValue(AXIS) == Axis.Y) && !state.getValue(EAST) && !state.getValue(WEST) && !state.getValue(NORTH) && !state.getValue(SOUTH)) {
+        } else if (axis == Axis.Y && !hasEast && !hasWest && !hasNorth && !hasSouth) {
             shape = Shapes.or(shape, SHAPE_UP, SHAPE_DOWN);
         } else {
-            state.setValue(AXIS, state.getValue(AXIS));
-            if (state.getValue(NORTH)) {
-                shape = Shapes.or(shape, SHAPE_NORTH);
-            }
-            if (state.getValue(EAST)) {
-                shape = Shapes.or(shape, SHAPE_EAST);
-            }
-            if (state.getValue(SOUTH)) {
-                shape = Shapes.or(shape, SHAPE_SOUTH);
-            }
-            if (state.getValue(WEST)) {
-                shape = Shapes.or(shape, SHAPE_WEST);
-            }
-            if (state.getValue(UP)) {
-                shape = Shapes.or(shape, SHAPE_UP);
-            }
-            if (state.getValue(DOWN)) {
-                shape = Shapes.or(shape, SHAPE_DOWN);
-            }
+            if (hasNorth) shape = Shapes.or(shape, SHAPE_NORTH);
+            if (hasEast) shape = Shapes.or(shape, SHAPE_EAST);
+            if (hasSouth) shape = Shapes.or(shape, SHAPE_SOUTH);
+            if (hasWest) shape = Shapes.or(shape, SHAPE_WEST);
+            if (hasUp) shape = Shapes.or(shape, SHAPE_UP);
+            if (hasDown) shape = Shapes.or(shape, SHAPE_DOWN);
         }
+
         if (state.getValue(EXTEND_BOTTOM)) {
             shape = Shapes.or(shape, SHAPE_EXTEND_DOWN);
         }
+
         return shape;
     }, BlockState::hashCode);
 
+
+    private record AttachmentShapeKey(Class<?> clazz, VoxelShape rawShape, Quaternionf rotation) {}
+    private final Map<AttachmentShapeKey, VoxelShape> transformedAttachmentShapes = new ConcurrentHashMap<>();
+
+
     public TrafficSignPostBlock() {
         super(BlockBehaviour.Properties.of()
-            .mapColor(MapColor.METAL)
-            .strength(1.0f)
-            .requiresCorrectToolForDrops()
-            .sound(SoundType.LANTERN)
+                .mapColor(MapColor.METAL)
+                .strength(1.0f)
+                .requiresCorrectToolForDrops()
+                .sound(SoundType.LANTERN)
         );
-        
+
         this.registerDefaultState(this.stateDefinition.any()
-            .setValue(WATERLOGGED, false)  
-            .setValue(AXIS, Axis.Y)
-            .setValue(NORTH, false)
-            .setValue(SOUTH, false)
-            .setValue(WEST, false)
-            .setValue(EAST, false)
-            .setValue(UP, false)
-            .setValue(DOWN, false)
-            .setValue(EXTEND_BOTTOM, false) 
-        ); 
+                .setValue(WATERLOGGED, false)
+                .setValue(AXIS, Axis.Y)
+                .setValue(NORTH, false)
+                .setValue(SOUTH, false)
+                .setValue(WEST, false)
+                .setValue(EAST, false)
+                .setValue(UP, false)
+                .setValue(DOWN, false)
+                .setValue(EXTEND_BOTTOM, false)
+        );
+    }
+
+
+    private VoxelShape getAttachmentShape(BlockState state, BlockGetter level, BlockPos pos, PostBlockEntity blockEntity, IPostAttachment<?> attachment) {
+        final Quaternionf rot = blockEntity.getAttachmentRotation(attachment, state.getValue(AXIS));
+        final VoxelShape shape = attachment.getShape(state, level, pos);
+        final AttachmentShapeKey key = new AttachmentShapeKey(attachment.getClass(), shape, rot);
+        return transformedAttachmentShapes.computeIfAbsent(key, k -> VoxelShapeRotator.rotateByQuaternion(shape, rot).optimize());
     }
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        return shapes.get(pState, pState);
-    } 
+        VoxelShape shape = SHAPES.get(pState, pState);
+        if (pLevel.getBlockEntity(pPos) instanceof PostBlockEntity be) {
+            for (IPostAttachment<?> attachment : be.attachments.values()) {
+                shape = Shapes.or(shape, getAttachmentShape(pState, pLevel, pPos, be, attachment));
+            }
+        }
+        return shape;
+    }
 
+    @Override
     public boolean isPathfindable(BlockState pState, BlockGetter pLevel, BlockPos pPos, PathComputationType pType) {
         return false;
     }
 
-    
+    @Override
     public BlockState rotate(BlockState pState, Rotation pRot) {
-        return rotatePillar(pState, pRot);
-    }
-
-    public static BlockState rotatePillar(BlockState pState, Rotation pRotation) {
-        return switch (pRotation) {
+        return switch (pRot) {
             case COUNTERCLOCKWISE_90, CLOCKWISE_90 -> switch (pState.getValue(AXIS)) {
                 case X -> pState.setValue(AXIS, Axis.Z);
                 case Z -> pState.setValue(AXIS, Axis.X);
@@ -141,20 +166,28 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     }
 
     private static boolean needsBottomExtension(BlockState pState, BlockState belowBlock) {
-        return pState.getValue(AXIS).test(Direction.UP) && (belowBlock.hasProperty(BlockStateProperties.LAYERS) || (belowBlock.getBlock() instanceof SlabBlock && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) || belowBlock.is(ModBlockTags.POST_EXTENSION));
+        if (pState.getValue(AXIS) != Axis.Y) return false;
+
+        return belowBlock.hasProperty(BlockStateProperties.LAYERS)
+                || belowBlock.is(ModBlockTags.POST_EXTENSION)
+                || (belowBlock.getBlock() instanceof SlabBlock
+                && belowBlock.getValue(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM);
     }
 
     @Override
     public BlockState updateShape(BlockState pState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos pCurrentPos, BlockPos pFacingPos) {
         if (pState.getValue(WATERLOGGED)) {
-           pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            pLevel.scheduleTick(pCurrentPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
-  
+
         BlockState belowBlock = pLevel.getBlockState(pCurrentPos.below());
 
-        return pState.setValue(PROPERTY_BY_DIRECTION.get(pFacing), this.connectsTo(pLevel, pCurrentPos, pState, pFacingState, pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()), pFacing.getOpposite()))
-            .setValue(EXTEND_BOTTOM, needsBottomExtension(pState, belowBlock))
-        ;
+        return pState
+                .setValue(PROPERTY_BY_DIRECTION.get(pFacing),
+                        connectsTo(pLevel, pCurrentPos, pState, pFacingState,
+                                pFacingState.isFaceSturdy(pLevel, pFacingPos, pFacing.getOpposite()),
+                                pFacing))
+                .setValue(EXTEND_BOTTOM, needsBottomExtension(pState, belowBlock));
     }
 
     @Override
@@ -166,51 +199,49 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         FluidState fluidstate = pContext.getLevel().getFluidState(pContext.getClickedPos());
-        boolean flag = fluidstate.getType() == Fluids.WATER;
-
-        BlockGetter blockgetter = pContext.getLevel();
-        BlockPos blockpos = pContext.getClickedPos();
-        BlockPos blockpos1 = blockpos.north();
-        BlockPos blockpos2 = blockpos.east();
-        BlockPos blockpos3 = blockpos.south();
-        BlockPos blockpos4 = blockpos.west();
-        BlockPos blockpos5 = blockpos.above();
-        BlockPos blockpos6 = blockpos.below();
-        BlockState blockstate1 = blockgetter.getBlockState(blockpos1);
-        BlockState blockstate2 = blockgetter.getBlockState(blockpos2);
-        BlockState blockstate3 = blockgetter.getBlockState(blockpos3);
-        BlockState blockstate4 = blockgetter.getBlockState(blockpos4);
-        BlockState blockstate5 = blockgetter.getBlockState(blockpos5);
-        BlockState blockstate6 = blockgetter.getBlockState(blockpos6);
+        BlockGetter world = pContext.getLevel();
+        BlockPos pos = pContext.getClickedPos();
 
         BlockState newState = this.defaultBlockState()
-            .setValue(WATERLOGGED, flag)
-            .setValue(AXIS, pContext.getClickedFace().getAxis());
+                .setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER)
+                .setValue(AXIS, pContext.getClickedFace().getAxis());
 
-        return newState
-            .setValue(NORTH, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate1, blockstate1.isFaceSturdy(blockgetter, blockpos1, Direction.SOUTH), Direction.SOUTH.getOpposite()))
-            .setValue(EAST, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate2, blockstate2.isFaceSturdy(blockgetter, blockpos2, Direction.WEST), Direction.WEST.getOpposite()))
-            .setValue(SOUTH, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate3, blockstate3.isFaceSturdy(blockgetter, blockpos3, Direction.NORTH), Direction.NORTH.getOpposite()))
-            .setValue(WEST, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate4, blockstate4.isFaceSturdy(blockgetter, blockpos4, Direction.EAST), Direction.EAST.getOpposite()))
-            .setValue(UP, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate5, blockstate5.isFaceSturdy(blockgetter, blockpos3, Direction.DOWN), Direction.DOWN))
-            .setValue(DOWN, this.connectsTo(pContext.getLevel(), pContext.getClickedPos(), newState, blockstate6, blockstate6.isFaceSturdy(blockgetter, blockpos4, Direction.UP), Direction.UP))
-            .setValue(EXTEND_BOTTOM, needsBottomExtension(newState, blockstate6))
-        ;
-    }
+        for (Direction dir : Direction.values()) {
+            BlockPos neighborPos = pos.relative(dir);
+            BlockState neighborState = world.getBlockState(neighborPos);
+            boolean isSturdy = neighborState.isFaceSturdy(world, neighborPos, dir.getOpposite());
 
-    private boolean isSameBlock(BlockState pState) {
-        return pState.is(this);
-    }
-
-    public boolean connectsTo(LevelAccessor level, BlockPos pos, BlockState pState, BlockState pTargetState, boolean pIsSideSolid, Direction pDirection) {
-        boolean flag = this.isSameBlock(pTargetState);
-        boolean canConnect = false;
-
-        if (pTargetState.getBlock() instanceof ITrafficPostLike postLike) {
-            canConnect = postLike.canConnect(pTargetState, pDirection);
+            newState = newState.setValue(PROPERTY_BY_DIRECTION.get(dir), connectsTo(pContext.getLevel(), pos, newState, neighborState, isSturdy, dir));
         }
-        
-        return !isExceptionForConnection(pTargetState) && (canConnect || (pState.getValue(AXIS).test(pDirection) && pIsSideSolid)) || flag || (pDirection == Direction.UP && needsBottomExtension(pState, pTargetState));
+
+        return newState.setValue(EXTEND_BOTTOM, needsBottomExtension(newState, world.getBlockState(pos.below())));
+    }
+    public boolean connectsTo(LevelAccessor level, BlockPos pos, BlockState pState, BlockState pTargetState, boolean pIsSideSolid, Direction pDirection) {
+        if (pTargetState.getBlock() instanceof ITrafficPostLike postLike) {
+            return canConnect(pState, pDirection) && postLike.canConnect(pTargetState, pDirection.getOpposite());
+        }
+        return pState.getValue(AXIS).test(pDirection) && pIsSideSolid;
+    }
+
+    @Override
+    public boolean canConnect(BlockState pState, Direction pDirection) {
+        return true;
+    }
+
+    @Override
+    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
+        if (pDirection.getAxis() == Axis.Y) {
+            return false;
+        }
+
+        boolean isVerticalFree =
+                pState.getValue(AXIS) == Axis.Y
+                        && !pState.getValue(EAST)
+                        && !pState.getValue(WEST)
+                        && !pState.getValue(NORTH)
+                        && !pState.getValue(SOUTH);
+
+        return isVerticalFree || pState.getValue(UP);
     }
 
     @Override
@@ -218,14 +249,47 @@ public class TrafficSignPostBlock extends Block implements SimpleWaterloggedBloc
         super.createBlockStateDefinition(pBuilder);
         pBuilder.add(WATERLOGGED, AXIS, NORTH, SOUTH, WEST, EAST, UP, DOWN, EXTEND_BOTTOM);
     }
-    
+
     @Override
-    public boolean canAttach(BlockState pState, BlockPos pPos, Direction pDirection) {
-        return ((pState.getValue(AXIS) == Axis.Y) && !pState.getValue(EAST) && !pState.getValue(WEST) && !pState.getValue(NORTH) && !pState.getValue(SOUTH)) || pState.getValue(UP);
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PostBlockEntity(ModBlockEntities.POST.get(), pos, state);
     }
 
     @Override
-    public boolean canConnect(BlockState pState, Direction pDirection) {
-        return true;
-    } 
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        Vec3 localPos = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+
+        if (level.getBlockEntity(pos) instanceof PostBlockEntity be) {
+            for (Map.Entry<Direction, IPostAttachment<?>> entry : be.attachments.entrySet()) {
+                IPostAttachment<?> attachment = entry.getValue();
+                VoxelShape shape = getAttachmentShape(state, level, pos, be, attachment);
+
+                boolean isHit = shape.toAabbs().stream()
+                        .map(bb -> bb.inflate(0.002))
+                        .anyMatch(bb -> bb.contains(localPos));
+
+                if (isHit) {
+                    return attachment.use(state, level, pos, player, hand, hit);
+                }
+            }
+
+            if (player.getItemInHand(hand).getItem() instanceof BlockItem bi && bi.getBlock() instanceof TrafficLightBlock t) {
+                be.attachments.put(hit.getDirection(), new TrafficLightPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
+                level.setBlock(pos, state, Block.UPDATE_ALL);
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
+                return InteractionResult.SUCCESS;
+            } else if (player.getItemInHand(hand).getItem() instanceof BlockItem bi && bi.getBlock() instanceof TrafficSignBlock t) {
+                be.attachments.put(hit.getDirection(), new TrafficSignPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
+                level.setBlock(pos, state, Block.UPDATE_ALL);
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return super.use(state, level, pos, player, hand, hit);
+    }
 }

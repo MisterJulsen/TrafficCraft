@@ -1,16 +1,7 @@
 package de.mrjulsen.trafficcraft.registry;
 
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.block.entity.ColoredBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.EmptyBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.StreetLampBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TownSignBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightControllerBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficLightRequestButtonBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
+import de.mrjulsen.trafficcraft.block.entity.*;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +31,10 @@ public class ModBlockEntities {
     public static final RegistrySupplier<BlockEntityType<StreetSignBlockEntity>> STREET_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("street_sign_block_entity", () -> BlockEntityType.Builder.of(StreetSignBlockEntity::new, ModBlocks.STREET_SIGN.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<HouseNumberSignBlockEntity>> HOUSE_NUMBER_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("house_number_sign_block_entity", () -> BlockEntityType.Builder.of(HouseNumberSignBlockEntity::new, ModBlocks.HOUSE_NUMBER_SIGN.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<TrafficSignBlockEntity>> TRAFFIC_SIGN_BLOCK_ENTITY = BLOCK_ENTITIES.register("traffic_sign_block_entity", () -> BlockEntityType.Builder.of(TrafficSignBlockEntity::new, ModBlocks.TRAFFIC_SIGN.get()).build(null));
-        
+
+    public static final RegistrySupplier<BlockEntityType<PostBlockEntity>> POST = BLOCK_ENTITIES.register("post_block_entity", () -> BlockEntityType.Builder.of(PostBlockEntity::new, ModBlocks.TRAFFIC_SIGN_POST.get()).build(null));
+
+
     public static void register() {
         BLOCK_ENTITIES.register();
     }

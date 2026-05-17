@@ -4,6 +4,15 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+
+import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
+import de.mrjulsen.mcdragonlib.events.client.ModelEvents;
+import de.mrjulsen.mcdragonlib.fabric.client.model.loaders.DLBakedModelExtension;
+import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
+import de.mrjulsen.trafficcraft.client.ber.*;
+import de.mrjulsen.trafficcraft.client.models.TestModel;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
@@ -17,10 +26,6 @@ import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
 import de.mrjulsen.trafficcraft.block.entity.StreetSignBlockEntity;
 import de.mrjulsen.trafficcraft.client.TintedTextures;
-import de.mrjulsen.trafficcraft.client.ber.TownSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.client.ber.TrafficLightBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.client.ber.TrafficSignBlockEntityRenderer;
-import de.mrjulsen.trafficcraft.client.ber.WritableSignBlockEntityRenderer;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
@@ -135,7 +140,8 @@ public class ClientInit {
             BlockEntityRendererRegistry.register(ModBlockEntities.HOUSE_NUMBER_SIGN_BLOCK_ENTITY.get(), WritableSignBlockEntityRenderer<HouseNumberSignBlockEntity>::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_SIGN_BLOCK_ENTITY.get(), TrafficSignBlockEntityRenderer::new);
             BlockEntityRendererRegistry.register(ModBlockEntities.TRAFFIC_LIGHT_BLOCK_ENTITY.get(), TrafficLightBlockEntityRenderer::new);
-            
+            BlockEntityRendererRegistry.register(ModBlockEntities.POST.get(), PostBlockEntityRenderer::new);
+
             if (Platform.isFabric()) {
                 ClientInit.registerTooltipComponentFactory(TrafficSignTooltip.class, (tooltip) -> {
                     return new ClientTrafficSignTooltipStack(tooltip);
@@ -228,6 +234,18 @@ public class ClientInit {
             int count = TrafficSignClientTexture.closeAll();
             TrafficCraft.LOGGER.info("All " + count + " loaded custom traffic sign textures have been closed.");
         });
+
+        ModelEvents.ADDITIONAL_MODELS.register(registry -> {
+            for (TrafficLightModel shape : TrafficLightModel.values()) {
+                registry.register(DLUtils.resourceLocation(TrafficCraft.MOD_ID, String.format("block/traffic_light/%s", shape.getName())));
+            }
+            registry.register(DLUtils.resourceLocation(TrafficCraft.MOD_ID, "block/traffic_light/tripple"));
+            for (TrafficSignShape shape : TrafficSignShape.values()) {
+                registry.register(DLUtils.resourceLocation(TrafficCraft.MOD_ID, String.format("block/sign/%s", shape.getSerializedName())));
+            }
+        });
+
+        DLBlockModelRegistry.registerForBlock(ModBlocks.TRAFFIC_SIGN_POST, TestModel::new, TestModel::new);
     }
     
 }

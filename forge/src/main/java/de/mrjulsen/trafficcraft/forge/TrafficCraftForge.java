@@ -1,6 +1,7 @@
 package de.mrjulsen.trafficcraft.forge;
 
 import dev.architectury.platform.forge.EventBuses;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -14,5 +15,6 @@ public final class TrafficCraftForge {
 
         // Run our common setup.
         TrafficCraft.init();
+        MinecraftForge.EVENT_BUS.addListener(ClientSetup::onSalz);
     }
 }
