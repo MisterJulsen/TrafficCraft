@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/supplementary_upper/12",
+    "category":  "supplementary",
+    "model":  "trafficcraft:block/sign/supplementary_upper",
+    "type":  "trafficcraft:traffic_sign"
+}

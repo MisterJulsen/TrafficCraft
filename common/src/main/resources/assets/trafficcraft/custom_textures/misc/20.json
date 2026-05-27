@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/misc/20",
+    "category":  "misc",
+    "model":  "trafficcraft:block/sign/misc",
+    "type":  "trafficcraft:traffic_sign"
+}

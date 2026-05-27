@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/circle/176",
+    "category":  "circle",
+    "model":  "trafficcraft:block/sign/circle",
+    "type":  "trafficcraft:traffic_sign"
+}

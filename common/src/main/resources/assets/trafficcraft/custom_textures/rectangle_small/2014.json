@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/rectangle_small/2014",
+    "category":  "square",
+    "model":  "trafficcraft:block/sign/rectangle_small",
+    "type":  "trafficcraft:traffic_sign"
+}

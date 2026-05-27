@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/diamond/37",
+    "category":  "diamond",
+    "model":  "trafficcraft:block/sign/diamond",
+    "type":  "trafficcraft:traffic_sign"
+}

@@ -1,0 +1,6 @@
+﻿{
+    "texture":  "trafficcraft:block/sign/triangle_down/1002",
+    "category":  "triangle",
+    "model":  "trafficcraft:block/sign/triangle_down",
+    "type":  "trafficcraft:traffic_sign"
+}
