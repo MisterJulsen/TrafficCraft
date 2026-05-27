@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -50,11 +50,11 @@ public class CreativePatternCatalogueItem extends PatternCatalogueItem {
     }
 
     @Override
-    public NamedTrafficSignTextureReference getSelectedImageData(ItemStack stack) {
+    public NamedTextureKey getSelectedImageData(ItemStack stack) {
         return shouldUseCustomPattern(stack) ? getCustomImage(stack) : super.getSelectedImageData(stack);
     }
 
-    public static void setCustomImage(ItemStack stack, NamedTrafficSignTextureReference data) {        
+    public static void setCustomImage(ItemStack stack, NamedTextureKey data) {
         checkNbt(stack).put(NBT_CUSTOM, data.toNbt());
     }
 
@@ -62,9 +62,9 @@ public class CreativePatternCatalogueItem extends PatternCatalogueItem {
         checkNbt(stack).remove(NBT_CUSTOM);
     }
 
-    public static NamedTrafficSignTextureReference getCustomImage(ItemStack stack) {
+    public static NamedTextureKey getCustomImage(ItemStack stack) {
         if (hasCustomPattern(stack)) {
-            return NamedTrafficSignTextureReference.fromNbt(checkNbt(stack).getCompound(NBT_CUSTOM));
+            return NamedTextureKey.fromNbt(checkNbt(stack).getCompound(NBT_CUSTOM));
         } else {
             return null;
         }

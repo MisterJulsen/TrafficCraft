@@ -1,12 +1,22 @@
 package de.mrjulsen.trafficcraft.client.screen.workbench;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
+import de.mrjulsen.trafficcraft.TrafficCraft;
+import de.mrjulsen.trafficcraft.data.textures.TextureDataTypes;
+import de.mrjulsen.trafficcraft.data.textures.TextureIdentifier;
+import de.mrjulsen.trafficcraft.data.textures.data.NbtTextureData;
+import de.mrjulsen.trafficcraft.data.textures.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.network.packets.cts.SaveTexturePacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.blaze3d.platform.NativeImage.Format;
 
 import de.mrjulsen.mcdragonlib.client.gui.builtin.DLColorPickerWindow;
 import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
@@ -29,18 +39,14 @@ import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchWindow;
 import de.mrjulsen.trafficcraft.client.screen.workbench.Canvas.EditorConfig;
 import de.mrjulsen.trafficcraft.client.widgets.trafficlight.OptionButton;
 import de.mrjulsen.trafficcraft.client.widgets.trafficlight.OptionsPanel;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
 import de.mrjulsen.trafficcraft.init.ClientInit;
 import de.mrjulsen.trafficcraft.item.ColorPaletteItem;
 import de.mrjulsen.trafficcraft.network.packets.cts.ColorPaletteItemPacket;
-import de.mrjulsen.trafficcraft.network.packets.cts.TrafficSignPatternPacket;
 import de.mrjulsen.trafficcraft.registry.ModItems;
 import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -180,21 +186,45 @@ public class EditorScreen extends DLGuiComponent {
         btnSave.icon.set(ModGuiIcons.SAVE.getAsSprite(16, 16));
         btnSave.tooltip.set(new DLTooltip(List.of(tooltipEditorToolbarSave), 200));
         btnSave.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
-            NativeImage img = new NativeImage(Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false);
-            for (int k = 0; k < img.getWidth(); k++) {
-                for (int l = 0; l < img.getHeight(); l++) {
-                    img.setPixelRGBA(k, l, 0);
-                    if (shape.isPixelValid(k, l))
-                        img.setPixelRGBA(k, l, DLColor.fromInt(canvas.pixels[k][l]).swapChannels(ColorChannel.R, ColorChannel.B).getAsARGB());
+            try (NativeImage img = new NativeImage(NativeImage.Format.RGBA, TrafficSignShape.MAX_WIDTH, TrafficSignShape.MAX_HEIGHT, false)) {
+                // Bild aufbauen – bleibt gleich
+                for (int k = 0; k < img.getWidth(); k++) {
+                    for (int l = 0; l < img.getHeight(); l++) {
+                        img.setPixelRGBA(k, l, 0);
+                        if (shape.isPixelValid(k, l))
+                            img.setPixelRGBA(k, l, DLColor.fromInt(canvas.pixels[k][l]).swapChannels(ColorChannel.R, ColorChannel.B).getAsARGB());
+                    }
                 }
+
+                // TextureData (inner) – beschreibt Typ und Shape
+                TrafficSignData inner = new TrafficSignData(new ResourceLocation(""), new ResourceLocation(""), "", "", "",false, new ResourceLocation(""));
+
+                // NbtTextureData – der vollständige Payload mit Rohdaten
+                NbtTextureData payload = new NbtTextureData(
+                        inner,
+                        img.asByteArray(),
+                        img.getWidth(),
+                        img.getHeight(),
+                        Minecraft.getInstance().player.getUUID(),
+                        System.currentTimeMillis(),
+                        new HashMap<>()
+                );
+
+                // UUID als stabiler Schlüssel – z.B. aus Hash oder frisch generiert
+                UUID textureUuid = UUID.nameUUIDFromBytes(payload.getRawBytes());
+
+                TextureIdentifier id = TextureIdentifier.custom(TextureDataTypes.TRAFFIC_SIGN.getId(), textureUuid);
+
+                ModNetworkManager.SAVE_TEXTURE.send(
+                        NetworkDirection.toServer(),
+                        new SaveTexturePacket.Request(new NamedTextureKey(id, "salz"), payload, editIndex),
+                        (response) -> this.closePage(),
+                        () -> {}
+                );
+
+            } catch (IOException ex) {
+                TrafficCraft.LOGGER.error("Failed to prepare texture for upload.", ex);
             }
-            
-            TrafficSignTextureData data = TrafficSignClientTexture.createNew(shape, img, null);
-            NamedTrafficSignTextureReference ref = NamedTrafficSignTextureReference.of(data, textBox.text.get().getPlainText());
-            ModNetworkManager.UPDATE_TRAFFIC_SIGN_PATTERN.send(NetworkDirection.toServer(), new TrafficSignPatternPacket.Request(ref, editIndex), (response) -> {
-                closePage();
-            }, () -> {});
-            img.close();
             return false;
         });
 

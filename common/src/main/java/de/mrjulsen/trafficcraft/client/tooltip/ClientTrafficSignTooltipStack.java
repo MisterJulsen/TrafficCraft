@@ -1,7 +1,5 @@
 package de.mrjulsen.trafficcraft.client.tooltip;
 
-import java.util.Map;
-
 import de.mrjulsen.mcdragonlib.client.util.DLGuiGraphics;
 import de.mrjulsen.mcdragonlib.client.util.GuiUtils;
 import de.mrjulsen.mcdragonlib.data.ETextAlignment;
@@ -9,8 +7,10 @@ import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.DataCache;
 import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.mcdragonlib.util.TextUtils;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
+import de.mrjulsen.trafficcraft.data.textures.TextureHandle;
+import de.mrjulsen.trafficcraft.data.textures.decoder.context.IDecoderContext;
+import de.mrjulsen.trafficcraft.data.textures.LocalTextureCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,9 +19,9 @@ import net.minecraft.core.NonNullList;
 
 public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
 
-    private final NonNullList<NamedTrafficSignTextureReference> patterns;
-    private final NamedTrafficSignTextureReference selectedData;
-    private final Map<NamedTrafficSignTextureReference, TrafficSignClientTexture> textures;
+    private final NonNullList<NamedTextureKey> patterns;
+    private final NamedTextureKey selectedData;
+    private final LocalTextureCache textureCache;
 
     private static final float FONT_SCALE = 0.75f;
 
@@ -35,10 +35,10 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         return Pair.of(width, sqrt);
     });
 
-    public ClientTrafficSignTooltipStack(TrafficSignTooltip pTrafficSignTooltip) {
-        this.patterns = pTrafficSignTooltip.getPatterns();
-        this.selectedData = pTrafficSignTooltip.getSelected();
-        this.textures = pTrafficSignTooltip.getTextures();
+    public ClientTrafficSignTooltipStack(TrafficSignTooltip tooltip) {
+        this.patterns = tooltip.getPatterns();
+        this.selectedData = tooltip.getSelected();
+        this.textureCache = tooltip.getTextures();
     }
 
     public int getHeight() {
@@ -73,7 +73,7 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
             graphics.poseStack().pushPose();
             graphics.poseStack().translate((x + 5) / FONT_SCALE, y / FONT_SCALE, 0);
             GuiUtils.drawString(graphics, pFont, 0, 0, TextUtils.translate("item.trafficcraft.pattern_catalogue.tooltip.selected_texture"), DLColor.fromInt(0xFFDBDBDB), ETextAlignment.LEFT, false);
-            GuiUtils.drawString(graphics, pFont, 32, pFont.lineHeight + 10, selectedData.getName(), DLColor.WHITE, ETextAlignment.LEFT, false);
+            GuiUtils.drawString(graphics, pFont, 32, pFont.lineHeight + 10, selectedData.name(), DLColor.WHITE, ETextAlignment.LEFT, false);
             graphics.poseStack().popPose();
         }
         if (lastKnownTexturesCount > 0) {            
@@ -92,18 +92,18 @@ public class ClientTrafficSignTooltipStack implements ClientTooltipComponent {
         for (int i = 0, k = 0; i < grid.getFirst() && k < lastKnownTexturesCount; i++) {
             for (int j = 0; j < grid.getSecond() && k < lastKnownTexturesCount; j++, k++) {
                 final int n = k;      
-                final NamedTrafficSignTextureReference textureData = this.patterns.get(n);
+                final NamedTextureKey textureData = this.patterns.get(n);
                 renderTexture(guiGraphics, x + 10 + (i * 18), y + (j * 18), textureData);
             }
         }
     }    
 
-    private void renderTexture(GuiGraphics guiGraphics, int x, int y, NamedTrafficSignTextureReference data) {
-        TrafficSignClientTexture texture = textures.get(data);
+    private void renderTexture(GuiGraphics guiGraphics, int x, int y, NamedTextureKey data) {
+        TextureHandle texture = textureCache.getTexture(data.textureKey(), IDecoderContext.EMPTY);
         if (texture != null) {
-            int w = texture.getRawData().getWidth();
-            int h = texture.getRawData().getHeight();
-            guiGraphics.blit(texture.getTextureLocation(), x, y, 16, 16, 0, 0, w, h, w, h);
+            int w = texture.getTexture().getWidth();
+            int h = texture.getTexture().getHeight();
+            guiGraphics.blit(texture.getLocation(), x, y, 16, 16, 0, 0, w, h, w, h);
         }
     }
 }

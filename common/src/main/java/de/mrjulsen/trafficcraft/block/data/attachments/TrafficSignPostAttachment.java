@@ -11,24 +11,27 @@ import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.PostBlockEntity;
-import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureManager;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
+import de.mrjulsen.trafficcraft.data.textures.ClientTextureCache;
+import de.mrjulsen.trafficcraft.data.textures.TextureHandle;
+import de.mrjulsen.trafficcraft.data.textures.TextureIdentifier;
+import de.mrjulsen.trafficcraft.data.textures.TextureRepository;
+import de.mrjulsen.trafficcraft.data.textures.data.ITextureData;
+import de.mrjulsen.trafficcraft.data.textures.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.data.textures.decoder.context.IDecoderContext;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
+import de.mrjulsen.trafficcraft.network.packets.cts.UpdateTrafficSignShapePacket;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
 import de.mrjulsen.trafficcraft.registry.ModRegistries;
 import de.mrjulsen.trafficcraft.registry.builtin.PostAttachmentRegistry;
 import de.mrjulsen.trafficcraft.util.Utils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -55,9 +58,9 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
 
     private static final VoxelShape SHAPE = Block.box(0, 0, 6, 16, 16, 7);
 
-    private TrafficSignShape shape = TrafficSignShape.CIRCLE;
-    private String textureId;
-    private TrafficSignClientTexture texture;
+    private ResourceLocation modelLocation = TrafficSignData.EMPTY_MODEL;
+    private TextureIdentifier textureKey;
+    private TextureHandle texture;
 
     public TrafficSignPostAttachment(PostAttachmentRegistry.PostAttachmentContext<?> context) {
         super(context);
@@ -70,7 +73,10 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
 
     @Override
     public Mesh getModel(BlockState state, RandomSource random, ModelContext context) {
-        return BasicMesh.fromLocation(DLUtils.resourceLocation(TrafficCraft.MOD_ID, String.format("block/sign/%s", shape.getSerializedName())), random);
+        if (modelLocation.equals(TrafficSignData.EMPTY_MODEL)) {
+            return new BasicMesh();
+        }
+        return BasicMesh.fromLocation(modelLocation, random);
     }
 
     @Override
@@ -80,35 +86,35 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
 
     @Override
     public void renderAdditional(BERGraphics<?> graphics, float partialTick) {
-        TrafficSignClientTexture tex = getClientTexture();
+        TextureHandle tex = getClientTexture();
 
-        if (tex.isDisposed()) {
+        if (tex == null || tex.isClosed()) {
             return;
         }
 
-        double p = 1 / 16f;
-        double z = this.shape == TrafficSignShape.MISC ? p : 1.5d * p;
-        graphics.poseStack().pushPose();
-        graphics.poseStack().scale(16, 16, 16);
-        graphics.poseStack().translate(0.5f, 0.5f, 0.5f);
-        graphics.poseStack().translate(-0.5d, -0.5d, z + 0.002d);
-
-        RenderUtils.renderTexture(tex.getTextureLocation(), graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, getDirection(), DLColor.WHITE, graphics.packedLight(), true);
-
-        graphics.poseStack().popPose();
-
-        if (tex.hasBackground()) {
-            z = 9.0d * p - 0.5d;
+        tex.getTextureData(TrafficSignData.class).ifPresent(data -> {
+            double p = 1 / 16f;
+            double z = 1.5d * p;//this.shape == TrafficSignShape.MISC ? p : 1.5d * p;
             graphics.poseStack().pushPose();
             graphics.poseStack().scale(16, 16, 16);
             graphics.poseStack().translate(0.5f, 0.5f, 0.5f);
-            graphics.poseStack().mulPose(Axis.YP.rotationDegrees(180));
-            graphics.poseStack().translate(-0.5d, -0.5d, -(p * 2) + z - 0.002d);
-
-            RenderUtils.renderTexture(tex.getBackgroundTextureLocation(), graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, getDirection().getOpposite(), DLColor.WHITE, graphics.packedLight(), true);
-
+            graphics.poseStack().translate(-0.5d, -0.5d, z + 0.002d);
+            RenderUtils.renderTexture(tex.getLocation(), graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, getDirection(), DLColor.WHITE, graphics.packedLight(), true);
             graphics.poseStack().popPose();
-        }
+
+            if (data.requiresBackground()) {
+                tex.getExtension(TrafficSignData.TrafficSignExtension.class).flatMap(TrafficSignData.TrafficSignExtension::getBackLocation).ifPresent(bg -> {
+                    double bz = 9.0d * p - 0.5d;
+                    graphics.poseStack().pushPose();
+                    graphics.poseStack().scale(16, 16, 16);
+                    graphics.poseStack().translate(0.5f, 0.5f, 0.5f);
+                    graphics.poseStack().mulPose(Axis.YP.rotationDegrees(180));
+                    graphics.poseStack().translate(-0.5d, -0.5d, -(p * 2) + bz - 0.002d);
+                    RenderUtils.renderTexture(bg, graphics, new Vector3f(0), 1, 1, 0, 0, 1, 1, getDirection().getOpposite(), DLColor.WHITE, graphics.packedLight(), true);
+                    graphics.poseStack().popPose();
+                });
+            }
+        });
     }
 
     @Override
@@ -125,13 +131,16 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
 
             if (level.isClientSide()) {
                 level.playSound(player, pos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
+                ClientTextureCache.INSTANCE.getTextureDataAsync(textureKey, data -> {
+                    data.ifPresent(d -> {
+                        ITextureData.ifType(TrafficSignData.class, d).ifPresent(signData -> {
+                            setModelLocation(signData.modelLocation());
+                            modelLocation = signData.modelLocation();
+                            ModNetworkManager.UPDATE_SIGN_SAPE.send(NetworkDirection.toServer(), new UpdateTrafficSignShapePacket(new AttachmentIdentifier(getBlockEntity().getBlockPos(), getDirection(), getRegistryType().id()), signData.modelLocation()));
+                        });
+                    });
+                });
             }
-            TrafficSignTextureData data = TrafficSignTextureManager.load(item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getTextureId() : PatternCatalogueItem.getSelectedPattern(stack).getTextureId());
-            this.shape = data.getShape();
-
-            Utils.doIfType(getBlockEntity(), PostBlockEntity.class, DLSyncedBlockEntity::notifyUpdate);
-            updateModel();
-
             return InteractionResult.SUCCESS;
         }
 
@@ -143,30 +152,29 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
         resetTexture();
     }
 
-    public String getTextureId() {
-        return textureId;
+    public TextureIdentifier getTextureKey() {
+        return textureKey;
     }
 
-    public TrafficSignClientTexture getClientTexture() {
+    public TextureHandle getClientTexture() {
+        if (textureKey == null) {
+            return TextureHandle.EMPTY;
+        }
         if (texture == null) {
-            if (getTextureId() == null || getTextureId().isBlank() || getTextureId().equals("empty")) {
-                return TrafficSignClientTexture.EMPTY;
-            }
-            texture = TrafficSignClientTexture.load(getTextureId(), true, null);
+            texture = ClientTextureCache.INSTANCE.getTexture(getTextureKey(), IDecoderContext.EMPTY);
         }
         return texture;
     }
 
     public void resetTexture() {
         if (Objects.requireNonNull(getBlockEntity().getLevel()).isClientSide()) {
-            TrafficSignClientTexture oldTexture = texture;
+            ClientTextureCache.INSTANCE.release(textureKey);
             texture = null;
-            DLUtils.doIfNotNull(oldTexture, TrafficSignClientTexture::close);
         }
     }
 
-    public void setAndResetTexture(NamedTrafficSignTextureReference texture) {
-        setTextureId(texture.getTextureId());
+    public void setAndResetTexture(NamedTextureKey texture) {
+        setTextureKey(texture.textureKey());
         if (!Objects.requireNonNull(getBlockEntity().getLevel()).isClientSide()) {
             for (ServerPlayer player : getBlockEntity().getLevel().players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
                 ModNetworkManager.RESET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toPlayer(player), new TrafficSignTextureResetPacket(getBlockEntity().getBlockPos()));
@@ -174,26 +182,32 @@ public class TrafficSignPostAttachment extends AbstractPostAttachment<TrafficSig
         }
     }
 
-    public void setTextureId(String id) {
-        this.textureId = id;
+    public void setTextureKey(TextureIdentifier key) {
+        this.textureKey = key;
         Utils.doIfType(getBlockEntity(), PostBlockEntity.class, DLSyncedBlockEntity::notifyUpdate);
     }
 
     @Override
     protected CompoundTag saveAdditional() {
         CompoundTag nbt = super.saveAdditional();
-        nbt.putInt(NBT_SHAPE, shape.ordinal());
-        if (textureId != null) {
-            nbt.putString(NBT_TEXTURE, getTextureId());
+        nbt.putString(NBT_SHAPE, modelLocation.toString());
+        if (textureKey != null) {
+            nbt.put(NBT_TEXTURE, textureKey.toNbt());
         }
         return nbt;
     }
 
     @Override
     protected void loadAdditional(CompoundTag nbt) {
-        this.shape = TrafficSignShape.getShapeByIndex(nbt.getInt(NBT_SHAPE));
-        setTextureId(nbt.getString(NBT_TEXTURE));
+        this.modelLocation = ResourceLocation.tryParse(nbt.getString(NBT_SHAPE));
+        setTextureKey(TextureIdentifier.fromNbt(nbt.getCompound(NBT_TEXTURE)));
         updateModel();
         super.loadAdditional(nbt);
+    }
+
+    public void setModelLocation(ResourceLocation modelLocation) {
+        this.modelLocation = modelLocation;
+        Utils.doIfType(getBlockEntity(), PostBlockEntity.class, DLSyncedBlockEntity::notifyUpdate);
+        updateModel();
     }
 }

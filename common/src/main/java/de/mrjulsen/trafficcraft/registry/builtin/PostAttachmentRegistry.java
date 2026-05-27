@@ -2,7 +2,7 @@ package de.mrjulsen.trafficcraft.registry.builtin;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
-import de.mrjulsen.trafficcraft.block.data.attachments.IAttachableBlock;
+import de.mrjulsen.trafficcraft.block.data.attachments.IAttachableBlockEntity;
 import de.mrjulsen.trafficcraft.block.data.attachments.IPostAttachment;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -17,11 +17,11 @@ import java.util.function.Function;
 public final class PostAttachmentRegistry {
     private PostAttachmentRegistry() {}
 
-    public record PostAttachmentContext<B extends BlockEntity & IAttachableBlock>(B blockEntity, Direction direction) {}
+    public record PostAttachmentContext<B extends BlockEntity & IAttachableBlockEntity>(B blockEntity, Direction direction) {}
 
     @FunctionalInterface
     public interface PostAttachmentFactory<T extends IPostAttachment<?>> {
-        <B extends BlockEntity & IAttachableBlock> T create(PostAttachmentContext<B> context);
+        <B extends BlockEntity & IAttachableBlockEntity> T create(PostAttachmentContext<B> context);
     }
 
 

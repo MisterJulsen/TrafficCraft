@@ -8,12 +8,11 @@ import de.mrjulsen.trafficcraft.block.data.attachments.IPostAttachment;
 import de.mrjulsen.trafficcraft.block.entity.PostBlockEntity;
 import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
 import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
+import de.mrjulsen.trafficcraft.registry.ModBlocks;
 import de.mrjulsen.trafficcraft.util.VoxelShapeRotator;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -24,10 +23,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,7 @@ public class ClientSetup {
 		});
 	}
 
+
 	public static void onSalz(RenderHighlightEvent.Block event) {
 		BlockHitResult hit = event.getTarget();
 		if (hit.getType() != HitResult.Type.BLOCK) {
@@ -59,7 +59,7 @@ public class ClientSetup {
 			var camera = event.getCamera();
 			Vec3 localPos = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
 
-			for (Map.Entry<Direction, IPostAttachment<?>> entry : be.attachments.entrySet()) {
+			for (Map.Entry<Direction, IPostAttachment<?>> entry : be.getAttachments().entrySet()) {
 				IPostAttachment<?> attachment = entry.getValue();
 				VoxelShape shape = VoxelShapeRotator.rotateByQuaternion(attachment.getShape(state, level, pos), be.getAttachmentRotation(attachment, state.getValue(TrafficSignPostBlock.AXIS)));
 				boolean isHit = shape.toAabbs().stream()

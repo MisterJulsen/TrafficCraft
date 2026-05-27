@@ -7,55 +7,54 @@ import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.screen.menu.TrafficSignWorkbenchMenu;
 import de.mrjulsen.trafficcraft.data.NamedTextureKey;
+import de.mrjulsen.trafficcraft.data.textures.TextureRepository;
+import de.mrjulsen.trafficcraft.data.textures.data.NbtTextureData;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public class TrafficSignPatternPacket {
+public class SaveTexturePacket {
+
+    private static final String NBT_KEY = "Key";
+    private static final String NBT_PAYLOAD = "Payload";
+    private static final String NBT_INDEX = "Index";
 
     public static class Request extends NetworkPacketData {
-        private static final String NBT_NAME = "Name";
-        private static final String NBT_INDEX = "Index";
-        
-        private NamedTextureKey reference;
-        private int index;
+
+        private NamedTextureKey key;
+        private NbtTextureData payload;
+        private int index = -1;
 
         public Request(DLStatus status) {
             super(status);
         }
 
-        /**
-         * @param reference TrafficSign data.
-         * @param index The index of the slot you want to replace or -1 to create a new pattern.
-         */
-        public Request(NamedTextureKey reference, int index) {
+        public Request(NamedTextureKey key, NbtTextureData payload, int index) {
             super(DLStatus.OK);
+            this.key = key;
+            this.payload = payload;
             this.index = index;
-            this.reference = reference;
         }
 
         @Override
         protected void write(CompoundTag nbt) {
+            nbt.put(NBT_KEY, key.toNbt());
+            nbt.put(NBT_PAYLOAD, payload.toNbt());
             nbt.putInt(NBT_INDEX, index);
-            nbt.put(NBT_NAME, reference.toNbt());
         }
 
         @Override
         protected void read(CompoundTag nbt) {
+            this.key = NamedTextureKey.fromNbt(nbt.getCompound(NBT_KEY));
+            this.payload = NbtTextureData.fromNbt(nbt.getCompound(NBT_PAYLOAD));
             this.index = nbt.getInt(NBT_INDEX);
-            this.reference = NamedTextureKey.fromNbt(nbt.getCompound(NBT_NAME));
         }
     }
 
     public static class Response extends NetworkPacketData {
-
         public Response(DLStatus status) {
             super(status);
-        }
-
-        public Response() {
-            super(DLStatus.OK);
         }
 
         @Override
@@ -66,18 +65,18 @@ public class TrafficSignPatternPacket {
         protected void read(CompoundTag nbt) {
         }
     }
-    
-    public static Response handle(Request packet, NetworkPacketContext context) {        
+
+    public static Response handle(Request packet, NetworkPacketContext context) {
         ServerPlayer sender = (ServerPlayer)context.getPlayer();
         if (sender.containerMenu instanceof TrafficSignWorkbenchMenu menu) {
             final ItemStack stack = menu.patternSlot.getItem();
             if (!(stack.getItem() instanceof PatternCatalogueItem))
-                return new Response();
+                return new Response(DLStatus.CANCEL);
 
             if (packet.index >= 0) {
-                PatternCatalogueItem.replacePattern(stack, packet.reference, packet.index);
+                PatternCatalogueItem.replacePattern(stack, packet.key, packet.index);
             } else {
-                PatternCatalogueItem.setPattern(stack, packet.reference);
+                PatternCatalogueItem.setPattern(stack, packet.key);
             }
             menu.patternSlot.set(stack);
             menu.patternSlot.setChanged();
@@ -85,6 +84,8 @@ public class TrafficSignPatternPacket {
 
             DLUtils.giveAdvancement(sender, TrafficCraft.MOD_ID, "create_traffic_sign_pattern", "requirement");
         }
-        return new Response();
+
+        TextureRepository.saveCustom(packet.key.textureKey(), packet.payload);
+        return new Response(DLStatus.OK);
     }
 }

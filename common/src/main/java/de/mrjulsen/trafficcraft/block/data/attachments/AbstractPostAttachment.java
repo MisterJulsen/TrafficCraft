@@ -1,7 +1,6 @@
 package de.mrjulsen.trafficcraft.block.data.attachments;
 
 import de.mrjulsen.mcdragonlib.util.math.MathUtils;
-import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.TrafficSignPostBlock;
 import de.mrjulsen.trafficcraft.registry.ModItemTags;
 import de.mrjulsen.trafficcraft.registry.builtin.PostAttachmentRegistry;
@@ -30,7 +29,7 @@ public abstract class AbstractPostAttachment<T extends IPostAttachment<T>> imple
         this.context = context;
     }
 
-    public final <B extends BlockEntity & IAttachableBlock> B getBlockEntity() {
+    public final <B extends BlockEntity & IAttachableBlockEntity> B getBlockEntity() {
         return (B)context.blockEntity();
     }
 

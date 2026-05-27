@@ -3,7 +3,7 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,13 +12,13 @@ public class CreativePatternCataloguePacket extends NetworkPacketData {
 
     private static final String NBT_DATA = "Data";
     
-    private NamedTrafficSignTextureReference data;
+    private NamedTextureKey data;
 
     public CreativePatternCataloguePacket(DLStatus status) {
         super(status);
     }
 
-    public CreativePatternCataloguePacket(NamedTrafficSignTextureReference data) {
+    public CreativePatternCataloguePacket(NamedTextureKey data) {
         super(DLStatus.OK);
         this.data = data;
     }
@@ -30,7 +30,7 @@ public class CreativePatternCataloguePacket extends NetworkPacketData {
 
     @Override
     protected void read(CompoundTag nbt) {
-        this.data = NamedTrafficSignTextureReference.fromNbt(nbt.getCompound(NBT_DATA));
+        this.data = NamedTextureKey.fromNbt(nbt.getCompound(NBT_DATA));
     }
 
     public static void handle(CreativePatternCataloguePacket packet, NetworkPacketContext context) {

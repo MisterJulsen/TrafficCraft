@@ -8,9 +8,7 @@ import de.mrjulsen.mcdragonlib.block.IBlockEntityExtension;
 import de.mrjulsen.mcdragonlib.network.NetworkDirection;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
 import de.mrjulsen.trafficcraft.network.packets.stc.TrafficSignTextureResetPacket;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.ModNetworkManager;
@@ -27,7 +25,7 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
     private static final String NBT_TEXTURE = "SignTexture";
 
     private String textureId;
-    private TrafficSignClientTexture texture;
+    //private TrafficSignClientTexture texture;
     
 
     protected TrafficSignBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -58,9 +56,9 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
             
             GameInstance.getServer().execute(() -> {
                 BlockState state = getLevel().getBlockState(getBlockPos());
-                TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), java.util.Base64.getDecoder().decode(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
-                data.save();
-                setTextureId(data.getHash().toString());
+                //TrafficSignTextureData data = new TrafficSignTextureData(state.getValue(TrafficSignBlock.SHAPE), java.util.Base64.getDecoder().decode(base64), (short)32, (short)32, System.currentTimeMillis(), new UUID(0, 0));
+                //data.save();
+                //setTextureId(data.getHash().toString());
             });
         }, "Traffic Sign Migration").start();
     }
@@ -76,13 +74,14 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
     @Override
     public void setRemoved() {
         super.setRemoved();
-        resetTexture();
+        //resetTexture();
     }
 
     public String getTextureId() {
         return textureId;
     }
 
+    /*
     public TrafficSignClientTexture getClientTexture() {
         if (texture == null) {
             if (getTextureId() == null || getTextureId().equals("empty")) {
@@ -101,8 +100,10 @@ public class TrafficSignBlockEntity extends DLSyncedBlockEntity implements IBloc
         }
     }
 
-    public void setAndResetTexture(NamedTrafficSignTextureReference texture) {
-        setTextureId(texture.getTextureId());
+     */
+
+    public void setAndResetTexture(NamedTextureKey texture) {
+        //setTextureId(texture.getTextureId());
         if (!this.level.isClientSide) {
             for (ServerPlayer player : level.players().stream().filter(p -> p instanceof ServerPlayer).toArray(ServerPlayer[]::new)) {
                 ModNetworkManager.RESET_TRAFFIC_SIGN_TEXTURE.send(NetworkDirection.toPlayer(player), new TrafficSignTextureResetPacket(getBlockPos()));

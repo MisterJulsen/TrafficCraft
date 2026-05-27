@@ -3,8 +3,6 @@ package de.mrjulsen.trafficcraft.block;
 import de.mrjulsen.trafficcraft.block.data.ITrafficPostLike;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureManager;
 import de.mrjulsen.trafficcraft.item.CreativePatternCatalogueItem;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import net.minecraft.core.BlockPos;
@@ -88,8 +86,8 @@ public class TrafficSignBlock extends BaseEntityBlock implements SimpleWaterlogg
             if (pLevel.isClientSide) {
                 pLevel.playSound(pPlayer, pPos, SoundEvents.SLIME_BLOCK_PLACE, SoundSource.BLOCKS, 0.3F, 1.5f);
             } else {
-                TrafficSignTextureData data = TrafficSignTextureManager.load(item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getTextureId() : PatternCatalogueItem.getSelectedPattern(stack).getTextureId());
-                pLevel.setBlockAndUpdate(pPos, pState.setValue(SHAPE, data.getShape()));
+                //TrafficSignTextureData data = TrafficSignTextureManager.load(item instanceof CreativePatternCatalogueItem && CreativePatternCatalogueItem.shouldUseCustomPattern(stack) ? CreativePatternCatalogueItem.getCustomImage(stack).getTextureId() : PatternCatalogueItem.getSelectedPattern(stack).getTextureId());
+                //pLevel.setBlockAndUpdate(pPos, pState.setValue(SHAPE, data.getShape()));
             }
             
             return InteractionResult.SUCCESS;

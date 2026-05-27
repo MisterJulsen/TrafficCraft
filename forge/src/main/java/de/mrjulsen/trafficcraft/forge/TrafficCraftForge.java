@@ -10,10 +10,7 @@ import de.mrjulsen.trafficcraft.TrafficCraft;
 @Mod(TrafficCraft.MOD_ID)
 public final class TrafficCraftForge {
     public TrafficCraftForge() {
-        // Submit our event bus to let Architectury API register our content on the right time.
         EventBuses.registerModEventBus(TrafficCraft.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
-
-        // Run our common setup.
         TrafficCraft.init();
         MinecraftForge.EVENT_BUS.addListener(ClientSetup::onSalz);
     }

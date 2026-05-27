@@ -1,8 +1,6 @@
 package de.mrjulsen.trafficcraft.client.screen.workbench;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.mrjulsen.mcdragonlib.DragonLib;
 import de.mrjulsen.mcdragonlib.client.gui.events.DLGuiStandardEvents;
@@ -22,11 +20,15 @@ import de.mrjulsen.mcdragonlib.util.TextUtils;
 import de.mrjulsen.mcdragonlib.util.math.MathUtils;
 import de.mrjulsen.mcdragonlib.util.math.Rectangle;
 import de.mrjulsen.trafficcraft.TrafficCraft;
+import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.client.ModGuiIcons;
 import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchWindow;
 import de.mrjulsen.trafficcraft.client.widgets.trafficlight.OptionsPanel;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
+import de.mrjulsen.trafficcraft.data.textures.LocalTextureCache;
+import de.mrjulsen.trafficcraft.data.textures.TextureHandle;
+import de.mrjulsen.trafficcraft.data.textures.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.data.textures.decoder.context.IDecoderContext;
 import de.mrjulsen.trafficcraft.item.PatternCatalogueItem;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueDeletePacket;
 import de.mrjulsen.trafficcraft.network.packets.cts.PatternCatalogueIndexPacketGui;
@@ -46,9 +48,9 @@ public class MainScreen extends DLGuiComponent {
     private final Component emptyPattern = TextUtils.translate("gui.trafficcraft.trafficsignworkbench.menu.no_pattern");
     
     private final TrafficSignWorkbenchWindow win;
-    private NamedTrafficSignTextureReference preview;
-    
-    private final Map<NamedTrafficSignTextureReference, TrafficSignClientTexture> cachedTextures = new HashMap<>();
+
+    private NamedTextureKey preview;
+    private final LocalTextureCache textureCache = new LocalTextureCache();
 
     public MainScreen(TrafficSignWorkbenchWindow win) {
         super(0, 0, win.width(), win.height());
@@ -78,12 +80,13 @@ public class MainScreen extends DLGuiComponent {
         btnEdit.icon.set(ModGuiIcons.EDIT.getAsSprite(16, 16));
         btnEdit.tooltip.set(new DLTooltip(List.of(tooltipDefaultEdit), 200));
         btnEdit.addEventListener(DLGuiStandardEvents.ClickEvent.class, (s, e) -> {
-            getPrevievTexture().getTexture();
+            getPreviewTexture().getTexture();
             if (preview == null) {
                 return false;
             }
             win.clearComponents();
-            win.addComponent(new EditorScreen(win, getPrevievTexture().getRawData().getShape(), getPrevievTexture().getTexture(), preview.getName(), PatternCatalogueItem.getSelectedIndex(win.getMenu().patternSlot.getItem())));
+            TrafficSignShape shape = TrafficSignShape.MISC;//(getPreviewTexture().getData() instanceof TrafficSignData data) ? data.shape() : TrafficSignShape.MISC;
+            win.addComponent(new EditorScreen(win, shape, getPreviewTexture().getTexture(), preview.name(), PatternCatalogueItem.getSelectedIndex(win.getMenu().patternSlot.getItem())));
             return false;
         });
 
@@ -108,7 +111,7 @@ public class MainScreen extends DLGuiComponent {
                 Minecraft.getInstance().setScreen(currentScreen);
             },
             TextUtils.translate("gui.trafficcraft.trafficsignworkbench.delete.question"),
-            TextUtils.translate("selectWorld.deleteWarning", preview.getName()),
+            TextUtils.translate("selectWorld.deleteWarning", preview.name()),
             TextUtils.translate("selectWorld.deleteButton"),
             CommonComponents.GUI_CANCEL));
             return false;
@@ -145,16 +148,14 @@ public class MainScreen extends DLGuiComponent {
 
     private void initPreview() {
         this.preview = PatternCatalogueItem.getSelectedPattern(win.getMenu().patternSlot.getItem());
-        getPrevievTexture();
+        //getPreviewTexture();
     }
 
-    private synchronized TrafficSignClientTexture getPrevievTexture() {
+    private synchronized TextureHandle getPreviewTexture() {
         if (preview == null) {
-            return TrafficSignClientTexture.EMPTY;
+            return TextureHandle.EMPTY;
         }
-        return cachedTextures.computeIfAbsent(preview, x -> TrafficSignClientTexture.load(x.getTextureId(), false, () -> {
-            updatePreview();
-        }));
+        return textureCache.getTexture(preview.textureKey(), IDecoderContext.EMPTY, h -> this.updatePreview());
     }
 
     public void updatePreview() {
@@ -164,9 +165,11 @@ public class MainScreen extends DLGuiComponent {
     @Override
     public void renderMainLayer(DLGuiGraphics graphics, double mouseX, double mouseY, Rectangle renderBounds) {
         String label = "";
-        if (preview != null) { 
-            TrafficSignClientTexture tex = getPrevievTexture(); 
-            GuiUtils.drawTexture(tex.getTextureLocation(), graphics, width() / 2 - 50, 40, 100, 100, 0, 0, tex.getRawData().getWidth(), tex.getRawData().getHeight(), TextureFillMode.STRETCH, tex.getRawData().getWidth(), tex.getRawData().getHeight());
+        if (preview != null) {
+            TextureHandle tex = getPreviewTexture();
+            int w = tex.getTexture().getWidth();
+            int h = tex.getTexture().getHeight();
+            GuiUtils.drawTexture(tex.getLocation(), graphics, width() / 2 - 50, 40, 100, 100, 0, 0, w, h, TextureFillMode.STRETCH, w, h);
         } else {
             label = emptyPattern.getString();
             GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 80, label, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
@@ -174,7 +177,7 @@ public class MainScreen extends DLGuiComponent {
         
         label = String.format("%s / %s", PatternCatalogueItem.getSelectedIndex(win.getMenu().patternSlot.getItem()) + 1, PatternCatalogueItem.getStoredPatternCount(win.getMenu().patternSlot.getItem()));
         GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 170 - graphics.defaultFont().lineHeight / 2, label, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
-        label = preview == null ? "" : preview.getName();
+        label = preview == null ? "" : preview.name();
         GuiUtils.drawString(graphics, graphics.defaultFont(), width() / 2, 155 - graphics.defaultFont().lineHeight / 2, label, DragonLib.VANILLA_UI_FONT_COLOR, ETextAlignment.CENTER, false);
     }
 

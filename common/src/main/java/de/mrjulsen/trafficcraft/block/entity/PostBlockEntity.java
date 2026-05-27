@@ -1,12 +1,12 @@
 package de.mrjulsen.trafficcraft.block.entity;
 
+import com.google.common.collect.ImmutableMap;
 import de.mrjulsen.mcdragonlib.block.DLSyncedBlockEntity;
 import de.mrjulsen.mcdragonlib.client.model.ICustomModelBlockEntity;
 import de.mrjulsen.mcdragonlib.client.model.ModelContext;
 import de.mrjulsen.mcdragonlib.util.NbtUtils;
-import de.mrjulsen.mcdragonlib.util.Pair;
 import de.mrjulsen.trafficcraft.block.TrafficSignPostBlock;
-import de.mrjulsen.trafficcraft.block.data.attachments.IAttachableBlock;
+import de.mrjulsen.trafficcraft.block.data.attachments.IAttachableBlockEntity;
 import de.mrjulsen.trafficcraft.block.data.attachments.IPostAttachment;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
 import de.mrjulsen.trafficcraft.registry.builtin.PostAttachmentRegistry;
@@ -21,10 +21,9 @@ import org.joml.Quaternionf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PostBlockEntity extends DLSyncedBlockEntity implements ICustomModelBlockEntity, IAttachableBlock {
+public class PostBlockEntity extends DLSyncedBlockEntity implements ICustomModelBlockEntity, IAttachableBlockEntity {
 
     public record AttachmentModelData(IPostAttachment<?> attachment, Quaternionf rotation) {}
 
@@ -32,7 +31,7 @@ public class PostBlockEntity extends DLSyncedBlockEntity implements ICustomModel
 
     private static final String NBT_ATTACHMENTS = "Attachments";
 
-    public final Map<Direction, IPostAttachment<?>> attachments = new ConcurrentHashMap<>();
+    private final Map<Direction, IPostAttachment<?>> attachments = new ConcurrentHashMap<>();
 
 
     public PostBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -41,6 +40,11 @@ public class PostBlockEntity extends DLSyncedBlockEntity implements ICustomModel
 
     public PostBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POST.get(), pos, state);
+    }
+
+    @Override
+    public Map<Direction, IPostAttachment<?>> getAttachments() {
+        return attachments;
     }
 
     @Override

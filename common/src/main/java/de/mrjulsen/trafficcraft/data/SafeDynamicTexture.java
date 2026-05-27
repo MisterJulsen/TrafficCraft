@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 
 public class SafeDynamicTexture extends DynamicTexture {
 
+    private final int width;
+    private final int height;
+
     private boolean closed = false;
     private final boolean immortal;
 
@@ -15,7 +18,17 @@ public class SafeDynamicTexture extends DynamicTexture {
 
     public SafeDynamicTexture(NativeImage image, boolean immortal) {
         super(image);
+        this.width = image.getWidth();
+        this.height = image.getHeight();
         this.immortal = immortal;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     @Override

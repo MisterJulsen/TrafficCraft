@@ -7,20 +7,17 @@ import java.util.function.Function;
 
 import de.mrjulsen.mcdragonlib.client.model.DLBlockModelRegistry;
 import de.mrjulsen.mcdragonlib.events.client.ModelEvents;
-import de.mrjulsen.mcdragonlib.fabric.client.model.loaders.DLBakedModelExtension;
 import de.mrjulsen.mcdragonlib.util.DLUtils;
 import de.mrjulsen.trafficcraft.block.data.TrafficLightModel;
 import de.mrjulsen.trafficcraft.client.ber.*;
 import de.mrjulsen.trafficcraft.client.models.TestModel;
-import net.minecraft.client.Minecraft;
+import de.mrjulsen.trafficcraft.data.textures.ClientTextureCache;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.NativeImage;
 
 import de.mrjulsen.mcdragonlib.util.DLColor;
-import de.mrjulsen.mcdragonlib.util.Wikipedia;
 import de.mrjulsen.mcdragonlib.util.DLColor.ColorChannel;
-import de.mrjulsen.trafficcraft.Constants;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.HouseNumberSignBlockEntity;
@@ -30,7 +27,6 @@ import de.mrjulsen.trafficcraft.client.screen.TrafficSignWorkbenchGui;
 import de.mrjulsen.trafficcraft.client.screen.menu.ModMenuTypes;
 import de.mrjulsen.trafficcraft.client.tooltip.ClientTrafficSignTooltipStack;
 import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import de.mrjulsen.trafficcraft.item.IScrollEventItem;
 import de.mrjulsen.trafficcraft.item.RoadConstructionTool;
 import de.mrjulsen.trafficcraft.registry.ModBlockEntities;
@@ -225,13 +221,13 @@ public class ClientInit {
 
         ClientGuiEvent.DEBUG_TEXT_LEFT.register(list -> {
             list.add(String.format("TC | T: %s",
-                TrafficSignClientTexture.debug_cachedTexturesCount()
+                ClientTextureCache.INSTANCE.size()
             ));
         });
         
         ClientPlayerEvent.CLIENT_PLAYER_QUIT.register(player -> {
             TrafficCraft.LOGGER.info("Cleaning up traffic sign texture cache...");
-            int count = TrafficSignClientTexture.closeAll();
+            int count = ClientTextureCache.INSTANCE.releaseAll();
             TrafficCraft.LOGGER.info("All " + count + " loaded custom traffic sign textures have been closed.");
         });
 

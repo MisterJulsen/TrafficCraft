@@ -11,7 +11,6 @@ import de.mrjulsen.mcdragonlib.util.DLColor;
 import de.mrjulsen.trafficcraft.block.TrafficSignBlock;
 import de.mrjulsen.trafficcraft.block.data.TrafficSignShape;
 import de.mrjulsen.trafficcraft.block.entity.TrafficSignBlockEntity;
-import de.mrjulsen.trafficcraft.data.TrafficSignClientTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -33,6 +32,7 @@ public class TrafficSignBlockEntityRenderer extends RotatableBlockEntityRenderer
             return;
         }
 
+        /*
         TrafficSignClientTexture tex = graphics.blockEntity().getClientTexture();
 
         if (tex.isDisposed()) {
@@ -62,5 +62,7 @@ public class TrafficSignBlockEntityRenderer extends RotatableBlockEntityRenderer
             
             graphics.poseStack().popPose();
         }
+
+         */
     }
 }

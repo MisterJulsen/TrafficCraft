@@ -41,7 +41,7 @@ public class TrafficSignTextureResetPacket extends NetworkPacketData {
         Level level = player.level();
         BlockEntity entity = level.getBlockEntity(packet.pos);
         if (entity instanceof TrafficSignBlockEntity be) {
-            be.resetTexture();
+            //be.resetTexture();
         }
     }
 }

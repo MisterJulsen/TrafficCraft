@@ -3,27 +3,26 @@ package de.mrjulsen.trafficcraft.network.packets.cts;
 import de.mrjulsen.mcdragonlib.data.DLStatus;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketContext;
 import de.mrjulsen.mcdragonlib.network.NetworkPacketData;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureData;
-import de.mrjulsen.trafficcraft.data.TrafficSignTextureManager;
-import de.mrjulsen.trafficcraft.data.texture.ITexturePayload;
-import de.mrjulsen.trafficcraft.data.texture.TextureKey;
-import de.mrjulsen.trafficcraft.data.texture.TexturePayload;
-import de.mrjulsen.trafficcraft.data.texture.TextureRepository;
+import de.mrjulsen.trafficcraft.data.textures.TextureIdentifier;
+import de.mrjulsen.trafficcraft.data.textures.TextureRepository;
+import de.mrjulsen.trafficcraft.data.textures.data.NbtTextureData;
 import net.minecraft.nbt.CompoundTag;
+
+import java.util.Optional;
 
 public class GetTexturePacket {
 
     private static final String NBT_DATA = "Data";
 
-    public static class Request extends NetworkPacketData {        
+    public static class Request extends NetworkPacketData {
 
-        private TextureKey key;
+        private TextureIdentifier key;
 
         public Request(DLStatus status) {
             super(status);
         }
 
-        public Request(TextureKey key) {
+        public Request(TextureIdentifier key) {
             super(DLStatus.OK);
             this.key = key;
         }
@@ -35,40 +34,40 @@ public class GetTexturePacket {
 
         @Override
         protected void read(CompoundTag nbt) {
-            this.key = TextureKey.fromNbt(nbt.getCompound(NBT_DATA));
+            this.key = TextureIdentifier.fromNbt(nbt.getCompound(NBT_DATA));
         }
     }
-    
-    public static class Response extends NetworkPacketData {        
 
-        private ITexturePayload data;
+    public static class Response extends NetworkPacketData {
+
+        private Optional<NbtTextureData> data;
 
         public Response(DLStatus status) {
             super(status);
         }
 
-        public Response(ITexturePayload data) {
+        public Response(Optional<NbtTextureData> data) {
             super(DLStatus.OK);
             this.data = data;
         }
 
         @Override
         protected void write(CompoundTag nbt) {
-            nbt.put(NBT_DATA, data.toNbt());
+            this.data.ifPresent(d -> nbt.put(NBT_DATA, d.toNbt()));
         }
 
         @Override
         protected void read(CompoundTag nbt) {
-            this.data = TexturePayload.fromNbt(nbt.getCompound(NBT_DATA));
+            this.data = Optional.ofNullable(nbt.contains(NBT_DATA) ? NbtTextureData.fromNbt(nbt.getCompound(NBT_DATA)) : null);
         }
 
-        public ITexturePayload getPayload() {
+        public Optional<NbtTextureData> getTextureData() {
             return data;
         }
     }
 
     public static Response handle(Request packet, NetworkPacketContext context) {
-        return new Response(TextureRepository.load(packet.key));
+        return new Response(TextureRepository.loadCustom(packet.key));
     }
-    
+
 }

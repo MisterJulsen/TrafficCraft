@@ -1,8 +1,12 @@
 package de.mrjulsen.trafficcraft.block.data;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import de.mrjulsen.mcdragonlib.util.DLUtils;
+import de.mrjulsen.mcdragonlib.util.MapCache;
 import de.mrjulsen.trafficcraft.TrafficCraft;
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import net.minecraft.core.Direction;
@@ -31,8 +35,19 @@ public enum TrafficSignShape implements StringRepresentable {
 	private int index;
 	private int[] invalidPixels;
 
+	private static final Map<String, TrafficSignShape> cachedShapes;
+	static {
+		Map<String, TrafficSignShape> map = new HashMap<>();
+		for (TrafficSignShape shape : TrafficSignShape.values()) {
+			map.put(shape.getShape(), shape);
+		}
+		cachedShapes = Map.copyOf(map);
+	}
+
 	public static final int MAX_WIDTH = 32;
 	public static final int MAX_HEIGHT = 32;
+
+
 	
 	private TrafficSignShape(String shape, int index, int[] invalidPixels) {
 		this.shape = shape;
@@ -66,6 +81,10 @@ public enum TrafficSignShape implements StringRepresentable {
 			}
 		}
 		return TrafficSignShape.CIRCLE;
+	}
+
+	public static Optional<TrafficSignShape> getShapeByName(String shape) {
+		return Optional.ofNullable(cachedShapes.get(shape));
 	}
 
 	public int getShapeTextureId() {

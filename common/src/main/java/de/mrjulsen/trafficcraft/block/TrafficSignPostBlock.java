@@ -141,7 +141,7 @@ public class TrafficSignPostBlock extends BaseEntityBlock implements SimpleWater
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         VoxelShape shape = SHAPES.get(pState, pState);
         if (pLevel.getBlockEntity(pPos) instanceof PostBlockEntity be) {
-            for (IPostAttachment<?> attachment : be.attachments.values()) {
+            for (IPostAttachment<?> attachment : be.getAttachments().values()) {
                 shape = Shapes.or(shape, getAttachmentShape(pState, pLevel, pPos, be, attachment));
             }
         }
@@ -265,7 +265,7 @@ public class TrafficSignPostBlock extends BaseEntityBlock implements SimpleWater
         Vec3 localPos = hit.getLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
 
         if (level.getBlockEntity(pos) instanceof PostBlockEntity be) {
-            for (Map.Entry<Direction, IPostAttachment<?>> entry : be.attachments.entrySet()) {
+            for (Map.Entry<Direction, IPostAttachment<?>> entry : be.getAttachments().entrySet()) {
                 IPostAttachment<?> attachment = entry.getValue();
                 VoxelShape shape = getAttachmentShape(state, level, pos, be, attachment);
 
@@ -279,12 +279,12 @@ public class TrafficSignPostBlock extends BaseEntityBlock implements SimpleWater
             }
 
             if (player.getItemInHand(hand).getItem() instanceof BlockItem bi && bi.getBlock() instanceof TrafficLightBlock t) {
-                be.attachments.put(hit.getDirection(), new TrafficLightPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
+                be.getAttachments().put(hit.getDirection(), new TrafficLightPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
                 level.setBlock(pos, state, Block.UPDATE_ALL);
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
                 return InteractionResult.SUCCESS;
             } else if (player.getItemInHand(hand).getItem() instanceof BlockItem bi && bi.getBlock() instanceof TrafficSignBlock t) {
-                be.attachments.put(hit.getDirection(), new TrafficSignPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
+                be.getAttachments().put(hit.getDirection(), new TrafficSignPostAttachment(new PostAttachmentRegistry.PostAttachmentContext<>(be, hit.getDirection())));
                 level.setBlock(pos, state, Block.UPDATE_ALL);
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
                 return InteractionResult.SUCCESS;

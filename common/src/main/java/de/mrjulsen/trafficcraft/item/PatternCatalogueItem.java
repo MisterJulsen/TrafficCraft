@@ -7,8 +7,7 @@ import java.util.Optional;
 
 import de.mrjulsen.trafficcraft.client.ClientWrapper;
 import de.mrjulsen.trafficcraft.client.tooltip.TrafficSignTooltip;
-import de.mrjulsen.trafficcraft.data.NamedTrafficSignTextureReference;
-import de.mrjulsen.trafficcraft.data.TrafficSignData;
+import de.mrjulsen.trafficcraft.data.NamedTextureKey;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -62,7 +61,7 @@ public class PatternCatalogueItem extends Item {
 
         if (nbt.contains(NBT_LEGACY_PATTERNS)) {
             nbt.getList(NBT_LEGACY_PATTERNS, 10).stream().forEach(x -> {    
-                nbt.getList(NBT_TEXTURES, 10).add(TrafficSignData.migrate((CompoundTag)x).toNbt());
+                //TODO nbt.getList(NBT_TEXTURES, 10).add(TrafficSignData.migrate((CompoundTag)x).toNbt());
             });
             nbt.remove(NBT_LEGACY_PATTERNS);
         }
@@ -82,7 +81,7 @@ public class PatternCatalogueItem extends Item {
 
     private Optional<TooltipComponent> createTooltip(ItemStack stck) {
         final ItemStack stack = stck;
-        NonNullList<NamedTrafficSignTextureReference> nonnulllist = NonNullList.create();
+        NonNullList<NamedTextureKey> nonnulllist = NonNullList.create();
         if (stack.hasTag()) {
             Arrays.stream(getStoredPatterns(stack)).forEach(nonnulllist::add);
         }
@@ -93,7 +92,7 @@ public class PatternCatalogueItem extends Item {
         }));
     }
 
-    public NamedTrafficSignTextureReference getSelectedImageData(ItemStack stack) {
+    public NamedTextureKey getSelectedImageData(ItemStack stack) {
         return getSelectedPattern(stack);
     }
 
@@ -109,24 +108,22 @@ public class PatternCatalogueItem extends Item {
         return (short)(checkNbt(stack).getList(NBT_TEXTURES, 10).size());
     }
 
-    public static NamedTrafficSignTextureReference getPatternAt(ItemStack stack, int index) {
+    public static NamedTextureKey getPatternAt(ItemStack stack, int index) {
         if (!indexInBounds(stack, index))
             return null;
 
-        return NamedTrafficSignTextureReference.fromNbt(checkNbt(stack).getList(NBT_TEXTURES, 10).getCompound(index));
+        return NamedTextureKey.fromNbt(checkNbt(stack).getList(NBT_TEXTURES, 10).getCompound(index));
     }
 
-    public static NamedTrafficSignTextureReference getSelectedPattern(ItemStack stack) {
+    public static NamedTextureKey getSelectedPattern(ItemStack stack) {
         return getPatternAt(stack, getSelectedIndex(stack));
     }
 
-    public static NamedTrafficSignTextureReference[] getStoredPatterns(ItemStack stack) {
-        return checkNbt(stack).getList(NBT_TEXTURES, 10).stream().map(x -> {
-            return NamedTrafficSignTextureReference.fromNbt((CompoundTag)x);
-        }).toArray(NamedTrafficSignTextureReference[]::new);
+    public static NamedTextureKey[] getStoredPatterns(ItemStack stack) {
+        return checkNbt(stack).getList(NBT_TEXTURES, 10).stream().map(x -> NamedTextureKey.fromNbt((CompoundTag)x)).toArray(NamedTextureKey[]::new);
     }
 
-    public static boolean setPattern(ItemStack stack, NamedTrafficSignTextureReference pattern) {
+    public static boolean setPattern(ItemStack stack, NamedTextureKey pattern) {
         if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
             return false;
 
@@ -136,7 +133,7 @@ public class PatternCatalogueItem extends Item {
         return true;
     }
 
-    public static boolean replacePattern(ItemStack stack, NamedTrafficSignTextureReference pattern, int index) {
+    public static boolean replacePattern(ItemStack stack, NamedTextureKey pattern, int index) {
         if (getStoredPatternCount(stack) >= ((PatternCatalogueItem)stack.getItem()).getMaxPatterns())
             return false;
 
