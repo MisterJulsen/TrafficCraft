@@ -47,7 +47,8 @@ public class ModItems {
     public static final RegistrySupplier<RecipeSerializer<?>> DAMAGEABLE_ITEM_RECIPE_SERIALIZER = RECIPES.register("damageable_item_recipe", () -> new DamageableItemRecipe.Serializer());
     
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(TrafficCraft.MOD_ID, Registries.RECIPE_TYPE);
-    public static final RegistrySupplier<RecipeType<?>> DAMAGEABLE_ITEM_RECIPE_TYPE = RECIPE_TYPES.register("damageable_recipe_type", () -> RecipeType.register(TrafficCraft.MOD_ID + "_damageable_recipe_type"));
+    // public static final RegistrySupplier<RecipeType<?>> DAMAGEABLE_ITEM_RECIPE_TYPE = RECIPE_TYPES.register("damageable_recipe_type", () -> RecipeType.register(TrafficCraft.MOD_ID + "_damageable_recipe_type"));
+    public static final RegistrySupplier<RecipeType<?>> DAMAGEABLE_ITEM_RECIPE_TYPE = RECIPE_TYPES.register("damageable_recipe_type", () -> new RecipeType<>() {});
 
     /*
     public static final RecipeType<DamageableItemRecipe> DAMAGEABLE_RECIPE_TYPE = Registry.register(BuiltInRegistries.RECIPE_TYPE,

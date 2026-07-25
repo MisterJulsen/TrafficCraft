@@ -81,7 +81,7 @@ public enum PaintColor implements StringRepresentable, ITranslatableEnum {
 		return Arrays.stream(values()).filter(x -> x.getIndex() == color.getId()).findFirst().orElse(WHITE);
 	}
 
-	/** @retuns true, if color should be white */
+	/** @return true, if color should be white */
 	public static boolean useWhiteOrBlackForeColor(int color) {
 	   int red = (color >> 16) & 0xFF;
 	   int green = (color >> 8) & 0xFF;
