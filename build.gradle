@@ -1,8 +1,8 @@
 plugins {
-    id 'dev.architectury.loom' version '1.7-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
-    id "net.mrjulsen.mod-build-tools" version "1.0.5"
+    id 'com.gradleup.shadow' version '9.0.0' apply false
+    id "net.mrjulsen.mod-build-tools" version "1.0.15"
 }
 
 architectury {
@@ -23,8 +23,18 @@ subprojects {
         archivesName = "$rootProject.archives_name-$project.name"
     }
 
+    configurations.configureEach {
+        if (rootProject.hasProperty("lwjgl_version")) {
+            resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == "org.lwjgl") {
+                    details.useVersion rootProject.lwjgl_version
+                }
+            }
+        }
+    }
+
     repositories {
-        maven { url = "file:///${System.getProperty('user.home')}/.m2/github/modsrepo/maven/" } // DragonLib
+        maven { url = file("${System.getProperty('user.home')}/.m2/github/modsrepo/maven/") } // DragonLib
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
         maven { url = "https://maven.parchmentmc.org" } // ParchmentMC
         maven { url = "https://maven.terraformersmc.com/" } // ModMenu
@@ -78,7 +88,6 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         it.options.release = 21
     }
-    
 
     jar {
         manifest {
@@ -86,10 +95,12 @@ subprojects {
                     "Specification-Title"     : "${rootProject.display_name}",
                     "Specification-Vendor"    : "${rootProject.authors}",
                     "Specification-Version"   : "1",
-                    "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : project.jar.archiveVersion,
+                    "Implementation-Title"    : "${rootProject.display_name}",
+                    "Implementation-Version"  : "${project.version}",
                     "Implementation-Vendor"   : "${rootProject.authors}",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Built-On"                : "${rootProject.minecraft_version}",
+                    "Build-Jdk"               : "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})"
             ])
         }
     }
@@ -107,10 +118,6 @@ subprojects {
 modBuildTools {
     publish {
         localRepoDir = "${System.getProperty('user.home')}/.m2/github/modsrepo/maven"
-        s3Bucket = "maven"
-        endpointEnv = System.getenv("MAVEN_ENDPOINT")
-        accessKeyEnv = System.getenv("MAVEN_ACCESS_KEY")
-        secretKeyEnv = System.getenv("MAVEN_SECRET_KEY")
         publishCommon = false
     }
     javadoc {
